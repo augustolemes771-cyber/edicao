@@ -15,5 +15,4 @@ export const faixaAlvo = (t: number, {t1, t2}: Curva): [number, number] => {
 };
 
 // Antes de t1 a skill pede evento novo a cada 0,3 a 0,6 s.
-export const intervaloEventos = (t: number, {t1}: Curva): [number, number] | null =>
-	t < t1 ? [0.3, 0.6] : null;
+export const intervaloEventos = (t: number, {t1}: Curva): [number, number] | null => (t < t1 ? [0.3, 0.6] : null);

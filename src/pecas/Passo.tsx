@@ -3,11 +3,7 @@ import {interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {brilho, cor, poppins} from '../motor/tema';
 
 // Moldura tracejada luminosa tipo "Passo 1" (assinatura do canal).
-export const Passo: React.FC<{rotulo: string; texto: string; escala?: number}> = ({
-	rotulo,
-	texto,
-	escala = 1,
-}) => {
+export const Passo: React.FC<{rotulo: string; texto: string; escala?: number}> = ({rotulo, texto, escala = 1}) => {
 	const frame = useCurrentFrame();
 	const {fps} = useVideoConfig();
 	const p = spring({frame, fps, config: {damping: 15, stiffness: 160, mass: 0.6}});
@@ -25,9 +21,7 @@ export const Passo: React.FC<{rotulo: string; texto: string; escala?: number}> =
 				maxWidth: 1100 * escala,
 			}}
 		>
-			<svg
-				style={{position: 'absolute', inset: 0, width: '100%', height: '100%', overflow: 'visible'}}
-			>
+			<svg style={{position: 'absolute', inset: 0, width: '100%', height: '100%', overflow: 'visible'}}>
 				<rect
 					x={0}
 					y={0}

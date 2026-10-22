@@ -10,9 +10,10 @@ import {
 } from 'remotion';
 import {Audio, Video} from '@remotion/media';
 import {dbParaGanho} from './motor/anim';
-import {formatar, montar, type CenaNoPlano, type Edit, type Montagem} from './motor/plano';
+import {formatar, montar, type CenaNoPlano, type Edit, type EfeitoCamera, type Montagem} from './motor/plano';
 import {cor, poppins} from './motor/tema';
 import {CenaVisual} from './pecas/Cenas';
+import {Legenda} from './pecas/Legenda';
 import {projetos} from './projetos';
 
 export type PropsVideo = {projeto: string; duracaoFonte: number};
@@ -51,10 +52,48 @@ const Base: React.FC<{edit: Edit; montagem: Montagem}> = ({edit, montagem}) => {
 };
 
 // Durante uma gravação de tela, a câmera encolhe para o balão do canto.
+// Zoom em corte seco ou suave, puxada de foco e desfoque atrás de uma foto (ref. 1, 2 e 3).
+const useLente = (efeitos: EfeitoCamera[], fotos: CenaNoPlano[], t: number) => {
+	let escala = 1;
+	let x = 0.5;
+	let y = 0.4;
+	let anterior = 1;
+	for (const e of efeitos) {
+		if (e.tipo !== 'zoom' || e.em > t) continue;
+		const p = e.suave ? Math.min(1, (t - e.em) / e.suave) : 1;
+		const suavizado = p * p * (3 - 2 * p);
+		escala = anterior + (e.escala - anterior) * suavizado;
+		x = e.x ?? x;
+		y = e.y ?? y;
+		anterior = e.escala;
+	}
+	let desfoque = 0;
+	for (const e of efeitos) {
+		if (e.tipo !== 'foco') continue;
+		const d = e.duracao ?? 0.45;
+		if (t >= e.em && t < e.em + d) desfoque = Math.max(desfoque, 22 * (1 - (t - e.em) / d) ** 1.5);
+	}
+	let escurece = 0;
+	for (const c of fotos) {
+		const k = interpolate(t, [c.de, c.de + 0.2, c.ate - 0.2, c.ate], [0, 1, 1, 0], {
+			extrapolateLeft: 'clamp',
+			extrapolateRight: 'clamp',
+		});
+		desfoque = Math.max(desfoque, 12 * k);
+		escurece = Math.max(escurece, 0.45 * k);
+	}
+	return {escala, x, y, desfoque, escurece};
+};
+
 const Camera: React.FC<{edit: Edit; montagem: Montagem; telas: CenaNoPlano[]}> = ({edit, montagem, telas}) => {
 	const frame = useCurrentFrame();
 	const {fps, width, height} = useVideoConfig();
 	const t = frame / fps;
+	const lente = useLente(
+		montagem.camera,
+		montagem.cenas.filter((c) => c.tipo === 'foto'),
+		t,
+	);
 	let balao = 0;
 	for (const c of telas) {
 		balao = Math.max(
@@ -83,9 +122,44 @@ const Camera: React.FC<{edit: Edit; montagem: Montagem; telas: CenaNoPlano[]}> =
 				boxShadow: balao > 0 ? `0 0 0 ${5 * balao}px ${cor.verde}, 0 0 ${30 * balao}px ${cor.halo}` : undefined,
 			}}
 		>
-			<Base edit={edit} montagem={montagem} />
+			<AbsoluteFill
+				style={{
+					transform: `scale(${lente.escala})`,
+					transformOrigin: `${lente.x * 100}% ${lente.y * 100}%`,
+					filter:
+						lente.desfoque > 0.1 || lente.escurece > 0
+							? `blur(${lente.desfoque}px) brightness(${1 - lente.escurece})`
+							: undefined,
+				}}
+			>
+				<Base edit={edit} montagem={montagem} />
+			</AbsoluteFill>
 		</div>
 	);
+};
+
+// Clarão (ref. 3) e chicote (ref. 1) em volta da troca de plano.
+const useTransicoes = (efeitos: EfeitoCamera[]) => {
+	const frame = useCurrentFrame();
+	const {fps} = useVideoConfig();
+	let clarao = 0;
+	let chicote = 0;
+	for (const e of efeitos) {
+		const local = frame - Math.round(e.em * fps);
+		if (e.tipo === 'flash') {
+			clarao = Math.max(
+				clarao,
+				interpolate(local, [-1, 0, 2, 4], [0, 0.95, 0.7, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+			);
+		}
+		if (e.tipo === 'chicote') {
+			chicote = Math.max(
+				chicote,
+				interpolate(local, [-3, 0, 3], [0, 1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+			);
+		}
+	}
+	return {clarao, chicote};
 };
 
 // Punch de 6%, tremor e clarão na entrada das cenas com impacto (só antes de t2).
@@ -165,6 +239,7 @@ export const VideoEditado: React.FC<PropsVideo> = ({projeto, duracaoFonte}) => {
 	const edit = projetos[projeto];
 	const montagem = useMemo(() => montar(edit, duracaoFonte), [edit, duracaoFonte]);
 	const {escala, dx, dy, clarao} = useImpacto(montagem.cenas);
+	const trans = useTransicoes(montagem.camera);
 	const telas = montagem.cenas.filter((c) => c.tipo === 'tela');
 	const cheias = montagem.cenas.filter((c) => c.modo === 'cheia' && c.tipo !== 'tela');
 	const sobre = montagem.cenas.filter((c) => c.modo === 'sobre');
@@ -183,13 +258,27 @@ export const VideoEditado: React.FC<PropsVideo> = ({projeto, duracaoFonte}) => {
 
 	return (
 		<AbsoluteFill style={{backgroundColor: cor.preto}}>
-			<AbsoluteFill style={{transform: `translate(${dx}px, ${dy}px) scale(${escala})`}}>
+			<svg width={0} height={0} style={{position: 'absolute'}}>
+				<filter id="chicote" x="-20%" y="0" width="140%" height="100%">
+					<feGaussianBlur stdDeviation={`${trans.chicote * 70} 0`} />
+				</filter>
+			</svg>
+			<AbsoluteFill
+				style={{
+					transform: `translate(${dx + trans.chicote * 60}px, ${dy}px) scale(${escala})`,
+					filter: trans.chicote > 0.02 ? 'url(#chicote)' : undefined,
+				}}
+			>
 				{camada(telas)}
 				<Camera edit={edit} montagem={montagem} telas={telas} />
 				{camada(cheias)}
 				{camada(sobre)}
+				{edit.legenda && <Legenda paginas={montagem.legenda} cfg={edit.legenda} />}
 			</AbsoluteFill>
 			{clarao > 0 && <AbsoluteFill style={{backgroundColor: '#fff', opacity: clarao}} />}
+			{trans.clarao > 0 && (
+				<AbsoluteFill style={{backgroundColor: '#fff6de', opacity: trans.clarao, mixBlendMode: 'screen'}} />
+			)}
 			<Sons cenas={montagem.cenas} />
 			{edit.musica && (
 				<Audio

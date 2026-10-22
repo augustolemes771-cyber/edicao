@@ -6,6 +6,7 @@ out
 *.mp3
 !public/sfx/*.wav
 public/projetos/*/
-!public/projetos/exemplo/
+!public/projetos/reels-exemplo/
+!public/projetos/reels-exemplo/*
 .env
 .DS_Store

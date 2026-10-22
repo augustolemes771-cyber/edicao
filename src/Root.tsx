@@ -19,8 +19,11 @@ const calcular: CalculateMetadataFunction<PropsVideo> = async ({props}) => {
 		? await duracaoDoVideo(staticFile(`${edit.pasta}/${edit.video}`))
 		: (edit.duracao ?? 10);
 	const {duracaoEditada} = montar(edit, duracaoFonte);
+	const vertical = edit.formato === 'vertical';
 	return {
 		durationInFrames: Math.max(1, Math.round(duracaoEditada * FPS)),
+		width: vertical ? ALTURA : LARGURA,
+		height: vertical ? LARGURA : ALTURA,
 		props: {...props, duracaoFonte},
 	};
 };

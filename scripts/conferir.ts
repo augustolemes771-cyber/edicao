@@ -29,14 +29,23 @@ if (edit.video) {
 const m = montar(edit, duracaoFonte);
 const linha = (s = '') => console.log(s);
 
-linha(`Projeto ${nome}: fonte ${formatar(duracaoFonte)}, editado ${formatar(m.duracaoEditada)}, ${m.cenas.length} cenas`);
+if (m.legenda.length) linha(`Legenda: ${m.legenda.length} telas, estilo ${edit.legenda?.estilo}`);
+linha(
+	`Projeto ${nome}: fonte ${formatar(duracaoFonte)}, editado ${formatar(m.duracaoEditada)}, ${m.cenas.length} cenas`,
+);
 if (m.cortes.length) {
 	linha(`Cortes (tempo original): ${m.cortes.map(([a, b]) => `${formatar(a)}–${formatar(b)}`).join(', ')}`);
 }
 linha();
 linha('Cenas:');
 for (const c of m.cenas) {
-	const extras = [c.modo, c.entra === 'corte' ? 'emenda' : '', c.impactoAtivo ? 'impacto' : '', c.somFinal ?? 'sem som', c.pedidoFalado ? 'pedido falado' : '']
+	const extras = [
+		c.modo,
+		c.entra === 'corte' ? 'emenda' : '',
+		c.impactoAtivo ? 'impacto' : '',
+		c.somFinal ?? 'sem som',
+		c.pedidoFalado ? 'pedido falado' : '',
+	]
 		.filter(Boolean)
 		.join(' · ');
 	linha(`  ${formatar(c.de)}–${formatar(c.ate)}  ${c.tipo.padEnd(9)} ${extras}`);
@@ -44,10 +53,12 @@ for (const c of m.cenas) {
 
 // Curva de intensidade por janela de 10 s (exceto a tela final).
 linha();
-linha('Curva (cobertura por janela de 10 s):');
+linha(
+	edit.verificarCurva === false ? 'Curva: checagem desligada neste projeto.' : 'Curva (cobertura por janela de 10 s):',
+);
 const fimCurva = m.telaFinal ?? m.duracaoEditada;
 const fora: string[] = [];
-for (let t = 0; t < fimCurva; t += 10) {
+for (let t = 0; edit.verificarCurva !== false && t < fimCurva; t += 10) {
 	const ate = Math.min(t + 10, fimCurva);
 	if (ate - t < 3) break;
 	const valor = cobertura(m.cenas, t, ate);
@@ -55,7 +66,9 @@ for (let t = 0; t < fimCurva; t += 10) {
 	const pedido = m.cenas.some((c) => c.pedidoFalado && c.de < ate && c.ate > t);
 	const ok = (valor >= min - 0.05 && valor <= max + 0.05) || (pedido && valor > max);
 	const barra = '█'.repeat(Math.round(valor * 20)).padEnd(20, '·');
-	linha(`  ${formatar(t)}  ${barra} ${(valor * 100).toFixed(0).padStart(3)}%  alvo ${(min * 100).toFixed(0)}–${(max * 100).toFixed(0)}%  ${ok ? 'ok' : 'FORA'}`);
+	linha(
+		`  ${formatar(t)}  ${barra} ${(valor * 100).toFixed(0).padStart(3)}%  alvo ${(min * 100).toFixed(0)}–${(max * 100).toFixed(0)}%  ${ok ? 'ok' : 'FORA'}`,
+	);
 	if (!ok) fora.push(formatar(t));
 }
 
@@ -78,7 +91,12 @@ const impactoDepois = m.cenas.filter((c) => c.impactoAtivo && c.de >= m.curva.t2
 const erros = m.problemas.filter((p) => p.gravidade === 'erro');
 const avisos = m.problemas.filter((p) => p.gravidade === 'aviso');
 linha();
-for (const p of m.problemas) linha(`${p.gravidade === 'erro' ? 'ERRO ' : 'aviso'} ${p.tempo !== undefined ? formatar(p.tempo) + ' ' : ''}${p.texto}`);
+for (const p of m.problemas)
+	linha(
+		`${p.gravidade === 'erro' ? 'ERRO ' : 'aviso'} ${p.tempo !== undefined ? formatar(p.tempo) + ' ' : ''}${p.texto}`,
+	);
 linha();
-linha(`Resumo: ${erros.length} erro(s), ${avisos.length} aviso(s), ${fora.length} janela(s) fora da curva, ${impactoDepois} impacto(s) depois de t2.`);
+linha(
+	`Resumo: ${erros.length} erro(s), ${avisos.length} aviso(s), ${fora.length} janela(s) fora da curva, ${impactoDepois} impacto(s) depois de t2.`,
+);
 process.exit(erros.length > 0 || impactoDepois > 0 ? 1 : 0);

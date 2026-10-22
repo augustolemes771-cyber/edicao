@@ -7,18 +7,21 @@
   "scripts": {
     "studio": "remotion studio",
     "transcrever": "node scripts/transcrever.mjs",
-    "roteiro": "node scripts/roteiro.mjs",
+    "roteiro": "tsx scripts/roteiro.ts",
     "conferir": "tsx scripts/conferir.ts",
     "sfx": "bash scripts/gerar-sfx.sh",
     "render": "bash scripts/finalizar.sh",
     "preview": "bash scripts/preview.sh",
-    "tsc": "tsc --noEmit"
+    "tsc": "tsc --noEmit",
+    "novo": "node scripts/novo.mjs",
+    "musica": "bash scripts/musica.sh"
   },
   "dependencies": {
     "@remotion/captions": "4.0.538",
     "@remotion/cli": "4.0.538",
     "@remotion/elevenlabs": "4.0.538",
     "@remotion/fonts": "4.0.538",
+    "@remotion/install-whisper-cpp": "4.0.538",
     "@remotion/media": "4.0.538",
     "mediabunny": "1.62.0",
     "react": "19.2.3",

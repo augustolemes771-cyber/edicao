@@ -3,12 +3,13 @@ import {AbsoluteFill, Img, interpolate, spring, staticFile, useCurrentFrame, use
 import {Video} from '@remotion/media';
 import {useCiclo, useEntradaEm} from '../motor/anim';
 import type {CenaNoPlano, Fundo as TipoFundo, Posicao} from '../motor/plano';
-import {brilho, cor, margem, poppins} from '../motor/tema';
+import {brilho, cor, poppins, useMargem} from '../motor/tema';
 import {Estrela} from './Estrela';
 import {Grade} from './Grade';
 import {Logo3D} from './Logo3D';
 import {Passo} from './Passo';
 import {Titulo} from './Titulo';
+import {Broll, Cartao, Comentarios, Foto, Icone, Kicker, Letras, Preto} from './Referencias';
 
 type Props = {cena: CenaNoPlano; pasta: string};
 
@@ -54,22 +55,26 @@ const Seguro: React.FC<{posicao?: Posicao; children: React.ReactNode; style?: Re
 	posicao,
 	children,
 	style,
-}) => (
-	<AbsoluteFill
-		style={{
-			padding: `${margem.topo}px ${margem.lado}px ${margem.base}px`,
-			display: 'flex',
-			flexDirection: 'column',
-			...alinhamento(posicao),
-			...style,
-		}}
-	>
-		{children}
-	</AbsoluteFill>
-);
+}) => {
+	const m = useMargem();
+	return (
+		<AbsoluteFill
+			style={{
+				padding: `${m.topo}px ${m.lado}px ${m.base}px`,
+				display: 'flex',
+				flexDirection: 'column',
+				...alinhamento(posicao),
+				...style,
+			}}
+		>
+			{children}
+		</AbsoluteFill>
+	);
+};
 
 const Conteudo: React.FC<Props> = ({cena, pasta}) => {
 	const {fps} = useVideoConfig();
+	const margemCena = useMargem();
 	const frame = useCurrentFrame();
 	const tom = tomDoFundo('fundo' in cena ? cena.fundo : undefined, cena.modo);
 
@@ -112,7 +117,16 @@ const Conteudo: React.FC<Props> = ({cena, pasta}) => {
 			const franja = interpolate(p, [0, 1], [16, 2.5]);
 			const corNum = tom === 'verde' ? cor.branco : tom === 'branco' ? cor.preto : cor.branco;
 			const camada = (c: string, dx: number) => (
-				<span style={{position: 'absolute', inset: 0, color: c, transform: `translateX(${dx}px)`, mixBlendMode: 'screen', opacity: 0.85}}>
+				<span
+					style={{
+						position: 'absolute',
+						inset: 0,
+						color: c,
+						transform: `translateX(${dx}px)`,
+						mixBlendMode: 'screen',
+						opacity: 0.85,
+					}}
+				>
 					{cena.valor}
 				</span>
 			);
@@ -244,10 +258,29 @@ const Conteudo: React.FC<Props> = ({cena, pasta}) => {
 				</Seguro>
 			);
 		}
+		case 'cartao':
+			return <Cartao cena={cena} />;
+		case 'letras':
+			return <Letras cena={cena} />;
+		case 'kicker':
+			return <Kicker cena={cena} />;
+		case 'foto':
+			return <Foto cena={cena} pasta={pasta} />;
+		case 'comentarios':
+			return <Comentarios cena={cena} />;
+		case 'icone':
+			return <Icone cena={cena} pasta={pasta} />;
+		case 'broll':
+			return <Broll cena={cena} pasta={pasta} />;
+		case 'preto':
+			return <Preto />;
 		case 'despedida': {
 			const p = spring({frame, fps, config: {damping: 18}});
+			const m = margemCena;
 			return (
-				<AbsoluteFill style={{justifyContent: 'flex-end', alignItems: 'flex-start', padding: `${margem.base}px ${margem.lado}px`}}>
+				<AbsoluteFill
+					style={{justifyContent: 'flex-end', alignItems: 'flex-start', padding: `${m.base}px ${m.lado}px`}}
+				>
 					<div
 						style={{
 							fontFamily: poppins,
@@ -318,12 +351,13 @@ const Painel: React.FC<{titulo: string; itens?: string[]; lado: 'esquerda' | 'di
 	const frame = useCurrentFrame();
 	const {fps} = useVideoConfig();
 	const p = spring({frame, fps, config: {damping: 18, stiffness: 170}});
+	const m = useMargem();
 	return (
 		<AbsoluteFill
 			style={{
 				justifyContent: 'flex-start',
 				alignItems: lado === 'direita' ? 'flex-end' : 'flex-start',
-				padding: `${margem.topo}px ${margem.lado - 40}px`,
+				padding: `${m.topo}px ${m.lado - 40}px`,
 			}}
 		>
 			<div
@@ -340,7 +374,15 @@ const Painel: React.FC<{titulo: string; itens?: string[]; lado: 'esquerda' | 'di
 					transform: `translateX(${(1 - p) * (lado === 'direita' ? 480 : -480)}px)`,
 				}}
 			>
-				<div style={{fontWeight: 700, fontSize: 34, color: cor.destaque, textShadow: brilho(cor.halo, 0.4), marginBottom: 14}}>
+				<div
+					style={{
+						fontWeight: 700,
+						fontSize: 34,
+						color: cor.destaque,
+						textShadow: brilho(cor.halo, 0.4),
+						marginBottom: 14,
+					}}
+				>
 					{titulo}
 				</div>
 				{itens?.map((item, i) => {
@@ -358,7 +400,9 @@ const Painel: React.FC<{titulo: string; itens?: string[]; lado: 'esquerda' | 'di
 
 export const CenaVisual: React.FC<Props> = ({cena, pasta}) => {
 	const {saida} = useCiclo(cena);
-	const cheia = cena.modo === 'cheia' && cena.tipo !== 'tela';
+	// Peças com fundo próprio não recebem a grade do canal.
+	const fundoProprio = ['tela', 'cartao', 'letras', 'icone', 'broll', 'preto'].includes(cena.tipo);
+	const cheia = cena.modo === 'cheia' && !fundoProprio;
 	return (
 		<AbsoluteFill
 			style={{

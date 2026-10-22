@@ -74,10 +74,19 @@ export const Titulo: React.FC<{
 					>
 						{!sobreVerde && (
 							<>
-								<span style={{...estiloCamada, color: cor.franjaVermelha, transform: `translateX(${-franja}px)`, opacity: 0.8}}>
+								<span
+									style={{
+										...estiloCamada,
+										color: cor.franjaVermelha,
+										transform: `translateX(${-franja}px)`,
+										opacity: 0.8,
+									}}
+								>
 									{palavra}
 								</span>
-								<span style={{...estiloCamada, color: cor.franjaAzul, transform: `translateX(${franja}px)`, opacity: 0.8}}>
+								<span
+									style={{...estiloCamada, color: cor.franjaAzul, transform: `translateX(${franja}px)`, opacity: 0.8}}
+								>
 									{palavra}
 								</span>
 							</>

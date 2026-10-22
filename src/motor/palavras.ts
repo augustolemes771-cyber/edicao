@@ -100,9 +100,7 @@ export const criarBusca = (palavras: Palavra[]): Busca => {
 		at: (palavra, ocorrencia = 1) => acharFrase(palavra, ocorrencia)?.[0].inicio ?? NaN,
 		say: (frase, ocorrencia = 1) => {
 			const achou = acharFrase(frase, ocorrencia);
-			return achou
-				? {inicio: achou[0].inicio, fim: achou[achou.length - 1].fim}
-				: {inicio: NaN, fim: NaN};
+			return achou ? {inicio: achou[0].inicio, fim: achou[achou.length - 1].fim} : {inicio: NaN, fim: NaN};
 		},
 		atsW: (indice) => {
 			const p = palavras[indice];
@@ -112,8 +110,7 @@ export const criarBusca = (palavras: Palavra[]): Busca => {
 			}
 			return p.inicio;
 		},
-		tempos: (frase, ocorrencia = 1) =>
-			acharFrase(frase, ocorrencia)?.map((p) => p.inicio) ?? [],
+		tempos: (frase, ocorrencia = 1) => acharFrase(frase, ocorrencia)?.map((p) => p.inicio) ?? [],
 		erros,
 		palavras,
 	};
