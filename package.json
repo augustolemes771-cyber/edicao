@@ -1,0 +1,36 @@
+{
+  "name": "edicao",
+  "version": "1.0.0",
+  "description": "Motion do canal Mateus Dias (@ddiasmatt) em Remotion",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "studio": "remotion studio",
+    "transcrever": "node scripts/transcrever.mjs",
+    "roteiro": "node scripts/roteiro.mjs",
+    "conferir": "tsx scripts/conferir.ts",
+    "sfx": "bash scripts/gerar-sfx.sh",
+    "render": "bash scripts/finalizar.sh",
+    "preview": "bash scripts/preview.sh",
+    "tsc": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/captions": "4.0.538",
+    "@remotion/cli": "4.0.538",
+    "@remotion/elevenlabs": "4.0.538",
+    "@remotion/fonts": "4.0.538",
+    "@remotion/media": "4.0.538",
+    "mediabunny": "1.62.0",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "remotion": "4.0.538"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.7",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  }
+}

@@ -1,0 +1,11 @@
+node_modules
+out
+*.mp4
+*.mov
+*.wav
+*.mp3
+!public/sfx/*.wav
+public/projetos/*/
+!public/projetos/exemplo/
+.env
+.DS_Store
