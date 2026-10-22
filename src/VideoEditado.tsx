@@ -34,9 +34,10 @@ const Base: React.FC<{edit: Edit; montagem: Montagem}> = ({edit, montagem}) => {
 	return (
 		<>
 			{montagem.mantidos.map(([ini, fim], i) => {
+				// Início e fim pelo tempo acumulado: trechos vizinhos se encostam sem quadro vazio.
 				const from = Math.round(acumulado * fps);
-				const dur = Math.round(fim * fps) - Math.round(ini * fps);
 				acumulado += fim - ini;
+				const dur = Math.round(acumulado * fps) - from;
 				return (
 					<Sequence key={i} from={from} durationInFrames={dur} layout="none">
 						<Video
@@ -192,6 +193,9 @@ const Sons: React.FC<{cenas: CenaNoPlano[]}> = ({cenas}) => {
 		if (c.tipo === 'lista') {
 			for (const item of c.itens) eventos.push({quadro: Math.round(item.em * fps), som: 'tick'});
 		}
+		if (c.tipo === 'checklist') {
+			for (const item of c.itens) eventos.push({quadro: Math.round(item.em * fps), som: 'pop', ganho: 0.8});
+		}
 	}
 	return (
 		<>
@@ -201,6 +205,24 @@ const Sons: React.FC<{cenas: CenaNoPlano[]}> = ({cenas}) => {
 				</Sequence>
 			))}
 		</>
+	);
+};
+
+const BarraProgresso: React.FC<{cor: string}> = ({cor: corBarra}) => {
+	const frame = useCurrentFrame();
+	const {durationInFrames, height} = useVideoConfig();
+	const altura = Math.round(height * 0.005);
+	return (
+		<AbsoluteFill style={{height: altura, top: 0, backgroundColor: 'rgba(255,255,255,0.18)'}}>
+			<div
+				style={{
+					width: `${(frame / Math.max(1, durationInFrames - 1)) * 100}%`,
+					height: '100%',
+					backgroundColor: corBarra,
+					boxShadow: `0 0 8px ${corBarra}`,
+				}}
+			/>
+		</AbsoluteFill>
 	);
 };
 
@@ -286,6 +308,9 @@ export const VideoEditado: React.FC<PropsVideo> = ({projeto, duracaoFonte}) => {
 					volume={dbParaGanho(edit.musica.volumeDb ?? -22)}
 					loop
 				/>
+			)}
+			{edit.barraProgresso && (
+				<BarraProgresso cor={typeof edit.barraProgresso === 'object' ? edit.barraProgresso.cor : '#ffd21f'} />
 			)}
 			<Avisos montagem={montagem} />
 		</AbsoluteFill>

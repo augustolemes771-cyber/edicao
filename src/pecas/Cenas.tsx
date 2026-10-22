@@ -9,7 +9,7 @@ import {Grade} from './Grade';
 import {Logo3D} from './Logo3D';
 import {Passo} from './Passo';
 import {Titulo} from './Titulo';
-import {Broll, Cartao, Comentarios, Foto, Icone, Kicker, Letras, Preto} from './Referencias';
+import {Broll, Cartao, Checklist, Comentarios, Foto, Icone, Kicker, Letras, Preto} from './Referencias';
 
 type Props = {cena: CenaNoPlano; pasta: string};
 
@@ -274,6 +274,8 @@ const Conteudo: React.FC<Props> = ({cena, pasta}) => {
 			return <Broll cena={cena} pasta={pasta} />;
 		case 'preto':
 			return <Preto />;
+		case 'checklist':
+			return <Checklist cena={cena} />;
 		case 'despedida': {
 			const p = spring({frame, fps, config: {damping: 18}});
 			const m = margemCena;

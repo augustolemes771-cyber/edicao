@@ -72,6 +72,23 @@ estão em `docs/referencias/desmontagem.md`.
   `flash` ou `chicote` só nas trocas de assunto, uma cartela (`cartao`, `letras`, `kicker`) por ideia-chave.
 - A legenda some sozinha durante as cenas com texto próprio.
 
+## Depoimentos e cortes de conteúdo (22/10/2026)
+
+- Estrutura que prende até o fim: gancho com o resultado → dor (antes) → virada (quem ajudou) → transformação →
+  o que aprendeu (`checklist`) → resultado concreto → suporte → agradecimento → fechamento com o próximo passo.
+  `barraProgresso: true` no topo.
+- Cortes de conteúdo são numéricos, mas cada borda cai num silêncio medido no áudio (energia abaixo de -38 dB em
+  janelas de 10 a 30 ms). O tempo de palavra do Whisper erra ~0,3 s: não cortar pela palavra.
+- Depois de definir os cortes, juntar só o áudio dos trechos, transcrever de novo e ler as emendas. Em 22/10 isso
+  pegou um "e de" que sobrou e um "valeu" que tinha sumido.
+- Palavra cuja duração do Whisper invade um trecho mantido aparece como legenda fantasma: ajuste o fim dela na
+  transcrição para o começo do silêncio.
+- Zoom de emenda em `b.emendas[i]` (quadro exato do corte), nunca na palavra seguinte: senão o pulo aparece por 3 a
+  5 quadros.
+- Cor de destaque com contraste sobre a roupa (vermelho some em blusa vermelha).
+- Na nuvem o modelo do whisper.cpp não baixa (huggingface bloqueado). Funciona o pacote npm `sts-whisper-small`
+  (instalar com `--ignore-scripts` no rascunho) com `@huggingface/transformers` e `return_timestamps: 'word'`.
+
 ## Depois da entrega
 
 - Não renderizar de novo sem pedido. Ajuste depois da entrega vai para o código e para esta skill; render novo só

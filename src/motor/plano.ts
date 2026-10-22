@@ -82,7 +82,9 @@ export type Cena =
 	// B-roll em tela cheia com zoom lento (ref. 1).
 	| (Base & {tipo: 'broll'; src: string; video?: boolean; zoom?: number})
 	// Respiro em preto (ref. 2).
-	| (Base & {tipo: 'preto'});
+	| (Base & {tipo: 'preto'})
+	// Itens com ✓ entrando na hora da fala, em cartões de vidro no terço de baixo (depoimentos, aprendizados).
+	| (Base & {tipo: 'checklist'; titulo?: string; itens: {texto: string; em: number}[]});
 
 // Efeitos de câmera (ref. 1, 2 e 3).
 export type EfeitoCamera =
@@ -134,6 +136,8 @@ export type Edit = {
 	curva?: Curva;
 	// false desliga a checagem de cobertura do npm run conferir (Reels, Shorts).
 	verificarCurva?: boolean;
+	// Barra fina no topo mostrando quanto falta: segura a pessoa até o fim (Reels, depoimentos).
+	barraProgresso?: boolean | {cor: string};
 	// Regra do canal: câmera crua entre cenas cheias só com 3 s ou mais (vãos menores são emendados).
 	// false mantém só a emenda abaixo de 0,6 s, como nas referências de Reels.
 	regraCamera?: boolean;
@@ -187,6 +191,7 @@ const MODO_PADRAO: Record<TipoCena, Modo> = {
 	icone: 'cheia',
 	broll: 'cheia',
 	preto: 'cheia',
+	checklist: 'sobre',
 	kicker: 'sobre',
 	foto: 'sobre',
 	comentarios: 'sobre',
@@ -208,6 +213,7 @@ const SOM_PADRAO: Record<TipoCena, Som | null> = {
 	icone: 'pop',
 	broll: 'whoosh',
 	preto: null,
+	checklist: null,
 	kicker: 'whoosh',
 	foto: 'pop',
 	comentarios: 'swish',
@@ -216,6 +222,9 @@ const SOM_PADRAO: Record<TipoCena, Som | null> = {
 	painel: 'swish',
 	despedida: null,
 };
+
+// Mesmo fps da composição: as emendas caem em quadro inteiro.
+const FPS_PLANO = 30;
 
 // Emenda abaixo disso; câmera crua só a partir de 3 s.
 export const EMENDA_MAX = 0.6;
@@ -265,6 +274,11 @@ export const montar = (edit: Edit, duracaoFonte: number): Montagem => {
 	const duracaoEditada = mantidos.reduce((s, [a, b]) => s + (b - a), 0);
 	const palavras = palavrasEditadas(legendas, mantidos);
 	const busca = criarBusca(palavras);
+	let acumulado = 0;
+	for (const [a, b] of mantidos.slice(0, -1)) {
+		acumulado += b - a;
+		busca.emendas.push(Math.round(acumulado * FPS_PLANO) / FPS_PLANO);
+	}
 
 	const brutas = edit.cenas(busca);
 	const telaFinal = edit.telaFinal ? edit.telaFinal(busca) : null;
@@ -359,6 +373,7 @@ const TEXTO_PROPRIO: TipoCena[] = [
 	'icone',
 	'preto',
 	'logo3d',
+	'checklist',
 ];
 const normalizar = (s: string) =>
 	s

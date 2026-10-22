@@ -321,3 +321,95 @@ export const Broll: React.FC<{cena: De<'broll'>; pasta: string}> = ({cena, pasta
 };
 
 export const Preto: React.FC = () => <AbsoluteFill style={{backgroundColor: '#000'}} />;
+
+// Itens com ✓ que entram um por um na hora da fala, empilhados no terço de baixo.
+const ItemChecklist: React.FC<{texto: string; em: number; inicio: number; largura: number}> = ({
+	texto,
+	em,
+	inicio,
+	largura,
+}) => {
+	const p = useEntradaEm(em, inicio);
+	const marca = useEntradaEm(em, inicio, 5);
+	return (
+		<div
+			style={{
+				width: largura,
+				display: 'flex',
+				alignItems: 'center',
+				gap: largura * 0.04,
+				padding: `${largura * 0.03}px ${largura * 0.045}px`,
+				marginTop: largura * 0.025,
+				borderRadius: largura * 0.04,
+				background: 'rgba(10,12,14,0.72)',
+				backdropFilter: 'blur(12px)',
+				border: '1px solid rgba(255,255,255,0.14)',
+				boxShadow: '0 12px 30px rgba(0,0,0,0.45)',
+				opacity: p,
+				transform: `translateX(${(1 - p) * -largura * 0.25}px)`,
+			}}
+		>
+			<div
+				style={{
+					flex: 'none',
+					width: largura * 0.085,
+					height: largura * 0.085,
+					borderRadius: '50%',
+					background: '#22c55e',
+					boxShadow: '0 0 16px rgba(34,197,94,0.7)',
+					display: 'flex',
+					alignItems: 'center',
+					justifyContent: 'center',
+					transform: `scale(${marca})`,
+				}}
+			>
+				<svg viewBox="0 0 24 24" width="62%" height="62%">
+					<path
+						d="M5 12.5l4.5 4.5L19 7.5"
+						fill="none"
+						stroke="#fff"
+						strokeWidth={3.2}
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						strokeDasharray={24}
+						strokeDashoffset={24 * (1 - marca)}
+					/>
+				</svg>
+			</div>
+			<div style={{fontFamily: inter, fontWeight: 700, fontSize: largura * 0.06, color: '#fff', lineHeight: 1.15}}>
+				{texto}
+			</div>
+		</div>
+	);
+};
+
+export const Checklist: React.FC<{cena: De<'checklist'>}> = ({cena}) => {
+	const frame = useCurrentFrame();
+	const {width, height} = useVideoConfig();
+	const largura = Math.min(width * 0.8, 820);
+	const pTitulo = interpolate(frame, [0, 6], [0, 1], {extrapolateRight: 'clamp'});
+	return (
+		<AbsoluteFill style={{justifyContent: 'flex-end', alignItems: 'center', paddingBottom: height * 0.12}}>
+			{cena.titulo && (
+				<div
+					style={{
+						width: largura,
+						fontFamily: playfair,
+						fontStyle: 'italic',
+						fontWeight: 800,
+						fontSize: largura * 0.075,
+						color: '#ffffff',
+						textShadow: '0 2px 14px rgba(0,0,0,0.7)',
+						marginBottom: largura * 0.01,
+						...desfocarEntrada(pTitulo, 10),
+					}}
+				>
+					{cena.titulo}
+				</div>
+			)}
+			{cena.itens.map((item, i) => (
+				<ItemChecklist key={i} {...item} inicio={cena.de} largura={largura} />
+			))}
+		</AbsoluteFill>
+	);
+};

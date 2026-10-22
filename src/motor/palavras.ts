@@ -72,6 +72,8 @@ export type Busca = {
 	tempos: (frase: string, ocorrencia?: number) => number[];
 	erros: ErroAncora[];
 	palavras: Palavra[];
+	// Instantes do vídeo editado em que dois trechos mantidos se encontram (cortes).
+	emendas: number[];
 };
 
 export const criarBusca = (palavras: Palavra[]): Busca => {
@@ -113,5 +115,6 @@ export const criarBusca = (palavras: Palavra[]): Busca => {
 		tempos: (frase, ocorrencia = 1) => acharFrase(frase, ocorrencia)?.map((p) => p.inicio) ?? [],
 		erros,
 		palavras,
+		emendas: [],
 	};
 };
