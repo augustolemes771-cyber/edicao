@@ -389,7 +389,10 @@ def montar(a):
 
 def main():
     a = args()
+    # Caminho completo: no Windows o Blender resolvia o relativo a partir de outra pasta.
+    a.saida = os.path.abspath(a.saida)
     os.makedirs(a.saida, exist_ok=True)
+    print(f"Quadros em: {a.saida}")
     cena = montar(a)
     if a.so:
         for f in range(1, a.so + 1):
