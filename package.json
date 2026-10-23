@@ -17,19 +17,23 @@
     "musica": "bash scripts/musica.sh"
   },
   "dependencies": {
+    "@react-three/fiber": "9.2.0",
     "@remotion/captions": "4.0.538",
     "@remotion/cli": "4.0.538",
     "@remotion/elevenlabs": "4.0.538",
     "@remotion/fonts": "4.0.538",
     "@remotion/install-whisper-cpp": "4.0.538",
     "@remotion/media": "4.0.538",
+    "@remotion/three": "4.0.538",
     "mediabunny": "1.62.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "remotion": "4.0.538"
+    "remotion": "4.0.538",
+    "three": "0.178.0"
   },
   "devDependencies": {
     "@types/react": "19.2.7",
+    "@types/three": "0.170.0",
     "tsx": "4.20.6",
     "typescript": "5.9.3"
   },

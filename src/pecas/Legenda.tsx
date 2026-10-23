@@ -56,6 +56,18 @@ const VISUAL: Record<EstiloLegenda, Visual> = {
 		entrelinha: 1,
 		largura: 0.8,
 	},
+	// Desmontagem-2, ref. 2: palavras pequenas brancas empilhadas com a palavra-chave grande em verde-limão.
+	neon: {
+		fonte: inter,
+		peso: 700,
+		tamanho: 0.042,
+		cor: '#ffffff',
+		sombra: '0 2px 10px rgba(0,0,0,0.65)',
+		corEnfase: '#d6ff3c',
+		sombraEnfase: '0 0 10px rgba(214,255,60,0.7), 0 0 30px rgba(170,230,0,0.45), 0 3px 10px rgba(0,0,0,0.5)',
+		entrelinha: 0.9,
+		largura: 0.86,
+	},
 };
 
 const Palavra: React.FC<{
@@ -70,7 +82,9 @@ const Palavra: React.FC<{
 	const local = frame - Math.round((p.inicio - inicioPagina) * fps);
 	const ent = interpolate(local, [0, 6], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
 	const e = p.enfase;
-	const serif = e === 'serif' || e === 'cor' || e === 'grande';
+	const neon = estilo === 'neon';
+	// No neon a ênfase é sans grossa, sem serifa nem caixa alta.
+	const serif = !neon && (e === 'serif' || e === 'cor' || e === 'grande');
 	const corEnf = p.cor ?? visual.corEnfase;
 	const grande = e === 'grande';
 	// Na ref. 2 a ênfase acende: dourado escuro → amarelo vivo em ~10 quadros.
@@ -78,7 +92,8 @@ const Palavra: React.FC<{
 
 	let tamanho = base;
 	if (serif) tamanho *= estilo === 'impacto' ? 1.9 : 1.15;
-	if (grande) tamanho = base * (estilo === 'palavra' ? 1.5 : 1.9);
+	if (grande) tamanho = base * (estilo === 'palavra' ? 1.5 : neon ? 2.4 : 1.9);
+	if (neon && e === 'cor') tamanho = base * 1.6;
 
 	const cor =
 		e === 'cor' || grande || (estilo !== 'palavra' && serif) ? corEnf : e === 'caixa' ? '#ffffff' : visual.cor;
@@ -91,9 +106,10 @@ const Palavra: React.FC<{
 				display: 'inline-block',
 				fontFamily: serif && !(grande && estilo === 'palavra') ? playfair : visual.fonte,
 				fontStyle: serif && !grande ? 'italic' : 'normal',
-				fontWeight: serif ? 800 : visual.peso,
+				fontWeight: serif ? 800 : neon && (grande || e === 'cor') ? 800 : visual.peso,
 				fontSize: tamanho,
-				textTransform: grande ? 'uppercase' : undefined,
+				letterSpacing: neon && grande ? -tamanho * 0.03 : undefined,
+				textTransform: grande && !neon ? 'uppercase' : undefined,
 				color: cor,
 				textShadow: sombra,
 				opacity: ent * (cor === corEnf && estilo === 'impacto' ? acende : 1),
@@ -117,6 +133,7 @@ const Palavra: React.FC<{
 			)}
 			{p.texto}
 			{e === 'circulo' && <Circulo local={local} cor={p.cor ?? '#3ddc84'} />}
+			{e === 'riscar' && <Risco local={local} cor={p.cor ?? '#e3241b'} />}
 		</span>
 	);
 	return grande ? <div style={{width: '100%', textAlign: 'center', lineHeight: 1}}>{conteudo}</div> : conteudo;
@@ -150,6 +167,27 @@ const Circulo: React.FC<{local: number; cor: string}> = ({local, cor}) => {
 				pathLength={comprimento}
 			/>
 		</svg>
+	);
+};
+
+// Linha vermelha que atravessa a palavra da esquerda para a direita (desmontagem-2, ref. 2, "Content").
+const Risco: React.FC<{local: number; cor: string}> = ({local, cor}) => {
+	const p = interpolate(local, [4, 10], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+	return (
+		<span
+			style={{
+				position: 'absolute',
+				left: '-4%',
+				right: '-4%',
+				top: '52%',
+				height: '0.09em',
+				borderRadius: '0.05em',
+				background: cor,
+				boxShadow: `0 0 8px ${cor}`,
+				transformOrigin: 'left center',
+				transform: `rotate(-4deg) scaleX(${p})`,
+			}}
+		/>
 	);
 };
 

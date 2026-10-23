@@ -4,7 +4,7 @@ Motor de edição do canal Mateus Dias (@ddiasmatt) em [Remotion](https://www.re
 em TypeScript, sincronizadas pela palavra falada, e renderiza em 4K no seu computador. Não há crédito nem custo
 por vídeo.
 
-São dois formatos:
+Três frentes:
 
 - **Horizontal (YouTube)**, com a identidade do canal: preto, branco e verde-azulado `#00A8A3`, grade curva com
   pontos, estrela de 4 pontas com glow e aberração cromática, moldura tracejada "Passo 1", título branco com glow
@@ -12,6 +12,10 @@ São dois formatos:
 - **Vertical (Reels, Shorts, TikTok)**, com os efeitos aprendidos nas referências: legenda palavra por palavra,
   ênfases, cartelas, zoom, foco, clarão, chicote, comentários e B-roll. Veja
   [docs/referencias/desmontagem.md](docs/referencias/desmontagem.md).
+- **Cenários 3D cinematográficos** sem filmagem: objetos 3D de verdade (peça de xadrez, moedas, notas, relógio,
+  lampião) sobre papel ou fundo escuro, com sombra real, luz de janela, palavra fantasma e tipografia revelada,
+  além da legenda neon e das transições de luz. Veja
+  [docs/referencias/desmontagem-2.md](docs/referencias/desmontagem-2.md).
 
 ## Instalar (uma vez)
 
@@ -65,7 +69,8 @@ cenas: (b) => [
 ```
 
 Tipos de cena, do canal: `titulo`, `numero`, `lista`, `passo`, `estrela`, `logo3d`, `painel`, `tela`, `imagem`,
-`despedida`. Das referências: `cartao`, `letras`, `kicker`, `foto`, `comentarios`, `icone`, `broll`, `preto`.
+`despedida`. Das referências: `cartao`, `letras`, `kicker`, `foto`, `comentarios`, `icone`, `broll`, `preto`,
+`checklist`, `cenario`, `anel`, `rec`, `alertas`.
 Os campos de cada tipo estão em [src/motor/plano.ts](src/motor/plano.ts).
 
 ## Pastas
@@ -77,7 +82,7 @@ Os campos de cada tipo estão em [src/motor/plano.ts](src/motor/plano.ts).
 | `src/projetos/` | um `edit.ts` e a transcrição por vídeo |
 | `public/projetos/` | vídeo, imagens e trilha de cada projeto (o vídeo não vai para o GitHub) |
 | `public/sfx/` | efeitos sonoros (gerados com `npm run sfx`; troque pelos seus mantendo os nomes) |
-| `public/fontes/` | Poppins, Playfair Display, Unbounded e Inter, todas com licença OFL |
+| `public/fontes/` | Poppins, Playfair Display, Unbounded, Inter, Anton, DM Serif Display e UnifrakturMaguntia, todas com licença OFL |
 | `docs/referencias/` | desmontagem dos vídeos de referência |
 
 ## Licença do Remotion

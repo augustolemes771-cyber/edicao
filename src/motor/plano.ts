@@ -1,4 +1,5 @@
 import type {Caption} from '@remotion/captions';
+import type {TipoObjeto3D} from '../pecas/tres/Objetos3D';
 import {elevenLabsTranscriptToCaptions} from '@remotion/elevenlabs';
 import {CURVA_PADRAO, type Curva} from './curva';
 import {
@@ -84,7 +85,56 @@ export type Cena =
 	// Respiro em preto (ref. 2).
 	| (Base & {tipo: 'preto'})
 	// Itens com ✓ entrando na hora da fala, em cartões de vidro no terço de baixo (depoimentos, aprendizados).
-	| (Base & {tipo: 'checklist'; titulo?: string; itens: {texto: string; em: number}[]});
+	| (Base & {tipo: 'checklist'; titulo?: string; itens: {texto: string; em: number}[]})
+	// Cenário 3D cinematográfico (desmontagem-2): papel ou escuro, objetos 3D com sombra, palavra fantasma,
+	// tipografia revelada, luz de janela ou de folhas, faíscas e poeira.
+	| (Base & {
+			tipo: 'cenario';
+			superficie?: 'papel' | 'escuro';
+			luz?: 'janela' | 'folhas' | 'nenhuma';
+			objetos?: Objeto3DCena[];
+			// Travelling da câmera em unidades 3D (padrão: aproximação lenta). Ex.: {de: [0, 0, 8.3], ate: [0, 0, 7.5]}
+			camera?: {de?: [number, number, number]; ate?: [number, number, number]};
+			// Palavra gigante e clara atrás dos objetos.
+			fantasma?: string;
+			pequeno?: string;
+			grande?: string;
+			abaixo?: string;
+			estiloTexto?: 'editorial' | 'ouro' | 'neutro';
+			revelar?: 'letras' | 'embaralhado' | 'palavras';
+			emGrande?: number;
+			// Altura do bloco de texto, de 0 (topo) a 1 (base).
+			posTexto?: number;
+			// Lado do texto: ao lado de um objeto grande, como o lampião da ref. 3.
+			ladoTexto?: 'centro' | 'direita' | 'esquerda';
+			detalhes?: boolean;
+			// Banho de cor no fim da cena (ref. 1, laranja antes da troca).
+			tinta?: string;
+	  })
+	// Anel de luz fino em volta de um ponto (o rosto), que encolhe até o lugar (desmontagem-2, ref. 2).
+	// x e y de 0 a 1 na tela; raio em fração da largura.
+	| (Base & {tipo: 'anel'; x?: number; y?: number; raio?: number})
+	// Visor de câmera: cantos, "● REC" piscando (desmontagem-2, ref. 2).
+	| (Base & {tipo: 'rec'})
+	// Pílulas vermelhas de vidro com ícone, texto palavra por palavra (desmontagem-2, ref. 2, "what to say?").
+	| (Base & {tipo: 'alertas'; itens: {texto: string; em: number; icone?: 'alerta' | 'x'}[]});
+
+export type Objeto3DCena = {
+	tipo: TipoObjeto3D;
+	// Posição na tela: x de -1 (esquerda) a 1 (direita), y de -1 (base) a 1 (topo); z positivo vem para a câmera.
+	x: number;
+	y: number;
+	z?: number;
+	escala?: number;
+	giro?: [number, number, number];
+	// Giro contínuo em radianos por segundo.
+	girar?: number;
+	flutuar?: boolean;
+	entra?: 'cai' | 'desliza' | 'nenhum';
+	atraso?: number;
+	simbolo?: string;
+	cor?: string;
+};
 
 // Efeitos de câmera (ref. 1, 2 e 3).
 export type EfeitoCamera =
@@ -95,15 +145,24 @@ export type EfeitoCamera =
 	// Clarão de luz estourada, 3 a 4 quadros.
 	| {tipo: 'flash'; em: number}
 	// Chicote: borrão de movimento horizontal na troca de plano.
-	| {tipo: 'chicote'; em: number};
+	| {tipo: 'chicote'; em: number}
+	// Mergulho no texto: o quadro cresce e desfoca até o corte; o próximo entra desfocado e assenta (desmontagem-2).
+	| {tipo: 'mergulho'; em: number}
+	// Anel de luz desfocado que se abre do centro (desmontagem-2, ref. 1).
+	| {tipo: 'iris'; em: number}
+	// Vazamento de luz laranja, magenta e roxo com clarão, na troca de cena (desmontagem-2, ref. 1).
+	| {tipo: 'vazamento'; em: number; cores?: [string, string, string]}
+	// Listras verticais de glitch com estouro de luz, 3 a 4 quadros (desmontagem-2, ref. 2).
+	| {tipo: 'listras'; em: number};
 
-export type EstiloLegenda = 'palavra' | 'ouro' | 'impacto';
-export type EstiloEnfase = 'serif' | 'cor' | 'caixa' | 'circulo' | 'grande';
+export type EstiloLegenda = 'palavra' | 'ouro' | 'impacto' | 'neon';
+export type EstiloEnfase = 'serif' | 'cor' | 'caixa' | 'circulo' | 'grande' | 'riscar';
 
 export type Legenda = {
 	// palavra: branca e grossa, ênfase em serifa e vermelho (ref. 3)
 	// ouro: serifa branca com ênfase dourada (ref. 1)
 	// impacto: sans pequena com ênfase amarela gigante com glow (ref. 2)
+	// neon: sans pequena branca com a palavra-chave grande em verde-limão brilhante (desmontagem-2, ref. 2)
 	estilo: EstiloLegenda;
 	palavrasPorTela?: number;
 	// Altura do centro da legenda, de 0 (topo) a 1 (base).
@@ -192,6 +251,10 @@ const MODO_PADRAO: Record<TipoCena, Modo> = {
 	broll: 'cheia',
 	preto: 'cheia',
 	checklist: 'sobre',
+	cenario: 'cheia',
+	anel: 'sobre',
+	rec: 'sobre',
+	alertas: 'sobre',
 	kicker: 'sobre',
 	foto: 'sobre',
 	comentarios: 'sobre',
@@ -214,6 +277,10 @@ const SOM_PADRAO: Record<TipoCena, Som | null> = {
 	broll: 'whoosh',
 	preto: null,
 	checklist: null,
+	cenario: 'whoosh',
+	anel: 'shimmer',
+	rec: 'tick',
+	alertas: null,
 	kicker: 'whoosh',
 	foto: 'pop',
 	comentarios: 'swish',
@@ -374,6 +441,8 @@ const TEXTO_PROPRIO: TipoCena[] = [
 	'preto',
 	'logo3d',
 	'checklist',
+	'cenario',
+	'alertas',
 ];
 const normalizar = (s: string) =>
 	s

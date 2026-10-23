@@ -145,6 +145,11 @@ const useTransicoes = (efeitos: EfeitoCamera[]) => {
 	const {fps} = useVideoConfig();
 	let clarao = 0;
 	let chicote = 0;
+	let mergulhoEscala = 1;
+	let mergulhoBlur = 0;
+	let iris: {p: number; opacidade: number} | null = null;
+	let vazamento: {p: number; local: number; cores: [string, string, string]} | null = null;
+	let listras: {p: number; local: number} | null = null;
 	for (const e of efeitos) {
 		const local = frame - Math.round(e.em * fps);
 		if (e.tipo === 'flash') {
@@ -159,8 +164,80 @@ const useTransicoes = (efeitos: EfeitoCamera[]) => {
 				interpolate(local, [-3, 0, 3], [0, 1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
 			);
 		}
+		if (e.tipo === 'mergulho') {
+			// Antes do corte: cresce e desfoca. Depois: entra desfocado e um pouco maior, e assenta.
+			const antes = interpolate(local, [-10, 0], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+			const depois = interpolate(local, [0, 12], [1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+			if (local < 0 && antes > 0) {
+				mergulhoEscala = Math.max(mergulhoEscala, 1 + antes * antes * 1.6);
+				mergulhoBlur = Math.max(mergulhoBlur, antes * 22);
+			} else if (local >= 0 && depois > 0) {
+				mergulhoEscala = Math.max(mergulhoEscala, 1 + depois * 0.15);
+				mergulhoBlur = Math.max(mergulhoBlur, depois * 18);
+			}
+		}
+		if (e.tipo === 'iris') {
+			const p = interpolate(local, [0, 28], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+			if (local >= 0 && p < 1) iris = {p, opacidade: interpolate(p, [0, 0.15, 0.8, 1], [0, 0.85, 0.6, 0])};
+		}
+		if (e.tipo === 'vazamento') {
+			const p = interpolate(local, [-6, 0, 12], [0, 1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+			if (p > 0) vazamento = {p, local, cores: e.cores ?? ['#ffb36b', '#ff4f8b', '#8a5cff']};
+		}
+		if (e.tipo === 'listras') {
+			const p = interpolate(local, [-2, 0, 2, 4], [0, 1, 0.8, 0], {
+				extrapolateLeft: 'clamp',
+				extrapolateRight: 'clamp',
+			});
+			if (p > 0) listras = {p, local};
+		}
 	}
-	return {clarao, chicote};
+	return {clarao, chicote, mergulhoEscala, mergulhoBlur, iris, vazamento, listras};
+};
+
+// Sobreposições das transições da desmontagem-2.
+const Transicoes: React.FC<{t: ReturnType<typeof useTransicoes>}> = ({t}) => {
+	const {width, height} = useVideoConfig();
+	const lado = Math.max(width, height);
+	return (
+		<>
+			{t.iris && (
+				<AbsoluteFill style={{justifyContent: 'center', alignItems: 'center', mixBlendMode: 'screen'}}>
+					<div
+						style={{
+							width: lado * (0.08 + t.iris.p * 1.5),
+							height: lado * (0.08 + t.iris.p * 1.5),
+							borderRadius: '50%',
+							border: `${lado * 0.035}px solid rgba(235,235,235,${t.iris.opacidade})`,
+							filter: `blur(${lado * 0.012}px)`,
+							flex: 'none',
+						}}
+					/>
+				</AbsoluteFill>
+			)}
+			{t.vazamento && (
+				<AbsoluteFill
+					style={{
+						mixBlendMode: 'screen',
+						opacity: t.vazamento.p,
+						background: `linear-gradient(${150 + t.vazamento.local * 3}deg, ${t.vazamento.cores[0]} 0%, ${t.vazamento.cores[1]} 45%, ${t.vazamento.cores[2]} 100%)`,
+					}}
+				>
+					<AbsoluteFill style={{backgroundColor: '#fff8e8', opacity: Math.max(0, t.vazamento.p - 0.4) * 1.6}} />
+				</AbsoluteFill>
+			)}
+			{t.listras && (
+				<AbsoluteFill
+					style={{
+						opacity: t.listras.p,
+						background: `repeating-linear-gradient(90deg, rgba(255,255,255,0.95) 0 ${width * 0.006}px, rgba(0,0,0,0.85) ${width * 0.006}px ${width * 0.014}px)`,
+						backgroundPositionX: t.listras.local * width * 0.01,
+						mixBlendMode: t.listras.local < 1 ? 'overlay' : 'normal',
+					}}
+				/>
+			)}
+		</>
+	);
 };
 
 // Punch de 6%, tremor e clarão na entrada das cenas com impacto (só antes de t2).
@@ -192,6 +269,9 @@ const Sons: React.FC<{cenas: CenaNoPlano[]}> = ({cenas}) => {
 		if (c.impactoAtivo) eventos.push({quadro: Math.round(c.de * fps), som: 'boom', ganho: 0.8});
 		if (c.tipo === 'lista') {
 			for (const item of c.itens) eventos.push({quadro: Math.round(item.em * fps), som: 'tick'});
+		}
+		if (c.tipo === 'alertas') {
+			for (const item of c.itens) eventos.push({quadro: Math.round(item.em * fps), som: 'pop', ganho: 0.7});
 		}
 		if (c.tipo === 'checklist') {
 			for (const item of c.itens) eventos.push({quadro: Math.round(item.em * fps), som: 'pop', ganho: 0.8});
@@ -287,8 +367,14 @@ export const VideoEditado: React.FC<PropsVideo> = ({projeto, duracaoFonte}) => {
 			</svg>
 			<AbsoluteFill
 				style={{
-					transform: `translate(${dx + trans.chicote * 60}px, ${dy}px) scale(${escala})`,
-					filter: trans.chicote > 0.02 ? 'url(#chicote)' : undefined,
+					transform: `translate(${dx + trans.chicote * 60}px, ${dy}px) scale(${escala * trans.mergulhoEscala})`,
+					filter:
+						[
+							trans.chicote > 0.02 ? 'url(#chicote)' : '',
+							trans.mergulhoBlur > 0.2 ? `blur(${trans.mergulhoBlur}px)` : '',
+						]
+							.filter(Boolean)
+							.join(' ') || undefined,
 				}}
 			>
 				{camada(telas)}
@@ -298,6 +384,7 @@ export const VideoEditado: React.FC<PropsVideo> = ({projeto, duracaoFonte}) => {
 				{edit.legenda && <Legenda paginas={montagem.legenda} cfg={edit.legenda} />}
 			</AbsoluteFill>
 			{clarao > 0 && <AbsoluteFill style={{backgroundColor: '#fff', opacity: clarao}} />}
+			<Transicoes t={trans} />
 			{trans.clarao > 0 && (
 				<AbsoluteFill style={{backgroundColor: '#fff6de', opacity: trans.clarao, mixBlendMode: 'screen'}} />
 			)}

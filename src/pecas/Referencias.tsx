@@ -413,3 +413,186 @@ export const Checklist: React.FC<{cena: De<'checklist'>}> = ({cena}) => {
 		</AbsoluteFill>
 	);
 };
+
+// Anel de luz fino em volta do rosto: entra grande e encolhe até o lugar (desmontagem-2, ref. 2).
+export const Anel: React.FC<{cena: De<'anel'>}> = ({cena}) => {
+	const frame = useCurrentFrame();
+	const {fps, width, height} = useVideoConfig();
+	const p = spring({frame, fps, config: {damping: 16, stiffness: 110}});
+	const r = width * (cena.raio ?? 0.3) * (1.35 - 0.35 * p);
+	return (
+		<AbsoluteFill>
+			<div
+				style={{
+					position: 'absolute',
+					left: (cena.x ?? 0.5) * width - r,
+					top: (cena.y ?? 0.3) * height - r,
+					width: r * 2,
+					height: r * 2,
+					borderRadius: '50%',
+					border: `${width * 0.004}px solid rgba(255,248,230,0.95)`,
+					boxShadow: '0 0 14px rgba(255,236,190,0.8), inset 0 0 14px rgba(255,236,190,0.5)',
+					opacity: Math.min(1, p * 1.5),
+				}}
+			/>
+		</AbsoluteFill>
+	);
+};
+
+// Visor de câmera com cantos e "● REC" (desmontagem-2, ref. 2).
+export const Rec: React.FC = () => {
+	const frame = useCurrentFrame();
+	const {fps, width, height} = useVideoConfig();
+	const p = interpolate(frame, [0, 6], [0, 1], {extrapolateRight: 'clamp'});
+	const m = width * 0.05;
+	const l = width * 0.07;
+	const t = width * 0.004;
+	const canto = (estilo: React.CSSProperties) => (
+		<div
+			style={{
+				position: 'absolute',
+				width: l,
+				height: l,
+				borderColor: 'rgba(255,255,255,0.9)',
+				borderStyle: 'solid',
+				borderWidth: 0,
+				...estilo,
+			}}
+		/>
+	);
+	const pisca = Math.floor(frame / (fps * 0.5)) % 2 === 0;
+	return (
+		<AbsoluteFill style={{opacity: p}}>
+			{canto({left: m, top: m * 2, borderLeftWidth: t, borderTopWidth: t})}
+			{canto({right: m, top: m * 2, borderRightWidth: t, borderTopWidth: t})}
+			{canto({left: m, bottom: m * 2, borderLeftWidth: t, borderBottomWidth: t})}
+			{canto({right: m, bottom: m * 2, borderRightWidth: t, borderBottomWidth: t})}
+			<div
+				style={{
+					position: 'absolute',
+					left: m * 1.6,
+					top: m * 2.5,
+					display: 'flex',
+					alignItems: 'center',
+					gap: width * 0.012,
+					fontFamily: inter,
+					fontWeight: 700,
+					fontSize: width * 0.028,
+					color: '#fff',
+					letterSpacing: 1,
+				}}
+			>
+				<div
+					style={{
+						width: width * 0.018,
+						height: width * 0.018,
+						borderRadius: '50%',
+						background: '#ff2d2d',
+						opacity: pisca ? 1 : 0.25,
+					}}
+				/>
+				REC
+			</div>
+			<div
+				style={{
+					position: 'absolute',
+					right: m * 1.6,
+					bottom: m * 2.5,
+					color: '#fff',
+					fontFamily: inter,
+					fontSize: width * 0.03,
+					opacity: 0.8,
+				}}
+			>
+				+
+			</div>
+			<div
+				style={{
+					position: 'absolute',
+					inset: 0,
+					background: `radial-gradient(ellipse at 50% 50%, transparent 60%, rgba(0,0,0,0.35) ${height > width ? 100 : 90}%)`,
+				}}
+			/>
+		</AbsoluteFill>
+	);
+};
+
+// Pílula vermelha de vidro com ícone; o texto entra palavra por palavra.
+const Pilula: React.FC<{texto: string; em: number; inicio: number; icone: 'alerta' | 'x'; largura: number}> = ({
+	texto,
+	em,
+	inicio,
+	icone,
+	largura,
+}) => {
+	const frame = useCurrentFrame();
+	const {fps} = useVideoConfig();
+	const p = useEntradaEm(em, inicio);
+	const local = frame - Math.round((em - inicio) * fps);
+	const palavras = texto.split(' ');
+	return (
+		<div
+			style={{
+				width: largura,
+				display: 'flex',
+				alignItems: 'center',
+				gap: largura * 0.04,
+				padding: `${largura * 0.028}px ${largura * 0.05}px`,
+				marginTop: largura * 0.03,
+				borderRadius: largura * 0.03,
+				background: 'linear-gradient(90deg, rgba(120,10,25,0.85) 0%, rgba(70,6,16,0.75) 100%)',
+				border: '1px solid rgba(255,90,110,0.35)',
+				boxShadow: '0 10px 30px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.12)',
+				backdropFilter: 'blur(10px)',
+				opacity: p,
+				transform: `translateY(${(1 - p) * 30}px) scale(${0.94 + 0.06 * p})`,
+			}}
+		>
+			<svg viewBox="0 0 24 24" width={largura * 0.06} height={largura * 0.06} style={{flex: 'none'}}>
+				{icone === 'alerta' ? (
+					<>
+						<path d="M12 3L22 20H2Z" fill="#ff4d5e" />
+						<rect x="11" y="9" width="2" height="6" fill="#fff" />
+						<rect x="11" y="16.5" width="2" height="2" fill="#fff" />
+					</>
+				) : (
+					<path d="M5 5L19 19M19 5L5 19" stroke="#f4f4f4" strokeWidth={3.4} strokeLinecap="round" />
+				)}
+			</svg>
+			<div style={{fontFamily: inter, fontWeight: 600, fontSize: largura * 0.05, color: '#fff'}}>
+				{palavras.map((w, i) => (
+					<span
+						key={i}
+						style={{
+							opacity: interpolate(local - 3 - i * 4, [0, 4], [0, 1], {
+								extrapolateLeft: 'clamp',
+								extrapolateRight: 'clamp',
+							}),
+						}}
+					>
+						{w}{' '}
+					</span>
+				))}
+			</div>
+		</div>
+	);
+};
+
+export const Alertas: React.FC<{cena: De<'alertas'>}> = ({cena}) => {
+	const {width, height} = useVideoConfig();
+	const largura = Math.min(width * 0.72, 760);
+	return (
+		<AbsoluteFill style={{justifyContent: 'center', alignItems: 'center', paddingTop: height * 0.18}}>
+			{cena.itens.map((item, i) => (
+				<Pilula
+					key={i}
+					texto={item.texto}
+					em={item.em}
+					inicio={cena.de}
+					icone={item.icone ?? (i === 0 ? 'alerta' : 'x')}
+					largura={largura}
+				/>
+			))}
+		</AbsoluteFill>
+	);
+};

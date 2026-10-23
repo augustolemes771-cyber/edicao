@@ -9,7 +9,21 @@ import {Grade} from './Grade';
 import {Logo3D} from './Logo3D';
 import {Passo} from './Passo';
 import {Titulo} from './Titulo';
-import {Broll, Cartao, Checklist, Comentarios, Foto, Icone, Kicker, Letras, Preto} from './Referencias';
+import {Cenario} from './Cenario';
+import {
+	Alertas,
+	Anel,
+	Broll,
+	Cartao,
+	Checklist,
+	Comentarios,
+	Foto,
+	Icone,
+	Kicker,
+	Letras,
+	Preto,
+	Rec,
+} from './Referencias';
 
 type Props = {cena: CenaNoPlano; pasta: string};
 
@@ -276,6 +290,14 @@ const Conteudo: React.FC<Props> = ({cena, pasta}) => {
 			return <Preto />;
 		case 'checklist':
 			return <Checklist cena={cena} />;
+		case 'cenario':
+			return <Cenario cena={cena} />;
+		case 'anel':
+			return <Anel cena={cena} />;
+		case 'rec':
+			return <Rec />;
+		case 'alertas':
+			return <Alertas cena={cena} />;
 		case 'despedida': {
 			const p = spring({frame, fps, config: {damping: 18}});
 			const m = margemCena;
@@ -403,7 +425,7 @@ const Painel: React.FC<{titulo: string; itens?: string[]; lado: 'esquerda' | 'di
 export const CenaVisual: React.FC<Props> = ({cena, pasta}) => {
 	const {saida} = useCiclo(cena);
 	// Peças com fundo próprio não recebem a grade do canal.
-	const fundoProprio = ['tela', 'cartao', 'letras', 'icone', 'broll', 'preto'].includes(cena.tipo);
+	const fundoProprio = ['tela', 'cartao', 'letras', 'icone', 'broll', 'preto', 'cenario'].includes(cena.tipo);
 	const cheia = cena.modo === 'cheia' && !fundoProprio;
 	return (
 		<AbsoluteFill

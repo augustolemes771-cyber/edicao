@@ -72,6 +72,21 @@ estão em `docs/referencias/desmontagem.md`.
   `flash` ou `chicote` só nas trocas de assunto, uma cartela (`cartao`, `letras`, `kicker`) por ideia-chave.
 - A legenda some sozinha durante as cenas com texto próprio.
 
+## Cenários 3D e estilo neon (23/10/2026)
+
+- Catálogo em `docs/referencias/desmontagem-2.md`; modelos em `cenarios-exemplo` e `neon-exemplo`.
+- `cenario` monta tipografia cinematográfica sem filmagem: `superficie` papel ou escuro, `fantasma` atrás,
+  `objetos` 3D (`rei`, `moeda`, `notas`, `relogio`, `lampiao`) com sombra real, `luz` janela ou folhas,
+  `pequeno`/`grande`/`abaixo` com `estiloTexto` editorial, ouro ou neutro. Objeto grande ao lado do texto pede
+  `ladoTexto`.
+- Posição dos objetos em tela: x de -1 a 1 e y de -1 a 1. Conferir em still que nenhum objeto cobre o texto
+  depois da entrada.
+- Transições entre cenários: `vazamento`, `iris`, `mergulho`, `listras`, `flash`, `chicote`, `foco`.
+- O 3D precisa de WebGL (`Config.setChromiumOpenGlRenderer('angle')` já está no `remotion.config.ts`). Na nuvem,
+  sem placa de vídeo, 16 s de cenário levaram 9,5 min em 720p: renderizar stills para revisar e só depois o vídeo.
+- Fala para a câmera no estilo da ref. 2: `legenda: {estilo: 'neon'}` com `grande` nas palavras-chave e `riscar`
+  na palavra negada, mais `anel`, `rec` e `alertas`.
+
 ## Depoimentos e cortes de conteúdo (22/10/2026)
 
 - Estrutura que prende até o fim: gancho com o resultado → dor (antes) → virada (quem ajudou) → transformação →
