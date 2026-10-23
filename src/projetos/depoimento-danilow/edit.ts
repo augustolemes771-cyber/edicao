@@ -152,7 +152,7 @@ export const depoimentoDanilow: Edit = {
 			ate: b.say('como escolher').inicio,
 			pequeno: 'como funciona o',
 			grande: 'algoritmo',
-			emGrande: b.at('algoritmo') - b.say('como funciona o algoritmo').inicio,
+			emGrande: 0.15,
 		},
 		{
 			tipo: 'cenario',

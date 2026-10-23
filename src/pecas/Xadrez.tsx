@@ -25,8 +25,9 @@ const Grao: React.FC = () => (
 // Texto com a fala: a frase pequena entra no começo, a palavra grande quando ela é dita.
 const Texto: React.FC<{cena: Cena; f: number}> = ({cena, f}) => {
 	const {fps, width, height} = useVideoConfig();
-	const emGrande = Math.round((cena.emGrande ?? 0.6) * fps);
-	const pq = spring({frame: f - 2, fps, config: {damping: 200}, durationInFrames: 14});
+	// O texto se monta inteiro logo no começo da frase (pedido do usuário): não espera cada palavra ser dita.
+	const emGrande = Math.round((cena.emGrande ?? 0.15) * fps);
+	const pq = spring({frame: f, fps, config: {damping: 200}, durationInFrames: 8});
 	const tam = Math.min(width * 0.24, (width * 0.86) / (cena.grande.length * 0.52));
 	return (
 		<>
@@ -61,7 +62,7 @@ const Texto: React.FC<{cena: Cena; f: number}> = ({cena, f}) => {
 				)}
 				<div style={{fontFamily: gloock, fontSize: tam, lineHeight: 1, whiteSpace: 'nowrap', marginTop: width * 0.01}}>
 					{[...cena.grande].map((ch, i) => {
-						const e = spring({frame: f - emGrande - i * 1.1, fps, config: {damping: 200}, durationInFrames: 14});
+						const e = spring({frame: f - emGrande - i * 0.7, fps, config: {damping: 200}, durationInFrames: 10});
 						return (
 							<span
 								key={i}
@@ -76,7 +77,8 @@ const Texto: React.FC<{cena: Cena; f: number}> = ({cena, f}) => {
 									backgroundClip: 'text',
 									color: 'transparent',
 									filter: `blur(${(1 - e) * 10}px) drop-shadow(0 0 ${tam * 0.1}px rgba(255,50,30,0.45))`,
-									padding: '0 0.02em',
+									// Folga embaixo: o recorte do degradê no texto cortava a perna do g.
+									padding: '0 0.02em 0.18em',
 								}}
 							>
 								{ch === ' ' ? ' ' : ch}
