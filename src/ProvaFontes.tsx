@@ -3,7 +3,14 @@ import {AbsoluteFill, Img, staticFile} from 'remotion';
 import {barlowCond, fraunces, gloock, spaceMono, unbounded} from './motor/tema';
 
 // Prova estática de combinações de fontes (uma por imagem) sobre um quadro do vídeo, para aprovação.
-export type PropsProvaFontes = {opcao: 1 | 2 | 3; quadro?: string; pessoa?: string; destaque?: boolean};
+export type PropsProvaFontes = {
+	opcao: 1 | 2 | 3;
+	quadro?: string;
+	pessoa?: string;
+	destaque?: boolean;
+	pequeno?: string;
+	grande?: string;
+};
 
 // Destaque do texto pela luz: a faixa do texto fica desfocada e escura (profundidade de campo), com um halo
 // dourado de luz atrás das letras; o resto do quadro perde um pouco de exposição.
@@ -92,10 +99,14 @@ const Bloco: React.FC<{top: number; children: React.ReactNode}> = ({top, childre
 	</div>
 );
 
-const Opcao1: React.FC<{soTopo?: boolean}> = ({soTopo}) => (
+const Opcao1: React.FC<{soTopo?: boolean; pequeno?: string; grande?: string}> = ({
+	soTopo,
+	pequeno = 'a melhor',
+	grande = 'decisão',
+}) => (
 	<>
 		<Bloco top={soTopo ? 20 : 110}>
-			<div style={fino(unbounded, 46, 0.35)}>a melhor</div>
+			<div style={fino(unbounded, 46, 0.35)}>{pequeno}</div>
 			<div
 				style={{
 					fontFamily: gloock,
@@ -105,7 +116,7 @@ const Opcao1: React.FC<{soTopo?: boolean}> = ({soTopo}) => (
 					...ouro(250),
 				}}
 			>
-				decisão
+				{grande}
 			</div>
 			{!soTopo && <div style={{...micro, marginTop: 14}}>— DEPOIMENTO · MENTORIA DANILOW —</div>}
 		</Bloco>
@@ -205,7 +216,7 @@ const Opcao3 = () => (
 	</>
 );
 
-export const ProvaFontes: React.FC<PropsProvaFontes> = ({opcao, quadro, pessoa, destaque}) => (
+export const ProvaFontes: React.FC<PropsProvaFontes> = ({opcao, quadro, pessoa, destaque, pequeno, grande}) => (
 	<AbsoluteFill style={{backgroundColor: '#0d0d0f'}}>
 		{quadro && (
 			<Img
@@ -225,7 +236,13 @@ export const ProvaFontes: React.FC<PropsProvaFontes> = ({opcao, quadro, pessoa, 
 			}}
 		/>
 		{destaque && <Faixa y={pessoa ? 200 : 330} altura={600} />}
-		{opcao === 1 ? <Opcao1 soTopo={!!pessoa} /> : opcao === 2 ? <Opcao2 /> : <Opcao3 />}
+		{opcao === 1 ? (
+			<Opcao1 soTopo={!!pessoa} pequeno={pequeno} grande={grande} />
+		) : opcao === 2 ? (
+			<Opcao2 />
+		) : (
+			<Opcao3 />
+		)}
 		{pessoa && (
 			<Img src={staticFile(pessoa)} style={{position: 'absolute', width: '100%', height: '100%', objectFit: 'cover'}} />
 		)}
