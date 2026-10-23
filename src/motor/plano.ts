@@ -148,7 +148,16 @@ export type Cena =
 	| (Base & {tipo: 'topicos'; titulo?: string; itens: {texto: string; em: number}[]})
 	// Xadrez 3D em impacto: a rainha vermelha desce e derruba os peões; texto atrás dela com a fala.
 	// emGrande: segundos depois do início da cena em que a palavra grande aparece.
-	| (Base & {tipo: 'xadrez'; pequeno?: string; grande: string; emGrande?: number})
+	| (Base & {
+			tipo: 'xadrez';
+			// Pasta com os quadros q_0001.png... da render do Blender (scripts/blender/xadrez.py).
+			pasta: string;
+			quadros?: number;
+			pequeno?: string;
+			grande: string;
+			emGrande?: number;
+			yTexto?: number;
+	  })
 	// Vitrine de produto: foto de estúdio real (fundo preto) com palavra-chave em Gloock dourada e microtextos.
 	// alturaFoto e yFoto em fração da altura; yTexto é o topo do bloco de texto (0 a 1).
 	| (Base & {
