@@ -25,6 +25,7 @@ import {
 	Preto,
 	Rec,
 	Retrato,
+	Topicos,
 } from './Referencias';
 
 type Props = {cena: CenaNoPlano; pasta: string};
@@ -304,6 +305,8 @@ const Conteudo: React.FC<Props> = ({cena, pasta}) => {
 			return <Gigante cena={cena} />;
 		case 'retrato':
 			return <Retrato cena={cena} pasta={pasta} />;
+		case 'topicos':
+			return <Topicos cena={cena} />;
 		case 'despedida': {
 			const p = spring({frame, fps, config: {damping: 18}});
 			const m = margemCena;

@@ -108,8 +108,9 @@ const useLente = (efeitos: EfeitoCamera[], fotos: CenaNoPlano[], t: number) => {
 			extrapolateLeft: 'clamp',
 			extrapolateRight: 'clamp',
 		});
-		desfoque = Math.max(desfoque, 12 * k);
-		escurece = Math.max(escurece, 0.45 * k);
+		const forte = c.tipo === 'topicos';
+		desfoque = Math.max(desfoque, (forte ? 26 : 12) * k);
+		escurece = Math.max(escurece, (forte ? 0.55 : 0.45) * k);
 	}
 	return {escala, x, y, desfoque, escurece};
 };
@@ -125,7 +126,9 @@ const Camera: React.FC<{edit: Edit; montagem: Montagem; telas: CenaNoPlano[]; at
 	const t = frame / fps;
 	const lente = useLente(
 		montagem.camera,
-		montagem.cenas.filter((c) => c.tipo === 'foto' || (c.tipo === 'retrato' && c.variante !== 'lado')),
+		montagem.cenas.filter(
+			(c) => c.tipo === 'foto' || c.tipo === 'topicos' || (c.tipo === 'retrato' && c.variante !== 'lado'),
+		),
 		t,
 	);
 	let balao = 0;

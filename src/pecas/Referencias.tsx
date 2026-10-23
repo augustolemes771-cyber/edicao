@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, Img, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
+import {AbsoluteFill, Img, interpolate, random, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {Video} from '@remotion/media';
 import {useEntradaEm} from '../motor/anim';
 import type {CenaNoPlano, EstiloNome} from '../motor/plano';
@@ -1006,5 +1006,170 @@ export const NomeEstilizado: React.FC<{texto: string; estilo: EstiloNome; tamanh
 			{estilo === 'serif' && <div style={{marginTop: tamanho * 0.06, width: '70%'}}>{linhaDourada}</div>}
 			{estilo === 'editorial' && <div style={{marginTop: tamanho * 0.14, width: tamanho * 3}}>{linhaDourada}</div>}
 		</div>
+	);
+};
+
+// Tópicos cinematográficos sobre o vídeo desfocado (o desfoque e o escurecimento vêm da câmera, em VideoEditado).
+// Camadas: cor quente, feixes de luz na diagonal, bokeh dourado, grão, vinheta; texto sem caixa.
+const OURO = 'linear-gradient(180deg, #fffbe0 0%, #ffe07a 35%, #ffc83a 70%, #f4ad22 100%)';
+
+export const Topicos: React.FC<{cena: De<'topicos'>}> = ({cena}) => {
+	const frame = useCurrentFrame();
+	const {fps, width, height} = useVideoConfig();
+	const duracao = (cena.ate - cena.de) * fps;
+	const entra = interpolate(frame, [0, 10], [0, 1], {extrapolateRight: 'clamp'});
+	const sai = interpolate(frame, [duracao - 8, duracao], [1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+	const tam = width * 0.085;
+	const margemX = width * 0.09;
+	const bokeh = Array.from({length: 22}, (_, i) => ({
+		x: random(`bx${i}`) * width,
+		y: random(`by${i}`) * height,
+		r: width * (0.015 + random(`br${i}`) * 0.05),
+		o: 0.12 + random(`bo${i}`) * 0.3,
+		v: 0.2 + random(`bv${i}`) * 0.5,
+	}));
+	return (
+		<AbsoluteFill style={{opacity: entra * sai}}>
+			{/* Cor quente sobre o vídeo desfocado. */}
+			<AbsoluteFill
+				style={{
+					background: 'linear-gradient(160deg, rgba(120,70,10,0.35) 0%, rgba(20,10,0,0.2) 55%, rgba(0,0,0,0.5) 100%)',
+					mixBlendMode: 'multiply',
+				}}
+			/>
+			{/* Feixes de luz entrando na diagonal. */}
+			<AbsoluteFill style={{mixBlendMode: 'screen', overflow: 'hidden'}}>
+				{[0, 1, 2].map((i) => (
+					<div
+						key={i}
+						style={{
+							position: 'absolute',
+							left: width * (-0.2 + i * 0.22) + Math.sin((frame + i * 40) / 50) * 20,
+							top: -height * 0.2,
+							width: width * (0.12 + i * 0.05),
+							height: height * 1.4,
+							background:
+								'linear-gradient(180deg, rgba(255,220,150,0.6) 0%, rgba(255,205,130,0.22) 55%, transparent 85%)',
+							transform: 'rotate(-24deg)',
+							filter: `blur(${width * 0.03}px)`,
+						}}
+					/>
+				))}
+			</AbsoluteFill>
+			{/* Bokeh dourado subindo devagar. */}
+			<AbsoluteFill style={{mixBlendMode: 'screen'}}>
+				{bokeh.map((b, i) => (
+					<div
+						key={i}
+						style={{
+							position: 'absolute',
+							left: b.x - b.r,
+							top: ((((b.y - frame * b.v) % height) + height) % height) - b.r,
+							width: b.r * 2,
+							height: b.r * 2,
+							borderRadius: '50%',
+							background:
+								'radial-gradient(circle, rgba(255,215,140,0.9) 0%, rgba(255,190,90,0.35) 55%, transparent 72%)',
+							opacity: b.o,
+							filter: `blur(${b.r * 0.25}px)`,
+						}}
+					/>
+				))}
+			</AbsoluteFill>
+			{/* Vinheta. */}
+			<AbsoluteFill
+				style={{background: 'radial-gradient(ellipse at 50% 45%, transparent 45%, rgba(0,0,0,0.6) 100%)'}}
+			/>
+			{/* Texto. */}
+			<AbsoluteFill style={{justifyContent: 'center', paddingLeft: margemX, paddingRight: margemX}}>
+				{cena.titulo && (
+					<div
+						style={{
+							fontFamily: poppins,
+							fontWeight: 700,
+							fontSize: tam * 0.42,
+							letterSpacing: tam * 0.12,
+							textTransform: 'uppercase',
+							color: 'rgba(255,240,210,0.85)',
+							marginBottom: tam * 0.35,
+							textShadow: '0 2px 14px rgba(0,0,0,0.6)',
+						}}
+					>
+						{cena.titulo}
+					</div>
+				)}
+				{cena.itens.map((item, i) => {
+					const local = frame - Math.round((item.em - cena.de) * fps);
+					const p = spring({frame: local, fps, config: {damping: 18, stiffness: 200, mass: 0.6}});
+					const linha = interpolate(local, [4, 16], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+					const partes = item.texto.split(/(\*[^*]+\*)/).filter(Boolean);
+					return (
+						<div
+							key={i}
+							style={{
+								marginBottom: tam * 0.32,
+								opacity: p,
+								transform: `translateY(${(1 - p) * tam * 0.5}px)`,
+								filter: p < 0.98 ? `blur(${(1 - p) * 10}px)` : undefined,
+							}}
+						>
+							<div style={{display: 'flex', alignItems: 'baseline', gap: tam * 0.3}}>
+								<span
+									style={{
+										fontFamily: poppins,
+										fontWeight: 800,
+										fontSize: tam * 0.38,
+										background: OURO,
+										WebkitBackgroundClip: 'text',
+										backgroundClip: 'text',
+										color: 'transparent',
+										minWidth: tam * 0.62,
+									}}
+								>
+									{String(i + 1).padStart(2, '0')}
+								</span>
+								<span
+									style={{
+										fontFamily: poppins,
+										fontWeight: 800,
+										fontSize: tam,
+										lineHeight: 1.05,
+										letterSpacing: -tam * 0.03,
+										color: '#fff',
+										textShadow: '0 4px 24px rgba(0,0,0,0.55)',
+									}}
+								>
+									{partes.map((pt, j) =>
+										pt.startsWith('*') ? (
+											<span
+												key={j}
+												style={{
+													color: '#ffd54a',
+													textShadow:
+														'0 0 6px rgba(255,214,90,0.85), 0 0 22px rgba(255,186,40,0.55), 0 0 48px rgba(255,170,30,0.3)',
+												}}
+											>
+												{pt.slice(1, -1)}
+											</span>
+										) : (
+											<span key={j}>{pt}</span>
+										),
+									)}
+								</span>
+							</div>
+							<div
+								style={{
+									marginTop: tam * 0.22,
+									marginLeft: tam * 0.92,
+									height: Math.max(2, tam * 0.025),
+									width: `${linha * 70}%`,
+									background: 'linear-gradient(90deg, rgba(255,201,60,0.9), rgba(255,201,60,0))',
+								}}
+							/>
+						</div>
+					);
+				})}
+			</AbsoluteFill>
+		</AbsoluteFill>
 	);
 };

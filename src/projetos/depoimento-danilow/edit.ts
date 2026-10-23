@@ -182,24 +182,17 @@ export const depoimentoDanilow: Edit = {
 			objetos: [{tipo: 'celular', x: 0, y: -0.38, escala: 1.15, giro: [-0.05, -0.32, 0.04], entra: 'nenhum'}],
 		},
 		// Resultado: "SEM MEDO" atrás dela.
-		// Resultado em cenário 3D: título dourado e os tópicos entrando na hora da fala (pedido de 23/10/2026).
+		// Resultado: tópicos cinematográficos sobre o vídeo dela desfocado (refeito em 23/10/2026).
 		{
-			tipo: 'cenario',
+			tipo: 'topicos',
 			de: b.at('medo'),
 			ate: b.at('surreal'),
-			superficie: 'escuro',
-			luz: 'nenhuma',
-			titulo: 'Hoje',
-			topicos: [
-				{texto: 'Não tem mais medo', em: b.at('medo')},
-				{texto: 'Sabe como testar', em: b.say('sabe como').inicio},
-				{texto: 'Sabe que vai dar certo', em: b.say('sabe que').inicio},
-				{texto: 'Acompanhamento diário', em: b.at('acompanhamento')},
-			],
-			objetos: [
-				{tipo: 'moeda', x: 0.78, y: 0.12, z: -0.6, escala: 0.6, girar: 0.7, simbolo: 'R$', entra: 'nenhum'},
-				{tipo: 'moeda', x: -0.76, y: -0.82, z: -0.3, escala: 0.8, girar: -0.6, simbolo: 'R$', entra: 'nenhum'},
-				{tipo: 'notas', x: 0.62, y: -0.84, z: -0.9, escala: 0.6, giro: [0.3, 0.6, 0.4], entra: 'nenhum'},
+			titulo: 'Hoje a gente',
+			itens: [
+				{texto: 'Não tem mais *medo*', em: b.at('medo')},
+				{texto: 'Sabe como *testar*', em: b.say('sabe como').inicio},
+				{texto: 'Sabe que vai dar *certo*', em: b.say('sabe que').inicio},
+				{texto: '*Acompanhamento* diário', em: b.at('acompanhamento')},
 			],
 		},
 		// Suporte: "SURREAL" neon atrás dela.
