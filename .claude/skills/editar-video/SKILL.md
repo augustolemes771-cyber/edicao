@@ -81,6 +81,12 @@ estão em `docs/referencias/desmontagem.md`.
 - Palavra gigante: no máximo duas linhas, `y` ~0,15 para a primeira linha sair por cima da cabeça e a segunda
   passar atrás do cabelo. Plano aberto (zoom 1) enquanto ela estiver na tela; com zoom fechado a cabeça cobre
   a palavra.
+- Troca de fundo (`cenario` com `modo: 'atras'`) em vídeo caseiro com o recorte do MediaPipe ficou artificial
+  (borda escura no cabelo, borrão na mão em movimento, objetos soltos). O usuário reprovou em 23/10/2026: não usar.
+  Texto atrás da pessoa funciona; fundo trocado, não.
+- Cor de destaque sobre a roupa: dourado e amarelo somem na blusa vermelha; usar `serif` branca.
+- Frase gigante de duas palavras numa linha só, acima da cabeça (`tamanho` ~0,15, `y` ~0,09), quando a segunda
+  linha ficaria inteira atrás dela.
 - Texto dos cenários monta inteiro em ~0,3 s no começo da cena. Não sincronizar letra por letra com a fala
   (pedido do usuário em 23/10/2026: ficava atrasado).
 

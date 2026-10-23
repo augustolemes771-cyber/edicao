@@ -37,8 +37,8 @@ export const depoimentoDanilow: Edit = {
 			{palavra: 'certo', estilo: 'circulo', cor: '#22c55e'},
 			{palavra: 'surreal', estilo: 'cor', cor: '#ffd21f'},
 			{palavra: 'diário', estilo: 'serif'},
-			{palavra: 'Danilow', estilo: 'cor', cor: '#ffd21f', ocorrencia: 3},
-			{palavra: 'transformou', estilo: 'cor', cor: '#ffd21f'},
+			{palavra: 'Danilow', estilo: 'serif', ocorrencia: 3},
+			{palavra: 'transformou', estilo: 'serif'},
 			{palavra: 'nível', estilo: 'grande', cor: '#ffd21f'},
 		],
 	},
@@ -170,26 +170,13 @@ export const depoimentoDanilow: Edit = {
 		{tipo: 'gigante', texto: 'SEM\nMEDO', y: 0.155, de: b.at('medo'), ate: b.say('a gente sabe que').inicio},
 		// Suporte: "SURREAL" neon atrás dela.
 		{tipo: 'gigante', texto: 'SURREAL', estilo: 'neon', y: 0.1, de: b.at('surreal'), ate: b.emendas[4]},
-		// Ato final: o fundo do quarto vira um cenário 3D escuro com moedas; ela fica na frente.
-		{
-			tipo: 'cenario',
-			modo: 'atras',
-			de: b.emendas[5],
-			ate: b.say('próximo nível').fim + 0.3,
-			superficie: 'escuro',
-			luz: 'nenhuma',
-			detalhes: true,
-			objetos: [
-				{tipo: 'moeda', x: 0.78, y: 0.05, z: -0.6, escala: 0.8, girar: 0.6, simbolo: 'R$', entra: 'nenhum'},
-				{tipo: 'moeda', x: -0.8, y: -0.05, z: -0.9, escala: 0.6, girar: -0.5, simbolo: 'R$', entra: 'nenhum'},
-				{tipo: 'notas', x: 0.7, y: -0.35, z: -1, escala: 0.6, giro: [0.3, 0.6, 0.4], entra: 'nenhum'},
-			],
-		},
+		// Ato final no quarto real dela: só "PRÓXIMO NÍVEL" atrás (a troca de fundo ficou artificial, 23/10).
 		{
 			tipo: 'gigante',
-			texto: 'PRÓXIMO\nNÍVEL',
+			texto: 'PRÓXIMO NÍVEL',
 			estilo: 'ouro',
-			y: 0.155,
+			tamanho: 0.15,
+			y: 0.09,
 			de: b.say('próximo nível').inicio,
 			ate: b.say('próximo nível').fim + 0.3,
 		},

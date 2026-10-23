@@ -664,7 +664,7 @@ export const Gigante: React.FC<{cena: De<'gigante'>}> = ({cena}) => {
 										...cores[estilo],
 									}}
 								>
-									{ch}
+									{ch === ' ' ? '\u00a0' : ch}
 								</span>
 							);
 						})}
