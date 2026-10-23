@@ -12,10 +12,11 @@ export type PropsProvaFontes = {
 	grande?: string;
 };
 
-// Destaque do texto pela luz: a faixa do texto fica desfocada e escura (profundidade de campo), com um halo
-// dourado de luz atrás das letras; o resto do quadro perde um pouco de exposição.
+// Destaque do texto pela luz: a parte de cima do quadro escurece e desfoca num degradê longo, sem borda
+// visível (profundidade de campo), com um brilho dourado difuso atrás das letras.
 const Faixa: React.FC<{y: number; altura: number}> = ({y, altura}) => {
-	const mascara = `linear-gradient(180deg, transparent 0%, #000 22%, #000 78%, transparent 100%)`;
+	const fim = y + altura * 0.8;
+	const mascara = 'linear-gradient(180deg, #000 0%, #000 30%, rgba(0,0,0,0.5) 60%, transparent 100%)';
 	return (
 		<>
 			<div
@@ -23,9 +24,9 @@ const Faixa: React.FC<{y: number; altura: number}> = ({y, altura}) => {
 					position: 'absolute',
 					left: 0,
 					right: 0,
-					top: y - altura / 2,
-					height: altura,
-					backdropFilter: 'blur(18px) brightness(0.45) saturate(0.8)',
+					top: 0,
+					height: fim,
+					backdropFilter: 'blur(10px) brightness(0.62) saturate(0.85)',
 					WebkitMaskImage: mascara,
 					maskImage: mascara,
 				}}
@@ -33,12 +34,12 @@ const Faixa: React.FC<{y: number; altura: number}> = ({y, altura}) => {
 			<div
 				style={{
 					position: 'absolute',
-					left: '-10%',
-					right: '-10%',
-					top: y - altura * 0.45,
-					height: altura * 0.9,
+					left: '-30%',
+					right: '-30%',
+					top: y - altura * 0.6,
+					height: altura * 1.2,
 					background:
-						'radial-gradient(ellipse at center, rgba(255,175,50,0.38) 0%, rgba(255,150,30,0.12) 40%, transparent 70%)',
+						'radial-gradient(ellipse at center, rgba(255,180,60,0.3) 0%, rgba(255,160,40,0.12) 35%, rgba(255,150,30,0.04) 55%, transparent 75%)',
 					mixBlendMode: 'screen',
 				}}
 			/>
