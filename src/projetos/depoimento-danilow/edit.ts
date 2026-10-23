@@ -145,14 +145,14 @@ export const depoimentoDanilow: Edit = {
 		},
 		// O que aprendeu: um cenário 3D por item, entrando na palavra falada. A voz dela continua por baixo.
 		{
-			tipo: 'cenario',
+			tipo: 'vitrine',
 			de: b.say('como funciona o algoritmo').inicio,
 			ate: b.say('como escolher').inicio,
-			fantasma: 'ALGORITMO',
+			imagem: 'projetos/depoimento-danilow/rei.png',
 			pequeno: 'como funciona o',
 			grande: 'algoritmo',
-			posTexto: 0.28,
-			objetos: [{tipo: 'rei', x: 0.05, y: -0.84, escala: 1.15, girar: 0.2, entra: 'nenhum'}],
+			indice: '01 / 03',
+			abaixo: 'O QUE EU APRENDI NA MENTORIA',
 		},
 		{
 			tipo: 'cenario',

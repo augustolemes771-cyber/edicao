@@ -146,6 +146,20 @@ export type Cena =
 	// Tópicos cinematográficos: o vídeo desfoca e escurece atrás, com feixes de luz, bokeh, grão e vinheta;
 	// lista tipográfica com número dourado, frase branca e a palavra entre *asteriscos* em dourado neon.
 	| (Base & {tipo: 'topicos'; titulo?: string; itens: {texto: string; em: number}[]})
+	// Vitrine de produto: foto de estúdio real (fundo preto) com palavra-chave em Gloock dourada e microtextos.
+	// alturaFoto e yFoto em fração da altura; yTexto é o topo do bloco de texto (0 a 1).
+	| (Base & {
+			tipo: 'vitrine';
+			imagem: string;
+			pequeno?: string;
+			grande: string;
+			abaixo?: string;
+			indice?: string;
+			rotulo?: string;
+			alturaFoto?: number;
+			yFoto?: number;
+			yTexto?: number;
+	  })
 	// Visor de câmera: cantos, "● REC" piscando (desmontagem-2, ref. 2).
 	| (Base & {tipo: 'rec'})
 	// Pílulas vermelhas de vidro com ícone, texto palavra por palavra (desmontagem-2, ref. 2, "what to say?").
@@ -300,6 +314,7 @@ const MODO_PADRAO: Record<TipoCena, Modo> = {
 	gigante: 'atras',
 	retrato: 'sobre',
 	topicos: 'sobre',
+	vitrine: 'cheia',
 	anel: 'sobre',
 	rec: 'sobre',
 	alertas: 'sobre',
@@ -329,6 +344,7 @@ const SOM_PADRAO: Record<TipoCena, Som | null> = {
 	gigante: 'whoosh',
 	retrato: 'shimmer',
 	topicos: 'whoosh',
+	vitrine: 'whoosh',
 	anel: 'shimmer',
 	rec: 'tick',
 	alertas: null,
@@ -503,6 +519,7 @@ const TEXTO_PROPRIO: TipoCena[] = [
 	'gigante',
 	'retrato',
 	'topicos',
+	'vitrine',
 ];
 const normalizar = (s: string) =>
 	s
