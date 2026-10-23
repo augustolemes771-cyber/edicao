@@ -47,7 +47,7 @@ npm run transcrever -- meu-video       # transcrição palavra por palavra
 npm run roteiro -- meu-video           # docs/meu-video/: frases, palavras, notas faladas
 # escreva as cenas em src/projetos/meu-video/edit.ts (ou peça para o Claude)
 npm run conferir -- meu-video          # âncoras, curva, vãos de câmera, impactos
-npm run preview -- meu-video           # prévia 720p em out/
+npm run preview -- meu-video           # prévia 720p em out/ (--de 50 --ate 58 só o trecho; --res 540 mais rápido)
 npm run render -- meu-video            # final em 4K, 50 Mbps, -14 LUFS, em out/
 ```
 
