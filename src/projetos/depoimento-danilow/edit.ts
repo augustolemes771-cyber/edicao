@@ -202,9 +202,11 @@ export const depoimentoDanilow: Edit = {
 			tipo: 'gigante',
 			texto: 'o próximo nível',
 			linhas: [{texto: 'o próximo'}, {texto: 'nível', grande: true}],
-			tamanho: 0.21,
-			y: 0,
-			de: b.say('próximo nível').inicio,
+			// Fechamento na frente dela, grande, na altura do peito: atrás, a cabeça tapava a palavra.
+			modo: 'sobre',
+			tamanho: 0.32,
+			y: 0.6,
+			de: b.at('alcance'),
 			ate: b.say('próximo nível').fim + 0.3,
 		},
 		// Agradecimento.
