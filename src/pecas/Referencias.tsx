@@ -3,7 +3,7 @@ import {AbsoluteFill, Img, interpolate, spring, staticFile, useCurrentFrame, use
 import {Video} from '@remotion/media';
 import {useEntradaEm} from '../motor/anim';
 import type {CenaNoPlano} from '../motor/plano';
-import {inter, playfair, poppins, unbounded} from '../motor/tema';
+import {anton, inter, playfair, poppins, unbounded} from '../motor/tema';
 
 // Peças aprendidas nas referências. Detalhes e tempos em docs/referencias/desmontagem.md.
 type De<T extends CenaNoPlano['tipo']> = Extract<CenaNoPlano, {tipo: T}>;
@@ -593,6 +593,84 @@ export const Alertas: React.FC<{cena: De<'alertas'>}> = ({cena}) => {
 					largura={largura}
 				/>
 			))}
+		</AbsoluteFill>
+	);
+};
+
+// Palavra gigante atrás da pessoa: entra crescendo do desfoque, letras em cascata rápida, e deriva devagar.
+export const Gigante: React.FC<{cena: De<'gigante'>}> = ({cena}) => {
+	const frame = useCurrentFrame();
+	const {fps, width, height} = useVideoConfig();
+	const duracao = (cena.ate - cena.de) * fps;
+	const saida = interpolate(frame, [duracao - 6, duracao], [1, 0], {
+		extrapolateLeft: 'clamp',
+		extrapolateRight: 'clamp',
+	});
+	const linhas = cena.texto.split('\n');
+	const maior = Math.max(...linhas.map((l) => l.length));
+	const tamanho = width * (cena.tamanho ?? Math.min(0.34, 1.5 / Math.max(4, maior)));
+	const estilo = cena.estilo ?? 'amarelo';
+	const cores: Record<string, React.CSSProperties> = {
+		amarelo: {color: AMARELO, textShadow: glowAmarelo(1.3)},
+		neon: {color: '#d6ff3c', textShadow: '0 0 18px rgba(214,255,60,0.75), 0 0 50px rgba(170,230,0,0.45)'},
+		branco: {color: '#ffffff', textShadow: '0 0 30px rgba(255,255,255,0.35)'},
+		ouro: {
+			background: 'linear-gradient(180deg, #fff1b8 0%, #e2b453 38%, #9c6b1c 62%, #f3d27a 100%)',
+			WebkitBackgroundClip: 'text',
+			backgroundClip: 'text',
+			color: 'transparent',
+			filter: 'drop-shadow(0 0 14px rgba(255,190,80,0.5))',
+		},
+	};
+	const deriva = interpolate(frame, [0, duracao], [1.04, 1]);
+	// Nunca passa da borda de cima: o centro desce o quanto for preciso.
+	const alturaBloco = linhas.length * tamanho * 0.9;
+	const centro = Math.max((cena.y ?? 0.3) * height, height * 0.035 + alturaBloco / 2);
+	let k = 0;
+	return (
+		<AbsoluteFill style={{alignItems: 'center', opacity: saida}}>
+			<div
+				style={{
+					position: 'absolute',
+					top: centro,
+					transform: `translateY(-50%) scale(${deriva})`,
+					textAlign: 'center',
+					fontFamily: anton,
+					fontSize: tamanho,
+					lineHeight: 0.9,
+					textTransform: 'uppercase',
+					letterSpacing: tamanho * 0.01,
+					whiteSpace: 'nowrap',
+				}}
+			>
+				{linhas.map((linha, li) => (
+					<div key={li}>
+						{[...linha].map((ch, ci) => {
+							const p = interpolate(frame - k++ * 0.8, [0, 6], [0, 1], {
+								extrapolateLeft: 'clamp',
+								extrapolateRight: 'clamp',
+							});
+							return (
+								<span
+									key={ci}
+									style={{
+										display: 'inline-block',
+										opacity: p,
+										transform: `translateY(${(1 - p) * tamanho * 0.25}px) scale(${1 + (1 - p) * 0.3})`,
+										filter: p < 1 ? `blur(${(1 - p) * 12}px)` : undefined,
+										// Folga para o acento: o dourado só é pintado dentro da caixa da letra.
+										paddingTop: '0.18em',
+										marginTop: '-0.18em',
+										...cores[estilo],
+									}}
+								>
+									{ch}
+								</span>
+							);
+						})}
+					</div>
+				))}
+			</div>
 		</AbsoluteFill>
 	);
 };

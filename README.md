@@ -55,6 +55,9 @@ npm run render -- meu-video            # final em 4K, 50 Mbps, -14 LUFS, em out/
 ele baixa o programa e o modelo (~1,6 GB). Se você tiver uma chave do ElevenLabs, rode
 `ELEVENLABS_API_KEY=... npm run transcrever -- meu-video` para usar o Scribe, que é mais preciso.
 
+**Texto atrás da pessoa e troca de fundo:** rode `scripts/recortar.py <projeto>` (instruções no topo do arquivo)
+e use cenas com `modo: 'atras'`, como a `gigante`.
+
 **Trilha:** `npm run musica -- meu-video trilha.mp3` normaliza a música. No `edit.ts`, coloque
 `musica: {arquivo: 'musica.m4a'}`. Ela toca ~22 dB abaixo da voz.
 

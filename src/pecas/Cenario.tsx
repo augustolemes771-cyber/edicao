@@ -238,7 +238,8 @@ const Revela: React.FC<{
 		idx.forEach((orig, k) => (pos[orig] = k));
 		return pos;
 	}, [texto, modo]);
-	const passo = modo === 'palavras' ? 5 : 2;
+	// Rápido: a frase fica montada em ~10 quadros, antes de a pessoa terminar de falar (pedido de 23/10/2026).
+	const passo = (modo === 'palavras' ? 4 : 1) * (partes.length > 12 ? 0.6 : 1);
 	return (
 		<div style={{...estilo, whiteSpace: 'pre'}}>
 			{partes.map((ch, i) => {
@@ -265,8 +266,8 @@ const Tipografia: React.FC<{cena: Cena; cor: string}> = ({cena, cor}) => {
 	const base = Math.min(width, height);
 	const estilo = cena.estiloTexto ?? 'editorial';
 	const modo = cena.revelar ?? (estilo === 'ouro' ? 'embaralhado' : estilo === 'neutro' ? 'palavras' : 'letras');
-	const inicioG = cena.emGrande !== undefined ? Math.round((cena.emGrande - cena.de) * fps) : 6;
-	const pPeq = interpolate(frame, [0, 8], [0, 1], {extrapolateRight: 'clamp'});
+	const inicioG = cena.emGrande !== undefined ? Math.max(0, Math.round((cena.emGrande - cena.de) * fps)) : 2;
+	const pPeq = interpolate(frame, [0, 5], [0, 1], {extrapolateRight: 'clamp'});
 	// Deriva lenta do bloco de texto (ref. 1).
 	const deriva = interpolate(frame, [0, 200], [1, 1.05]);
 	const ouro: React.CSSProperties = {
@@ -324,7 +325,7 @@ const Tipografia: React.FC<{cena: Cena; cor: string}> = ({cena, cor}) => {
 				{cena.abaixo && (
 					<Revela
 						texto={cena.abaixo}
-						inicio={inicioG + cena.grande!.length * 2 + 4}
+						inicio={inicioG + Math.min(10, cena.grande!.length)}
 						modo="palavras"
 						estilo={{...pequeno, fontSize: (pequeno.fontSize as number) * 0.9}}
 					/>

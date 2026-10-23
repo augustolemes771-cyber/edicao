@@ -24,7 +24,8 @@ export type Som =
 	// "punch" nunca toca: antes de t2 vira swish, depois some.
 	| 'punch';
 
-export type Modo = 'cheia' | 'sobre';
+// atras: entre o vídeo e a pessoa recortada (precisa de recorte no Edit; ver scripts/recortar.py).
+export type Modo = 'cheia' | 'sobre' | 'atras';
 export type Fundo = 'grade' | 'verde' | 'branco';
 export type Posicao = 'esquerda' | 'direita' | 'topo' | 'baixo' | 'centro';
 
@@ -114,6 +115,15 @@ export type Cena =
 	// Anel de luz fino em volta de um ponto (o rosto), que encolhe até o lugar (desmontagem-2, ref. 2).
 	// x e y de 0 a 1 na tela; raio em fração da largura.
 	| (Base & {tipo: 'anel'; x?: number; y?: number; raio?: number})
+	// Palavra gigante atrás da pessoa (desmontagem-2, ref. 1 e 2). Use \n para quebrar linha.
+	// y de 0 (topo) a 1 (base) é o centro do texto; tamanho em fração da largura.
+	| (Base & {
+			tipo: 'gigante';
+			texto: string;
+			estilo?: 'amarelo' | 'ouro' | 'branco' | 'neon';
+			y?: number;
+			tamanho?: number;
+	  })
 	// Visor de câmera: cantos, "● REC" piscando (desmontagem-2, ref. 2).
 	| (Base & {tipo: 'rec'})
 	// Pílulas vermelhas de vidro com ícone, texto palavra por palavra (desmontagem-2, ref. 2, "what to say?").
@@ -195,6 +205,8 @@ export type Edit = {
 	curva?: Curva;
 	// false desliga a checagem de cobertura do npm run conferir (Reels, Shorts).
 	verificarCurva?: boolean;
+	// Vídeo da pessoa recortada com alfa (scripts/recortar.py), para cenas com modo 'atras'.
+	recorte?: string;
 	// Segundos depois do fim da fala, para uma cartela final sem filmagem (ex.: cenário com a marca).
 	extraFim?: number;
 	// Barra fina no topo mostrando quanto falta: segura a pessoa até o fim (Reels, depoimentos).
@@ -254,6 +266,7 @@ const MODO_PADRAO: Record<TipoCena, Modo> = {
 	preto: 'cheia',
 	checklist: 'sobre',
 	cenario: 'cheia',
+	gigante: 'atras',
 	anel: 'sobre',
 	rec: 'sobre',
 	alertas: 'sobre',
@@ -280,6 +293,7 @@ const SOM_PADRAO: Record<TipoCena, Som | null> = {
 	preto: null,
 	checklist: null,
 	cenario: 'whoosh',
+	gigante: 'whoosh',
 	anel: 'shimmer',
 	rec: 'tick',
 	alertas: null,
@@ -397,6 +411,12 @@ export const montar = (edit: Edit, duracaoFonte: number): Montagem => {
 		} as CenaNoPlano);
 	}
 
+	if (!edit.recorte && validas.some((c) => c.modo === 'atras')) {
+		problemas.push({
+			gravidade: 'erro',
+			texto: "cena com modo 'atras' sem recorte: rode scripts/recortar.py e ponha recorte no edit.ts",
+		});
+	}
 	validas.sort((a, b) => a.de - b.de);
 
 	// Plano de fronteiras: entre duas cenas cheias, a câmera nunca pisca.
@@ -445,6 +465,7 @@ const TEXTO_PROPRIO: TipoCena[] = [
 	'checklist',
 	'cenario',
 	'alertas',
+	'gigante',
 ];
 const normalizar = (s: string) =>
 	s
@@ -462,7 +483,9 @@ const paginar = (
 ): PaginaLegenda[] => {
 	const limite = cfg.palavrasPorTela ?? (cfg.estilo === 'palavra' ? 4 : 5);
 	const esconder = new Set(cfg.esconderEm ?? TEXTO_PROPRIO);
-	const escondida = (t: number) => cenas.some((c) => esconder.has(c.tipo) && t >= c.de && t < c.ate);
+	// Cena atrás da pessoa só esconde a legenda quando é a palavra gigante (o cenário de fundo não).
+	const esconde = (c: CenaNoPlano) => esconder.has(c.tipo) && (c.modo !== 'atras' || c.tipo === 'gigante');
+	const escondida = (t: number) => cenas.some((c) => esconde(c) && t >= c.de && t < c.ate);
 	const contagem = new Map<string, number>();
 	const marcadas: PaginaLegenda['palavras'] = palavras.map((p) => {
 		const chave = normalizar(p.texto);
@@ -482,7 +505,7 @@ const paginar = (
 		let ate = proximoInicio === null ? ultimo.fim + 0.4 : Math.min(proximoInicio, ultimo.fim + 0.6);
 		// A tela de legenda nunca invade uma cena que esconde a legenda.
 		for (const c of cenas) {
-			if (esconder.has(c.tipo) && c.de > atual[0].inicio && c.de < ate) ate = c.de;
+			if (esconde(c) && c.de > atual[0].inicio && c.de < ate) ate = c.de;
 		}
 		paginas.push({de: atual[0].inicio, ate, palavras: atual});
 		atual = [];

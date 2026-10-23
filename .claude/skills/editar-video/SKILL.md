@@ -72,6 +72,18 @@ estão em `docs/referencias/desmontagem.md`.
   `flash` ou `chicote` só nas trocas de assunto, uma cartela (`cartao`, `letras`, `kicker`) por ideia-chave.
 - A legenda some sozinha durante as cenas com texto próprio.
 
+## Texto atrás da pessoa e troca de fundo (23/10/2026)
+
+- Recorte: `scripts/recortar.py <projeto>` (MediaPipe 0.10.14, Python 3.11; o modelo vem no pacote) gera
+  `public/projetos/<projeto>/pessoa.webm` com alfa. No `edit.ts`: `recorte: 'pessoa.webm'`.
+- Qualquer cena com `modo: 'atras'` fica entre o vídeo e a pessoa. `gigante` já nasce atrás; um `cenario` com
+  `modo: 'atras'` troca o fundo do quarto por um cenário 3D (a legenda continua).
+- Palavra gigante: no máximo duas linhas, `y` ~0,15 para a primeira linha sair por cima da cabeça e a segunda
+  passar atrás do cabelo. Plano aberto (zoom 1) enquanto ela estiver na tela; com zoom fechado a cabeça cobre
+  a palavra.
+- Texto dos cenários monta inteiro em ~0,3 s no começo da cena. Não sincronizar letra por letra com a fala
+  (pedido do usuário em 23/10/2026: ficava atrasado).
+
 ## Cenários 3D e estilo neon (23/10/2026)
 
 - Catálogo em `docs/referencias/desmontagem-2.md`; modelos em `cenarios-exemplo` e `neon-exemplo`.

@@ -18,6 +18,7 @@ import {
 	Checklist,
 	Comentarios,
 	Foto,
+	Gigante,
 	Icone,
 	Kicker,
 	Letras,
@@ -298,6 +299,8 @@ const Conteudo: React.FC<Props> = ({cena, pasta}) => {
 			return <Rec />;
 		case 'alertas':
 			return <Alertas cena={cena} />;
+		case 'gigante':
+			return <Gigante cena={cena} />;
 		case 'despedida': {
 			const p = spring({frame, fps, config: {damping: 18}});
 			const m = margemCena;

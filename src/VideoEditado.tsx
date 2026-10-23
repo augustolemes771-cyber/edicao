@@ -3,6 +3,7 @@ import {
 	AbsoluteFill,
 	getRemotionEnvironment,
 	interpolate,
+	OffthreadVideo,
 	Sequence,
 	staticFile,
 	useCurrentFrame,
@@ -21,7 +22,7 @@ export type PropsVideo = {projeto: string; duracaoFonte: number};
 const VOLUME_SFX = dbParaGanho(-12);
 
 // Vídeo decupado, com os cortes das notas faladas aplicados.
-const Base: React.FC<{edit: Edit; montagem: Montagem}> = ({edit, montagem}) => {
+const Base: React.FC<{edit: Edit; montagem: Montagem; pessoa?: boolean}> = ({edit, montagem, pessoa}) => {
 	const {fps} = useVideoConfig();
 	if (!edit.video) {
 		return (
@@ -31,6 +32,33 @@ const Base: React.FC<{edit: Edit; montagem: Montagem}> = ({edit, montagem}) => {
 		);
 	}
 	let acumulado = 0;
+	if (pessoa) {
+		// Só a pessoa recortada (vídeo com alfa), e só onde há cena atrás dela: o PNG com alfa é lento.
+		const atras = montagem.cenas.filter((c) => c.modo === 'atras');
+		const pedacos: React.ReactNode[] = [];
+		montagem.mantidos.forEach(([ini, fim], i) => {
+			const inicioEd = acumulado;
+			acumulado += fim - ini;
+			for (const c of atras) {
+				const a = Math.max(c.de, inicioEd);
+				const b = Math.min(c.ate, acumulado);
+				if (b - a < 1 / fps) continue;
+				const from = Math.round(a * fps);
+				pedacos.push(
+					<Sequence key={`${i}-${c.de}`} from={from} durationInFrames={Math.round(b * fps) - from} layout="none">
+						<OffthreadVideo
+							src={staticFile(`${edit.pasta}/${edit.recorte}`)}
+							trimBefore={Math.round((ini + (from / fps - inicioEd)) * fps)}
+							transparent
+							muted
+							style={{width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0}}
+						/>
+					</Sequence>,
+				);
+			}
+		});
+		return <>{pedacos}</>;
+	}
 	return (
 		<>
 			{montagem.mantidos.map(([ini, fim], i) => {
@@ -86,7 +114,12 @@ const useLente = (efeitos: EfeitoCamera[], fotos: CenaNoPlano[], t: number) => {
 	return {escala, x, y, desfoque, escurece};
 };
 
-const Camera: React.FC<{edit: Edit; montagem: Montagem; telas: CenaNoPlano[]}> = ({edit, montagem, telas}) => {
+const Camera: React.FC<{edit: Edit; montagem: Montagem; telas: CenaNoPlano[]; atras: React.ReactNode}> = ({
+	edit,
+	montagem,
+	telas,
+	atras,
+}) => {
 	const frame = useCurrentFrame();
 	const {fps, width, height} = useVideoConfig();
 	const t = frame / fps;
@@ -134,6 +167,9 @@ const Camera: React.FC<{edit: Edit; montagem: Montagem; telas: CenaNoPlano[]}> =
 				}}
 			>
 				<Base edit={edit} montagem={montagem} />
+				{/* Texto ou cenário atrás da pessoa: entre o vídeo e a pessoa recortada. */}
+				{edit.recorte && atras}
+				{edit.recorte && <Base edit={edit} montagem={montagem} pessoa />}
 			</AbsoluteFill>
 		</div>
 	);
@@ -345,6 +381,7 @@ export const VideoEditado: React.FC<PropsVideo> = ({projeto, duracaoFonte}) => {
 	const telas = montagem.cenas.filter((c) => c.tipo === 'tela');
 	const cheias = montagem.cenas.filter((c) => c.modo === 'cheia' && c.tipo !== 'tela');
 	const sobre = montagem.cenas.filter((c) => c.modo === 'sobre');
+	const atras = montagem.cenas.filter((c) => c.modo === 'atras');
 
 	const camada = (lista: CenaNoPlano[]) =>
 		lista.map((c, i) => (
@@ -378,7 +415,7 @@ export const VideoEditado: React.FC<PropsVideo> = ({projeto, duracaoFonte}) => {
 				}}
 			>
 				{camada(telas)}
-				<Camera edit={edit} montagem={montagem} telas={telas} />
+				<Camera edit={edit} montagem={montagem} telas={telas} atras={camada(atras)} />
 				{camada(cheias)}
 				{camada(sobre)}
 				{edit.legenda && <Legenda paginas={montagem.legenda} cfg={edit.legenda} />}
