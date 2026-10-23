@@ -109,9 +109,8 @@ const useLente = (efeitos: EfeitoCamera[], fotos: CenaNoPlano[], t: number) => {
 			extrapolateLeft: 'clamp',
 			extrapolateRight: 'clamp',
 		});
-		const forte = c.tipo === 'topicos';
-		desfoque = Math.max(desfoque, (forte ? 26 : 12) * k);
-		escurece = Math.max(escurece, (forte ? 0.55 : 0.45) * k);
+		desfoque = Math.max(desfoque, 12 * k);
+		escurece = Math.max(escurece, 0.45 * k);
 	}
 	return {escala, x, y, desfoque, escurece};
 };
@@ -128,7 +127,8 @@ const Camera: React.FC<{edit: Edit; montagem: Montagem; telas: CenaNoPlano[]; at
 	const lente = useLente(
 		montagem.camera,
 		montagem.cenas.filter(
-			(c) => c.tipo === 'foto' || c.tipo === 'topicos' || (c.tipo === 'retrato' && c.variante !== 'lado'),
+			// Os tópicos deixam a pessoa nítida (estilo da referência "Designer"): sem desfoque da câmera.
+			(c) => c.tipo === 'foto' || (c.tipo === 'retrato' && c.variante !== 'lado'),
 		),
 		t,
 	);

@@ -130,7 +130,8 @@ export type Cena =
 			// em neon 3D. Com linhas, texto e estilo são ignorados. Ex.: [{texto: 'sem'}, {texto: 'medo', grande: true}]
 			linhas?: {texto: string; grande?: boolean}[];
 			// 'luxo': serifada Gloock dourada no topo com destaque suave de luz (aprovado em 23/10/2026).
-			paleta?: 'lima' | 'tiktok' | 'dourado' | 'luxo';
+			// 'fantasma': texto claro, grande e desfocado atrás da cabeça (referência "Designer").
+			paleta?: 'lima' | 'tiktok' | 'dourado' | 'luxo' | 'fantasma';
 	  })
 	// Foto recortada de uma pessoa (PNG com alfa) saindo de um aro dourado, com nome embaixo.
 	// centro: grande no meio, câmera desfocada atrás; lado: menor, no canto de baixo à direita.
@@ -146,7 +147,8 @@ export type Cena =
 	  })
 	// Tópicos cinematográficos: o vídeo desfoca e escurece atrás, com feixes de luz, bokeh, grão e vinheta;
 	// lista tipográfica com número dourado, frase branca e a palavra entre *asteriscos* em dourado neon.
-	| (Base & {tipo: 'topicos'; titulo?: string; itens: {texto: string; em: number}[]})
+	// rotulo: texto curto da pílula no topo; *palavra* no texto vira a palavra grande embaixo.
+	| (Base & {tipo: 'topicos'; titulo?: string; itens: {texto: string; em: number; rotulo?: string}[]})
 	// Xadrez 3D em impacto: a rainha vermelha desce e derruba os peões; texto atrás dela com a fala.
 	// emGrande: segundos depois do início da cena em que a palavra grande aparece.
 	| (Base & {

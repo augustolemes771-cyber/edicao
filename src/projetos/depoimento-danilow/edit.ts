@@ -60,7 +60,7 @@ export const depoimentoDanilow: Edit = {
 		{tipo: 'zoom', em: b.at('entendendo'), escala: 1.15, y: 0.3, suave: 6},
 		{tipo: 'zoom', em: b.emendas[2], escala: 1.35, y: 0.3},
 		{tipo: 'zoom', em: b.at('medo'), escala: 1, y: 0.3},
-		{tipo: 'zoom', em: b.say('a gente sabe que').inicio, escala: 1.15, y: 0.3},
+		{tipo: 'zoom', em: b.say('a gente sabe que').inicio, escala: 1, y: 0.3},
 		{tipo: 'zoom', em: b.emendas[3], escala: 1, y: 0.3},
 		{tipo: 'zoom', em: b.emendas[4], escala: 1.3, y: 0.3},
 		// Aprendizados em cenários 3D: mergulha do rosto para o cenário, troca com glitch e luz, volta com íris.
@@ -184,16 +184,17 @@ export const depoimentoDanilow: Edit = {
 		},
 		// Resultado: "SEM MEDO" atrás dela.
 		// Resultado: tópicos cinematográficos sobre o vídeo dela desfocado (refeito em 23/10/2026).
+		// "HOJE A GENTE" grande atrás da cabeça e os tópicos com pílulas no topo (referência "Designer").
+		{tipo: 'gigante', texto: 'hoje a gente', paleta: 'fantasma', de: b.at('medo'), ate: b.at('surreal')},
 		{
 			tipo: 'topicos',
 			de: b.at('medo'),
 			ate: b.at('surreal'),
-			titulo: 'Hoje a gente',
 			itens: [
-				{texto: 'Não tem mais *medo*', em: b.at('medo')},
-				{texto: 'Sabe como *testar*', em: b.say('sabe como').inicio},
-				{texto: 'Sabe que vai dar *certo*', em: b.say('sabe que').inicio},
-				{texto: '*Acompanhamento* diário', em: b.at('acompanhamento')},
+				{texto: 'não tem mais *medo*', rotulo: 'Sem medo', em: b.at('medo')},
+				{texto: 'sabe como *testar*', rotulo: 'Testes', em: b.say('sabe como').inicio},
+				{texto: 'sabe que vai dar *certo*', rotulo: 'Certeza', em: b.say('sabe que').inicio},
+				{texto: 'acompanhamento *diário*', rotulo: 'Suporte', em: b.at('acompanhamento')},
 			],
 		},
 		// Suporte: "SURREAL" neon atrás dela.

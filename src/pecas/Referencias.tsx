@@ -13,8 +13,7 @@ import {
 import {useEntradaEm} from '../motor/anim';
 import type {CenaNoPlano, EstiloNome} from '../motor/plano';
 import {anton, dmSerif, gloock, inter, playfair, poppins, spaceMono, unbounded} from '../motor/tema';
-import {FundoGrid} from './FundoGrid';
-import {DestaqueSuave, OURO_LUXO, TextoLuxo} from './Luxo';
+import {DestaqueSuave, larguraGloock, OURO_LUXO, TextoLuxo} from './Luxo';
 import {NeonProfundo} from './NeonProfundo';
 
 // Peças aprendidas nas referências. Detalhes e tempos em docs/referencias/desmontagem.md.
@@ -686,6 +685,41 @@ export const Gigante: React.FC<{cena: De<'gigante'>}> = ({cena}) => {
 		},
 	};
 	const deriva = interpolate(frame, [0, duracao], [1.04, 1]);
+	if (cena.paleta === 'fantasma') {
+		// Palavra clara, grande e levemente desfocada atrás da cabeça, como o "É POR ISSO" da referência "Designer".
+		const txt = cena.texto.toUpperCase();
+		const tam = Math.min(width * 0.2, (width * 0.9) / larguraGloock(txt));
+		const e = spring({frame, fps, config: {damping: 200}, durationInFrames: 14});
+		return (
+			<AbsoluteFill style={{opacity: saida * e}}>
+				{/* O topo escurece atrás do texto (não por cima, para a palavra continuar clara). */}
+				<AbsoluteFill
+					style={{
+						background: 'linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.55) 16%, rgba(0,0,0,0) 34%)',
+					}}
+				/>
+				<div
+					style={{
+						position: 'absolute',
+						top: height * (cena.y ?? 0.11),
+						left: 0,
+						right: 0,
+						textAlign: 'center',
+						fontFamily: gloock,
+						fontSize: tam,
+						lineHeight: 1,
+						color: '#f6f1e8',
+						textShadow: '0 4px 30px rgba(0,0,0,0.6)',
+						whiteSpace: 'nowrap',
+						filter: `blur(${width * 0.0016 + (1 - e) * 8}px)`,
+						transform: `scale(${deriva * (1.04 - 0.04 * e)})`,
+					}}
+				>
+					{txt}
+				</div>
+			</AbsoluteFill>
+		);
+	}
 	if (cena.linhas && cena.paleta === 'luxo') {
 		// Luxo editorial: texto no topo, atrás da cabeça, com a luz do topo baixando para ele saltar.
 		const pequeno = cena.linhas
@@ -1063,168 +1097,149 @@ export const NomeEstilizado: React.FC<{texto: string; estilo: EstiloNome; tamanh
 	);
 };
 
-// Tópicos cinematográficos sobre o vídeo desfocado (o desfoque e o escurecimento vêm da câmera, em VideoEditado).
-// Camadas: cor quente, feixes de luz na diagonal, bokeh dourado, grão, vinheta; texto sem caixa.
-const OURO = 'linear-gradient(180deg, #fffbe0 0%, #ffe07a 35%, #ffc83a 70%, #f4ad22 100%)';
-
+// Tópicos no estilo da referência "Designer" (24/10/2026): ela nítida no vídeo com gradação de cinema; no topo,
+// quatro pílulas de vidro em que a do tópico falado acende em dourado; embaixo, uma frase por vez, linha fina e
+// palavra grande em serifada branca, trocando com um corte de máscara. O "HOJE A GENTE" atrás da cabeça é uma cena
+// gigante à parte (precisa do recorte da pessoa por cima).
 export const Topicos: React.FC<{cena: De<'topicos'>}> = ({cena}) => {
 	const frame = useCurrentFrame();
 	const {fps, width, height} = useVideoConfig();
 	const duracao = (cena.ate - cena.de) * fps;
-	const entra = interpolate(frame, [0, 10], [0, 1], {extrapolateRight: 'clamp'});
-	const sai = interpolate(frame, [duracao - 8, duracao], [1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
-	const tam = width * 0.085;
-	const margemX = width * 0.09;
-	const bokeh = Array.from({length: 22}, (_, i) => ({
-		x: random(`bx${i}`) * width,
-		y: random(`by${i}`) * height,
-		r: width * (0.015 + random(`br${i}`) * 0.05),
-		o: 0.12 + random(`bo${i}`) * 0.3,
-		v: 0.2 + random(`bv${i}`) * 0.5,
-	}));
+	const entra = interpolate(frame, [0, 8], [0, 1], {extrapolateRight: 'clamp'});
+	const sai = interpolate(frame, [duracao - 6, duracao], [1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+	const inicios = cena.itens.map((it) => Math.round((it.em - cena.de) * fps));
+	const atual = Math.max(0, inicios.filter((q) => frame >= q).length - 1);
+	const pilula = width * 0.03;
 	return (
 		<AbsoluteFill style={{opacity: entra * sai}}>
-			{/* Fundo em movimento: grid em perspectiva, horizonte aceso e sol quente (substitui o vídeo desfocado). */}
-			<FundoGrid horizonte={0.74} />
-			{/* Feixes de luz entrando na diagonal. */}
-			<AbsoluteFill style={{mixBlendMode: 'screen', overflow: 'hidden'}}>
-				{[0, 1, 2].map((i) => (
-					<div
-						key={i}
-						style={{
-							position: 'absolute',
-							left: width * (-0.2 + i * 0.22) + Math.sin((frame + i * 40) / 50) * 20,
-							top: -height * 0.2,
-							width: width * (0.12 + i * 0.05),
-							height: height * 1.4,
-							background:
-								'linear-gradient(180deg, rgba(255,220,150,0.6) 0%, rgba(255,205,130,0.22) 55%, transparent 85%)',
-							transform: 'rotate(-24deg)',
-							filter: `blur(${width * 0.03}px)`,
-						}}
-					/>
-				))}
-			</AbsoluteFill>
-			{/* Bokeh dourado subindo devagar. */}
-			<AbsoluteFill style={{mixBlendMode: 'screen'}}>
-				{bokeh.map((b, i) => (
-					<div
-						key={i}
-						style={{
-							position: 'absolute',
-							left: b.x - b.r,
-							top: ((((b.y - frame * b.v) % height) + height) % height) - b.r,
-							width: b.r * 2,
-							height: b.r * 2,
-							borderRadius: '50%',
-							background:
-								'radial-gradient(circle, rgba(255,215,140,0.9) 0%, rgba(255,190,90,0.35) 55%, transparent 72%)',
-							opacity: b.o,
-							filter: `blur(${b.r * 0.25}px)`,
-						}}
-					/>
-				))}
-			</AbsoluteFill>
-			{/* Vinheta. */}
+			{/* Gradação de cinema sobre o vídeo dela: quente, topo e pé escuros para o texto. */}
 			<AbsoluteFill
-				style={{background: 'radial-gradient(ellipse at 50% 45%, transparent 45%, rgba(0,0,0,0.6) 100%)'}}
+				style={{
+					background: 'linear-gradient(160deg, rgba(110,60,10,0.4) 0%, rgba(30,15,0,0.15) 50%, rgba(0,0,0,0.45) 100%)',
+					mixBlendMode: 'multiply',
+				}}
 			/>
-			{/* Texto. */}
 			<AbsoluteFill
-				style={{justifyContent: 'center', paddingLeft: margemX, paddingRight: margemX, paddingBottom: height * 0.2}}
+				style={{
+					background:
+						'linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0) 18%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.85) 82%, rgba(0,0,0,0.92) 100%)',
+				}}
+			/>
+			<AbsoluteFill
+				style={{background: 'radial-gradient(ellipse 80% 70% at 50% 42%, transparent 45%, rgba(0,0,0,0.6) 100%)'}}
+			/>
+			{/* Pílulas de vidro no topo. */}
+			<div
+				style={{
+					position: 'absolute',
+					top: height * 0.045,
+					left: 0,
+					right: 0,
+					display: 'flex',
+					justifyContent: 'center',
+					gap: width * 0.018,
+				}}
 			>
-				{cena.titulo && (
-					<div
-						style={{
-							fontFamily: unbounded,
-							fontWeight: 300,
-							fontSize: tam * 0.42,
-							letterSpacing: tam * 0.16,
-							textTransform: 'uppercase',
-							color: 'rgba(255,240,210,0.85)',
-							marginBottom: tam * 0.35,
-							textShadow: '0 2px 14px rgba(0,0,0,0.6)',
-						}}
-					>
-						{cena.titulo}
-					</div>
-				)}
-				{cena.itens.map((item, i) => {
-					const local = frame - Math.round((item.em - cena.de) * fps);
-					const p = spring({frame: local, fps, config: {damping: 18, stiffness: 200, mass: 0.6}});
-					const linha = interpolate(local, [4, 16], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
-					const partes = item.texto.split(/(\*[^*]+\*)/).filter(Boolean);
+				{cena.itens.map((it, i) => {
+					const ativa = i === atual && frame >= inicios[0];
+					const liga = spring({frame: frame - inicios[i], fps, config: {damping: 200}, durationInFrames: 8});
+					const aparece = spring({frame: frame - i * 2, fps, config: {damping: 200}, durationInFrames: 12});
 					return (
 						<div
 							key={i}
 							style={{
-								marginBottom: tam * 0.32,
-								opacity: p,
-								transform: `translateY(${(1 - p) * tam * 0.5}px)`,
-								filter: p < 0.98 ? `blur(${(1 - p) * 10}px)` : undefined,
+								display: 'flex',
+								alignItems: 'center',
+								gap: pilula * 0.4,
+								padding: `${pilula * 0.45}px ${pilula * 0.8}px`,
+								borderRadius: 999,
+								background: ativa ? 'rgba(255,196,80,0.16)' : 'rgba(255,255,255,0.08)',
+								border: `1px solid ${ativa ? 'rgba(255,205,110,0.75)' : 'rgba(255,255,255,0.18)'}`,
+								boxShadow: ativa ? `0 0 ${pilula}px rgba(255,180,60,${0.45 * liga})` : 'none',
+								opacity: aparece,
+								transform: `translateY(${(1 - aparece) * -20}px)`,
 							}}
 						>
-							<div style={{display: 'flex', alignItems: 'baseline', gap: tam * 0.3}}>
-								<span
-									style={{
-										fontFamily: spaceMono,
-										fontWeight: 400,
-										fontSize: tam * 0.36,
-										background: OURO_LUXO,
-										WebkitBackgroundClip: 'text',
-										backgroundClip: 'text',
-										color: 'transparent',
-										minWidth: tam * 0.62,
-									}}
-								>
-									{String(i + 1).padStart(2, '0')}
-								</span>
-								<span
-									style={{
-										// Serifada Gloock (estilo luxo aprovado); a sombra vai no filtro para não vazar
-										// pela palavra dourada recortada no degradê.
-										fontFamily: gloock,
-										fontWeight: 400,
-										fontSize: tam * 1.02,
-										lineHeight: 1.1,
-										color: '#fff',
-										filter: 'drop-shadow(0 4px 18px rgba(0,0,0,0.6))',
-									}}
-								>
-									{partes.map((pt, j) =>
-										pt.startsWith('*') ? (
-											<span
-												key={j}
-												style={{
-													background: OURO_LUXO,
-													WebkitBackgroundClip: 'text',
-													backgroundClip: 'text',
-													color: 'transparent',
-													padding: '0 0.02em 0.15em',
-													filter: 'drop-shadow(0 0 14px rgba(255,190,60,0.45))',
-												}}
-											>
-												{pt.slice(1, -1)}
-											</span>
-										) : (
-											<span key={j}>{pt}</span>
-										),
-									)}
-								</span>
-							</div>
-							<div
+							<span
 								style={{
-									marginTop: tam * 0.22,
-									marginLeft: tam * 0.92,
-									height: Math.max(2, tam * 0.025),
-									width: `${linha * 70}%`,
-									background: 'linear-gradient(90deg, rgba(255,201,60,0.9), rgba(255,201,60,0))',
+									width: pilula * 0.32,
+									height: pilula * 0.32,
+									borderRadius: '50%',
+									background: ativa ? '#ffd166' : 'rgba(255,255,255,0.35)',
+									boxShadow: ativa ? '0 0 8px #ffc44d' : 'none',
 								}}
 							/>
+							<span
+								style={{
+									fontFamily: unbounded,
+									fontWeight: 300,
+									fontSize: pilula * 0.78,
+									letterSpacing: pilula * 0.03,
+									color: ativa ? '#ffe2a0' : 'rgba(255,255,255,0.8)',
+									whiteSpace: 'nowrap',
+								}}
+							>
+								{it.rotulo ?? `0${i + 1}`}
+							</span>
 						</div>
 					);
 				})}
-			</AbsoluteFill>
+			</div>
+			{/* Uma frase por vez embaixo: linha fina e palavra grande, trocando com corte de máscara. */}
+			{cena.itens.map((it, i) => {
+				const ini = inicios[i];
+				const fim = i + 1 < inicios.length ? inicios[i + 1] : duracao + 10;
+				if (frame < ini - 1 || frame > fim + 8) return null;
+				const sobe = spring({frame: frame - ini, fps, config: {damping: 200}, durationInFrames: 10});
+				const desce = spring({frame: frame - fim, fps, config: {damping: 200}, durationInFrames: 8});
+				const grande = (it.texto.match(/\*([^*]+)\*/) ?? [, it.texto])[1] as string;
+				const fino = it.texto.replace(/\*[^*]+\*/, '').trim();
+				const tam = Math.min(width * 0.21, (width * 0.86) / larguraGloock(grande));
+				return (
+					<div
+						key={i}
+						style={{
+							position: 'absolute',
+							left: 0,
+							right: 0,
+							bottom: height * 0.075,
+							display: 'flex',
+							flexDirection: 'column',
+							alignItems: 'center',
+						}}
+					>
+						<div style={{overflow: 'hidden'}}>
+							<div
+								style={{
+									fontFamily: unbounded,
+									fontWeight: 300,
+									fontSize: width * 0.045,
+									letterSpacing: width * 0.045 * 0.06,
+									color: 'rgba(255,255,255,0.78)',
+									transform: `translateY(${(1 - sobe) * 110 + desce * -110}%)`,
+								}}
+							>
+								{fino}
+							</div>
+						</div>
+						<div style={{overflow: 'hidden', paddingBottom: tam * 0.12}}>
+							<div
+								style={{
+									fontFamily: gloock,
+									fontSize: tam,
+									lineHeight: 1.02,
+									color: '#ffffff',
+									whiteSpace: 'nowrap',
+									textShadow: '0 6px 30px rgba(0,0,0,0.55)',
+									transform: `translateY(${(1 - sobe) * 105 + desce * -105}%)`,
+								}}
+							>
+								{grande}
+							</div>
+						</div>
+					</div>
+				);
+			})}
 		</AbsoluteFill>
 	);
 };
