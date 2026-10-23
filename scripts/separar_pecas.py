@@ -1,6 +1,6 @@
 """Separa as peças (rainha vermelha e peões prateados) do fundo de fumaça escura num vídeo gerado por IA.
 
-Gera, por quadro, o fundo (f_XXXX.jpg) e a frente com alfa (q_XXXX.png), para o texto entrar entre os dois.
+Gera, por quadro, o fundo (f_XXXX.jpg) e a frente com alfa (q_XXXX.webp), para o texto entrar entre os dois.
 Uso: python scripts/separar_pecas.py <video> <saida_dir> [--velocidade 1.4] [--quadros 46] [--fps 30]
 """
 import argparse
@@ -55,7 +55,7 @@ def main():
         if not nome.startswith("f_"):
             continue
         im = cv2.imread(os.path.join(a.saida, nome))
-        cv2.imwrite(os.path.join(a.saida, "q_" + nome[2:-4] + ".png"), np.dstack([im, mascara(im)]))
+        cv2.imwrite(os.path.join(a.saida, "q_" + nome[2:-4] + ".webp"), np.dstack([im, mascara(im)]), [cv2.IMWRITE_WEBP_QUALITY, 92])
         n += 1
     print(f"{n} quadros em {a.saida}")
 

@@ -96,7 +96,7 @@ export const Xadrez: React.FC<{cena: Cena}> = ({cena}) => {
 	const {fps, width, height} = useVideoConfig();
 	const quadros = cena.quadros ?? 46;
 	const n = Math.min(quadros, f + 1);
-	const src = staticFile(`${cena.pasta}/q_${String(n).padStart(4, '0')}.png`);
+	const src = staticFile(`${cena.pasta}/q_${String(n).padStart(4, '0')}.${cena.video ? 'webp' : 'png'}`);
 	const clarao = f >= QUEDA ? Math.exp(-(f - QUEDA) * 0.28) : 0;
 	const respira = interpolate(f, [0, 60], [1, 1.035]);
 
