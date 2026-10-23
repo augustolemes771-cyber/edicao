@@ -5,6 +5,7 @@ import {montar} from './motor/plano';
 import {ALTURA, FPS, LARGURA} from './motor/tema';
 import {projetos} from './projetos';
 import {VideoEditado, type PropsVideo} from './VideoEditado';
+import {ProvaTexto, type PropsProva} from './ProvaTexto';
 
 const duracaoDoVideo = async (src: string) => {
 	const input = new Input({formats: ALL_FORMATS, source: new UrlSource(src)});
@@ -30,6 +31,16 @@ const calcular: CalculateMetadataFunction<PropsVideo> = async ({props}) => {
 
 export const Root: React.FC = () => (
 	<>
+		{/* Prova estática de estilo de texto, para aprovar antes de animar. */}
+		<Composition
+			id="prova-texto"
+			component={ProvaTexto}
+			width={ALTURA}
+			height={LARGURA}
+			fps={FPS}
+			durationInFrames={1}
+			defaultProps={{paleta: 'lima', quadro: 'projetos/depoimento-danilow/quadro.jpg'} as PropsProva}
+		/>
 		{Object.keys(projetos).map((nome) => (
 			<Composition
 				key={nome}

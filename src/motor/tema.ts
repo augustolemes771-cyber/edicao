@@ -50,7 +50,7 @@ const carregar = (
 		}
 	}
 };
-carregar(poppins, 'poppins', ['400', '600', '700', '800'], ['normal']);
+carregar(poppins, 'poppins', ['400', '600', '700', '800', '900'], ['normal']);
 carregar(playfair, 'playfair-display', ['700', '800'], ['normal', 'italic']);
 carregar(unbounded, 'unbounded', ['700', '800'], ['normal']);
 carregar(inter, 'inter', ['600', '700', '800'], ['normal']);

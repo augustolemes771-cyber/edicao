@@ -2,8 +2,8 @@ import React from 'react';
 import {AbsoluteFill, Img, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {Video} from '@remotion/media';
 import {useEntradaEm} from '../motor/anim';
-import type {CenaNoPlano} from '../motor/plano';
-import {anton, inter, playfair, poppins, unbounded} from '../motor/tema';
+import type {CenaNoPlano, EstiloNome} from '../motor/plano';
+import {anton, dmSerif, inter, playfair, poppins, unbounded} from '../motor/tema';
 
 // Peças aprendidas nas referências. Detalhes e tempos em docs/referencias/desmontagem.md.
 type De<T extends CenaNoPlano['tipo']> = Extract<CenaNoPlano, {tipo: T}>;
@@ -623,6 +623,27 @@ export const Gigante: React.FC<{cena: De<'gigante'>}> = ({cena}) => {
 		},
 	};
 	const deriva = interpolate(frame, [0, duracao], [1.04, 1]);
+	if (estilo === 'serif' || estilo === 'limpo' || estilo === 'editorial') {
+		const tam = width * (cena.tamanho ?? 0.13);
+		return (
+			<AbsoluteFill style={{alignItems: 'center', opacity: saida}}>
+				<div
+					style={{
+						position: 'absolute',
+						top: Math.max((cena.y ?? 0.3) * height, height * 0.035 + tam * 0.7),
+						transform: `translateY(-50%) scale(${deriva})`,
+						textAlign: 'center',
+					}}
+				>
+					{linhas.map((l, i) => (
+						<div key={i}>
+							<NomeEstilizado texto={l} estilo={estilo} tamanho={tam} inicio={i * 4} />
+						</div>
+					))}
+				</div>
+			</AbsoluteFill>
+		);
+	}
 	// Nunca passa da borda de cima: o centro desce o quanto for preciso.
 	const alturaBloco = linhas.length * tamanho * 0.9;
 	const centro = Math.max((cena.y ?? 0.3) * height, height * 0.035 + alturaBloco / 2);
@@ -794,34 +815,114 @@ export const Retrato: React.FC<{cena: De<'retrato'>; pasta: string}> = ({cena, p
 						{cena.pequeno}
 					</div>
 				)}
-				<div style={{fontFamily: anton, fontSize: nomeTam, lineHeight: 1, letterSpacing: nomeTam * 0.04}}>
-					{[...cena.nome.toUpperCase()].map((ch, i) => {
-						const p = interpolate(frame - 6 - ((i * 7) % cena.nome.length), [0, 6], [0, 1], {
-							extrapolateLeft: 'clamp',
-							extrapolateRight: 'clamp',
-						});
-						return (
-							<span
-								key={i}
-								style={{
-									display: 'inline-block',
-									paddingTop: '0.18em',
-									marginTop: '-0.18em',
-									background: 'linear-gradient(180deg, #fff1b8 0%, #e2b453 40%, #9c6b1c 62%, #f3d27a 100%)',
-									WebkitBackgroundClip: 'text',
-									backgroundClip: 'text',
-									color: 'transparent',
-									filter: `drop-shadow(0 0 12px rgba(255,190,80,0.55))${p < 1 ? ` blur(${(1 - p) * 10}px)` : ''}`,
-									opacity: p,
-									transform: `translateY(${(1 - p) * nomeTam * 0.3}px)`,
-								}}
-							>
-								{ch}
-							</span>
-						);
-					})}
-				</div>
+				{cena.estiloNome ? (
+					<NomeEstilizado texto={cena.nome} estilo={cena.estiloNome} tamanho={nomeTam * 0.85} inicio={6} />
+				) : (
+					<div style={{fontFamily: anton, fontSize: nomeTam, lineHeight: 1, letterSpacing: nomeTam * 0.04}}>
+						{[...cena.nome.toUpperCase()].map((ch, i) => {
+							const p = interpolate(frame - 6 - ((i * 7) % cena.nome.length), [0, 6], [0, 1], {
+								extrapolateLeft: 'clamp',
+								extrapolateRight: 'clamp',
+							});
+							return (
+								<span
+									key={i}
+									style={{
+										display: 'inline-block',
+										paddingTop: '0.18em',
+										marginTop: '-0.18em',
+										background: 'linear-gradient(180deg, #fff1b8 0%, #e2b453 40%, #9c6b1c 62%, #f3d27a 100%)',
+										WebkitBackgroundClip: 'text',
+										backgroundClip: 'text',
+										color: 'transparent',
+										filter: `drop-shadow(0 0 12px rgba(255,190,80,0.55))${p < 1 ? ` blur(${(1 - p) * 10}px)` : ''}`,
+										opacity: p,
+										transform: `translateY(${(1 - p) * nomeTam * 0.3}px)`,
+									}}
+								>
+									{ch}
+								</span>
+							);
+						})}
+					</div>
+				)}
 			</div>
 		</AbsoluteFill>
+	);
+};
+
+// Nome ou frase de destaque nos estilos serif, limpo e editorial; letras entram em cascata rápida.
+export const NomeEstilizado: React.FC<{texto: string; estilo: EstiloNome; tamanho: number; inicio?: number}> = ({
+	texto,
+	estilo,
+	tamanho,
+	inicio = 0,
+}) => {
+	const frame = useCurrentFrame() - inicio;
+	const fonte: React.CSSProperties =
+		estilo === 'serif'
+			? {fontFamily: playfair, fontStyle: 'italic', fontWeight: 800, letterSpacing: -tamanho * 0.01}
+			: estilo === 'limpo'
+				? {fontFamily: inter, fontWeight: 800, letterSpacing: -tamanho * 0.03}
+				: {fontFamily: dmSerif, fontWeight: 400, letterSpacing: -tamanho * 0.01};
+	const sombra =
+		estilo === 'limpo' ? '0 4px 18px rgba(0,0,0,0.6)' : '0 0 26px rgba(255,255,255,0.3), 0 4px 20px rgba(0,0,0,0.55)';
+	const fio = interpolate(frame, [4, 14], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+	const linhaDourada = (
+		<div
+			style={{
+				height: Math.max(2, tamanho * 0.025),
+				width: '100%',
+				background: 'linear-gradient(90deg, transparent, #e2b453 20%, #f6d98a 50%, #e2b453 80%, transparent)',
+				transform: `scaleX(${fio})`,
+				boxShadow: '0 0 10px rgba(255,190,80,0.6)',
+			}}
+		/>
+	);
+	return (
+		<div style={{display: 'inline-flex', flexDirection: 'column', alignItems: 'center'}}>
+			{estilo === 'editorial' && <div style={{marginBottom: tamanho * 0.12, width: tamanho * 3}}>{linhaDourada}</div>}
+			<div
+				style={{position: 'relative', fontSize: tamanho, lineHeight: 1.05, whiteSpace: 'nowrap', zIndex: 0, ...fonte}}
+			>
+				{estilo === 'limpo' && (
+					<div
+						style={{
+							position: 'absolute',
+							left: '2%',
+							right: '2%',
+							bottom: '0.02em',
+							height: '0.12em',
+							borderRadius: '0.06em',
+							background: AMARELO,
+							boxShadow: glowAmarelo(0.5),
+							transformOrigin: 'left center',
+							transform: `scaleX(${fio})`,
+							zIndex: -1,
+						}}
+					/>
+				)}
+				{[...texto].map((ch, i) => {
+					const p = interpolate(frame - i * 0.9, [0, 6], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+					return (
+						<span
+							key={i}
+							style={{
+								display: 'inline-block',
+								color: '#ffffff',
+								textShadow: sombra,
+								opacity: p,
+								transform: `translateY(${(1 - p) * tamanho * 0.2}px)`,
+								filter: p < 1 ? `blur(${(1 - p) * 10}px)` : undefined,
+							}}
+						>
+							{ch === ' ' ? '\u00a0' : ch}
+						</span>
+					);
+				})}
+			</div>
+			{estilo === 'serif' && <div style={{marginTop: tamanho * 0.06, width: '70%'}}>{linhaDourada}</div>}
+			{estilo === 'editorial' && <div style={{marginTop: tamanho * 0.14, width: tamanho * 3}}>{linhaDourada}</div>}
+		</div>
 	);
 };

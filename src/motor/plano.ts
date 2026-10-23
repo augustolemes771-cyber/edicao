@@ -120,13 +120,20 @@ export type Cena =
 	| (Base & {
 			tipo: 'gigante';
 			texto: string;
-			estilo?: 'amarelo' | 'ouro' | 'branco' | 'neon';
+			estilo?: 'amarelo' | 'ouro' | 'branco' | 'neon' | EstiloNome;
 			y?: number;
 			tamanho?: number;
 	  })
 	// Foto recortada de uma pessoa (PNG com alfa) saindo de um aro dourado, com nome embaixo.
 	// centro: grande no meio, câmera desfocada atrás; lado: menor, no canto de baixo à direita.
-	| (Base & {tipo: 'retrato'; src: string; nome: string; pequeno?: string; variante?: 'centro' | 'lado'})
+	| (Base & {
+			tipo: 'retrato';
+			src: string;
+			nome: string;
+			pequeno?: string;
+			variante?: 'centro' | 'lado';
+			estiloNome?: EstiloNome;
+	  })
 	// Visor de câmera: cantos, "● REC" piscando (desmontagem-2, ref. 2).
 	| (Base & {tipo: 'rec'})
 	// Pílulas vermelhas de vidro com ícone, texto palavra por palavra (desmontagem-2, ref. 2, "what to say?").
@@ -150,6 +157,10 @@ export type Objeto3DCena = {
 };
 
 // Efeitos de câmera (ref. 1, 2 e 3).
+// Letra de nomes e frases de destaque: serif (itálica elegante com fio dourado), limpo (sans grossa branca
+// com sublinhado amarelo, como a legenda) e editorial (serifa clássica entre dois fios dourados).
+export type EstiloNome = 'serif' | 'limpo' | 'editorial';
+
 export type EfeitoCamera =
 	// Zoom em corte seco (ou suave, em segundos) a partir de "em". escala 1 = enquadramento original.
 	| {tipo: 'zoom'; em: number; escala: number; suave?: number; x?: number; y?: number}
