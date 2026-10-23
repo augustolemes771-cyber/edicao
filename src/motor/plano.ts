@@ -148,7 +148,13 @@ export type Cena =
 	// Tópicos cinematográficos: o vídeo desfoca e escurece atrás, com feixes de luz, bokeh, grão e vinheta;
 	// lista tipográfica com número dourado, frase branca e a palavra entre *asteriscos* em dourado neon.
 	// rotulo: texto curto da pílula no topo; *palavra* no texto vira a palavra grande embaixo.
-	| (Base & {tipo: 'topicos'; titulo?: string; itens: {texto: string; em: number; rotulo?: string}[]})
+	// estilo 'papel': folha rasgada com o rosto dela no rasgo e os tópicos impressos; padrão: pílulas ("Designer").
+	| (Base & {
+			tipo: 'topicos';
+			titulo?: string;
+			estilo?: 'pilulas' | 'papel';
+			itens: {texto: string; em: number; rotulo?: string}[];
+	  })
 	// Xadrez 3D em impacto: a rainha vermelha desce e derruba os peões; texto atrás dela com a fala.
 	// emGrande: segundos depois do início da cena em que a palavra grande aparece.
 	| (Base & {

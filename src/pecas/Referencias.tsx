@@ -15,6 +15,7 @@ import type {CenaNoPlano, EstiloNome} from '../motor/plano';
 import {anton, dmSerif, gloock, inter, playfair, poppins, spaceMono, unbounded} from '../motor/tema';
 import {DestaqueSuave, larguraGloock, OURO_LUXO, TextoLuxo} from './Luxo';
 import {NeonProfundo} from './NeonProfundo';
+import {TopicosPapel} from './TopicosPapel';
 
 // Peças aprendidas nas referências. Detalhes e tempos em docs/referencias/desmontagem.md.
 type De<T extends CenaNoPlano['tipo']> = Extract<CenaNoPlano, {tipo: T}>;
@@ -1102,6 +1103,7 @@ export const NomeEstilizado: React.FC<{texto: string; estilo: EstiloNome; tamanh
 // palavra grande em serifada branca, trocando com um corte de máscara. O "HOJE A GENTE" atrás da cabeça é uma cena
 // gigante à parte (precisa do recorte da pessoa por cima).
 export const Topicos: React.FC<{cena: De<'topicos'>}> = ({cena}) => {
+	if (cena.estilo === 'papel') return <TopicosPapel cena={cena} />;
 	const frame = useCurrentFrame();
 	const {fps, width, height} = useVideoConfig();
 	const duracao = (cena.ate - cena.de) * fps;

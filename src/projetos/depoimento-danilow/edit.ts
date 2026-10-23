@@ -185,9 +185,9 @@ export const depoimentoDanilow: Edit = {
 		// Resultado: "SEM MEDO" atrás dela.
 		// Resultado: tópicos cinematográficos sobre o vídeo dela desfocado (refeito em 23/10/2026).
 		// "HOJE A GENTE" grande atrás da cabeça e os tópicos com pílulas no topo (referência "Designer").
-		{tipo: 'gigante', texto: 'hoje a gente', paleta: 'fantasma', de: b.at('medo'), ate: b.at('surreal')},
 		{
 			tipo: 'topicos',
+			estilo: 'papel',
 			de: b.at('medo'),
 			ate: b.at('surreal'),
 			itens: [
