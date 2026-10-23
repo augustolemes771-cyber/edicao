@@ -3,7 +3,41 @@ import {AbsoluteFill, Img, staticFile} from 'remotion';
 import {barlowCond, fraunces, gloock, spaceMono, unbounded} from './motor/tema';
 
 // Prova estática de combinações de fontes (uma por imagem) sobre um quadro do vídeo, para aprovação.
-export type PropsProvaFontes = {opcao: 1 | 2 | 3; quadro?: string};
+export type PropsProvaFontes = {opcao: 1 | 2 | 3; quadro?: string; pessoa?: string; destaque?: boolean};
+
+// Destaque do texto pela luz: a faixa do texto fica desfocada e escura (profundidade de campo), com um halo
+// dourado de luz atrás das letras; o resto do quadro perde um pouco de exposição.
+const Faixa: React.FC<{y: number; altura: number}> = ({y, altura}) => {
+	const mascara = `linear-gradient(180deg, transparent 0%, #000 22%, #000 78%, transparent 100%)`;
+	return (
+		<>
+			<div
+				style={{
+					position: 'absolute',
+					left: 0,
+					right: 0,
+					top: y - altura / 2,
+					height: altura,
+					backdropFilter: 'blur(18px) brightness(0.45) saturate(0.8)',
+					WebkitMaskImage: mascara,
+					maskImage: mascara,
+				}}
+			/>
+			<div
+				style={{
+					position: 'absolute',
+					left: '-10%',
+					right: '-10%',
+					top: y - altura * 0.45,
+					height: altura * 0.9,
+					background:
+						'radial-gradient(ellipse at center, rgba(255,175,50,0.38) 0%, rgba(255,150,30,0.12) 40%, transparent 70%)',
+					mixBlendMode: 'screen',
+				}}
+			/>
+		</>
+	);
+};
 
 const OURO = 'linear-gradient(180deg, #fff6d0 0%, #ffd873 40%, #e9a92a 75%, #b97812 100%)';
 const ouro = (tam: number): React.CSSProperties => ({
@@ -58,17 +92,29 @@ const Bloco: React.FC<{top: number; children: React.ReactNode}> = ({top, childre
 	</div>
 );
 
-const Opcao1 = () => (
+const Opcao1: React.FC<{soTopo?: boolean}> = ({soTopo}) => (
 	<>
-		<Bloco top={110}>
+		<Bloco top={soTopo ? 20 : 110}>
 			<div style={fino(unbounded, 46, 0.35)}>a melhor</div>
-			<div style={{fontFamily: gloock, fontSize: 250, lineHeight: 1, marginTop: 6, ...ouro(250)}}>decisão</div>
-			<div style={{...micro, marginTop: 14}}>— DEPOIMENTO · MENTORIA DANILOW —</div>
+			<div
+				style={{
+					fontFamily: gloock,
+					fontSize: soTopo ? 270 : 250,
+					lineHeight: soTopo ? 0.9 : 1,
+					marginTop: 6,
+					...ouro(250),
+				}}
+			>
+				decisão
+			</div>
+			{!soTopo && <div style={{...micro, marginTop: 14}}>— DEPOIMENTO · MENTORIA DANILOW —</div>}
 		</Bloco>
-		<Bloco top={1420}>
-			<div style={fino(unbounded, 46, 0.35)}>é</div>
-			<div style={{fontFamily: gloock, fontSize: 270, lineHeight: 1, ...ouro(270)}}>surreal</div>
-		</Bloco>
+		{!soTopo && (
+			<Bloco top={1420}>
+				<div style={fino(unbounded, 46, 0.35)}>é</div>
+				<div style={{fontFamily: gloock, fontSize: 270, lineHeight: 1, ...ouro(270)}}>surreal</div>
+			</Bloco>
+		)}
 	</>
 );
 
@@ -159,16 +205,30 @@ const Opcao3 = () => (
 	</>
 );
 
-export const ProvaFontes: React.FC<PropsProvaFontes> = ({opcao, quadro}) => (
+export const ProvaFontes: React.FC<PropsProvaFontes> = ({opcao, quadro, pessoa, destaque}) => (
 	<AbsoluteFill style={{backgroundColor: '#0d0d0f'}}>
-		{quadro && <Img src={staticFile(quadro)} style={{width: '100%', height: '100%', objectFit: 'cover'}} />}
+		{quadro && (
+			<Img
+				src={staticFile(quadro)}
+				style={{
+					width: '100%',
+					height: '100%',
+					objectFit: 'cover',
+					filter: destaque ? 'brightness(0.8) contrast(1.05)' : undefined,
+				}}
+			/>
+		)}
 		<AbsoluteFill
 			style={{
 				background:
 					'linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 32%, rgba(0,0,0,0) 62%, rgba(0,0,0,0.65) 100%)',
 			}}
 		/>
-		{opcao === 1 ? <Opcao1 /> : opcao === 2 ? <Opcao2 /> : <Opcao3 />}
+		{destaque && <Faixa y={pessoa ? 200 : 330} altura={600} />}
+		{opcao === 1 ? <Opcao1 soTopo={!!pessoa} /> : opcao === 2 ? <Opcao2 /> : <Opcao3 />}
+		{pessoa && (
+			<Img src={staticFile(pessoa)} style={{position: 'absolute', width: '100%', height: '100%', objectFit: 'cover'}} />
+		)}
 		<Grao />
 	</AbsoluteFill>
 );
