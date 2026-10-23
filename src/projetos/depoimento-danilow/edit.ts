@@ -170,17 +170,19 @@ export const depoimentoDanilow: Edit = {
 			pequeno: 'como escolher o',
 			grande: 'produto certo',
 		},
+		// Celular em live no Blender (scripts/blender/celular.py): ergue girando, vídeo dela na tela; texto atrás.
 		{
-			tipo: 'cenario',
+			tipo: 'xadrez',
 			de: b.say('como funciona a live').inicio,
 			ate: b.at('Hoje'),
-			superficie: 'escuro',
-			luz: 'nenhuma',
-			fantasma: 'AO VIVO',
+			pasta: 'projetos/depoimento-danilow/celular-blender',
+			quadros: 112,
+			tom: 'dourado',
+			quadroImpacto: 15,
+			yLuz: 0.45,
+			yTexto: 0.06,
 			pequeno: 'live shop dentro do',
 			grande: 'TikTok Shop',
-			posTexto: 0.17,
-			objetos: [{tipo: 'celular', x: 0, y: -0.38, escala: 1.15, giro: [-0.05, -0.32, 0.04], entra: 'nenhum'}],
 		},
 		// Resultado: "SEM MEDO" atrás dela.
 		// Resultado: tópicos cinematográficos sobre o vídeo dela desfocado (refeito em 23/10/2026).

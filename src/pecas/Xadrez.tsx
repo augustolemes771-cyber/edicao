@@ -52,7 +52,9 @@ const Texto: React.FC<{cena: Cena; f: number}> = ({cena, f}) => {
 	// O texto se monta inteiro logo no começo da frase (pedido do usuário): não espera cada palavra ser dita.
 	const emGrande = Math.round((cena.emGrande ?? 0.15) * fps);
 	const pq = spring({frame: f, fps, config: {damping: 200}, durationInFrames: 8});
-	const tam = Math.min(width * 0.24, (width * 0.86) / (cena.grande.length * 0.52));
+	// Largura estimada na Gloock: maiúsculas ocupam mais que minúsculas.
+	const largura = [...cena.grande].reduce((t, ch) => t + (ch === ' ' ? 0.3 : ch === ch.toUpperCase() ? 0.7 : 0.52), 0);
+	const tam = Math.min(width * 0.24, (width * 0.86) / largura);
 	const T = TONS[cena.tom ?? 'vermelho'];
 	return (
 		<>
