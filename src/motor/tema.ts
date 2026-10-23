@@ -87,3 +87,14 @@ export const useMargem = () => {
 
 export const brilho = (c: string, forca = 1) =>
 	`0 0 ${8 * forca}px ${c}, 0 0 ${22 * forca}px ${c}, 0 0 ${48 * forca}px ${c}88`;
+// Fontes de display com personalidade (análise de tipografia das referências de design, out/2026).
+export const gloock = 'Gloock';
+export const fraunces = 'Fraunces';
+export const barlowCond = 'Barlow Condensed';
+export const spaceMono = 'Space Mono';
+carregar(gloock, 'gloock', ['400'], ['normal']);
+carregar(fraunces, 'fraunces', ['900'], ['normal', 'italic']);
+carregar(barlowCond, 'barlow-condensed', ['300'], ['normal']);
+carregar(barlowCond, 'barlow-condensed', ['900'], ['italic']);
+carregar(spaceMono, 'space-mono', ['400'], ['normal']);
+carregar(unbounded, 'unbounded', ['300'], ['normal']);

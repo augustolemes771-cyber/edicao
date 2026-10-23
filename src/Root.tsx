@@ -6,6 +6,7 @@ import {ALTURA, FPS, LARGURA} from './motor/tema';
 import {projetos} from './projetos';
 import {VideoEditado, type PropsVideo} from './VideoEditado';
 import {ProvaTexto, type PropsProva} from './ProvaTexto';
+import {ProvaFontes, type PropsProvaFontes} from './ProvaFontes';
 
 const duracaoDoVideo = async (src: string) => {
 	const input = new Input({formats: ALL_FORMATS, source: new UrlSource(src)});
@@ -40,6 +41,15 @@ export const Root: React.FC = () => (
 			fps={FPS}
 			durationInFrames={1}
 			defaultProps={{paleta: 'lima', quadro: 'projetos/depoimento-danilow/quadro.jpg'} as PropsProva}
+		/>
+		<Composition
+			id="prova-fontes"
+			component={ProvaFontes}
+			width={ALTURA}
+			height={LARGURA}
+			fps={FPS}
+			durationInFrames={1}
+			defaultProps={{opcao: 1, quadro: 'projetos/depoimento-danilow/quadro.jpg'} as PropsProvaFontes}
 		/>
 		{Object.keys(projetos).map((nome) => (
 			<Composition
