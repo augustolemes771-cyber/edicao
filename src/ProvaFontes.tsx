@@ -111,7 +111,9 @@ const Opcao1: React.FC<{soTopo?: boolean; pequeno?: string; grande?: string}> = 
 			<div
 				style={{
 					fontFamily: gloock,
-					fontSize: soTopo ? 270 : 250,
+					// Ocupa a largura sem quebrar linha: ~0,52 da altura por letra na Gloock.
+					fontSize: Math.min(soTopo ? 270 : 250, 1000 / (grande.length * 0.52)),
+					whiteSpace: 'nowrap',
 					lineHeight: soTopo ? 0.9 : 1,
 					marginTop: 6,
 					...ouro(250),
