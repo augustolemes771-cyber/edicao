@@ -50,11 +50,21 @@ export const palavrasEditadas = (legendas: Caption[], mantidos: Trecho[]): Palav
 		if (!texto) continue;
 		const ini = c.startMs / 1000;
 		const fimOriginal = c.endMs / 1000;
-		// Palavra que começa dentro de um corte e termina fora: começa onde o corte acaba.
-		const trecho = mantidos.find(([a, b]) => fimOriginal > a && fimOriginal <= b);
-		if (!trecho) continue;
+		// A palavra fica no trecho mantido que cobre a maior parte dela (o tempo do Whisper erra ~0,3 s
+		// e a borda de um corte pode pegar o fim da palavra). Menos da metade dentro: a palavra saiu no corte.
+		const dur = Math.max(0.01, fimOriginal - ini);
+		let trecho: Trecho | null = null;
+		let melhor = 0;
+		for (const t of mantidos) {
+			const sobra = Math.min(fimOriginal, t[1]) - Math.max(ini, t[0]);
+			if (sobra > melhor) {
+				melhor = sobra;
+				trecho = t;
+			}
+		}
+		if (!trecho || melhor / dur < 0.5) continue;
 		const inicio = paraTempoEditado(Math.max(ini, trecho[0]), mantidos);
-		const fim = paraTempoEditado(fimOriginal, mantidos);
+		const fim = paraTempoEditado(Math.min(fimOriginal, trecho[1]), mantidos);
 		if (inicio === null || fim === null) continue;
 		saida.push({texto, inicio, fim, indice: saida.length});
 	}

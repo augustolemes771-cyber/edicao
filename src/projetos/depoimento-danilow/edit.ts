@@ -80,6 +80,15 @@ export const depoimentoDanilow: Edit = {
 	cenas: (b) => [
 		// Visor de câmera no gancho: cara de depoimento real, gravado.
 		{tipo: 'rec', de: 0, ate: b.emendas[1]},
+		// Quem é o Danilow: a foto dele sai de um aro dourado quando ela fala o nome.
+		{
+			tipo: 'retrato',
+			src: 'danilow.png',
+			nome: 'Danilow',
+			pequeno: 'mentoria do',
+			de: b.at('mentoria'),
+			ate: b.at('foi'),
+		},
 		// Gancho: o resultado em primeiro lugar, gigante atrás da cabeça dela.
 		{tipo: 'gigante', texto: 'DIVISOR\nDE ÁGUAS', y: 0.155, de: b.at('foi'), ate: b.emendas[1]},
 		// Dor: alertas na hora da fala.
@@ -92,8 +101,15 @@ export const depoimentoDanilow: Edit = {
 				{texto: 'sem entender o processo', em: b.at('processo'), icone: 'x'},
 			],
 		},
-		// Virada: anel de luz no rosto quando ela fala do Danilow.
-		{tipo: 'anel', x: 0.49, y: 0.3, raio: 0.3, de: b.at('conheceu'), ate: b.at('resolvemos')},
+		// Virada: a foto dele volta, menor, no canto, quando ela conta que conheceu o Danilow.
+		{
+			tipo: 'retrato',
+			src: 'danilow.png',
+			nome: 'Danilow',
+			variante: 'lado',
+			de: b.at('conheceu'),
+			ate: b.say('para poder entender').inicio,
+		},
 		// "A melhor decisão" em dourado atrás dela.
 		{
 			tipo: 'gigante',

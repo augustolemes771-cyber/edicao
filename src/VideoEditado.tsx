@@ -125,7 +125,7 @@ const Camera: React.FC<{edit: Edit; montagem: Montagem; telas: CenaNoPlano[]; at
 	const t = frame / fps;
 	const lente = useLente(
 		montagem.camera,
-		montagem.cenas.filter((c) => c.tipo === 'foto'),
+		montagem.cenas.filter((c) => c.tipo === 'foto' || (c.tipo === 'retrato' && c.variante !== 'lado')),
 		t,
 	);
 	let balao = 0;

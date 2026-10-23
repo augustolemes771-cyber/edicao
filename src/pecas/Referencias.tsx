@@ -674,3 +674,154 @@ export const Gigante: React.FC<{cena: De<'gigante'>}> = ({cena}) => {
 		</AbsoluteFill>
 	);
 };
+
+// Foto recortada saindo de um aro dourado: raios de luz girando atrás, brilho passando no aro,
+// a cabeça escapa por cima do círculo e o nome entra embaralhado embaixo.
+export const Retrato: React.FC<{cena: De<'retrato'>; pasta: string}> = ({cena, pasta}) => {
+	const frame = useCurrentFrame();
+	const {fps, width, height} = useVideoConfig();
+	const lado = cena.variante === 'lado';
+	const duracao = (cena.ate - cena.de) * fps;
+	const r = width * (lado ? 0.15 : 0.33);
+	const cx = width * (lado ? 0.79 : 0.5);
+	const cy = height * (lado ? 0.19 : 0.4);
+	const aro = spring({frame, fps, config: {damping: 13, stiffness: 150, mass: 0.7}});
+	const sobe = spring({frame: frame - 3, fps, config: {damping: 15, stiffness: 120, mass: 0.8}});
+	const saida = interpolate(frame, [duracao - 6, duracao], [1, 0], {
+		extrapolateLeft: 'clamp',
+		extrapolateRight: 'clamp',
+	});
+	const brilho = interpolate(frame, [6, 20], [-1, 2], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+	const foto = staticFile(`${pasta}/${cena.src}`);
+	// A foto ocupa um quadrado maior que o aro, apoiada na base do círculo.
+	const ladoFoto = r * 2.5;
+	const fotoEstilo: React.CSSProperties = {
+		position: 'absolute',
+		left: cx - ladoFoto / 2,
+		top: cy + r - ladoFoto + r * 0.32 + (1 - sobe) * r * 0.9,
+		width: ladoFoto,
+		height: ladoFoto,
+		objectFit: 'contain',
+		objectPosition: 'center bottom',
+		transform: `rotate(${(1 - sobe) * -6}deg)`,
+		filter: 'drop-shadow(0 12px 30px rgba(0,0,0,0.55))',
+	};
+	const nomeTam = width * (lado ? 0.08 : 0.13);
+	return (
+		<AbsoluteFill style={{opacity: saida}}>
+			{/* Raios de luz girando atrás do aro. */}
+			<div
+				style={{
+					position: 'absolute',
+					left: cx - r * 2.2,
+					top: cy - r * 2.2,
+					width: r * 4.4,
+					height: r * 4.4,
+					borderRadius: '50%',
+					background: 'repeating-conic-gradient(from 0deg, rgba(255,214,120,0.32) 0deg 7deg, transparent 7deg 22deg)',
+					transform: `rotate(${frame * 0.6}deg) scale(${aro})`,
+					filter: `blur(${r * 0.03}px)`,
+					maskImage: 'radial-gradient(circle, black 30%, transparent 70%)',
+					WebkitMaskImage: 'radial-gradient(circle, black 30%, transparent 70%)',
+					mixBlendMode: 'screen',
+				}}
+			/>
+			{/* Disco escuro com o aro dourado. */}
+			<div
+				style={{
+					position: 'absolute',
+					left: cx - r,
+					top: cy - r,
+					width: r * 2,
+					height: r * 2,
+					borderRadius: '50%',
+					background: 'radial-gradient(circle at 50% 35%, #3a2c12 0%, #120d05 75%)',
+					boxShadow: `0 0 0 ${r * 0.045}px #e2b453, 0 0 ${r * 0.25}px rgba(255,190,80,0.6), inset 0 0 ${r * 0.3}px rgba(0,0,0,0.8)`,
+					transform: `scale(${aro})`,
+					overflow: 'hidden',
+				}}
+			>
+				<div
+					style={{
+						position: 'absolute',
+						inset: 0,
+						background: 'linear-gradient(105deg, transparent 35%, rgba(255,245,210,0.55) 50%, transparent 65%)',
+						transform: `translateX(${brilho * 100}%)`,
+					}}
+				/>
+			</div>
+			{/* Dentro do círculo: corpo inteiro. Acima do centro: a cabeça escapa do aro. */}
+			<Img
+				src={foto}
+				style={{
+					...fotoEstilo,
+					clipPath: `circle(${r * aro}px at 50% ${((cy - (fotoEstilo.top as number)) / ladoFoto) * 100}%)`,
+				}}
+			/>
+			<Img
+				src={foto}
+				style={{
+					...fotoEstilo,
+					clipPath: `inset(0 ${((ladoFoto - r * 2) / 2 / ladoFoto) * 100}% ${(1 - (cy - (fotoEstilo.top as number)) / ladoFoto) * 100}% ${((ladoFoto - r * 2) / 2 / ladoFoto) * 100}%)`,
+					opacity: aro,
+				}}
+			/>
+			{/* Nome. */}
+			<div
+				style={{
+					position: 'absolute',
+					left: cx - width * 0.45,
+					width: width * 0.9,
+					top: cy + r * 1.08,
+					textAlign: 'center',
+				}}
+			>
+				{cena.pequeno && (
+					<div
+						style={{
+							fontFamily: playfair,
+							fontStyle: 'italic',
+							fontWeight: 700,
+							fontSize: nomeTam * 0.32,
+							color: '#fff',
+							textShadow: '0 2px 12px rgba(0,0,0,0.7)',
+							...desfocarEntrada(
+								interpolate(frame - 4, [0, 6], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+								8,
+							),
+						}}
+					>
+						{cena.pequeno}
+					</div>
+				)}
+				<div style={{fontFamily: anton, fontSize: nomeTam, lineHeight: 1, letterSpacing: nomeTam * 0.04}}>
+					{[...cena.nome.toUpperCase()].map((ch, i) => {
+						const p = interpolate(frame - 6 - ((i * 7) % cena.nome.length), [0, 6], [0, 1], {
+							extrapolateLeft: 'clamp',
+							extrapolateRight: 'clamp',
+						});
+						return (
+							<span
+								key={i}
+								style={{
+									display: 'inline-block',
+									paddingTop: '0.18em',
+									marginTop: '-0.18em',
+									background: 'linear-gradient(180deg, #fff1b8 0%, #e2b453 40%, #9c6b1c 62%, #f3d27a 100%)',
+									WebkitBackgroundClip: 'text',
+									backgroundClip: 'text',
+									color: 'transparent',
+									filter: `drop-shadow(0 0 12px rgba(255,190,80,0.55))${p < 1 ? ` blur(${(1 - p) * 10}px)` : ''}`,
+									opacity: p,
+									transform: `translateY(${(1 - p) * nomeTam * 0.3}px)`,
+								}}
+							>
+								{ch}
+							</span>
+						);
+					})}
+				</div>
+			</div>
+		</AbsoluteFill>
+	);
+};

@@ -124,6 +124,9 @@ export type Cena =
 			y?: number;
 			tamanho?: number;
 	  })
+	// Foto recortada de uma pessoa (PNG com alfa) saindo de um aro dourado, com nome embaixo.
+	// centro: grande no meio, câmera desfocada atrás; lado: menor, no canto de baixo à direita.
+	| (Base & {tipo: 'retrato'; src: string; nome: string; pequeno?: string; variante?: 'centro' | 'lado'})
 	// Visor de câmera: cantos, "● REC" piscando (desmontagem-2, ref. 2).
 	| (Base & {tipo: 'rec'})
 	// Pílulas vermelhas de vidro com ícone, texto palavra por palavra (desmontagem-2, ref. 2, "what to say?").
@@ -267,6 +270,7 @@ const MODO_PADRAO: Record<TipoCena, Modo> = {
 	checklist: 'sobre',
 	cenario: 'cheia',
 	gigante: 'atras',
+	retrato: 'sobre',
 	anel: 'sobre',
 	rec: 'sobre',
 	alertas: 'sobre',
@@ -294,6 +298,7 @@ const SOM_PADRAO: Record<TipoCena, Som | null> = {
 	checklist: null,
 	cenario: 'whoosh',
 	gigante: 'whoosh',
+	retrato: 'shimmer',
 	anel: 'shimmer',
 	rec: 'tick',
 	alertas: null,
@@ -447,7 +452,7 @@ export const montar = (edit: Edit, duracaoFonte: number): Montagem => {
 	camera.sort((a, b) => a.em - b.em);
 	busca.erros.slice(errosAntes).forEach(erroAncora);
 
-	const legenda = edit.legenda ? paginar(palavras, edit.legenda, validas, telaFinal) : [];
+	const legenda = edit.legenda ? paginar(palavras, edit.legenda, validas, telaFinal, busca.emendas) : [];
 
 	return {legenda, camera, cortes, mantidos, duracaoEditada, palavras, cenas: validas, problemas, curva, telaFinal};
 };
@@ -466,6 +471,7 @@ const TEXTO_PROPRIO: TipoCena[] = [
 	'cenario',
 	'alertas',
 	'gigante',
+	'retrato',
 ];
 const normalizar = (s: string) =>
 	s
@@ -480,11 +486,15 @@ const paginar = (
 	cfg: Legenda,
 	cenas: CenaNoPlano[],
 	telaFinal: number | null,
+	emendas: number[],
 ): PaginaLegenda[] => {
 	const limite = cfg.palavrasPorTela ?? (cfg.estilo === 'palavra' ? 4 : 5);
 	const esconder = new Set(cfg.esconderEm ?? TEXTO_PROPRIO);
 	// Cena atrás da pessoa só esconde a legenda quando é a palavra gigante (o cenário de fundo não).
-	const esconde = (c: CenaNoPlano) => esconder.has(c.tipo) && (c.modo !== 'atras' || c.tipo === 'gigante');
+	const esconde = (c: CenaNoPlano) =>
+		esconder.has(c.tipo) &&
+		(c.modo !== 'atras' || c.tipo === 'gigante') &&
+		!(c.tipo === 'retrato' && c.variante === 'lado');
 	const escondida = (t: number) => cenas.some((c) => esconde(c) && t >= c.de && t < c.ate);
 	const contagem = new Map<string, number>();
 	const marcadas: PaginaLegenda['palavras'] = palavras.map((p) => {
@@ -522,7 +532,9 @@ const paginar = (
 		const prox = marcadas[i + 1];
 		const pausa = prox ? prox.inicio - p.fim : Infinity;
 		const pontuacao = /[.!?…,;:]$/.test(p.texto);
-		if (atual.length >= limite || pontuacao || pausa > 0.45 || p.enfase === 'grande') {
+		// Corte entre esta palavra e a próxima: a frase mudou, a tela de legenda também.
+		const emenda = prox ? emendas.some((e) => e > p.inicio && e <= prox.inicio + 0.01) : false;
+		if (atual.length >= limite || pontuacao || emenda || pausa > 0.45 || p.enfase === 'grande') {
 			fechar(prox ? prox.inicio : null);
 		}
 	}
