@@ -9,7 +9,7 @@ import {
 	useCurrentFrame,
 	useVideoConfig,
 } from 'remotion';
-import {Audio, Video} from '@remotion/media';
+import {Audio} from '@remotion/media';
 import {dbParaGanho} from './motor/anim';
 import {formatar, montar, type CenaNoPlano, type Edit, type EfeitoCamera, type Montagem} from './motor/plano';
 import {cor, poppins} from './motor/tema';
@@ -68,10 +68,11 @@ const Base: React.FC<{edit: Edit; montagem: Montagem; pessoa?: boolean}> = ({edi
 				const dur = Math.round(acumulado * fps) - from;
 				return (
 					<Sequence key={i} from={from} durationInFrames={dur} layout="none">
-						<Video
+						{/* OffthreadVideo extrai os quadros com o ffmpeg: o Video do @remotion/media travava no Windows. */}
+						<OffthreadVideo
 							src={staticFile(`${edit.pasta}/${edit.video}`)}
 							trimBefore={Math.round(ini * fps)}
-							objectFit="cover"
+							style={{width: '100%', height: '100%', objectFit: 'cover'}}
 						/>
 					</Sequence>
 				);

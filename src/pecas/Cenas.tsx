@@ -1,8 +1,7 @@
 import {Vitrine} from './Vitrine';
 import {Xadrez} from './Xadrez';
 import React from 'react';
-import {AbsoluteFill, Img, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
-import {Video} from '@remotion/media';
+import {AbsoluteFill, Img, OffthreadVideo, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useCiclo, useEntradaEm} from '../motor/anim';
 import type {CenaNoPlano, Fundo as TipoFundo, Posicao} from '../motor/plano';
 import {brilho, cor, poppins, useMargem} from '../motor/tema';
@@ -240,11 +239,11 @@ const Conteudo: React.FC<Props> = ({cena, pasta}) => {
 		case 'tela':
 			return (
 				<AbsoluteFill style={{backgroundColor: cor.preto}}>
-					<Video
+					<OffthreadVideo
 						src={staticFile(`${pasta}/${cena.src}`)}
 						trimBefore={Math.round((cena.inicioNaFonte ?? 0) * fps)}
 						muted
-						objectFit="contain"
+						style={{width: '100%', height: '100%', objectFit: 'contain'}}
 					/>
 				</AbsoluteFill>
 			);

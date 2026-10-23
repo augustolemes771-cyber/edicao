@@ -1,6 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, Img, interpolate, random, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
-import {Video} from '@remotion/media';
+import {AbsoluteFill, Img, OffthreadVideo, interpolate, random, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useEntradaEm} from '../motor/anim';
 import type {CenaNoPlano, EstiloNome} from '../motor/plano';
 import {anton, dmSerif, inter, playfair, poppins, unbounded} from '../motor/tema';
@@ -316,7 +315,7 @@ export const Broll: React.FC<{cena: De<'broll'>; pasta: string}> = ({cena, pasta
 	};
 	return (
 		<AbsoluteFill style={{backgroundColor: '#000', overflow: 'hidden'}}>
-			{cena.video ? <Video src={src} muted objectFit="cover" style={estilo} /> : <Img src={src} style={estilo} />}
+			{cena.video ? <OffthreadVideo src={src} muted style={{...estilo, objectFit: 'cover'}} /> : <Img src={src} style={estilo} />}
 		</AbsoluteFill>
 	);
 };
