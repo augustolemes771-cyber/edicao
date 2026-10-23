@@ -15,7 +15,7 @@ export const depoimentoDanilow: Edit = {
 	extraFim: 2.5,
 	transcricao,
 	// Pessoa recortada (scripts/recortar.py): texto e cenário atrás dela.
-	recorte: 'pessoa.webm',
+	recorte: 'pessoa-rvm.webm',
 	// Trechos que saem, no tempo original. Cada borda cai num silêncio medido no áudio
 	// (energia abaixo de -38 dB), porque o tempo de palavra do Whisper erra ~0,3 s.
 	cortes: [
