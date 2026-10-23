@@ -146,8 +146,8 @@ export const depoimentoDanilow: Edit = {
 		// O que aprendeu: um cenário 3D por item, entrando na palavra falada. A voz dela continua por baixo.
 		{
 			tipo: 'xadrez',
-			pasta: 'projetos/depoimento-danilow/xadrez-veo',
-			video: true,
+			// Versão do Blender para comparar; a do vídeo por IA é pasta 'xadrez-veo' com video: true.
+			pasta: 'projetos/depoimento-danilow/xadrez-blender-hd',
 			de: b.say('como funciona o algoritmo').inicio,
 			ate: b.say('como escolher').inicio,
 			pequeno: 'como funciona o',
