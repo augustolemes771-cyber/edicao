@@ -518,19 +518,22 @@ export const Rec: React.FC = () => {
 	);
 };
 
-// Pílula vermelha de vidro com ícone; o texto entra palavra por palavra.
-const Pilula: React.FC<{texto: string; em: number; inicio: number; icone: 'alerta' | 'x'; largura: number}> = ({
-	texto,
-	em,
-	inicio,
-	icone,
-	largura,
-}) => {
+// Pílula de alerta com ícone. vermelha: vidro vermelho, texto palavra por palavra (ref. 2).
+// escura: vidro quase preto com texto branco inteiro e ícone num círculo vermelho; contrasta com roupa vermelha.
+const Pilula: React.FC<{
+	texto: string;
+	em: number;
+	inicio: number;
+	icone: 'alerta' | 'x';
+	largura: number;
+	escura: boolean;
+}> = ({texto, em, inicio, icone, largura, escura}) => {
 	const frame = useCurrentFrame();
 	const {fps} = useVideoConfig();
 	const p = useEntradaEm(em, inicio);
 	const local = frame - Math.round((em - inicio) * fps);
 	const palavras = texto.split(' ');
+	const lado = largura * (escura ? 0.085 : 0.06);
 	return (
 		<div
 			style={{
@@ -538,42 +541,85 @@ const Pilula: React.FC<{texto: string; em: number; inicio: number; icone: 'alert
 				display: 'flex',
 				alignItems: 'center',
 				gap: largura * 0.04,
-				padding: `${largura * 0.028}px ${largura * 0.05}px`,
+				padding: `${largura * (escura ? 0.032 : 0.028)}px ${largura * 0.045}px`,
 				marginTop: largura * 0.03,
-				borderRadius: largura * 0.03,
-				background: 'linear-gradient(90deg, rgba(120,10,25,0.85) 0%, rgba(70,6,16,0.75) 100%)',
-				border: '1px solid rgba(255,90,110,0.35)',
-				boxShadow: '0 10px 30px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.12)',
+				borderRadius: largura * 0.035,
+				background: escura
+					? 'linear-gradient(180deg, rgba(22,22,26,0.92) 0%, rgba(8,8,10,0.9) 100%)'
+					: 'linear-gradient(90deg, rgba(120,10,25,0.85) 0%, rgba(70,6,16,0.75) 100%)',
+				border: escura ? '1px solid rgba(255,255,255,0.16)' : '1px solid rgba(255,90,110,0.35)',
+				boxShadow: escura
+					? '0 14px 34px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.1)'
+					: '0 10px 30px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.12)',
 				backdropFilter: 'blur(10px)',
 				opacity: p,
-				transform: `translateY(${(1 - p) * 30}px) scale(${0.94 + 0.06 * p})`,
+				transform: escura
+					? `translateX(${(1 - p) * -largura * 0.18}px) scale(${0.96 + 0.04 * p})`
+					: `translateY(${(1 - p) * 30}px) scale(${0.94 + 0.06 * p})`,
 			}}
 		>
-			<svg viewBox="0 0 24 24" width={largura * 0.06} height={largura * 0.06} style={{flex: 'none'}}>
-				{icone === 'alerta' ? (
-					<>
-						<path d="M12 3L22 20H2Z" fill="#ff4d5e" />
-						<rect x="11" y="9" width="2" height="6" fill="#fff" />
-						<rect x="11" y="16.5" width="2" height="2" fill="#fff" />
-					</>
-				) : (
-					<path d="M5 5L19 19M19 5L5 19" stroke="#f4f4f4" strokeWidth={3.4} strokeLinecap="round" />
-				)}
-			</svg>
-			<div style={{fontFamily: inter, fontWeight: 600, fontSize: largura * 0.05, color: '#fff'}}>
-				{palavras.map((w, i) => (
-					<span
-						key={i}
-						style={{
-							opacity: interpolate(local - 3 - i * 4, [0, 4], [0, 1], {
-								extrapolateLeft: 'clamp',
-								extrapolateRight: 'clamp',
-							}),
-						}}
-					>
-						{w}{' '}
-					</span>
-				))}
+			{escura ? (
+				<div
+					style={{
+						flex: 'none',
+						width: lado,
+						height: lado,
+						borderRadius: '50%',
+						background: '#ff3b4f',
+						boxShadow: '0 0 16px rgba(255,59,79,0.6)',
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center',
+					}}
+				>
+					<svg viewBox="0 0 24 24" width="58%" height="58%">
+						{icone === 'alerta' ? (
+							<>
+								<rect x="10.6" y="4" width="2.8" height="10" rx="1.4" fill="#fff" />
+								<circle cx="12" cy="18.5" r="1.8" fill="#fff" />
+							</>
+						) : (
+							<path d="M6 6L18 18M18 6L6 18" stroke="#fff" strokeWidth={3.4} strokeLinecap="round" />
+						)}
+					</svg>
+				</div>
+			) : (
+				<svg viewBox="0 0 24 24" width={lado} height={lado} style={{flex: 'none'}}>
+					{icone === 'alerta' ? (
+						<>
+							<path d="M12 3L22 20H2Z" fill="#ff4d5e" />
+							<rect x="11" y="9" width="2" height="6" fill="#fff" />
+							<rect x="11" y="16.5" width="2" height="2" fill="#fff" />
+						</>
+					) : (
+						<path d="M5 5L19 19M19 5L5 19" stroke="#f4f4f4" strokeWidth={3.4} strokeLinecap="round" />
+					)}
+				</svg>
+			)}
+			<div
+				style={{
+					fontFamily: inter,
+					fontWeight: escura ? 700 : 600,
+					fontSize: largura * (escura ? 0.056 : 0.05),
+					color: '#fff',
+					lineHeight: 1.2,
+				}}
+			>
+				{escura
+					? texto
+					: palavras.map((w, i) => (
+							<span
+								key={i}
+								style={{
+									opacity: interpolate(local - 3 - i * 4, [0, 4], [0, 1], {
+										extrapolateLeft: 'clamp',
+										extrapolateRight: 'clamp',
+									}),
+								}}
+							>
+								{w}{' '}
+							</span>
+						))}
 			</div>
 		</div>
 	);
@@ -592,6 +638,7 @@ export const Alertas: React.FC<{cena: De<'alertas'>}> = ({cena}) => {
 					inicio={cena.de}
 					icone={item.icone ?? (i === 0 ? 'alerta' : 'x')}
 					largura={largura}
+					escura={cena.variante === 'escura'}
 				/>
 			))}
 		</AbsoluteFill>

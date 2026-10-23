@@ -143,7 +143,12 @@ export type Cena =
 	// Visor de câmera: cantos, "● REC" piscando (desmontagem-2, ref. 2).
 	| (Base & {tipo: 'rec'})
 	// Pílulas vermelhas de vidro com ícone, texto palavra por palavra (desmontagem-2, ref. 2, "what to say?").
-	| (Base & {tipo: 'alertas'; itens: {texto: string; em: number; icone?: 'alerta' | 'x'}[]});
+	// variante escura: vidro quase preto e texto branco inteiro (contraste sobre roupa vermelha, 23/10/2026).
+	| (Base & {
+			tipo: 'alertas';
+			itens: {texto: string; em: number; icone?: 'alerta' | 'x'}[];
+			variante?: 'vermelha' | 'escura';
+	  });
 
 export type Objeto3DCena = {
 	tipo: TipoObjeto3D;

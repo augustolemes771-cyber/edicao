@@ -103,11 +103,12 @@ export const depoimentoDanilow: Edit = {
 		// Dor: alertas na hora da fala.
 		{
 			tipo: 'alertas',
+			variante: 'escura',
 			de: b.at('sentia'),
 			ate: b.say('e aí foi quando').inicio,
 			itens: [
 				{texto: 'travada nas lives', em: b.at('travada')},
-				{texto: 'sem entender o processo', em: b.at('processo'), icone: 'x'},
+				{texto: 'sem entender o processo', em: b.say('não entendia').inicio, icone: 'x'},
 			],
 		},
 		// Virada: a foto dele volta, menor, no canto, quando ela conta que conheceu o Danilow.
