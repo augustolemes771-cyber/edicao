@@ -479,7 +479,11 @@ const paginar = (
 	const fechar = (proximoInicio: number | null) => {
 		if (atual.length === 0) return;
 		const ultimo = atual[atual.length - 1];
-		const ate = proximoInicio === null ? ultimo.fim + 0.4 : Math.min(proximoInicio, ultimo.fim + 0.6);
+		let ate = proximoInicio === null ? ultimo.fim + 0.4 : Math.min(proximoInicio, ultimo.fim + 0.6);
+		// A tela de legenda nunca invade uma cena que esconde a legenda.
+		for (const c of cenas) {
+			if (esconder.has(c.tipo) && c.de > atual[0].inicio && c.de < ate) ate = c.de;
+		}
 		paginas.push({de: atual[0].inicio, ate, palavras: atual});
 		atual = [];
 	};
