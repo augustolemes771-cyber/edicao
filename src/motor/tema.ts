@@ -50,10 +50,10 @@ const carregar = (
 		}
 	}
 };
-carregar(poppins, 'poppins', ['400', '600', '700', '800', '900'], ['normal']);
+carregar(poppins, 'poppins', ['300', '400', '600', '700', '800', '900'], ['normal']);
 carregar(playfair, 'playfair-display', ['700', '800'], ['normal', 'italic']);
 carregar(unbounded, 'unbounded', ['700', '800'], ['normal']);
-carregar(inter, 'inter', ['600', '700', '800'], ['normal']);
+carregar(inter, 'inter', ['300', '400', '600', '700', '800'], ['normal']);
 // Estilos aprendidos na segunda leva de referências (docs/referencias/desmontagem-2.md).
 export const gotica = 'UnifrakturMaguntia';
 export const anton = 'Anton';
@@ -61,6 +61,22 @@ export const dmSerif = 'DM Serif Display';
 carregar(gotica, 'unifrakturmaguntia', ['400'], ['normal'], true);
 carregar(anton, 'anton', ['400'], ['normal']);
 carregar(dmSerif, 'dm-serif-display', ['400'], ['normal', 'italic']);
+// Estilos de texto tirados de posts (docs/referencias/tipografia.md). Permanent Marker é Apache 2.0, as outras OFL.
+export const barlowCondensada = 'Barlow Condensed';
+export const montserrat = 'Montserrat';
+export const caveat = 'Caveat';
+export const pixel = 'Silkscreen';
+export const yesteryear = 'Yesteryear';
+export const marcador = 'Permanent Marker';
+export const gloock = 'Gloock';
+carregar(barlowCondensada, 'barlow-condensed', ['800', '900'], ['normal', 'italic']);
+carregar(montserrat, 'montserrat', ['500'], ['normal']);
+carregar(montserrat, 'montserrat', ['800', '900'], ['italic']);
+carregar(caveat, 'caveat', ['600'], ['normal']);
+carregar(pixel, 'silkscreen', ['400', '700'], ['normal']);
+carregar(yesteryear, 'yesteryear', ['400'], ['normal']);
+carregar(marcador, 'permanent-marker', ['400'], ['normal'], true);
+carregar(gloock, 'gloock', ['400'], ['normal']);
 
 // Quadro de desenho. O render final sai em 4K com --scale=2.
 export const LARGURA = 1920;

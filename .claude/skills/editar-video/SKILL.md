@@ -110,6 +110,12 @@ estão em `docs/referencias/desmontagem.md`.
 - Fala para a câmera no estilo da ref. 2: `legenda: {estilo: 'neon'}` com `grande` nas palavras-chave e `riscar`
   na palavra negada, mais `anel`, `rec` e `alertas`.
 
+## Estilos de texto dos posts (23/10/2026)
+
+- Catálogo em `docs/referencias/tipografia.md`; peças `Etiqueta`, `Bomba`, `Designer`, `Rasgado` e `Cassino` em
+  `src/pecas/Tipografia.tsx`, com prova em `prova-tipografia` (`--props='{"estilo":"..."}'`).
+- Antes de usar um deles num vídeo, mandar a prova estática com o texto do vídeo para aprovação.
+
 ## Depoimentos e cortes de conteúdo (22/10/2026)
 
 - Estrutura que prende até o fim: gancho com o resultado → dor (antes) → virada (quem ajudou) → transformação →
