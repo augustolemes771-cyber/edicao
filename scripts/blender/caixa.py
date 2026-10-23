@@ -198,6 +198,72 @@ def montar(a):
         feixe.data.energy = energia
         feixe.data.keyframe_insert("energy", frame=quadro)
 
+    # Feixe de luz de verdade: um cone de volume que só emite (sem ruído, não depende das luzes), nascendo dentro
+    # da caixa. A parede da frente esconde a base; ele sobe pela abertura na frente da tampa e some para cima.
+    bpy.ops.mesh.primitive_cone_add(vertices=64, radius1=0.25, radius2=0.95, depth=3.2, location=(0, 0, 1.65))
+    cone = bpy.context.active_object
+    cone.name = "feixe"
+    cone.parent = caixa
+    vol = bpy.data.materials.new("feixe_volume")
+    vol.use_nodes = True
+    nf = vol.node_tree.nodes
+    nf.remove(nf["Principled BSDF"])
+    lg = vol.node_tree.links.new
+    coord = nf.new("ShaderNodeTexCoord")
+    sep = nf.new("ShaderNodeSeparateXYZ")
+    lg(coord.outputs["Object"], sep.inputs["Vector"])
+    # Some para cima: z do objeto vai de -1,6 (base) a 1,6 (topo).
+    sobe = nf.new("ShaderNodeMapRange")
+    sobe.inputs["From Min"].default_value = -1.6
+    sobe.inputs["From Max"].default_value = 1.6
+    sobe.inputs["To Min"].default_value = 1.0
+    sobe.inputs["To Max"].default_value = 0.0
+    lg(sep.outputs["Z"], sobe.inputs["Value"])
+    curva = nf.new("ShaderNodeMath")
+    curva.operation = "POWER"
+    curva.inputs[1].default_value = 2.2
+    lg(sobe.outputs["Result"], curva.inputs[0])
+    # Mais forte no miolo: distância do eixo.
+    xy = nf.new("ShaderNodeCombineXYZ")
+    lg(sep.outputs["X"], xy.inputs["X"])
+    lg(sep.outputs["Y"], xy.inputs["Y"])
+    dist = nf.new("ShaderNodeVectorMath")
+    dist.operation = "LENGTH"
+    lg(xy.outputs["Vector"], dist.inputs[0])
+    miolo = nf.new("ShaderNodeMapRange")
+    miolo.inputs["From Min"].default_value = 0.0
+    miolo.inputs["From Max"].default_value = 0.9
+    miolo.inputs["To Min"].default_value = 1.0
+    miolo.inputs["To Max"].default_value = 0.0
+    lg(dist.outputs["Value"], miolo.inputs["Value"])
+    mult = nf.new("ShaderNodeMath")
+    mult.operation = "MULTIPLY"
+    lg(curva.outputs["Value"], mult.inputs[0])
+    lg(miolo.outputs["Result"], mult.inputs[1])
+    forca = nf.new("ShaderNodeMath")
+    forca.operation = "MULTIPLY"
+    lg(mult.outputs["Value"], forca.inputs[0])
+    em = nf.new("ShaderNodeEmission")
+    em.inputs["Color"].default_value = (1.0, 0.7, 0.32, 1)
+    lg(forca.outputs["Value"], em.inputs["Strength"])
+    # Um pouco de absorção na mesma medida: sem ela o volume sai com alfa zero no PNG e some fora da caixa.
+    absorve = nf.new("ShaderNodeVolumeAbsorption")
+    absorve.inputs["Color"].default_value = (1.0, 0.85, 0.6, 1)
+    dens = nf.new("ShaderNodeMath")
+    dens.operation = "MULTIPLY"
+    dens.inputs[1].default_value = 0.12
+    lg(forca.outputs["Value"], dens.inputs[0])
+    lg(dens.outputs["Value"], absorve.inputs["Density"])
+    soma = nf.new("ShaderNodeAddShader")
+    lg(em.outputs["Emission"], soma.inputs[0])
+    lg(absorve.outputs["Volume"], soma.inputs[1])
+    lg(soma.outputs["Shader"], nf["Material Output"].inputs["Volume"])
+    cone.data.materials.append(vol)
+    cone.visible_shadow = False
+    for quadro, valor in ((ABRE[0], 0.0), (ABRE[0] + 10, 7.0), (QUADROS, 5.5)):
+        forca.inputs[1].default_value = valor
+        forca.inputs[1].keyframe_insert("default_value", frame=quadro)
+
     cam_d = bpy.data.cameras.new("camera")
     cam_d.lens = 50
     cam_d.dof.use_dof = True

@@ -165,6 +165,7 @@ export const depoimentoDanilow: Edit = {
 			quadroImpacto: 7,
 			yLuz: 0.42,
 			yTexto: 0.07,
+			// O feixe do Blender sai de dentro da caixa; este continua a luz acima da tampa.
 			feixe: {x: 0.5, y: 0.5, abre: 13},
 			pequeno: 'como escolher o',
 			grande: 'produto certo',
