@@ -50,8 +50,11 @@ def main():
 
 
 
-def video_inteiro(video, saida):
-    """Recorta o vídeo inteiro e grava um WebM VP9 com alfa (mesmo tempo da fonte), para o Remotion."""
+def video_inteiro(video, saida, trechos=None):
+    """Recorta o vídeo e grava um WebM VP9 com alfa (mesmo tempo da fonte), para o Remotion.
+
+    Com trechos [(ini, fim), ...] em segundos, só recorta neles (com 1,5 s de aquecimento antes); o resto sai
+    transparente, o que poupa muito processador quando só há texto atrás da pessoa em poucos momentos."""
     sessao = ort.InferenceSession(MODELO, providers=["CPUExecutionProvider"])
     cap = cv2.VideoCapture(video)
     fps = cap.get(cv2.CAP_PROP_FPS)
@@ -66,10 +69,17 @@ def video_inteiro(video, saida):
     rec = [np.zeros([1, 1, 1, 1], np.float32)] * 4
     razao = np.array([0.5], np.float32)
     n = 0
+    vazio = np.zeros((h, w, 4), np.uint8).tobytes()
     while True:
         ok, quadro = cap.read()
         if not ok:
             break
+        t = n / fps
+        if trechos and not any(a - 1.5 <= t <= b + 0.2 for a, b in trechos):
+            rec = [np.zeros([1, 1, 1, 1], np.float32)] * 4
+            ff.stdin.write(vazio)
+            n += 1
+            continue
         src = cv2.cvtColor(quadro, cv2.COLOR_BGR2RGB).astype(np.float32).transpose(2, 0, 1)[None] / 255
         fgr, alfa, *rec = sessao.run(None, {"src": src, "r1i": rec[0], "r2i": rec[1], "r3i": rec[2], "r4i": rec[3], "downsample_ratio": razao})
         cor = cv2.cvtColor((fgr[0].transpose(1, 2, 0) * 255).clip(0, 255).astype(np.uint8), cv2.COLOR_RGB2BGR)
@@ -84,8 +94,9 @@ def video_inteiro(video, saida):
 
 
 if __name__ == "__main__":
-    # Vídeo inteiro: recortar_rvm.py --video <video> <saida.webm>
-    if len(sys.argv) == 4 and sys.argv[1] == "--video":
-        video_inteiro(sys.argv[2], sys.argv[3])
+    # Vídeo: recortar_rvm.py --video <video> <saida.webm> [ini-fim,ini-fim,...]
+    if len(sys.argv) in (4, 5) and sys.argv[1] == "--video":
+        trechos = [tuple(map(float, t.split("-"))) for t in sys.argv[4].split(",")] if len(sys.argv) == 5 else None
+        video_inteiro(sys.argv[2], sys.argv[3], trechos)
     else:
         main()
