@@ -7,6 +7,9 @@ no Remotion, atrás da render, para a coroa da rainha passar na frente do texto.
 Instalação (uma vez):
     python3.11 -m venv ~/.cache/edicao/venv-blender
     ~/.cache/edicao/venv-blender/bin/pip install bpy==4.2.0
+Uso no PC com placa de vídeo (Windows, Blender 4.2 instalado), na pasta do projeto:
+    "C:\\Program Files\\Blender Foundation\\Blender 4.2\\blender.exe" -b -P scripts/blender/xadrez.py -- ^
+        public/projetos/depoimento-danilow/xadrez-blender-hd --res 100 --amostras 64 --gpu
 Uso:
     ~/.cache/edicao/venv-blender/bin/python scripts/blender/xadrez.py <saida_dir> [--res 50] [--amostras 48]
         [--de 1] [--ate 46] [--so 30]
@@ -34,6 +37,7 @@ def args():
     p.add_argument("--ate", type=int, default=46)
     p.add_argument("--so", type=int, default=0)
     p.add_argument("--saltos", type=int, default=8)
+    p.add_argument("--gpu", action="store_true", help="renderiza na placa de vídeo (OptiX, CUDA, HIP ou oneAPI)")
     argv = sys.argv[sys.argv.index("--") + 1 :] if "--" in sys.argv else sys.argv[1:]
     return p.parse_args(argv)
 
@@ -168,11 +172,32 @@ def rainha(mat):
     return juntar(partes)
 
 
+def ligar_gpu(cena):
+    """Usa a primeira API de placa de vídeo disponível; sem placa compatível, continua no processador."""
+    prefs = bpy.context.preferences.addons["cycles"].preferences
+    for api in ("OPTIX", "CUDA", "HIP", "ONEAPI", "METAL"):
+        try:
+            prefs.compute_device_type = api
+        except TypeError:
+            continue
+        prefs.get_devices()
+        placas = [d for d in prefs.devices if d.type == api]
+        if placas:
+            for d in prefs.devices:
+                d.use = d.type == api
+            cena.cycles.device = "GPU"
+            print(f"Render na placa de vídeo ({api}): {', '.join(d.name for d in placas)}")
+            return
+    print("Nenhuma placa de vídeo compatível encontrada; renderizando no processador.")
+
+
 def montar(a):
     limpar()
     cena = bpy.context.scene
     cena.render.engine = "CYCLES"
     cena.cycles.device = "CPU"
+    if a.gpu:
+        ligar_gpu(cena)
     cena.cycles.samples = a.amostras
     cena.cycles.use_denoising = True
     cena.cycles.max_bounces = a.saltos
