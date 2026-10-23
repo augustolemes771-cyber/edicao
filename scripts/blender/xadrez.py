@@ -33,6 +33,7 @@ def args():
     p.add_argument("--de", type=int, default=1)
     p.add_argument("--ate", type=int, default=46)
     p.add_argument("--so", type=int, default=0)
+    p.add_argument("--saltos", type=int, default=8)
     argv = sys.argv[sys.argv.index("--") + 1 :] if "--" in sys.argv else sys.argv[1:]
     return p.parse_args(argv)
 
@@ -174,7 +175,10 @@ def montar(a):
     cena.cycles.device = "CPU"
     cena.cycles.samples = a.amostras
     cena.cycles.use_denoising = True
-    cena.cycles.max_bounces = 8
+    cena.cycles.max_bounces = a.saltos
+    cena.cycles.adaptive_threshold = 0.02
+    cena.cycles.caustics_reflective = False
+    cena.cycles.caustics_refractive = False
     cena.render.film_transparent = True
     cena.render.resolution_x = 1080
     cena.render.resolution_y = 1920
