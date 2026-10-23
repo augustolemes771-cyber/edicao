@@ -108,6 +108,9 @@ export type Cena =
 			posTexto?: number;
 			// Lado do texto: ao lado de um objeto grande, como o lampião da ref. 3.
 			ladoTexto?: 'centro' | 'direita' | 'esquerda';
+			// Título em neon dourado com profundidade e tópicos em cartões que entram inteiros na hora da fala.
+			titulo?: string;
+			topicos?: {texto: string; em: number}[];
 			detalhes?: boolean;
 			// Banho de cor no fim da cena (ref. 1, laranja antes da troca).
 			tinta?: string;

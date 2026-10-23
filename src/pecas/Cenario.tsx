@@ -7,6 +7,7 @@ import {RoomEnvironment} from 'three/examples/jsm/environments/RoomEnvironment.j
 import type {CenaNoPlano} from '../motor/plano';
 import {anton, dmSerif, gotica, inter, playfair, poppins} from '../motor/tema';
 import {Objeto3D} from './tres/Objetos3D';
+import {NeonProfundo} from './NeonProfundo';
 
 // Cenário 2,5D/3D das referências da segunda leva (docs/referencias/desmontagem-2.md):
 // fundo de papel ou escuro, palavra fantasma atrás, objetos 3D com sombra no fundo,
@@ -335,6 +336,92 @@ const Tipografia: React.FC<{cena: Cena; cor: string}> = ({cena, cor}) => {
 	);
 };
 
+// Título dourado neon e tópicos em cartões de vidro com ✓ dourado; cada cartão entra inteiro, rápido, na fala.
+const Topicos: React.FC<{cena: Cena}> = ({cena}) => {
+	const frame = useCurrentFrame();
+	const {fps, width, height} = useVideoConfig();
+	const largura = width * 0.82;
+	return (
+		<AbsoluteFill style={{alignItems: 'center', paddingTop: height * 0.12}}>
+			{cena.titulo && (
+				<div style={{marginBottom: height * 0.03}}>
+					<NeonProfundo
+						paleta="dourado"
+						tamanho={width * 0.2}
+						linhas={[{texto: cena.titulo, grande: true}]}
+						progresso={(i) =>
+							interpolate(frame - i * 0.6, [0, 5], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})
+						}
+					/>
+				</div>
+			)}
+			{cena.topicos!.map((t, i) => {
+				const local = frame - Math.round((t.em - cena.de) * fps);
+				const p = spring({frame: local, fps, config: {damping: 16, stiffness: 220, mass: 0.6}});
+				const check = interpolate(local, [3, 9], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+				return (
+					<div
+						key={i}
+						style={{
+							width: largura,
+							display: 'flex',
+							alignItems: 'center',
+							gap: largura * 0.045,
+							padding: `${largura * 0.035}px ${largura * 0.05}px`,
+							marginTop: largura * 0.03,
+							borderRadius: largura * 0.04,
+							background: 'linear-gradient(180deg, rgba(28,24,16,0.92) 0%, rgba(10,9,6,0.92) 100%)',
+							border: '1px solid rgba(242,196,90,0.35)',
+							boxShadow: '0 16px 36px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,235,180,0.12)',
+							opacity: Math.min(1, p * 1.4),
+							transform: `translateX(${(1 - p) * -largura * 0.2}px) scale(${0.95 + 0.05 * p})`,
+						}}
+					>
+						<div
+							style={{
+								flex: 'none',
+								width: largura * 0.1,
+								height: largura * 0.1,
+								borderRadius: '50%',
+								background: 'linear-gradient(180deg, #fff1b0 0%, #ffc93c 60%, #c98a10 100%)',
+								boxShadow: '0 0 18px rgba(255,200,60,0.55), 0 4px 0 #7a4a00',
+								display: 'flex',
+								alignItems: 'center',
+								justifyContent: 'center',
+							}}
+						>
+							<svg viewBox="0 0 24 24" width="60%" height="60%">
+								<path
+									d="M5 12.5l4.5 4.5L19 7.5"
+									fill="none"
+									stroke="#3d2600"
+									strokeWidth={3.4}
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeDasharray={24}
+									strokeDashoffset={24 * (1 - check)}
+								/>
+							</svg>
+						</div>
+						<div
+							style={{
+								fontFamily: poppins,
+								fontWeight: 800,
+								fontSize: largura * 0.068,
+								color: '#fff',
+								lineHeight: 1.15,
+								letterSpacing: -1,
+							}}
+						>
+							{t.texto}
+						</div>
+					</div>
+				);
+			})}
+		</AbsoluteFill>
+	);
+};
+
 export const Cenario: React.FC<{cena: Cena}> = ({cena}) => {
 	const frame = useCurrentFrame();
 	const {fps, width, height} = useVideoConfig();
@@ -414,6 +501,7 @@ export const Cenario: React.FC<{cena: Cena}> = ({cena}) => {
 			<Grao escuro={escuro} />
 			{cena.detalhes !== false && <Detalhes cor={fundo.detalhe} />}
 			<Tipografia cena={cena} cor={fundo.tinta} />
+			{cena.topicos && <Topicos cena={cena} />}
 			{tinta > 0 && <AbsoluteFill style={{backgroundColor: cena.tinta, opacity: tinta, mixBlendMode: 'soft-light'}} />}
 		</AbsoluteFill>
 	);
