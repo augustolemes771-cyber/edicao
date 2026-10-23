@@ -3,6 +3,7 @@ import {AbsoluteFill, Img, OffthreadVideo, interpolate, random, spring, staticFi
 import {useEntradaEm} from '../motor/anim';
 import type {CenaNoPlano, EstiloNome} from '../motor/plano';
 import {anton, dmSerif, inter, playfair, poppins, unbounded} from '../motor/tema';
+import {DestaqueSuave, TextoLuxo} from './Luxo';
 import {NeonProfundo} from './NeonProfundo';
 
 // Peças aprendidas nas referências. Detalhes e tempos em docs/referencias/desmontagem.md.
@@ -670,6 +671,29 @@ export const Gigante: React.FC<{cena: De<'gigante'>}> = ({cena}) => {
 		},
 	};
 	const deriva = interpolate(frame, [0, duracao], [1.04, 1]);
+	if (cena.linhas && cena.paleta === 'luxo') {
+		// Luxo editorial: texto no topo, atrás da cabeça, com a luz do topo baixando para ele saltar.
+		const pequeno = cena.linhas.filter((l) => !l.grande).map((l) => l.texto).join(' ');
+		const grande = cena.linhas.filter((l) => l.grande).map((l) => l.texto).join(' ');
+		const entra = interpolate(frame, [0, 8], [0, 1], {extrapolateRight: 'clamp'});
+		return (
+			<AbsoluteFill style={{opacity: saida}}>
+				<DestaqueSuave y={0.1} altura={0.31} forca={entra} width={width} height={height} />
+				<div
+					style={{
+						position: 'absolute',
+						top: height * (cena.y ?? 0.012),
+						left: 0,
+						right: 0,
+						transform: `scale(${deriva})`,
+						transformOrigin: '50% 0%',
+					}}
+				>
+					<TextoLuxo pequeno={pequeno || undefined} grande={grande} f={frame} fps={fps} largura={width} tamMax={0.2} />
+				</div>
+			</AbsoluteFill>
+		);
+	}
 	if (cena.linhas) {
 		const maiorGrande = Math.max(4, ...cena.linhas.filter((l) => l.grande).map((l) => l.texto.length));
 		const tam = width * (cena.tamanho ?? Math.min(0.34, 1.45 / maiorGrande));
@@ -685,7 +709,7 @@ export const Gigante: React.FC<{cena: De<'gigante'>}> = ({cena}) => {
 				>
 					<NeonProfundo
 						linhas={cena.linhas}
-						paleta={cena.paleta ?? 'dourado'}
+						paleta={cena.paleta === 'luxo' ? 'dourado' : (cena.paleta ?? 'dourado')}
 						tamanho={tam}
 						progresso={(i) =>
 							interpolate(frame - i * 0.7, [0, 6], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})

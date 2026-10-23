@@ -129,7 +129,8 @@ export type Cena =
 			// Neon com profundidade (aprovado em 23/10/2026, paleta dourado): frase pequena branca e palavra grande
 			// em neon 3D. Com linhas, texto e estilo são ignorados. Ex.: [{texto: 'sem'}, {texto: 'medo', grande: true}]
 			linhas?: {texto: string; grande?: boolean}[];
-			paleta?: 'lima' | 'tiktok' | 'dourado';
+			// 'luxo': serifada Gloock dourada no topo com destaque suave de luz (aprovado em 23/10/2026).
+			paleta?: 'lima' | 'tiktok' | 'dourado' | 'luxo';
 	  })
 	// Foto recortada de uma pessoa (PNG com alfa) saindo de um aro dourado, com nome embaixo.
 	// centro: grande no meio, câmera desfocada atrás; lado: menor, no canto de baixo à direita.
