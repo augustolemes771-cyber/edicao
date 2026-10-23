@@ -159,6 +159,11 @@ export type Cena =
 			grande: string;
 			emGrande?: number;
 			yTexto?: number;
+			// Variações para outros objetos (caixa): cor, quadro do impacto, altura da luz e feixe saindo do objeto.
+			tom?: 'vermelho' | 'dourado';
+			quadroImpacto?: number;
+			yLuz?: number;
+			feixe?: {x: number; y: number; abre: number};
 	  })
 	// Vitrine de produto: foto de estúdio real (fundo preto) com palavra-chave em Gloock dourada e microtextos.
 	// alturaFoto e yFoto em fração da altura; yTexto é o topo do bloco de texto (0 a 1).
