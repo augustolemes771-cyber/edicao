@@ -142,7 +142,7 @@ export type Cena =
 			variante?: 'centro' | 'lado';
 			estiloNome?: EstiloNome;
 			// Nome em neon com profundidade (substitui estiloNome).
-			paleta?: 'lima' | 'tiktok' | 'dourado';
+			paleta?: 'lima' | 'tiktok' | 'dourado' | 'luxo';
 	  })
 	// Tópicos cinematográficos: o vídeo desfoca e escurece atrás, com feixes de luz, bokeh, grão e vinheta;
 	// lista tipográfica com número dourado, frase branca e a palavra entre *asteriscos* em dourado neon.
@@ -179,6 +179,9 @@ export type Cena =
 			alturaFoto?: number;
 			yFoto?: number;
 			yTexto?: number;
+			// Filtro CSS na foto (ex.: gradação quente) e chamada final sem caixa (em: segundos após o início).
+			filtroFoto?: string;
+			cta?: {antes: string; destaque: string; depois: string; em?: number};
 	  })
 	// Visor de câmera: cantos, "● REC" piscando (desmontagem-2, ref. 2).
 	| (Base & {tipo: 'rec'})

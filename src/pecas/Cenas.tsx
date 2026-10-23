@@ -1,7 +1,16 @@
 import {Vitrine} from './Vitrine';
 import {Xadrez} from './Xadrez';
 import React from 'react';
-import {AbsoluteFill, Img, OffthreadVideo, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
+import {
+	AbsoluteFill,
+	Img,
+	OffthreadVideo,
+	interpolate,
+	spring,
+	staticFile,
+	useCurrentFrame,
+	useVideoConfig,
+} from 'remotion';
 import {useCiclo, useEntradaEm} from '../motor/anim';
 import type {CenaNoPlano, Fundo as TipoFundo, Posicao} from '../motor/plano';
 import {brilho, cor, poppins, useMargem} from '../motor/tema';

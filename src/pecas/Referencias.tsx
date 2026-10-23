@@ -1,9 +1,19 @@
 import React from 'react';
-import {AbsoluteFill, Img, OffthreadVideo, interpolate, random, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
+import {
+	AbsoluteFill,
+	Img,
+	OffthreadVideo,
+	interpolate,
+	random,
+	spring,
+	staticFile,
+	useCurrentFrame,
+	useVideoConfig,
+} from 'remotion';
 import {useEntradaEm} from '../motor/anim';
 import type {CenaNoPlano, EstiloNome} from '../motor/plano';
-import {anton, dmSerif, inter, playfair, poppins, unbounded} from '../motor/tema';
-import {DestaqueSuave, TextoLuxo} from './Luxo';
+import {anton, dmSerif, gloock, inter, playfair, poppins, spaceMono, unbounded} from '../motor/tema';
+import {DestaqueSuave, OURO_LUXO, TextoLuxo} from './Luxo';
 import {NeonProfundo} from './NeonProfundo';
 
 // Peças aprendidas nas referências. Detalhes e tempos em docs/referencias/desmontagem.md.
@@ -316,7 +326,11 @@ export const Broll: React.FC<{cena: De<'broll'>; pasta: string}> = ({cena, pasta
 	};
 	return (
 		<AbsoluteFill style={{backgroundColor: '#000', overflow: 'hidden'}}>
-			{cena.video ? <OffthreadVideo src={src} muted style={{...estilo, objectFit: 'cover'}} /> : <Img src={src} style={estilo} />}
+			{cena.video ? (
+				<OffthreadVideo src={src} muted style={{...estilo, objectFit: 'cover'}} />
+			) : (
+				<Img src={src} style={estilo} />
+			)}
 		</AbsoluteFill>
 	);
 };
@@ -673,8 +687,14 @@ export const Gigante: React.FC<{cena: De<'gigante'>}> = ({cena}) => {
 	const deriva = interpolate(frame, [0, duracao], [1.04, 1]);
 	if (cena.linhas && cena.paleta === 'luxo') {
 		// Luxo editorial: texto no topo, atrás da cabeça, com a luz do topo baixando para ele saltar.
-		const pequeno = cena.linhas.filter((l) => !l.grande).map((l) => l.texto).join(' ');
-		const grande = cena.linhas.filter((l) => l.grande).map((l) => l.texto).join(' ');
+		const pequeno = cena.linhas
+			.filter((l) => !l.grande)
+			.map((l) => l.texto)
+			.join(' ');
+		const grande = cena.linhas
+			.filter((l) => l.grande)
+			.map((l) => l.texto)
+			.join(' ');
 		const entra = interpolate(frame, [0, 8], [0, 1], {extrapolateRight: 'clamp'});
 		return (
 			<AbsoluteFill style={{opacity: saida}}>
@@ -911,7 +931,17 @@ export const Retrato: React.FC<{cena: De<'retrato'>; pasta: string}> = ({cena, p
 						{cena.pequeno}
 					</div>
 				)}
-				{cena.paleta ? (
+				{cena.paleta === 'luxo' ? (
+					<TextoLuxo
+						pequeno={cena.pequeno}
+						grande={cena.nome}
+						f={frame - 5}
+						fps={fps}
+						// No canto, o nome acompanha o tamanho do retrato pequeno.
+						largura={cena.variante === 'lado' ? width * 0.4 : width}
+						tamMax={0.2}
+					/>
+				) : cena.paleta ? (
 					<NeonProfundo
 						paleta={cena.paleta}
 						tamanho={nomeTam * 1.05}
@@ -1108,10 +1138,10 @@ export const Topicos: React.FC<{cena: De<'topicos'>}> = ({cena}) => {
 				{cena.titulo && (
 					<div
 						style={{
-							fontFamily: poppins,
-							fontWeight: 700,
+							fontFamily: unbounded,
+							fontWeight: 300,
 							fontSize: tam * 0.42,
-							letterSpacing: tam * 0.12,
+							letterSpacing: tam * 0.16,
 							textTransform: 'uppercase',
 							color: 'rgba(255,240,210,0.85)',
 							marginBottom: tam * 0.35,
@@ -1139,10 +1169,10 @@ export const Topicos: React.FC<{cena: De<'topicos'>}> = ({cena}) => {
 							<div style={{display: 'flex', alignItems: 'baseline', gap: tam * 0.3}}>
 								<span
 									style={{
-										fontFamily: poppins,
-										fontWeight: 800,
-										fontSize: tam * 0.38,
-										background: OURO,
+										fontFamily: spaceMono,
+										fontWeight: 400,
+										fontSize: tam * 0.36,
+										background: OURO_LUXO,
 										WebkitBackgroundClip: 'text',
 										backgroundClip: 'text',
 										color: 'transparent',
@@ -1153,13 +1183,14 @@ export const Topicos: React.FC<{cena: De<'topicos'>}> = ({cena}) => {
 								</span>
 								<span
 									style={{
-										fontFamily: poppins,
-										fontWeight: 800,
-										fontSize: tam,
-										lineHeight: 1.05,
-										letterSpacing: -tam * 0.03,
+										// Serifada Gloock (estilo luxo aprovado); a sombra vai no filtro para não vazar
+										// pela palavra dourada recortada no degradê.
+										fontFamily: gloock,
+										fontWeight: 400,
+										fontSize: tam * 1.02,
+										lineHeight: 1.1,
 										color: '#fff',
-										textShadow: '0 4px 24px rgba(0,0,0,0.55)',
+										filter: 'drop-shadow(0 4px 18px rgba(0,0,0,0.6))',
 									}}
 								>
 									{partes.map((pt, j) =>
@@ -1167,9 +1198,12 @@ export const Topicos: React.FC<{cena: De<'topicos'>}> = ({cena}) => {
 											<span
 												key={j}
 												style={{
-													color: '#ffd54a',
-													textShadow:
-														'0 0 6px rgba(255,214,90,0.85), 0 0 22px rgba(255,186,40,0.55), 0 0 48px rgba(255,170,30,0.3)',
+													background: OURO_LUXO,
+													WebkitBackgroundClip: 'text',
+													backgroundClip: 'text',
+													color: 'transparent',
+													padding: '0 0.02em 0.15em',
+													filter: 'drop-shadow(0 0 14px rgba(255,190,60,0.45))',
 												}}
 											>
 												{pt.slice(1, -1)}

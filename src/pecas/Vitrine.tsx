@@ -2,6 +2,7 @@ import React from 'react';
 import {AbsoluteFill, Img, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import type {CenaNoPlano} from '../motor/plano';
 import {gloock, spaceMono, unbounded} from '../motor/tema';
+import {larguraGloock} from './Luxo';
 
 // Vitrine de produto (análise das referências de design, out/2026): foto de estúdio real sobre preto, que se
 // funde ao fundo pelas bordas, com a palavra-chave na serifada Gloock dourada, frase fina espaçada em cima,
@@ -20,6 +21,76 @@ const Grao: React.FC = () => (
 		</svg>
 	</AbsoluteFill>
 );
+
+// Chamada no fim (ex.: "Comente EU QUERO para receber mais informações"): sem caixa, só tipografia, sobre um
+// degradê escuro no pé do quadro; a palavra de ação em Gloock dourada pulsa de leve.
+const Chamada: React.FC<{cena?: never; cta: {antes: string; destaque: string; depois: string; em?: number}}> = ({
+	cta,
+}) => {
+	const f = useCurrentFrame();
+	const {fps, width, height} = useVideoConfig();
+	const inicio = Math.round((cta.em ?? 0.4) * fps);
+	const e = spring({frame: f - inicio, fps, config: {damping: 14, stiffness: 160, mass: 0.6}});
+	const pulsa = 1 + Math.max(0, Math.sin((f - inicio) / 6)) * 0.03;
+	const tam = Math.min(width * 0.2, (width * 0.8) / larguraGloock(cta.destaque));
+	const fino: React.CSSProperties = {
+		fontFamily: unbounded,
+		fontWeight: 300,
+		fontSize: width * 0.036,
+		letterSpacing: width * 0.036 * 0.3,
+		textTransform: 'uppercase',
+		color: 'rgba(255,255,255,0.92)',
+		textAlign: 'center',
+	};
+	return (
+		<>
+			<div
+				style={{
+					position: 'absolute',
+					left: 0,
+					right: 0,
+					bottom: 0,
+					height: height * 0.36,
+					background: 'linear-gradient(0deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.7) 45%, transparent 100%)',
+					opacity: e,
+				}}
+			/>
+			<div
+				style={{
+					position: 'absolute',
+					left: 0,
+					right: 0,
+					bottom: height * 0.065,
+					display: 'flex',
+					flexDirection: 'column',
+					alignItems: 'center',
+					opacity: e,
+					transform: `translateY(${(1 - e) * 40}px)`,
+				}}
+			>
+				<div style={fino}>{cta.antes}</div>
+				<div
+					style={{
+						fontFamily: gloock,
+						fontSize: tam,
+						lineHeight: 1,
+						whiteSpace: 'nowrap',
+						background: OURO,
+						WebkitBackgroundClip: 'text',
+						backgroundClip: 'text',
+						color: 'transparent',
+						padding: '0 0.04em 0.16em',
+						transform: `scale(${pulsa})`,
+						filter: `drop-shadow(0 0 ${tam * 0.12}px rgba(255,190,60,0.5))`,
+					}}
+				>
+					{cta.destaque}
+				</div>
+				<div style={fino}>{cta.depois}</div>
+			</div>
+		</>
+	);
+};
 
 export const Vitrine: React.FC<{cena: De<'vitrine'>}> = ({cena}) => {
 	const f = useCurrentFrame();
@@ -55,7 +126,10 @@ export const Vitrine: React.FC<{cena: De<'vitrine'>}> = ({cena}) => {
 					maskImage: mascara,
 				}}
 			>
-				<Img src={staticFile(cena.imagem)} style={{height: '100%', width: 'auto', display: 'block'}} />
+				<Img
+					src={staticFile(cena.imagem)}
+					style={{height: '100%', width: 'auto', display: 'block', filter: cena.filtroFoto}}
+				/>
 			</div>
 			{/* Brilho quente difuso atrás do texto, como nas outras falas. */}
 			<div
@@ -70,9 +144,11 @@ export const Vitrine: React.FC<{cena: De<'vitrine'>}> = ({cena}) => {
 					mixBlendMode: 'screen',
 				}}
 			/>
-			<div style={{position: 'absolute', top: height * 0.045, left: width * 0.07, ...micro}}>
-				[ {cena.indice ?? '01'} ]
-			</div>
+			{cena.indice !== '' && (
+				<div style={{position: 'absolute', top: height * 0.045, left: width * 0.07, ...micro}}>
+					[ {cena.indice ?? '01'} ]
+				</div>
+			)}
 			<div style={{position: 'absolute', top: height * 0.045, right: width * 0.07, ...micro}}>
 				{cena.rotulo ?? 'MENTORIA DANILOW'}
 			</div>
@@ -151,6 +227,7 @@ export const Vitrine: React.FC<{cena: De<'vitrine'>}> = ({cena}) => {
 					{cena.abaixo}
 				</div>
 			)}
+			{cena.cta && <Chamada cta={cena.cta} />}
 			<Grao />
 		</AbsoluteFill>
 	);

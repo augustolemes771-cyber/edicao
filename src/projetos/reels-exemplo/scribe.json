@@ -1,793 +1,793 @@
 {
- "language_code": "por",
- "language_probability": 1,
- "text": "Você não consegue produzir conteúdo, né? Eu sei, te falta tempo. Essa é a sua desculpa favorita. Mas se pergunte uma coisa. Eu controlo isso? Não coloque emoção. Só razão. Uma das faculdades mais concorridas do Brasil. E mesmo assim ela parou, e sofreu ataques, sofreu críticas. E não é medicina. Talvez você esteja vivendo uma vida que não te pertence. Me segue aqui para mais.",
- "words": [
-  {
-   "text": "Você",
-   "start": 0.3,
-   "end": 0.604,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 0.604,
-   "end": 0.654,
-   "type": "spacing"
-  },
-  {
-   "text": "não",
-   "start": 0.654,
-   "end": 0.937,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 0.937,
-   "end": 0.987,
-   "type": "spacing"
-  },
-  {
-   "text": "consegue",
-   "start": 0.987,
-   "end": 1.459,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 1.459,
-   "end": 1.509,
-   "type": "spacing"
-  },
-  {
-   "text": "produzir",
-   "start": 1.509,
-   "end": 1.995,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 1.995,
-   "end": 2.045,
-   "type": "spacing"
-  },
-  {
-   "text": "conteúdo,",
-   "start": 2.045,
-   "end": 2.533,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 2.533,
-   "end": 2.583,
-   "type": "spacing"
-  },
-  {
-   "text": "né?",
-   "start": 2.783,
-   "end": 2.997,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 2.997,
-   "end": 3.047,
-   "type": "spacing"
-  },
-  {
-   "text": "Eu",
-   "start": 3.467,
-   "end": 3.678,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 3.678,
-   "end": 3.728,
-   "type": "spacing"
-  },
-  {
-   "text": "sei,",
-   "start": 3.728,
-   "end": 4.028,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 4.028,
-   "end": 4.078,
-   "type": "spacing"
-  },
-  {
-   "text": "te",
-   "start": 4.278,
-   "end": 4.503,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 4.503,
-   "end": 4.553,
-   "type": "spacing"
-  },
-  {
-   "text": "falta",
-   "start": 4.553,
-   "end": 4.897,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 4.897,
-   "end": 4.947,
-   "type": "spacing"
-  },
-  {
-   "text": "tempo.",
-   "start": 4.947,
-   "end": 5.337,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 5.337,
-   "end": 5.387,
-   "type": "spacing"
-  },
-  {
-   "text": "Essa",
-   "start": 5.807,
-   "end": 6.125,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 6.125,
-   "end": 6.175,
-   "type": "spacing"
-  },
-  {
-   "text": "é",
-   "start": 6.175,
-   "end": 6.396,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 6.396,
-   "end": 6.446,
-   "type": "spacing"
-  },
-  {
-   "text": "a",
-   "start": 6.446,
-   "end": 6.644,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 6.644,
-   "end": 6.694,
-   "type": "spacing"
-  },
-  {
-   "text": "sua",
-   "start": 6.694,
-   "end": 6.983,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 6.983,
-   "end": 7.033,
-   "type": "spacing"
-  },
-  {
-   "text": "desculpa",
-   "start": 7.033,
-   "end": 7.492,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 7.492,
-   "end": 7.542,
-   "type": "spacing"
-  },
-  {
-   "text": "favorita.",
-   "start": 7.542,
-   "end": 8.03,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 8.03,
-   "end": 8.08,
-   "type": "spacing"
-  },
-  {
-   "text": "Mas",
-   "start": 8.5,
-   "end": 8.802,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 8.802,
-   "end": 8.852,
-   "type": "spacing"
-  },
-  {
-   "text": "se",
-   "start": 8.852,
-   "end": 9.093,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 9.093,
-   "end": 9.143,
-   "type": "spacing"
-  },
-  {
-   "text": "pergunte",
-   "start": 9.143,
-   "end": 9.638,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 9.638,
-   "end": 9.688,
-   "type": "spacing"
-  },
-  {
-   "text": "uma",
-   "start": 9.688,
-   "end": 9.978,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 9.978,
-   "end": 10.028,
-   "type": "spacing"
-  },
-  {
-   "text": "coisa.",
-   "start": 10.028,
-   "end": 10.362,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 10.362,
-   "end": 10.412,
-   "type": "spacing"
-  },
-  {
-   "text": "Eu",
-   "start": 10.832,
-   "end": 11.087,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 11.087,
-   "end": 11.137,
-   "type": "spacing"
-  },
-  {
-   "text": "controlo",
-   "start": 11.137,
-   "end": 11.623,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 11.623,
-   "end": 11.673,
-   "type": "spacing"
-  },
-  {
-   "text": "isso?",
-   "start": 11.673,
-   "end": 11.981,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 11.981,
-   "end": 12.031,
-   "type": "spacing"
-  },
-  {
-   "text": "Não",
-   "start": 12.451,
-   "end": 12.703,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 12.703,
-   "end": 12.753,
-   "type": "spacing"
-  },
-  {
-   "text": "coloque",
-   "start": 12.753,
-   "end": 13.215,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 13.215,
-   "end": 13.265,
-   "type": "spacing"
-  },
-  {
-   "text": "emoção.",
-   "start": 13.265,
-   "end": 13.663,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 13.663,
-   "end": 13.713,
-   "type": "spacing"
-  },
-  {
-   "text": "Só",
-   "start": 14.133,
-   "end": 14.386,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 14.386,
-   "end": 14.436,
-   "type": "spacing"
-  },
-  {
-   "text": "razão.",
-   "start": 14.436,
-   "end": 14.819,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 14.819,
-   "end": 14.869,
-   "type": "spacing"
-  },
-  {
-   "text": "Uma",
-   "start": 15.289,
-   "end": 15.582,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 15.582,
-   "end": 15.632,
-   "type": "spacing"
-  },
-  {
-   "text": "das",
-   "start": 15.632,
-   "end": 15.937,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 15.937,
-   "end": 15.987,
-   "type": "spacing"
-  },
-  {
-   "text": "faculdades",
-   "start": 15.987,
-   "end": 16.541,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 16.541,
-   "end": 16.591,
-   "type": "spacing"
-  },
-  {
-   "text": "mais",
-   "start": 16.591,
-   "end": 16.929,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 16.929,
-   "end": 16.979,
-   "type": "spacing"
-  },
-  {
-   "text": "concorridas",
-   "start": 16.979,
-   "end": 17.575,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 17.575,
-   "end": 17.625,
-   "type": "spacing"
-  },
-  {
-   "text": "do",
-   "start": 17.625,
-   "end": 17.891,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 17.891,
-   "end": 17.941,
-   "type": "spacing"
-  },
-  {
-   "text": "Brasil.",
-   "start": 17.941,
-   "end": 18.364,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 18.364,
-   "end": 18.414,
-   "type": "spacing"
-  },
-  {
-   "text": "E",
-   "start": 18.834,
-   "end": 19.01,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 19.01,
-   "end": 19.06,
-   "type": "spacing"
-  },
-  {
-   "text": "mesmo",
-   "start": 19.06,
-   "end": 19.398,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 19.398,
-   "end": 19.448,
-   "type": "spacing"
-  },
-  {
-   "text": "assim",
-   "start": 19.448,
-   "end": 19.791,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 19.791,
-   "end": 19.841,
-   "type": "spacing"
-  },
-  {
-   "text": "ela",
-   "start": 19.841,
-   "end": 20.149,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 20.149,
-   "end": 20.199,
-   "type": "spacing"
-  },
-  {
-   "text": "parou,",
-   "start": 20.199,
-   "end": 20.555,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 20.555,
-   "end": 20.605,
-   "type": "spacing"
-  },
-  {
-   "text": "e",
-   "start": 20.805,
-   "end": 21.013,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 21.013,
-   "end": 21.063,
-   "type": "spacing"
-  },
-  {
-   "text": "sofreu",
-   "start": 21.063,
-   "end": 21.451,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 21.451,
-   "end": 21.501,
-   "type": "spacing"
-  },
-  {
-   "text": "ataques,",
-   "start": 21.501,
-   "end": 21.941,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 21.941,
-   "end": 21.991,
-   "type": "spacing"
-  },
-  {
-   "text": "sofreu",
-   "start": 22.191,
-   "end": 22.585,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 22.585,
-   "end": 22.635,
-   "type": "spacing"
-  },
-  {
-   "text": "críticas.",
-   "start": 22.635,
-   "end": 23.106,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 23.106,
-   "end": 23.156,
-   "type": "spacing"
-  },
-  {
-   "text": "E",
-   "start": 23.576,
-   "end": 23.781,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 23.781,
-   "end": 23.831,
-   "type": "spacing"
-  },
-  {
-   "text": "não",
-   "start": 23.831,
-   "end": 24.116,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 24.116,
-   "end": 24.166,
-   "type": "spacing"
-  },
-  {
-   "text": "é",
-   "start": 24.166,
-   "end": 24.39,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 24.39,
-   "end": 24.44,
-   "type": "spacing"
-  },
-  {
-   "text": "medicina.",
-   "start": 24.44,
-   "end": 24.931,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 24.931,
-   "end": 24.981,
-   "type": "spacing"
-  },
-  {
-   "text": "Talvez",
-   "start": 25.401,
-   "end": 25.827,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 25.827,
-   "end": 25.877,
-   "type": "spacing"
-  },
-  {
-   "text": "você",
-   "start": 25.877,
-   "end": 26.218,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 26.218,
-   "end": 26.268,
-   "type": "spacing"
-  },
-  {
-   "text": "esteja",
-   "start": 26.268,
-   "end": 26.698,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 26.698,
-   "end": 26.748,
-   "type": "spacing"
-  },
-  {
-   "text": "vivendo",
-   "start": 26.748,
-   "end": 27.198,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 27.198,
-   "end": 27.248,
-   "type": "spacing"
-  },
-  {
-   "text": "uma",
-   "start": 27.248,
-   "end": 27.508,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 27.508,
-   "end": 27.558,
-   "type": "spacing"
-  },
-  {
-   "text": "vida",
-   "start": 27.558,
-   "end": 27.899,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 27.899,
-   "end": 27.949,
-   "type": "spacing"
-  },
-  {
-   "text": "que",
-   "start": 27.949,
-   "end": 28.257,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 28.257,
-   "end": 28.307,
-   "type": "spacing"
-  },
-  {
-   "text": "não",
-   "start": 28.307,
-   "end": 28.611,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 28.611,
-   "end": 28.661,
-   "type": "spacing"
-  },
-  {
-   "text": "te",
-   "start": 28.661,
-   "end": 28.906,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 28.906,
-   "end": 28.956,
-   "type": "spacing"
-  },
-  {
-   "text": "pertence.",
-   "start": 28.956,
-   "end": 29.448,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 29.448,
-   "end": 29.498,
-   "type": "spacing"
-  },
-  {
-   "text": "Me",
-   "start": 29.918,
-   "end": 30.141,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 30.141,
-   "end": 30.191,
-   "type": "spacing"
-  },
-  {
-   "text": "segue",
-   "start": 30.191,
-   "end": 30.571,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 30.571,
-   "end": 30.621,
-   "type": "spacing"
-  },
-  {
-   "text": "aqui",
-   "start": 30.621,
-   "end": 30.945,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 30.945,
-   "end": 30.995,
-   "type": "spacing"
-  },
-  {
-   "text": "para",
-   "start": 30.995,
-   "end": 31.302,
-   "type": "word"
-  },
-  {
-   "text": " ",
-   "start": 31.302,
-   "end": 31.352,
-   "type": "spacing"
-  },
-  {
-   "text": "mais.",
-   "start": 31.352,
-   "end": 31.646,
-   "type": "word"
-  }
- ]
+	"language_code": "por",
+	"language_probability": 1,
+	"text": "Você não consegue produzir conteúdo, né? Eu sei, te falta tempo. Essa é a sua desculpa favorita. Mas se pergunte uma coisa. Eu controlo isso? Não coloque emoção. Só razão. Uma das faculdades mais concorridas do Brasil. E mesmo assim ela parou, e sofreu ataques, sofreu críticas. E não é medicina. Talvez você esteja vivendo uma vida que não te pertence. Me segue aqui para mais.",
+	"words": [
+		{
+			"text": "Você",
+			"start": 0.3,
+			"end": 0.604,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 0.604,
+			"end": 0.654,
+			"type": "spacing"
+		},
+		{
+			"text": "não",
+			"start": 0.654,
+			"end": 0.937,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 0.937,
+			"end": 0.987,
+			"type": "spacing"
+		},
+		{
+			"text": "consegue",
+			"start": 0.987,
+			"end": 1.459,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 1.459,
+			"end": 1.509,
+			"type": "spacing"
+		},
+		{
+			"text": "produzir",
+			"start": 1.509,
+			"end": 1.995,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 1.995,
+			"end": 2.045,
+			"type": "spacing"
+		},
+		{
+			"text": "conteúdo,",
+			"start": 2.045,
+			"end": 2.533,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 2.533,
+			"end": 2.583,
+			"type": "spacing"
+		},
+		{
+			"text": "né?",
+			"start": 2.783,
+			"end": 2.997,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 2.997,
+			"end": 3.047,
+			"type": "spacing"
+		},
+		{
+			"text": "Eu",
+			"start": 3.467,
+			"end": 3.678,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 3.678,
+			"end": 3.728,
+			"type": "spacing"
+		},
+		{
+			"text": "sei,",
+			"start": 3.728,
+			"end": 4.028,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 4.028,
+			"end": 4.078,
+			"type": "spacing"
+		},
+		{
+			"text": "te",
+			"start": 4.278,
+			"end": 4.503,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 4.503,
+			"end": 4.553,
+			"type": "spacing"
+		},
+		{
+			"text": "falta",
+			"start": 4.553,
+			"end": 4.897,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 4.897,
+			"end": 4.947,
+			"type": "spacing"
+		},
+		{
+			"text": "tempo.",
+			"start": 4.947,
+			"end": 5.337,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 5.337,
+			"end": 5.387,
+			"type": "spacing"
+		},
+		{
+			"text": "Essa",
+			"start": 5.807,
+			"end": 6.125,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 6.125,
+			"end": 6.175,
+			"type": "spacing"
+		},
+		{
+			"text": "é",
+			"start": 6.175,
+			"end": 6.396,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 6.396,
+			"end": 6.446,
+			"type": "spacing"
+		},
+		{
+			"text": "a",
+			"start": 6.446,
+			"end": 6.644,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 6.644,
+			"end": 6.694,
+			"type": "spacing"
+		},
+		{
+			"text": "sua",
+			"start": 6.694,
+			"end": 6.983,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 6.983,
+			"end": 7.033,
+			"type": "spacing"
+		},
+		{
+			"text": "desculpa",
+			"start": 7.033,
+			"end": 7.492,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 7.492,
+			"end": 7.542,
+			"type": "spacing"
+		},
+		{
+			"text": "favorita.",
+			"start": 7.542,
+			"end": 8.03,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 8.03,
+			"end": 8.08,
+			"type": "spacing"
+		},
+		{
+			"text": "Mas",
+			"start": 8.5,
+			"end": 8.802,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 8.802,
+			"end": 8.852,
+			"type": "spacing"
+		},
+		{
+			"text": "se",
+			"start": 8.852,
+			"end": 9.093,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 9.093,
+			"end": 9.143,
+			"type": "spacing"
+		},
+		{
+			"text": "pergunte",
+			"start": 9.143,
+			"end": 9.638,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 9.638,
+			"end": 9.688,
+			"type": "spacing"
+		},
+		{
+			"text": "uma",
+			"start": 9.688,
+			"end": 9.978,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 9.978,
+			"end": 10.028,
+			"type": "spacing"
+		},
+		{
+			"text": "coisa.",
+			"start": 10.028,
+			"end": 10.362,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 10.362,
+			"end": 10.412,
+			"type": "spacing"
+		},
+		{
+			"text": "Eu",
+			"start": 10.832,
+			"end": 11.087,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 11.087,
+			"end": 11.137,
+			"type": "spacing"
+		},
+		{
+			"text": "controlo",
+			"start": 11.137,
+			"end": 11.623,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 11.623,
+			"end": 11.673,
+			"type": "spacing"
+		},
+		{
+			"text": "isso?",
+			"start": 11.673,
+			"end": 11.981,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 11.981,
+			"end": 12.031,
+			"type": "spacing"
+		},
+		{
+			"text": "Não",
+			"start": 12.451,
+			"end": 12.703,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 12.703,
+			"end": 12.753,
+			"type": "spacing"
+		},
+		{
+			"text": "coloque",
+			"start": 12.753,
+			"end": 13.215,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 13.215,
+			"end": 13.265,
+			"type": "spacing"
+		},
+		{
+			"text": "emoção.",
+			"start": 13.265,
+			"end": 13.663,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 13.663,
+			"end": 13.713,
+			"type": "spacing"
+		},
+		{
+			"text": "Só",
+			"start": 14.133,
+			"end": 14.386,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 14.386,
+			"end": 14.436,
+			"type": "spacing"
+		},
+		{
+			"text": "razão.",
+			"start": 14.436,
+			"end": 14.819,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 14.819,
+			"end": 14.869,
+			"type": "spacing"
+		},
+		{
+			"text": "Uma",
+			"start": 15.289,
+			"end": 15.582,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 15.582,
+			"end": 15.632,
+			"type": "spacing"
+		},
+		{
+			"text": "das",
+			"start": 15.632,
+			"end": 15.937,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 15.937,
+			"end": 15.987,
+			"type": "spacing"
+		},
+		{
+			"text": "faculdades",
+			"start": 15.987,
+			"end": 16.541,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 16.541,
+			"end": 16.591,
+			"type": "spacing"
+		},
+		{
+			"text": "mais",
+			"start": 16.591,
+			"end": 16.929,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 16.929,
+			"end": 16.979,
+			"type": "spacing"
+		},
+		{
+			"text": "concorridas",
+			"start": 16.979,
+			"end": 17.575,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 17.575,
+			"end": 17.625,
+			"type": "spacing"
+		},
+		{
+			"text": "do",
+			"start": 17.625,
+			"end": 17.891,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 17.891,
+			"end": 17.941,
+			"type": "spacing"
+		},
+		{
+			"text": "Brasil.",
+			"start": 17.941,
+			"end": 18.364,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 18.364,
+			"end": 18.414,
+			"type": "spacing"
+		},
+		{
+			"text": "E",
+			"start": 18.834,
+			"end": 19.01,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 19.01,
+			"end": 19.06,
+			"type": "spacing"
+		},
+		{
+			"text": "mesmo",
+			"start": 19.06,
+			"end": 19.398,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 19.398,
+			"end": 19.448,
+			"type": "spacing"
+		},
+		{
+			"text": "assim",
+			"start": 19.448,
+			"end": 19.791,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 19.791,
+			"end": 19.841,
+			"type": "spacing"
+		},
+		{
+			"text": "ela",
+			"start": 19.841,
+			"end": 20.149,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 20.149,
+			"end": 20.199,
+			"type": "spacing"
+		},
+		{
+			"text": "parou,",
+			"start": 20.199,
+			"end": 20.555,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 20.555,
+			"end": 20.605,
+			"type": "spacing"
+		},
+		{
+			"text": "e",
+			"start": 20.805,
+			"end": 21.013,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 21.013,
+			"end": 21.063,
+			"type": "spacing"
+		},
+		{
+			"text": "sofreu",
+			"start": 21.063,
+			"end": 21.451,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 21.451,
+			"end": 21.501,
+			"type": "spacing"
+		},
+		{
+			"text": "ataques,",
+			"start": 21.501,
+			"end": 21.941,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 21.941,
+			"end": 21.991,
+			"type": "spacing"
+		},
+		{
+			"text": "sofreu",
+			"start": 22.191,
+			"end": 22.585,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 22.585,
+			"end": 22.635,
+			"type": "spacing"
+		},
+		{
+			"text": "críticas.",
+			"start": 22.635,
+			"end": 23.106,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 23.106,
+			"end": 23.156,
+			"type": "spacing"
+		},
+		{
+			"text": "E",
+			"start": 23.576,
+			"end": 23.781,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 23.781,
+			"end": 23.831,
+			"type": "spacing"
+		},
+		{
+			"text": "não",
+			"start": 23.831,
+			"end": 24.116,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 24.116,
+			"end": 24.166,
+			"type": "spacing"
+		},
+		{
+			"text": "é",
+			"start": 24.166,
+			"end": 24.39,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 24.39,
+			"end": 24.44,
+			"type": "spacing"
+		},
+		{
+			"text": "medicina.",
+			"start": 24.44,
+			"end": 24.931,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 24.931,
+			"end": 24.981,
+			"type": "spacing"
+		},
+		{
+			"text": "Talvez",
+			"start": 25.401,
+			"end": 25.827,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 25.827,
+			"end": 25.877,
+			"type": "spacing"
+		},
+		{
+			"text": "você",
+			"start": 25.877,
+			"end": 26.218,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 26.218,
+			"end": 26.268,
+			"type": "spacing"
+		},
+		{
+			"text": "esteja",
+			"start": 26.268,
+			"end": 26.698,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 26.698,
+			"end": 26.748,
+			"type": "spacing"
+		},
+		{
+			"text": "vivendo",
+			"start": 26.748,
+			"end": 27.198,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 27.198,
+			"end": 27.248,
+			"type": "spacing"
+		},
+		{
+			"text": "uma",
+			"start": 27.248,
+			"end": 27.508,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 27.508,
+			"end": 27.558,
+			"type": "spacing"
+		},
+		{
+			"text": "vida",
+			"start": 27.558,
+			"end": 27.899,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 27.899,
+			"end": 27.949,
+			"type": "spacing"
+		},
+		{
+			"text": "que",
+			"start": 27.949,
+			"end": 28.257,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 28.257,
+			"end": 28.307,
+			"type": "spacing"
+		},
+		{
+			"text": "não",
+			"start": 28.307,
+			"end": 28.611,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 28.611,
+			"end": 28.661,
+			"type": "spacing"
+		},
+		{
+			"text": "te",
+			"start": 28.661,
+			"end": 28.906,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 28.906,
+			"end": 28.956,
+			"type": "spacing"
+		},
+		{
+			"text": "pertence.",
+			"start": 28.956,
+			"end": 29.448,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 29.448,
+			"end": 29.498,
+			"type": "spacing"
+		},
+		{
+			"text": "Me",
+			"start": 29.918,
+			"end": 30.141,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 30.141,
+			"end": 30.191,
+			"type": "spacing"
+		},
+		{
+			"text": "segue",
+			"start": 30.191,
+			"end": 30.571,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 30.571,
+			"end": 30.621,
+			"type": "spacing"
+		},
+		{
+			"text": "aqui",
+			"start": 30.621,
+			"end": 30.945,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 30.945,
+			"end": 30.995,
+			"type": "spacing"
+		},
+		{
+			"text": "para",
+			"start": 30.995,
+			"end": 31.302,
+			"type": "word"
+		},
+		{
+			"text": " ",
+			"start": 31.302,
+			"end": 31.352,
+			"type": "spacing"
+		},
+		{
+			"text": "mais.",
+			"start": 31.352,
+			"end": 31.646,
+			"type": "word"
+		}
+	]
 }

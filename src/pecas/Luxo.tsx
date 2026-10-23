@@ -41,7 +41,9 @@ export const TextoLuxo: React.FC<{
 					{pequeno}
 				</div>
 			)}
-			<div style={{fontFamily: gloock, fontSize: tam, lineHeight: 0.95, whiteSpace: 'nowrap', marginTop: largura * 0.006}}>
+			<div
+				style={{fontFamily: gloock, fontSize: tam, lineHeight: 0.95, whiteSpace: 'nowrap', marginTop: largura * 0.006}}
+			>
 				{[...grande].map((ch, i) => {
 					const e = spring({frame: f - 3 - i * 0.7, fps, config: {damping: 200}, durationInFrames: 10});
 					return (
