@@ -13,6 +13,7 @@ import {
 import {useEntradaEm} from '../motor/anim';
 import type {CenaNoPlano, EstiloNome} from '../motor/plano';
 import {anton, dmSerif, gloock, inter, playfair, poppins, spaceMono, unbounded} from '../motor/tema';
+import {FundoGrid} from './FundoGrid';
 import {DestaqueSuave, OURO_LUXO, TextoLuxo} from './Luxo';
 import {NeonProfundo} from './NeonProfundo';
 
@@ -1083,13 +1084,8 @@ export const Topicos: React.FC<{cena: De<'topicos'>}> = ({cena}) => {
 	}));
 	return (
 		<AbsoluteFill style={{opacity: entra * sai}}>
-			{/* Cor quente sobre o vídeo desfocado. */}
-			<AbsoluteFill
-				style={{
-					background: 'linear-gradient(160deg, rgba(120,70,10,0.35) 0%, rgba(20,10,0,0.2) 55%, rgba(0,0,0,0.5) 100%)',
-					mixBlendMode: 'multiply',
-				}}
-			/>
+			{/* Fundo em movimento: grid em perspectiva, horizonte aceso e sol quente (substitui o vídeo desfocado). */}
+			<FundoGrid horizonte={0.74} />
 			{/* Feixes de luz entrando na diagonal. */}
 			<AbsoluteFill style={{mixBlendMode: 'screen', overflow: 'hidden'}}>
 				{[0, 1, 2].map((i) => (
@@ -1134,7 +1130,9 @@ export const Topicos: React.FC<{cena: De<'topicos'>}> = ({cena}) => {
 				style={{background: 'radial-gradient(ellipse at 50% 45%, transparent 45%, rgba(0,0,0,0.6) 100%)'}}
 			/>
 			{/* Texto. */}
-			<AbsoluteFill style={{justifyContent: 'center', paddingLeft: margemX, paddingRight: margemX}}>
+			<AbsoluteFill
+				style={{justifyContent: 'center', paddingLeft: margemX, paddingRight: margemX, paddingBottom: height * 0.2}}
+			>
 				{cena.titulo && (
 					<div
 						style={{
