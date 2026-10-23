@@ -153,6 +153,8 @@ export type Cena =
 			// Pasta com os quadros q_0001.png... da render do Blender (scripts/blender/xadrez.py).
 			pasta: string;
 			quadros?: number;
+			// Vídeo pronto (ex.: gerado por IA) separado por scripts/separar_pecas.py: f_ fundo, q_ peças com alfa.
+			video?: boolean;
 			pequeno?: string;
 			grande: string;
 			emGrande?: number;

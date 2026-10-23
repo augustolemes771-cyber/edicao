@@ -22,6 +22,73 @@ const Grao: React.FC = () => (
 	</AbsoluteFill>
 );
 
+// Texto com a fala: a frase pequena entra no começo, a palavra grande quando ela é dita.
+const Texto: React.FC<{cena: Cena; f: number}> = ({cena, f}) => {
+	const {fps, width, height} = useVideoConfig();
+	const emGrande = Math.round((cena.emGrande ?? 0.6) * fps);
+	const pq = spring({frame: f - 2, fps, config: {damping: 200}, durationInFrames: 14});
+	const tam = Math.min(width * 0.24, (width * 0.86) / (cena.grande.length * 0.52));
+	return (
+		<>
+			{/* Texto atrás da rainha, na luz vermelha da cena. */}
+			<div
+				style={{
+					position: 'absolute',
+					top: height * (cena.yTexto ?? 0.205),
+					left: 0,
+					right: 0,
+					display: 'flex',
+					flexDirection: 'column',
+					alignItems: 'center',
+				}}
+			>
+				{cena.pequeno && (
+					<div
+						style={{
+							fontFamily: unbounded,
+							fontWeight: 300,
+							fontSize: width * 0.042,
+							letterSpacing: width * 0.042 * 0.35,
+							textTransform: 'uppercase',
+							color: 'rgba(255,235,230,0.88)',
+							textShadow: '0 0 18px rgba(255,60,40,0.45)',
+							opacity: pq,
+							transform: `translateY(${(1 - pq) * 20}px)`,
+						}}
+					>
+						{cena.pequeno}
+					</div>
+				)}
+				<div style={{fontFamily: gloock, fontSize: tam, lineHeight: 1, whiteSpace: 'nowrap', marginTop: width * 0.01}}>
+					{[...cena.grande].map((ch, i) => {
+						const e = spring({frame: f - emGrande - i * 1.1, fps, config: {damping: 200}, durationInFrames: 14});
+						return (
+							<span
+								key={i}
+								style={{
+									display: 'inline-block',
+									opacity: e,
+									transform: `translateY(${(1 - e) * tam * 0.2}px) scale(${1 + (1 - e) * 0.15})`,
+									// Prata com o reflexo vermelho embaixo, como os peões na contraluz.
+									background:
+										'linear-gradient(180deg, #ffffff 0%, #ece6e2 38%, #b9aaa6 58%, #a3221c 82%, #5a0b08 100%)',
+									WebkitBackgroundClip: 'text',
+									backgroundClip: 'text',
+									color: 'transparent',
+									filter: `blur(${(1 - e) * 10}px) drop-shadow(0 0 ${tam * 0.1}px rgba(255,50,30,0.45))`,
+									padding: '0 0.02em',
+								}}
+							>
+								{ch === ' ' ? ' ' : ch}
+							</span>
+						);
+					})}
+				</div>
+			</div>
+		</>
+	);
+};
+
 export const Xadrez: React.FC<{cena: Cena}> = ({cena}) => {
 	const f = useCurrentFrame();
 	const {fps, width, height} = useVideoConfig();
@@ -31,11 +98,24 @@ export const Xadrez: React.FC<{cena: Cena}> = ({cena}) => {
 	const clarao = f >= QUEDA ? Math.exp(-(f - QUEDA) * 0.28) : 0;
 	const respira = interpolate(f, [0, 60], [1, 1.035]);
 
-	// Texto com a fala: a frase pequena entra no começo, a palavra grande quando ela é dita.
-	const emGrande = Math.round((cena.emGrande ?? 0.6) * fps);
-	const pq = spring({frame: f - 2, fps, config: {damping: 200}, durationInFrames: 14});
-	const tam = Math.min(width * 0.24, (width * 0.86) / (cena.grande.length * 0.52));
 	const celula = width * 0.075;
+	if (cena.video) {
+		const quadro = String(n).padStart(4, '0');
+		const cheio: React.CSSProperties = {
+			position: 'absolute',
+			inset: 0,
+			width: '100%',
+			height: '100%',
+			objectFit: 'cover',
+		};
+		return (
+			<AbsoluteFill style={{backgroundColor: '#050306'}}>
+				<Img src={staticFile(`${cena.pasta}/f_${quadro}.jpg`)} style={cheio} />
+				<Texto cena={cena} f={f} />
+				<Img src={src} style={cheio} />
+			</AbsoluteFill>
+		);
+	}
 	return (
 		<AbsoluteFill style={{backgroundColor: '#050306', overflow: 'hidden'}}>
 			<AbsoluteFill style={{transform: `scale(${respira})`}}>
@@ -80,63 +160,7 @@ export const Xadrez: React.FC<{cena: Cena}> = ({cena}) => {
 						/>
 					);
 				})}
-				{/* Texto atrás da rainha, na luz vermelha da cena. */}
-				<div
-					style={{
-						position: 'absolute',
-						top: height * (cena.yTexto ?? 0.205),
-						left: 0,
-						right: 0,
-						display: 'flex',
-						flexDirection: 'column',
-						alignItems: 'center',
-					}}
-				>
-					{cena.pequeno && (
-						<div
-							style={{
-								fontFamily: unbounded,
-								fontWeight: 300,
-								fontSize: width * 0.042,
-								letterSpacing: width * 0.042 * 0.35,
-								textTransform: 'uppercase',
-								color: 'rgba(255,235,230,0.88)',
-								textShadow: '0 0 18px rgba(255,60,40,0.45)',
-								opacity: pq,
-								transform: `translateY(${(1 - pq) * 20}px)`,
-							}}
-						>
-							{cena.pequeno}
-						</div>
-					)}
-					<div
-						style={{fontFamily: gloock, fontSize: tam, lineHeight: 1, whiteSpace: 'nowrap', marginTop: width * 0.01}}
-					>
-						{[...cena.grande].map((ch, i) => {
-							const e = spring({frame: f - emGrande - i * 1.1, fps, config: {damping: 200}, durationInFrames: 14});
-							return (
-								<span
-									key={i}
-									style={{
-										display: 'inline-block',
-										opacity: e,
-										transform: `translateY(${(1 - e) * tam * 0.2}px) scale(${1 + (1 - e) * 0.15})`,
-										// Prata com o reflexo vermelho embaixo, como os peões na contraluz.
-										background:
-											'linear-gradient(180deg, #ffffff 0%, #ece6e2 38%, #b9aaa6 58%, #a3221c 82%, #5a0b08 100%)',
-										WebkitBackgroundClip: 'text',
-										backgroundClip: 'text',
-										color: 'transparent',
-										filter: `blur(${(1 - e) * 10}px) drop-shadow(0 0 ${tam * 0.1}px rgba(255,50,30,0.45))`,
-										padding: '0 0.02em',
-									}}
-								>
-									{ch === ' ' ? ' ' : ch}
-								</span>
-							);
-						})}
-					</div>
-				</div>
+				<Texto cena={cena} f={f} />
 				{/* Poeira fina no ar, acesa pela contraluz. */}
 				{Array.from({length: 40}, (_, i) => {
 					const x = random(`px${i}`) * width;
