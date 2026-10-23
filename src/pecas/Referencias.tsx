@@ -4,6 +4,7 @@ import {Video} from '@remotion/media';
 import {useEntradaEm} from '../motor/anim';
 import type {CenaNoPlano, EstiloNome} from '../motor/plano';
 import {anton, dmSerif, inter, playfair, poppins, unbounded} from '../motor/tema';
+import {NeonProfundo} from './NeonProfundo';
 
 // Peças aprendidas nas referências. Detalhes e tempos em docs/referencias/desmontagem.md.
 type De<T extends CenaNoPlano['tipo']> = Extract<CenaNoPlano, {tipo: T}>;
@@ -623,6 +624,31 @@ export const Gigante: React.FC<{cena: De<'gigante'>}> = ({cena}) => {
 		},
 	};
 	const deriva = interpolate(frame, [0, duracao], [1.04, 1]);
+	if (cena.linhas) {
+		const maiorGrande = Math.max(4, ...cena.linhas.filter((l) => l.grande).map((l) => l.texto.length));
+		const tam = width * (cena.tamanho ?? Math.min(0.34, 1.45 / maiorGrande));
+		const altura = cena.linhas.reduce((a, l) => a + (l.grande ? tam * 0.86 : tam * 0.36), 0);
+		return (
+			<AbsoluteFill style={{alignItems: 'center', opacity: saida}}>
+				<div
+					style={{
+						position: 'absolute',
+						top: Math.max((cena.y ?? 0.2) * height, height * 0.035 + altura / 2),
+						transform: `translateY(-50%) scale(${deriva})`,
+					}}
+				>
+					<NeonProfundo
+						linhas={cena.linhas}
+						paleta={cena.paleta ?? 'dourado'}
+						tamanho={tam}
+						progresso={(i) =>
+							interpolate(frame - i * 0.7, [0, 6], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})
+						}
+					/>
+				</div>
+			</AbsoluteFill>
+		);
+	}
 	if (estilo === 'serif' || estilo === 'limpo' || estilo === 'editorial') {
 		const tam = width * (cena.tamanho ?? 0.13);
 		return (
@@ -797,7 +823,7 @@ export const Retrato: React.FC<{cena: De<'retrato'>; pasta: string}> = ({cena, p
 					textAlign: 'center',
 				}}
 			>
-				{cena.pequeno && (
+				{cena.pequeno && !cena.paleta && (
 					<div
 						style={{
 							fontFamily: playfair,
@@ -815,7 +841,16 @@ export const Retrato: React.FC<{cena: De<'retrato'>; pasta: string}> = ({cena, p
 						{cena.pequeno}
 					</div>
 				)}
-				{cena.estiloNome ? (
+				{cena.paleta ? (
+					<NeonProfundo
+						paleta={cena.paleta}
+						tamanho={nomeTam * 1.05}
+						linhas={[...(cena.pequeno ? [{texto: cena.pequeno}] : []), {texto: cena.nome, grande: true}]}
+						progresso={(i) =>
+							interpolate(frame - 5 - i * 0.7, [0, 6], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})
+						}
+					/>
+				) : cena.estiloNome ? (
 					<NomeEstilizado texto={cena.nome} estilo={cena.estiloNome} tamanho={nomeTam * 0.85} inicio={6} />
 				) : (
 					<div style={{fontFamily: anton, fontSize: nomeTam, lineHeight: 1, letterSpacing: nomeTam * 0.04}}>

@@ -123,6 +123,10 @@ export type Cena =
 			estilo?: 'amarelo' | 'ouro' | 'branco' | 'neon' | EstiloNome;
 			y?: number;
 			tamanho?: number;
+			// Neon com profundidade (aprovado em 23/10/2026, paleta dourado): frase pequena branca e palavra grande
+			// em neon 3D. Com linhas, texto e estilo são ignorados. Ex.: [{texto: 'sem'}, {texto: 'medo', grande: true}]
+			linhas?: {texto: string; grande?: boolean}[];
+			paleta?: 'lima' | 'tiktok' | 'dourado';
 	  })
 	// Foto recortada de uma pessoa (PNG com alfa) saindo de um aro dourado, com nome embaixo.
 	// centro: grande no meio, câmera desfocada atrás; lado: menor, no canto de baixo à direita.
@@ -133,6 +137,8 @@ export type Cena =
 			pequeno?: string;
 			variante?: 'centro' | 'lado';
 			estiloNome?: EstiloNome;
+			// Nome em neon com profundidade (substitui estiloNome).
+			paleta?: 'lima' | 'tiktok' | 'dourado';
 	  })
 	// Visor de câmera: cantos, "● REC" piscando (desmontagem-2, ref. 2).
 	| (Base & {tipo: 'rec'})

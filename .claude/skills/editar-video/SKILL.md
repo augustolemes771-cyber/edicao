@@ -85,6 +85,11 @@ estão em `docs/referencias/desmontagem.md`.
   (borda escura no cabelo, borrão na mão em movimento, objetos soltos). O usuário reprovou em 23/10/2026: não usar.
   Texto atrás da pessoa funciona; fundo trocado, não.
 - Cor de destaque sobre a roupa: dourado e amarelo somem na blusa vermelha; usar `serif` branca.
+- Estilo aprovado para textos grandes (23/10/2026): `gigante` com `linhas` (frase pequena branca + palavra grande)
+  em neon com profundidade (`NeonProfundo`, Poppins Black, extrusão 3D), `paleta: 'dourado'`; o mesmo no
+  `retrato` (`paleta`). Atrás da pessoa, o bloco vai na faixa de cima (`y: 0`, `tamanho` ~0,21): a frase pequena
+  fica livre e só a base da palavra grande passa atrás do cabelo. Antes de animar um estilo novo, mandar a prova
+  estática (`npx remotion still prova-texto`) para aprovação.
 - Frase gigante de duas palavras numa linha só, acima da cabeça (`tamanho` ~0,15, `y` ~0,09), quando a segunda
   linha ficaria inteira atrás dela.
 - Texto dos cenários monta inteiro em ~0,3 s no começo da cena. Não sincronizar letra por letra com a fala
