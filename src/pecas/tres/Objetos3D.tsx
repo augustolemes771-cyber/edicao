@@ -1,10 +1,12 @@
 import React, {useMemo} from 'react';
+import {random} from 'remotion';
 import * as THREE from 'three';
+import {RoundedBoxGeometry} from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 
 // Objetos 3D modelados por código para os cenários (docs/referencias/desmontagem-2.md).
 // Nenhum depende de arquivo externo: geometria por perfil girado (lathe) e texturas desenhadas em canvas.
 
-export type TipoObjeto3D = 'rei' | 'moeda' | 'notas' | 'relogio' | 'lampiao';
+export type TipoObjeto3D = 'rei' | 'moeda' | 'notas' | 'relogio' | 'lampiao' | 'celular' | 'caixa';
 
 const textura = (largura: number, altura: number, desenhar: (c: CanvasRenderingContext2D) => void) => {
 	const canvas = document.createElement('canvas');
@@ -321,6 +323,152 @@ export const Lampiao: React.FC<{cor?: string}> = ({cor = '#b6ff3a'}) => {
 	);
 };
 
+// Celular com a tela de uma live: selo AO VIVO, contador, produto em destaque e corações subindo.
+export const Celular: React.FC<{segundos: number}> = ({segundos}) => {
+	const corpo = useMemo(() => new RoundedBoxGeometry(1.5, 3.05, 0.16, 6, 0.2), []);
+	const metal = useMemo(
+		() => new THREE.MeshPhysicalMaterial({color: '#16171a', metalness: 0.6, roughness: 0.25, clearcoat: 1}),
+		[],
+	);
+	// A tela é redesenhada a cada quadro inteiro de 1/10 s: os corações sobem.
+	const passo = Math.floor(segundos * 10);
+	const tela = useMemo(
+		() =>
+			textura(540, 1100, (c) => {
+				const g = c.createLinearGradient(0, 0, 0, 1100);
+				g.addColorStop(0, '#2b1c30');
+				g.addColorStop(0.55, '#5b2a3a');
+				g.addColorStop(1, '#1a1420');
+				c.fillStyle = g;
+				c.fillRect(0, 0, 540, 1100);
+				// Pessoa da live (silhueta).
+				c.fillStyle = 'rgba(255,214,190,0.85)';
+				c.beginPath();
+				c.ellipse(270, 400, 95, 115, 0, 0, Math.PI * 2);
+				c.fill();
+				c.fillStyle = '#c3263a';
+				c.beginPath();
+				c.ellipse(270, 700, 190, 170, 0, Math.PI, 0);
+				c.fill();
+				c.fillRect(80, 700, 380, 140);
+				// Selo AO VIVO e contador.
+				c.fillStyle = '#fe2c55';
+				c.beginPath();
+				c.roundRect(28, 60, 150, 52, 12);
+				c.fill();
+				c.fillStyle = '#fff';
+				c.font = 'bold 30px sans-serif';
+				c.fillText('AO VIVO', 44, 96);
+				c.fillStyle = 'rgba(0,0,0,0.45)';
+				c.beginPath();
+				c.roundRect(190, 60, 180, 52, 12);
+				c.fill();
+				c.fillStyle = '#fff';
+				c.fillText(`${(1.2 + (passo % 40) / 100).toFixed(2).replace('.', ',')} mil`, 204, 96);
+				// Produto em destaque com preço e botão de compra.
+				c.fillStyle = 'rgba(255,255,255,0.94)';
+				c.beginPath();
+				c.roundRect(28, 880, 484, 170, 22);
+				c.fill();
+				c.fillStyle = '#f2c14e';
+				c.fillRect(48, 900, 130, 130);
+				c.fillStyle = '#111';
+				c.font = 'bold 34px sans-serif';
+				c.fillText('Produto top', 196, 945);
+				c.fillStyle = '#fe2c55';
+				c.font = 'bold 40px sans-serif';
+				c.fillText('R$ 49,90', 196, 1000);
+				c.fillStyle = '#fe2c55';
+				c.beginPath();
+				c.roundRect(366, 960, 132, 56, 14);
+				c.fill();
+				c.fillStyle = '#fff';
+				c.font = 'bold 28px sans-serif';
+				c.fillText('Comprar', 378, 997);
+				// Corações subindo pela direita.
+				for (let i = 0; i < 7; i++) {
+					const y = 840 - (((passo * 9 + i * 120) % 700) as number);
+					const x = 450 + Math.sin(i * 2 + passo / 6) * 30;
+					c.fillStyle = ['#fe2c55', '#ff8fab', '#ffd166'][i % 3];
+					c.globalAlpha = Math.min(1, (y - 140) / 300);
+					c.beginPath();
+					c.moveTo(x, y + 14);
+					c.bezierCurveTo(x - 30, y - 10, x - 14, y - 34, x, y - 16);
+					c.bezierCurveTo(x + 14, y - 34, x + 30, y - 10, x, y + 14);
+					c.fill();
+					c.globalAlpha = 1;
+				}
+			}),
+		[passo],
+	);
+	const telaMat = useMemo(() => new THREE.MeshBasicMaterial({map: tela, toneMapped: false}), [tela]);
+	return (
+		<group>
+			<mesh geometry={corpo} material={metal} castShadow receiveShadow />
+			<mesh position={[0, 0, 0.082]} material={telaMat}>
+				<planeGeometry args={[1.38, 2.92]} />
+			</mesh>
+			<mesh position={[0, 1.36, 0.085]} rotation={[0, 0, Math.PI / 2]}>
+				<capsuleGeometry args={[0.05, 0.22, 4, 12]} />
+				<meshStandardMaterial color="#050505" />
+			</mesh>
+		</group>
+	);
+};
+
+// Caixa de produto de papelão com fita e etiqueta (ref.: "escolher o produto certo").
+export const Caixa: React.FC = () => {
+	const geo = useMemo(() => new RoundedBoxGeometry(1.6, 1.15, 1.2, 4, 0.05), []);
+	const etiqueta = useMemo(
+		() =>
+			textura(512, 512, (c) => {
+				c.fillStyle = '#c99a62';
+				c.fillRect(0, 0, 512, 512);
+				for (let i = 0; i < 400; i++) {
+					c.fillStyle = `rgba(90,60,30,${0.05 + 0.05 * random(`c${i}`)})`;
+					c.fillRect(random(`x${i}`) * 512, random(`y${i}`) * 512, 2, 2);
+				}
+				c.fillStyle = '#d8b07a';
+				c.fillRect(226, 0, 60, 512);
+				c.fillStyle = '#ffffff';
+				c.beginPath();
+				c.roundRect(60, 300, 170, 140, 10);
+				c.fill();
+				c.strokeStyle = '#111';
+				c.lineWidth = 6;
+				for (let k = 0; k < 9; k++) {
+					c.beginPath();
+					c.moveTo(78 + k * 16, 320);
+					c.lineTo(78 + k * 16, 380);
+					c.stroke();
+				}
+				c.fillStyle = '#22c55e';
+				c.beginPath();
+				c.arc(380, 130, 62, 0, Math.PI * 2);
+				c.fill();
+				c.strokeStyle = '#fff';
+				c.lineWidth = 16;
+				c.lineCap = 'round';
+				c.beginPath();
+				c.moveTo(350, 132);
+				c.lineTo(372, 154);
+				c.lineTo(412, 108);
+				c.stroke();
+			}),
+		[],
+	);
+	const papelao = useMemo(() => new THREE.MeshStandardMaterial({map: etiqueta, roughness: 0.85}), [etiqueta]);
+	const fita = useMemo(() => new THREE.MeshStandardMaterial({color: '#d9b27c', roughness: 0.4, metalness: 0.05}), []);
+	return (
+		<group>
+			<mesh geometry={geo} material={papelao} castShadow receiveShadow />
+			<mesh position={[0, 0.585, 0]} material={fita} castShadow>
+				<boxGeometry args={[0.34, 0.012, 1.22]} />
+			</mesh>
+		</group>
+	);
+};
+
 export const Objeto3D: React.FC<{tipo: TipoObjeto3D; segundos: number; simbolo?: string; cor?: string}> = ({
 	tipo,
 	segundos,
@@ -338,5 +486,9 @@ export const Objeto3D: React.FC<{tipo: TipoObjeto3D; segundos: number; simbolo?:
 			return <Relogio segundos={segundos} />;
 		case 'lampiao':
 			return <Lampiao cor={cor} />;
+		case 'celular':
+			return <Celular segundos={segundos / 40} />;
+		case 'caixa':
+			return <Caixa />;
 	}
 };

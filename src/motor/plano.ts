@@ -195,6 +195,8 @@ export type Edit = {
 	curva?: Curva;
 	// false desliga a checagem de cobertura do npm run conferir (Reels, Shorts).
 	verificarCurva?: boolean;
+	// Segundos depois do fim da fala, para uma cartela final sem filmagem (ex.: cenário com a marca).
+	extraFim?: number;
 	// Barra fina no topo mostrando quanto falta: segura a pessoa até o fim (Reels, depoimentos).
 	barraProgresso?: boolean | {cor: string};
 	// Regra do canal: câmera crua entre cenas cheias só com 3 s ou mais (vãos menores são emendados).
@@ -338,7 +340,7 @@ export const montar = (edit: Edit, duracaoFonte: number): Montagem => {
 		cortes = edit.cortes;
 	}
 	const mantidos = trechosMantidos(cortes, duracaoFonte);
-	const duracaoEditada = mantidos.reduce((s, [a, b]) => s + (b - a), 0);
+	const duracaoEditada = mantidos.reduce((s, [a, b]) => s + (b - a), 0) + (edit.extraFim ?? 0);
 	const palavras = palavrasEditadas(legendas, mantidos);
 	const busca = criarBusca(palavras);
 	let acumulado = 0;

@@ -1,7 +1,7 @@
 import type {Edit} from '../../motor/plano';
 import transcricao from './transcricao.json';
 
-// Depoimento de aluna da Mentoria do Danilow: 1:41 de fala reduzidos a ~55 s.
+// Depoimento de aluna da Mentoria do Danilow: 1:41 de fala reduzidos a ~56 s, mais 2,5 s de cartela final.
 // Roteiro: gancho com resultado → dor (antes) → virada (conheceu o Danilow) → transformação
 // → o que aprendeu → resultado → suporte → agradecimento → fechamento com o próximo nível.
 export const depoimentoDanilow: Edit = {
@@ -11,6 +11,8 @@ export const depoimentoDanilow: Edit = {
 	verificarCurva: false,
 	regraCamera: false,
 	barraProgresso: {cor: '#ffd21f'},
+	// Cartela final com a marca depois da fala (o vídeo fica com ~58 s, abaixo do limite de 59).
+	extraFim: 2.5,
 	transcricao,
 	// Trechos que saem, no tempo original. Cada borda cai num silêncio medido no áudio
 	// (energia abaixo de -38 dB), porque o tempo de palavra do Whisper erra ~0,3 s.
@@ -56,12 +58,22 @@ export const depoimentoDanilow: Edit = {
 		{tipo: 'zoom', em: b.say('a gente sabe que').inicio, escala: 1.15, y: 0.3},
 		{tipo: 'zoom', em: b.emendas[3], escala: 1, y: 0.3},
 		{tipo: 'zoom', em: b.emendas[4], escala: 1.3, y: 0.3},
+		// Aprendizados em cenários 3D: mergulha do rosto para o cenário, troca com glitch e luz, volta com íris.
+		{tipo: 'mergulho', em: b.say('como funciona o algoritmo').inicio},
+		{tipo: 'listras', em: b.say('como escolher').inicio},
+		{tipo: 'vazamento', em: b.say('como funciona a live').inicio},
+		{tipo: 'iris', em: b.at('Hoje')},
+		{tipo: 'foco', em: b.at('Hoje'), duracao: 0.35},
+		// Cartela final.
+		{tipo: 'vazamento', em: b.say('próximo nível').fim + 0.3, cores: ['#ffd27a', '#e0a33a', '#3a2a10']},
 		// Ato final: chicote e aproximação lenta até o fim.
 		{tipo: 'chicote', em: b.emendas[5]},
 		{tipo: 'zoom', em: b.emendas[5], escala: 1.05, y: 0.3},
 		{tipo: 'zoom', em: b.say('transformou a nossa mente').inicio, escala: 1.3, y: 0.3, suave: 3},
 	],
 	cenas: (b) => [
+		// Visor de câmera no gancho: cara de depoimento real, gravado.
+		{tipo: 'rec', de: 0, ate: b.emendas[1]},
 		// Gancho: o resultado em primeiro lugar.
 		{
 			tipo: 'kicker',
@@ -80,17 +92,46 @@ export const depoimentoDanilow: Edit = {
 			de: b.at('mente'),
 			ate: b.say('Porque a gente').inicio,
 		},
-		// O que aprendeu, item por item na hora da fala.
+		// O que aprendeu: um cenário 3D por item, entrando na palavra falada. A voz dela continua por baixo.
 		{
-			tipo: 'checklist',
-			titulo: 'Na mentoria:',
-			de: b.at('entendendo'),
-			ate: b.at('Hoje'),
-			itens: [
-				{texto: 'Como funciona o algoritmo', em: b.at('algoritmo')},
-				{texto: 'Como escolher o produto certo', em: b.at('produto')},
-				{texto: 'Live shop no TikTok Shop', em: b.at('TikTok')},
+			tipo: 'cenario',
+			de: b.say('como funciona o algoritmo').inicio,
+			ate: b.say('como escolher').inicio,
+			fantasma: 'ALGORITMO',
+			pequeno: 'como funciona o',
+			grande: 'algoritmo',
+			emGrande: b.at('algoritmo'),
+			posTexto: 0.28,
+			objetos: [{tipo: 'rei', x: 0.05, y: -0.84, escala: 1.15, girar: 0.2, entra: 'nenhum'}],
+		},
+		{
+			tipo: 'cenario',
+			de: b.say('como escolher').inicio,
+			ate: b.say('como funciona a live').inicio,
+			luz: 'folhas',
+			fantasma: 'PRODUTO',
+			pequeno: 'como escolher o',
+			grande: 'produto certo',
+			emGrande: b.at('produto'),
+			posTexto: 0.28,
+			objetos: [
+				{tipo: 'caixa', x: -0.05, y: -0.5, escala: 1.25, giro: [0.35, 0.65, 0], girar: 0.25, entra: 'nenhum'},
+				{tipo: 'moeda', x: 0.58, y: -0.08, z: 0.5, escala: 0.55, girar: 1, simbolo: 'R$', atraso: 4},
+				{tipo: 'moeda', x: -0.72, y: -0.82, z: 0.6, escala: 0.45, girar: -0.8, simbolo: 'R$', atraso: 8},
 			],
+		},
+		{
+			tipo: 'cenario',
+			de: b.say('como funciona a live').inicio,
+			ate: b.at('Hoje'),
+			superficie: 'escuro',
+			luz: 'nenhuma',
+			fantasma: 'AO VIVO',
+			pequeno: 'live shop dentro do',
+			grande: 'TikTok Shop',
+			emGrande: b.at('TikTok'),
+			posTexto: 0.17,
+			objetos: [{tipo: 'celular', x: 0, y: -0.38, escala: 1.15, giro: [-0.05, -0.32, 0.04], entra: 'nenhum'}],
 		},
 		// Agradecimento.
 		{
@@ -100,6 +141,23 @@ export const depoimentoDanilow: Edit = {
 			emGrande: b.at('pena'),
 			de: b.at('valeu'),
 			ate: b.at('obrigado'),
+		},
+		// Cartela final 3D com a marca, depois da última palavra.
+		{
+			tipo: 'cenario',
+			de: b.say('próximo nível').fim + 0.3,
+			ate: b.say('próximo nível').fim + 2.8,
+			superficie: 'escuro',
+			luz: 'nenhuma',
+			pequeno: 'Mentoria',
+			grande: 'Danilow',
+			estiloTexto: 'ouro',
+			posTexto: 0.42,
+			objetos: [
+				{tipo: 'moeda', x: 0.68, y: 0.72, z: -0.4, escala: 0.7, girar: 0.6, simbolo: 'R$'},
+				{tipo: 'moeda', x: -0.7, y: -0.66, z: 0.4, escala: 1, girar: -0.5, simbolo: 'R$'},
+				{tipo: 'notas', x: 0.45, y: -0.58, z: -0.6, escala: 0.7, giro: [0.3, 0.6, 0.4]},
+			],
 		},
 	],
 };
