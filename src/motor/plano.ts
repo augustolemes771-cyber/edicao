@@ -146,6 +146,9 @@ export type Cena =
 	// Tópicos cinematográficos: o vídeo desfoca e escurece atrás, com feixes de luz, bokeh, grão e vinheta;
 	// lista tipográfica com número dourado, frase branca e a palavra entre *asteriscos* em dourado neon.
 	| (Base & {tipo: 'topicos'; titulo?: string; itens: {texto: string; em: number}[]})
+	// Xadrez 3D em impacto: a rainha vermelha desce e derruba os peões; texto atrás dela com a fala.
+	// emGrande: segundos depois do início da cena em que a palavra grande aparece.
+	| (Base & {tipo: 'xadrez'; pequeno?: string; grande: string; emGrande?: number})
 	// Vitrine de produto: foto de estúdio real (fundo preto) com palavra-chave em Gloock dourada e microtextos.
 	// alturaFoto e yFoto em fração da altura; yTexto é o topo do bloco de texto (0 a 1).
 	| (Base & {
@@ -315,6 +318,7 @@ const MODO_PADRAO: Record<TipoCena, Modo> = {
 	retrato: 'sobre',
 	topicos: 'sobre',
 	vitrine: 'cheia',
+	xadrez: 'cheia',
 	anel: 'sobre',
 	rec: 'sobre',
 	alertas: 'sobre',
@@ -345,6 +349,7 @@ const SOM_PADRAO: Record<TipoCena, Som | null> = {
 	retrato: 'shimmer',
 	topicos: 'whoosh',
 	vitrine: 'whoosh',
+	xadrez: 'boom',
 	anel: 'shimmer',
 	rec: 'tick',
 	alertas: null,
@@ -520,6 +525,7 @@ const TEXTO_PROPRIO: TipoCena[] = [
 	'retrato',
 	'topicos',
 	'vitrine',
+	'xadrez',
 ];
 const normalizar = (s: string) =>
 	s

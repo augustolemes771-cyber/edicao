@@ -1,4 +1,5 @@
 import {Vitrine} from './Vitrine';
+import {Xadrez} from './Xadrez';
 import React from 'react';
 import {AbsoluteFill, Img, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {Video} from '@remotion/media';
@@ -310,6 +311,8 @@ const Conteudo: React.FC<Props> = ({cena, pasta}) => {
 			return <Topicos cena={cena} />;
 		case 'vitrine':
 			return <Vitrine cena={cena} />;
+		case 'xadrez':
+			return <Xadrez cena={cena} />;
 		case 'despedida': {
 			const p = spring({frame, fps, config: {damping: 18}});
 			const m = margemCena;
