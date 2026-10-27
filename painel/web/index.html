@@ -38,6 +38,15 @@
 	#modal div{background:var(--card);border:1px solid var(--linha);border-radius:12px;width:min(900px,92vw);max-height:85vh;display:flex;flex-direction:column}
 	#modal header{border:0;grid-column:auto}#modal pre{margin:0;padding:0 16px 16px;overflow:auto;font-size:12px}
 	#claude{margin:12px 16px 0;padding:12px 14px;border:1px solid var(--cor2);border-radius:10px;background:#00a8a31a;display:flex;gap:12px;align-items:center}#claude span{flex:1}#claude[hidden]{display:none}
+	#tv{position:fixed;inset:0;background:#000d;z-index:8;overflow:auto;padding:24px}#tv[hidden]{display:none}
+	#tv .caixa{max-width:1200px;margin:0 auto;background:var(--bg);border:1px solid var(--linha);border-radius:14px;padding:20px}
+	#tv .topo{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px}#tv .topo h1{font-size:20px;margin:0 auto 0 0;color:var(--cor)}
+	#tv .grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:16px}
+	#tv .card{background:var(--card);border:1px solid var(--linha);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:8px}
+	#tv .card video,#tv .vazio{width:100%;aspect-ratio:16/9;border-radius:8px;background:#000;margin:0}
+	#tv .card video.v{aspect-ratio:9/16;max-height:420px;object-fit:contain}
+	#tv .vazio{display:flex;align-items:center;justify-content:center;text-align:center;color:var(--mudo);font-size:12px;padding:10px;border:1px dashed var(--linha)}
+	#tv .acoes{display:flex;gap:6px;flex-wrap:wrap}#tv .acoes button{font-size:12px;padding:5px 9px}
 	#aviso{color:var(--mudo);font-size:12px}
 	@media(max-width:900px){body{grid-template-columns:1fr;height:auto}header{grid-column:1}#bib,#lado{border:0}}
 </style>
@@ -71,6 +80,7 @@
 	<h2>Conversa</h2><button id="zerar">Começar conversa nova neste vídeo</button>
 </section>
 
+<div id="tv" hidden><div class="caixa" id="tvc"></div></div>
 <div id="modal" hidden><div><header><h1 id="mtitulo" style="font-size:13px"></h1><button id="mfechar">Fechar</button></header><pre id="mtexto"></pre></div></div>
 <script>
 const T = location.hash.slice(1);
@@ -96,6 +106,7 @@ async function biblioteca(){
 	document.head.append(st);
 	$('#bib').innerHTML =
 		caixa('temas','Templates por tema',window._temas.temas.length,window._temas.temas.map(t=>`<details data-id="tema-${t.id}" ${(aberto['tema-'+t.id]??false)?'open':''}><summary style="text-transform:none;letter-spacing:0;font-size:13px;color:var(--txt)">${esc(t.nome)} <small style="color:var(--mudo)">· ${t.projetos.length} vídeo${t.projetos.length===1?'':'s'} · ${t.regras} regra${t.regras===1?'':'s'} aprendida${t.regras===1?'':'s'}</small></summary><small style="color:var(--mudo);display:block;margin-bottom:6px">${esc(t.descricao)}</small>`+
+			`<div class="item" data-tema="${t.id}"><div><b>▶ Ver vídeos e opções</b><small>assistir, criar novo ou copiar um estilo</small></div></div>`+
 			item('Aprendizado deste tema',t.regras+' regras: cresce a cada vídeo',`Mostre o aprendizado do tema ${t.nome}`,`biblioteca/temas/${t.id}/aprendizado.md`)+
 			t.projetos.map(p=>item(p.nome,p.formato,`Cria um vídeo novo no tema "${t.id}" usando o projeto "${p.nome}" como base`,`src/projetos/${p.nome}/edit.ts`,`<button class="ver" data-studio="${esc(p.nome)}" title="Abrir no Studio">▶</button> `)).join('')+'</details>').join('')+
 			(window._temas.semTema.length?`<details data-id="tema-sem"><summary style="text-transform:none;letter-spacing:0;font-size:13px;color:var(--txt)">Sem tema <small style="color:var(--mudo)">· ${window._temas.semTema.length}</small></summary>`+window._temas.semTema.map(p=>item(p.nome,p.formato,`Coloca o projeto "${p.nome}" em um tema`,`src/projetos/${p.nome}/edit.ts`)).join('')+'</details>':''),true)+
@@ -111,6 +122,7 @@ $('#bib').onclick=async(e)=>{
 	const v=e.target.closest('.ver');
 	if(v?.dataset.studio){const r=await api('/api/studio',{});setTimeout(()=>window.open(r.url+'/'+v.dataset.studio),2500);return;}
 	if(v){try{const r=await api('/api/codigo?f='+encodeURIComponent(v.dataset.arq));$('#mtitulo').textContent=v.dataset.arq;$('#mtexto').textContent=r.texto;$('#modal').hidden=false;}catch(err){msg('Erro: '+err.message,'ia');}return;}
+	const ti=e.target.closest('[data-tema]');if(ti){return abrirTema(ti.dataset.tema);}
 	const i=e.target.closest('.item');if(i){$('#pedido').value=i.dataset.p+' ';$('#pedido').focus();}
 };
 $('#modal').onclick=(e)=>{if(e.target.id==='modal'||e.target.id==='mfechar')$('#modal').hidden=true;};
@@ -150,6 +162,34 @@ $('#zerar').onclick=async()=>{await api('/api/novo-chat',{projeto:proj()});$('#m
 $('#atualizar').onclick=async()=>{try{msg((await api('/api/sync/atualizar',{})).saida||'Atualizado.','ia');biblioteca();projetos();}catch(e){msg('Erro: '+e.message,'ia');}};
 $('#salvar').onclick=async()=>{try{msg((await api('/api/sync/salvar',{mensagem:'Edição pelo painel'})).saida||'Salvo na nuvem.','ia');}catch(e){msg('Erro: '+e.message,'ia');}};
 
+async function abrirTema(id){
+	const [{temas:ts},ps]=await Promise.all([api('/api/temas'),api('/api/projetos')]);
+	const t=ts.find(x=>x.id===id); if(!t) return;
+	const esc=(x)=>String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+	const cards=t.projetos.map(pr=>{
+		const v=(ps.find(x=>x.nome===pr.nome)?.videos||[])[0];
+		const vert=pr.formato==='vertical';
+		return `<div class="card"><b>${esc(pr.nome)}</b><small style="color:var(--mudo)">${pr.formato}${v?' · '+esc(v.arquivo):''}</small>`+
+			(v?`<video class="${vert?'v':''}" controls preload="metadata" src="/out/${encodeURIComponent(v.arquivo)}?t=${T}"></video>`:
+			`<div class="vazio">Ainda sem vídeo final neste computador.<br>Peça a prévia para assistir aqui.</div>`)+
+			`<div class="acoes"><button class="p" data-copiar="${esc(pr.nome)}">Copiar este estilo</button>`+
+			`<button data-previa="${esc(pr.nome)}">${v?'Gerar prévia de novo':'Gerar prévia'}</button><button data-studio2="${esc(pr.nome)}">Studio</button></div></div>`;
+	}).join('');
+	$('#tvc').innerHTML=`<div class="topo"><h1>${esc(t.nome)}</h1><button class="p" id="tvnovo">＋ Novo vídeo neste tema</button><button id="tvap">Ver aprendizado</button><button id="tvx">Fechar</button></div>`+
+		`<small style="color:var(--mudo)">${esc(t.descricao)} · ${t.regras} regra${t.regras===1?'':'s'} aprendida${t.regras===1?'':'s'}. Um vídeo novo segue essas regras e usa os vídeos abaixo como referência.</small>`+
+		`<div class="grade">${cards||'<span id="aviso">Nenhum vídeo neste tema ainda. Crie o primeiro: ele vai ensinar o Claude.</span>'}</div>`;
+	$('#tv').hidden=false;
+	const pedir=(texto,projeto)=>{$('#tv').hidden=true;if(projeto!==undefined)$('#projeto').value=projeto;$('#tema').value=id;localStorage.setItem('tema',id);videos();$('#pedido').value=texto;$('#f').requestSubmit();};
+	$('#tvx').onclick=()=>$('#tv').hidden=true;
+	$('#tvap').onclick=async()=>{const r=await api('/api/codigo?f='+encodeURIComponent(`biblioteca/temas/${id}/aprendizado.md`));$('#mtitulo').textContent='Aprendizado: '+t.nome;$('#mtexto').textContent=r.texto;$('#modal').hidden=false;};
+	$('#tvnovo').onclick=()=>{const n=prompt(`Nome do vídeo novo no tema "${t.nome}" (minúsculas e hífen):`);if(n)pedir(`Cria o projeto novo "${n}" no tema "${id}" seguindo as regras do aprendizado do tema e usando os vídeos do tema como referência.`,'');};
+	$('#tvc').onclick=(e)=>{
+		const c=e.target.closest('[data-copiar]'),pv=e.target.closest('[data-previa]'),st=e.target.closest('[data-studio2]');
+		if(c){const o=c.dataset.copiar;const n=prompt(`Nome do vídeo novo (cópia do estilo de "${o}"):`);if(n)pedir(`Cria o projeto novo "${n}" no tema "${id}" copiando o estilo de edição do projeto "${o}": mesma estrutura de cenas, tipos de cena, efeitos de câmera, legenda, ritmo e sons de src/projetos/${o}/edit.ts, mais as regras do aprendizado do tema. Troque só o conteúdo (textos e tempos pela fala do vídeo novo). Não copie a transcrição nem a mídia do original.`,'');}
+		if(pv)pedir(`Gera a prévia do projeto "${pv.dataset.previa}".`,pv.dataset.previa);
+		if(st)api('/api/studio',{}).then(r=>setTimeout(()=>window.open(r.url+'/'+st.dataset.studio2),2500));
+	};
+}
 let lendo=null;
 async function claude(){
 	const c=$('#claude'); let st;
