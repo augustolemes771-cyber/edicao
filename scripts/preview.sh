@@ -31,5 +31,5 @@ if [ -n "$DE" ] || [ -n "$ATE" ]; then
   NOME="$P-preview-${DE:-0}s-${ATE:-fim}s"
 fi
 mkdir -p out
-npx remotion render "$P" "out/$NOME.mp4" --scale="$ESCALA" --crf=26 "${QUADROS[@]}" "${EXTRA[@]}"
+npx remotion render "$P" "out/$NOME.mp4" --scale="$ESCALA" --video-bitrate=6M --hardware-acceleration=if-possible "${QUADROS[@]}" "${EXTRA[@]}"
 echo "Prévia: out/$NOME.mp4"

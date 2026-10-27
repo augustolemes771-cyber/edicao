@@ -120,7 +120,7 @@ async function biblioteca(){
 }
 $('#bib').onclick=async(e)=>{
 	const v=e.target.closest('.ver');
-	if(v?.dataset.studio){const r=await api('/api/studio',{});setTimeout(()=>window.open(r.url+'/'+v.dataset.studio),2500);return;}
+	if(v?.dataset.studio){studio(v.dataset.studio);return;}
 	if(v){try{const r=await api('/api/codigo?f='+encodeURIComponent(v.dataset.arq));$('#mtitulo').textContent=v.dataset.arq;$('#mtexto').textContent=r.texto;$('#modal').hidden=false;}catch(err){msg('Erro: '+err.message,'ia');}return;}
 	const ti=e.target.closest('[data-tema]');if(ti){return abrirTema(ti.dataset.tema);}
 	const i=e.target.closest('.item');if(i){$('#pedido').value=i.dataset.p+' ';$('#pedido').focus();}
@@ -157,7 +157,8 @@ async function temas(){
 	$('#tema').value=window._temas.temas.some(t=>t.id===atual)?atual:(window._temas.temas[0]?.id||'');
 }
 $('#novoProj').onclick=()=>{const n=prompt(`Nome do vídeo no tema "${$('#tema').selectedOptions[0]?.textContent}" (minúsculas e hífen):`);if(n){$('#pedido').value=`Cria o projeto novo "${n}" no tema "${$('#tema').value}" e prepara para editar.`;$('#f').requestSubmit();}};
-$('#studio').onclick=async()=>{const r=await api('/api/studio',{});setTimeout(()=>window.open(r.url),2500);};
+const studio=async(rota='')=>{msg('Abrindo o Studio com a placa de vídeo (GPU)... pode levar alguns segundos.','acao');const r=await api('/api/studio',{rota}).catch(()=>({ok:false}));if(!r.ok)msg('O Studio não abriu. Tente de novo.','ia');};
+$('#studio').onclick=()=>studio();
 $('#zerar').onclick=async()=>{await api('/api/novo-chat',{projeto:proj()});$('#msgs').innerHTML='';msg('Conversa nova. O que vamos editar?','ia');};
 $('#atualizar').onclick=async()=>{try{msg((await api('/api/sync/atualizar',{})).saida||'Atualizado.','ia');biblioteca();projetos();}catch(e){msg('Erro: '+e.message,'ia');}};
 $('#salvar').onclick=async()=>{try{msg((await api('/api/sync/salvar',{mensagem:'Edição pelo painel'})).saida||'Salvo na nuvem.','ia');}catch(e){msg('Erro: '+e.message,'ia');}};
@@ -187,7 +188,7 @@ async function abrirTema(id){
 		const c=e.target.closest('[data-copiar]'),pv=e.target.closest('[data-previa]'),st=e.target.closest('[data-studio2]');
 		if(c){const o=c.dataset.copiar;const n=prompt(`Nome do vídeo novo (cópia do estilo de "${o}"):`);if(n)pedir(`Cria o projeto novo "${n}" no tema "${id}" copiando o estilo de edição do projeto "${o}": mesma estrutura de cenas, tipos de cena, efeitos de câmera, legenda, ritmo e sons de src/projetos/${o}/edit.ts, mais as regras do aprendizado do tema. Troque só o conteúdo (textos e tempos pela fala do vídeo novo). Não copie a transcrição nem a mídia do original.`,'');}
 		if(pv)pedir(`Gera a prévia do projeto "${pv.dataset.previa}".`,pv.dataset.previa);
-		if(st)api('/api/studio',{}).then(r=>setTimeout(()=>window.open(r.url+'/'+st.dataset.studio2),2500));
+		if(st)studio(st.dataset.studio2);
 	};
 }
 let lendo=null;

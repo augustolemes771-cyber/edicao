@@ -28,6 +28,10 @@ o Claude edita e cria elementos novos, que ficam na biblioteca. **⬆ Salvar na 
 traz em outro computador. Vídeos brutos (`*.mp4`) não vão para o git: copie-os para `public/projetos/<nome>/`.
 O painel só aceita conexões do próprio computador e exige o código do endereço (o navegador já abre com ele).
 
+**Placa de vídeo (GPU):** o botão "Abrir Studio" abre o Studio num Chrome ou Edge com a GPU forçada (perfil próprio, em `.painel/chrome`),
+os renders usam ANGLE (Direct3D no Windows, Metal no Mac) e o `preview`/`render` usam o codificador de vídeo da placa quando existe
+(`--hardware-acceleration=if-possible`). Mantenha a aceleração de hardware ligada no Chrome e os drivers da placa em dia.
+
 ## Instalar (uma vez)
 
 No Mac:

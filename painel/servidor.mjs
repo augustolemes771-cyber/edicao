@@ -192,6 +192,40 @@ const iniciarStudio = () => {
 };
 process.on('exit', () => studio?.kill());
 
+// O Studio roda no navegador, então abre num Chrome/Edge próprio (perfil separado em .painel/chrome) com a GPU forçada:
+// rasterização e composição na placa de vídeo, ignorando a lista de bloqueio, e ANGLE no Direct3D/Metal. Sem isso o
+// navegador pode cair no desenho por CPU. Se não achar Chrome ou Edge, abre o navegador padrão.
+const acharNavegador = () => {
+	const pf = [process.env.ProgramFiles, process.env['ProgramFiles(x86)'], process.env.LOCALAPPDATA].filter(Boolean);
+	const candidatos = ehWin
+		? pf.flatMap((b) => [`${b}\\Google\\Chrome\\Application\\chrome.exe`, `${b}\\Microsoft\\Edge\\Application\\msedge.exe`])
+		: process.platform === 'darwin'
+			? ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge']
+			: ['/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser', '/usr/bin/microsoft-edge'];
+	return candidatos.find((c) => existsSync(c));
+};
+const abrirNoNavegador = (endereco, gpu = false) => {
+	const exe = gpu ? acharNavegador() : null;
+	if (exe) {
+		const flags = ['--ignore-gpu-blocklist', '--enable-gpu-rasterization', '--enable-zero-copy', '--disable-software-rasterizer', '--no-first-run', `--user-data-dir=${path.join(estado, 'chrome')}`];
+		if (ehWin) flags.push('--use-angle=d3d11');
+		else if (process.platform === 'darwin') flags.push('--use-angle=metal');
+		spawn(exe, [...flags, endereco], {stdio: 'ignore', detached: true}).on('error', () => {}).unref();
+		return;
+	}
+	const [cmd, ...a] = process.platform === 'darwin' ? ['open'] : ehWin ? ['cmd', '/c', 'start', ''] : ['xdg-open'];
+	spawn(cmd, [...a, endereco], {stdio: 'ignore', detached: true}).on('error', () => {}).unref();
+};
+const esperarPorta = async (porta, ms = 40000) => {
+	const {connect} = await import('node:net');
+	const fim = Date.now() + ms;
+	while (Date.now() < fim) {
+		if (await new Promise((ok) => { const c = connect(porta, '127.0.0.1'); c.on('connect', () => { c.destroy(); ok(true); }); c.on('error', () => ok(false)); })) return true;
+		await new Promise((r) => setTimeout(r, 400));
+	}
+	return false;
+};
+
 // ---------- HTTP ----------
 const tipos = {'.wav': 'audio/wav', '.woff2': 'font/woff2', '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.mp4': 'video/mp4'};
 const arquivo = (req, res, f) => {
@@ -286,8 +320,11 @@ createServer(async (req, res) => {
 			return json(res, {ok: true});
 		}
 		if (p === '/api/studio' && req.method === 'POST') {
+			const {rota} = await corpo(req);
 			iniciarStudio();
-			return json(res, {url: 'http://localhost:3000'});
+			const pronto = await esperarPorta(3000);
+			if (pronto) abrirNoNavegador(`http://localhost:3000/${/^[\w-]*$/.test(rota ?? '') ? (rota ?? '') : ''}`, true);
+			return json(res, {ok: pronto});
 		}
 		if (p === '/api/sync/atualizar' && req.method === 'POST') return json(res, {saida: git('pull', '--rebase', '--autostash')});
 		if (p === '/api/sync/salvar' && req.method === 'POST') {
@@ -310,8 +347,5 @@ createServer(async (req, res) => {
 }).listen(porta, '127.0.0.1', () => {
 	const endereco = `http://localhost:${porta}/#${token}`;
 	console.log(`\nPainel de edição pronto: ${endereco}\n(não feche esta janela enquanto estiver editando)\n`);
-	if (!process.env.SEM_NAVEGADOR) {
-		const [cmd, ...a] = process.platform === 'darwin' ? ['open'] : process.platform === 'win32' ? ['cmd', '/c', 'start', ''] : ['xdg-open'];
-		spawn(cmd, [...a, endereco], {stdio: 'ignore', detached: true}).on('error', () => {}).unref();
-	}
+	if (!process.env.SEM_NAVEGADOR) abrirNoNavegador(endereco);
 });

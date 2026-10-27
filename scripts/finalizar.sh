@@ -6,7 +6,7 @@ P="${1:?Uso: npm run render -- <projeto>}"; shift || true
 cd "$(dirname "$0")/.."
 mkdir -p out
 npx tsx scripts/conferir.ts "$P" > "out/$P-conferir.txt" || { cat "out/$P-conferir.txt"; echo "Corrija os erros antes do render."; exit 1; }
-npx remotion render "$P" "out/$P-bruto.mp4" --scale=2 --codec=h264 --video-bitrate=50M --audio-codec=aac --audio-bitrate=320k "$@"
+npx remotion render "$P" "out/$P-bruto.mp4" --scale=2 --codec=h264 --video-bitrate=50M --audio-codec=aac --audio-bitrate=320k --hardware-acceleration=if-possible "$@"
 
 # Loudness em duas passadas (EBU R128): mede, depois aplica linear.
 MEDIDA=$(ffmpeg -hide_banner -nostats -i "out/$P-bruto.mp4" -af loudnorm=I=-14:TP=-1.5:LRA=11:print_format=json -f null - 2>&1 | sed -n '/{/,/}/p')
