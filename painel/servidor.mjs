@@ -83,6 +83,24 @@ const biblioteca = () => {
 	return {pecas, modelos3d, blender, templates, sfx, fontes, referencias, salvos};
 };
 
+// ---------- Temas ----------
+const dirTemas = path.join(raiz, 'biblioteca/temas');
+const temas = () => {
+	const formatos = Object.fromEntries(biblioteca().templates.map((t) => [t.nome, t.formato]));
+	const lista = existsSync(dirTemas)
+		? readdirSync(dirTemas, {withFileTypes: true}).filter((d) => d.isDirectory() && existsSync(path.join(dirTemas, d.name, 'tema.json'))).map((d) => {
+				const t = ler(path.join(dirTemas, d.name, 'tema.json'), {});
+				const ap = path.join(dirTemas, d.name, 'aprendizado.md');
+				const regras = existsSync(ap) ? readFileSync(ap, 'utf8').split('\n').filter((l) => l.startsWith('- ')).length : 0;
+				return {id: d.name, nome: t.nome ?? d.name, descricao: t.descricao ?? '', regras, projetos: (t.projetos ?? []).filter((n) => n in formatos).map((n) => ({nome: n, formato: formatos[n]}))};
+			})
+		: [];
+	const usados = new Set(lista.flatMap((t) => t.projetos.map((p) => p.nome)));
+	const semTema = Object.keys(formatos).filter((n) => !usados.has(n)).map((n) => ({nome: n, formato: formatos[n]}));
+	return {temas: lista, semTema};
+};
+const slug = (n) => String(n).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
 const projetos = () => {
 	const dir = path.join(raiz, 'src/projetos');
 	const saidas = existsSync(path.join(raiz, 'out')) ? readdirSync(path.join(raiz, 'out')).filter((f) => f.endsWith('.mp4')) : [];
@@ -98,8 +116,12 @@ const projetos = () => {
 };
 
 // ---------- Chat com o Claude Code ----------
-const instrucao = (projeto) => `Você está dentro do PAINEL DE EDIÇÃO do canal Mateus Dias. O usuário pede em texto e você edita.
+const instrucao = (projeto, tema) => `Você está dentro do PAINEL DE EDIÇÃO do canal Mateus Dias. O usuário pede em texto e você edita.
 Projeto atual: "${projeto || 'nenhum (crie um com npm run novo se o pedido for um vídeo novo)'}".
+Tema do vídeo: "${tema || 'aleatorios'}". ANTES de editar, leia biblioteca/temas/${tema || 'aleatorios'}/tema.json e aprendizado.md: são as regras aprendidas nos
+vídeos anteriores deste tema; siga-as e use os projetos listados em tema.json como base. Se criar um projeto novo, acrescente o nome dele em "projetos" do tema.json.
+Ao terminar uma edição, ou quando o usuário aprovar, reprovar ou corrigir algo, acrescente em aprendizado.md uma linha "- AAAA-MM-DD (projeto): lição" só com o que vale
+para os próximos vídeos deste tema (o que vale para todos os temas vai em .claude/skills/editar-video/SKILL.md). Se o tema não existir, crie a pasta com tema.json e aprendizado.md.
 Siga .claude/skills/editar-video/SKILL.md e o CLAUDE.md. Antes de criar algo, procure na biblioteca (src/pecas, src/pecas/tres, src/projetos,
 public/sfx, public/fontes, biblioteca/itens) e REUTILIZE. Se criar um elemento novo reaproveitável (peça, modelo 3D, template, efeito), coloque-o
 em src/pecas (ou src/pecas/tres) com um comentário de 1 a 3 linhas no topo dizendo o que é, e registre um item em biblioteca/itens/<nome>.json
@@ -108,14 +130,14 @@ O usuário não é programador: não mostre código, diga o que mudou e como ver
 
 const rodando = new Map();
 const chat = async (req, res) => {
-	const {projeto, pedido} = await corpo(req);
-	if (!nomeValido(projeto) || typeof pedido !== 'string' || !pedido.trim()) return json(res, {erro: 'Pedido inválido'}, 400);
+	const {projeto, pedido, tema} = await corpo(req);
+	if (!nomeValido(projeto) || !nomeValido(tema) || typeof pedido !== 'string' || !pedido.trim()) return json(res, {erro: 'Pedido inválido'}, 400);
 	res.writeHead(200, {'content-type': 'text/event-stream; charset=utf-8', 'cache-control': 'no-cache', connection: 'keep-alive'});
 	const enviar = (tipo, dados) => res.write(`data: ${JSON.stringify({tipo, ...dados})}\n\n`);
 	const chave = projeto || '_geral';
 	rodando.get(chave)?.kill();
 	const arqInstrucao = path.join(estado, 'instrucao.txt');
-	writeFileSync(arqInstrucao, instrucao(projeto));
+	writeFileSync(arqInstrucao, instrucao(projeto, tema));
 	const args = ['-p', '--output-format', 'stream-json', '--verbose', '--permission-mode', 'acceptEdits', '--allowedTools', 'Bash,Read,Write,Edit,Glob,Grep', '--append-system-prompt-file', `"${arqInstrucao}"`];
 	if (sessoes[chave] && /^[\w-]+$/.test(sessoes[chave])) args.push('--resume', sessoes[chave]);
 	const proc = rodar('claude', ehWin ? args : args.map((a) => a.replace(/^"|"$/g, '')), {stdio: ['pipe', 'pipe', 'pipe']});
@@ -217,6 +239,16 @@ createServer(async (req, res) => {
 
 		if (p === '/api/biblioteca') return json(res, biblioteca());
 		if (p === '/api/projetos') return json(res, projetos());
+		if (p === '/api/temas' && req.method === 'GET') return json(res, temas());
+		if (p === '/api/temas' && req.method === 'POST') {
+			const {nome, descricao} = await corpo(req);
+			const id = slug(nome ?? '');
+			if (!id || existsSync(path.join(dirTemas, id))) return json(res, {erro: id ? 'Esse tema já existe' : 'Nome inválido'}, 400);
+			mkdirSync(path.join(dirTemas, id), {recursive: true});
+			writeFileSync(path.join(dirTemas, id, 'tema.json'), JSON.stringify({nome: String(nome).trim().slice(0, 60), descricao: String(descricao ?? '').slice(0, 300), projetos: []}, null, 1));
+			writeFileSync(path.join(dirTemas, id, 'aprendizado.md'), `# Aprendizado: ${String(nome).trim()}\n\nRegras aprendidas nos vídeos deste tema. O Claude lê isto antes de editar e acrescenta uma linha datada quando o usuário aprova ou corrige algo.\n\n`);
+			return json(res, {id});
+		}
 		if (p === '/api/claude') {
 			const instalado = await testar('claude', ['--version']);
 			return json(res, {instalado, logado: instalado && (await testar('claude', ['auth', 'status']))});

@@ -127,6 +127,12 @@ estão em `docs/referencias/desmontagem.md`.
 - Na nuvem o modelo do whisper.cpp não baixa (huggingface bloqueado). Funciona o pacote npm `sts-whisper-small`
   (instalar com `--ignore-scripts` no rascunho) com `@huggingface/transformers` e `return_timestamps: 'word'`.
 
+## Temas (painel)
+
+Todo vídeo pertence a um tema (`biblioteca/temas/<tema>/`: `tema.json` com a lista de projetos e `aprendizado.md`). Antes de editar,
+ler o `aprendizado.md` do tema e seguir. Ao terminar, ou quando o usuário aprovar, reprovar ou corrigir algo, acrescentar uma linha
+`- AAAA-MM-DD (projeto): lição` nele. Regra que vale para todos os temas fica nesta skill. Projeto novo entra em `projetos` do `tema.json`.
+
 ## Depois da entrega
 
 - Não renderizar de novo sem pedido. Ajuste depois da entrega vai para o código e para esta skill; render novo só

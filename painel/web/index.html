@@ -37,7 +37,7 @@
 	#modal{position:fixed;inset:0;background:#000c;display:flex;align-items:center;justify-content:center;z-index:9}#modal[hidden]{display:none}
 	#modal div{background:var(--card);border:1px solid var(--linha);border-radius:12px;width:min(900px,92vw);max-height:85vh;display:flex;flex-direction:column}
 	#modal header{border:0;grid-column:auto}#modal pre{margin:0;padding:0 16px 16px;overflow:auto;font-size:12px}
-	#claude{margin:12px 16px 0;padding:12px 14px;border:1px solid var(--cor2);border-radius:10px;background:#00a8a31a;display:flex;gap:12px;align-items:center}#claude span{flex:1}
+	#claude{margin:12px 16px 0;padding:12px 14px;border:1px solid var(--cor2);border-radius:10px;background:#00a8a31a;display:flex;gap:12px;align-items:center}#claude span{flex:1}#claude[hidden]{display:none}
 	#aviso{color:var(--mudo);font-size:12px}
 	@media(max-width:900px){body{grid-template-columns:1fr;height:auto}header{grid-column:1}#bib,#lado{border:0}}
 </style>
@@ -45,6 +45,8 @@
 <body>
 <header>
 	<h1>✦ Painel de Edição</h1>
+	<select id="tema" title="Tema: tudo que for feito nele vira aprendizado para os próximos vídeos do mesmo tema"></select>
+	<button id="novoTema" title="Criar um tema novo">+ Tema</button>
 	<select id="projeto"></select>
 	<button id="novoProj">+ Novo vídeo</button>
 	<button id="studio">Abrir Studio</button>
@@ -93,7 +95,10 @@ async function biblioteca(){
 	st.textContent=Object.entries(b.fontes).flatMap(([n,v])=>v.map(f=>`@font-face{font-family:"p-${n}";font-weight:${f.peso};font-style:${f.estilo};src:url(/fontes/${f.arquivo}?t=${T})}`)).join('');
 	document.head.append(st);
 	$('#bib').innerHTML =
-		caixa('templates','Templates de vídeo',b.templates.length,b.templates.map(t=>item(t.nome,t.formato,`Usa o template "${t.nome}" como base`,t.arquivo,`<button class="ver" data-studio="${esc(t.nome)}" title="Abrir no Studio">▶</button> `)).join(''))+
+		caixa('temas','Templates por tema',window._temas.temas.length,window._temas.temas.map(t=>`<details data-id="tema-${t.id}" ${(aberto['tema-'+t.id]??false)?'open':''}><summary style="text-transform:none;letter-spacing:0;font-size:13px;color:var(--txt)">${esc(t.nome)} <small style="color:var(--mudo)">· ${t.projetos.length} vídeo${t.projetos.length===1?'':'s'} · ${t.regras} regra${t.regras===1?'':'s'} aprendida${t.regras===1?'':'s'}</small></summary><small style="color:var(--mudo);display:block;margin-bottom:6px">${esc(t.descricao)}</small>`+
+			item('Aprendizado deste tema',t.regras+' regras: cresce a cada vídeo',`Mostre o aprendizado do tema ${t.nome}`,`biblioteca/temas/${t.id}/aprendizado.md`)+
+			t.projetos.map(p=>item(p.nome,p.formato,`Cria um vídeo novo no tema "${t.id}" usando o projeto "${p.nome}" como base`,`src/projetos/${p.nome}/edit.ts`,`<button class="ver" data-studio="${esc(p.nome)}" title="Abrir no Studio">▶</button> `)).join('')+'</details>').join('')+
+			(window._temas.semTema.length?`<details data-id="tema-sem"><summary style="text-transform:none;letter-spacing:0;font-size:13px;color:var(--txt)">Sem tema <small style="color:var(--mudo)">· ${window._temas.semTema.length}</small></summary>`+window._temas.semTema.map(p=>item(p.nome,p.formato,`Coloca o projeto "${p.nome}" em um tema`,`src/projetos/${p.nome}/edit.ts`)).join('')+'</details>':''),true)+
 		caixa('salvos','Salvos por você',b.salvos.length,b.salvos.map(s=>item(s.nome,s.descricao,`Usa "${s.nome}" da biblioteca`,s.arquivo)).join(''))+
 		caixa('pecas','Peças e efeitos',b.pecas.length,b.pecas.map(p=>item(p.nome,p.descricao.slice(0,90),`Usa a peça ${p.nome}`,p.arquivo)).join(''),false)+
 		caixa('3d','Modelos 3D',b.modelos3d.length,b.modelos3d.map(m=>item(m.nome,'objeto 3D',`Coloca o objeto 3D ${m.nome}`,m.arquivo)).join(''),false)+
@@ -112,7 +117,9 @@ $('#modal').onclick=(e)=>{if(e.target.id==='modal'||e.target.id==='mfechar')$('#
 
 async function projetos(){
 	const ps = await api('/api/projetos'); const atual = proj();
-	$('#projeto').innerHTML = '<option value="">(sem projeto)</option>'+ps.map(p=>`<option>${p.nome}</option>`).join('');
+	const grupos=(window._temas?.temas||[]).map(t=>`<optgroup label="${t.nome}">${t.projetos.map(p=>`<option>${p.nome}</option>`).join('')}</optgroup>`).join('');
+	const sem=(window._temas?.semTema||[]).map(p=>`<option>${p.nome}</option>`).join('');
+	$('#projeto').innerHTML = '<option value="">(sem projeto)</option>'+grupos+(sem?`<optgroup label="Sem tema">${sem}</optgroup>`:'');
 	$('#projeto').value = atual; window._ps = ps; videos();
 }
 function videos(){
@@ -121,8 +128,23 @@ function videos(){
 		p.videos.map(v=>`<video controls preload="metadata" src="/out/${v.arquivo}?t=${T}"></video><div id="aviso">${v.arquivo}</div>`).join(''):
 		'<span id="aviso">Nenhuma prévia ainda. Peça: "gera a prévia".</span>';
 }
-$('#projeto').onchange=videos;
-$('#novoProj').onclick=()=>{const n=prompt('Nome do vídeo (minúsculas e hífen):');if(n){$('#pedido').value=`Cria o projeto novo "${n}" e prepara para editar.`;$('#f').requestSubmit();}};
+$('#projeto').onchange=()=>{
+	const t=(window._temas?.temas||[]).find(t=>t.projetos.some(p=>p.nome===proj()));
+	if(t) $('#tema').value=t.id; localStorage.setItem('tema',$('#tema').value); videos();
+};
+$('#tema').onchange=()=>localStorage.setItem('tema',$('#tema').value);
+$('#novoTema').onclick=async()=>{
+	const nome=prompt('Nome do tema novo (ex.: Aulas, Lançamento, Podcast):'); if(!nome) return;
+	const descricao=prompt('Descreva em uma frase como são os vídeos desse tema (opcional):')||'';
+	try{const r=await api('/api/temas',{nome,descricao}); await temas(); $('#tema').value=r.id; localStorage.setItem('tema',r.id); biblioteca();
+		msg(`Tema "${nome}" criado. Os vídeos feitos nele vão ensinar o Claude: ele anota o que você aprova ou corrige.`,'ia');}catch(e){msg('Erro: '+e.message,'ia');}
+};
+async function temas(){
+	window._temas=await api('/api/temas'); const atual=$('#tema').value||localStorage.getItem('tema')||'';
+	$('#tema').innerHTML=window._temas.temas.map(t=>`<option value="${t.id}">${t.nome}</option>`).join('');
+	$('#tema').value=window._temas.temas.some(t=>t.id===atual)?atual:(window._temas.temas[0]?.id||'');
+}
+$('#novoProj').onclick=()=>{const n=prompt(`Nome do vídeo no tema "${$('#tema').selectedOptions[0]?.textContent}" (minúsculas e hífen):`);if(n){$('#pedido').value=`Cria o projeto novo "${n}" no tema "${$('#tema').value}" e prepara para editar.`;$('#f').requestSubmit();}};
 $('#studio').onclick=async()=>{const r=await api('/api/studio',{});setTimeout(()=>window.open(r.url),2500);};
 $('#zerar').onclick=async()=>{await api('/api/novo-chat',{projeto:proj()});$('#msgs').innerHTML='';msg('Conversa nova. O que vamos editar?','ia');};
 $('#atualizar').onclick=async()=>{try{msg((await api('/api/sync/atualizar',{})).saida||'Atualizado.','ia');biblioteca();projetos();}catch(e){msg('Erro: '+e.message,'ia');}};
@@ -156,7 +178,7 @@ $('#f').onsubmit=async(e)=>{
 	$('#pedido').value=''; msg(pedido,'eu'); $('#enviar').disabled=true; $('#parar').hidden=false;
 	ctrl=new AbortController(); let atual=null;
 	try{
-		const r=await fetch('/api/chat',{method:'POST',headers:H,signal:ctrl.signal,body:JSON.stringify({projeto:proj(),pedido})});
+		const r=await fetch('/api/chat',{method:'POST',headers:H,signal:ctrl.signal,body:JSON.stringify({projeto:proj(),pedido,tema:$('#tema').value})});
 		if(!r.ok) throw new Error((await r.json()).erro);
 		const rd=r.body.getReader(), dec=new TextDecoder(); let buf='';
 		for(;;){const {done,value}=await rd.read(); if(done)break; buf+=dec.decode(value,{stream:true});
@@ -166,9 +188,9 @@ $('#f').onsubmit=async(e)=>{
 				else if(ev.tipo==='acao') msg(ev.acao,'acao');
 				else if(ev.tipo==='erro') msg('⚠ '+ev.texto,'ia');}}
 	}catch(err){if(err.name!=='AbortError')msg('⚠ '+err.message,'ia');}
-	$('#enviar').disabled=false; $('#parar').hidden=true; biblioteca(); projetos(); claude();
+	$('#enviar').disabled=false; $('#parar').hidden=true; temas().then(()=>{biblioteca();projetos();}); claude();
 };
-if(!T) msg('Abra o endereço completo que apareceu no terminal (termina com #código).','ia'); else {biblioteca();projetos();claude();}
+if(!T) msg('Abra o endereço completo que apareceu no terminal (termina com #código).','ia'); else {temas().then(()=>{biblioteca();projetos();});claude();}
 </script>
 </body>
 </html>
