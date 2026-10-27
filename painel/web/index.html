@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Painel de Edição</title>
+<style>
+	:root{--bg:#030405;--card:#0d1214;--linha:#1c2528;--txt:#eef3f3;--mudo:#8a9a9b;--cor:#12d4cd;--cor2:#00A8A3}
+	*{box-sizing:border-box}
+	body{margin:0;height:100vh;display:grid;grid-template-columns:300px 1fr 380px;grid-template-rows:auto 1fr;background:var(--bg);color:var(--txt);font:14px/1.45 system-ui,sans-serif}
+	header{grid-column:1/4;display:flex;gap:10px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--linha)}
+	header h1{font-size:16px;margin:0 auto 0 0;color:var(--cor)}
+	select,button,textarea{font:inherit;color:var(--txt);background:var(--card);border:1px solid var(--linha);border-radius:8px;padding:7px 11px}
+	button{cursor:pointer}button:hover{border-color:var(--cor2)}
+	button.p{background:var(--cor2);border-color:var(--cor2);color:#021}
+	section{overflow:auto;padding:14px;min-height:0}
+	#bib{border-right:1px solid var(--linha)}#lado{border-left:1px solid var(--linha)}
+	h2{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mudo);margin:18px 0 8px}
+	h2:first-child{margin-top:0}
+	.item{background:var(--card);border:1px solid var(--linha);border-radius:8px;padding:7px 10px;margin-bottom:6px;cursor:pointer}
+	.item:hover{border-color:var(--cor2)}.item small{display:block;color:var(--mudo)}
+	#centro{display:flex;flex-direction:column;padding:0}
+	#msgs{flex:1;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
+	.m{max-width:85%;padding:9px 13px;border-radius:12px;white-space:pre-wrap}
+	.eu{align-self:flex-end;background:var(--cor2);color:#021}.ia{background:var(--card);border:1px solid var(--linha)}
+	.acao{font-size:12px;color:var(--mudo);font-family:ui-monospace,monospace}
+	form{display:flex;gap:8px;padding:12px;border-top:1px solid var(--linha)}
+	textarea{flex:1;resize:none;height:64px}
+	video{width:100%;border-radius:8px;background:#000;margin-bottom:6px}
+	.chips{display:flex;flex-wrap:wrap;gap:5px}.chips span{background:var(--card);border:1px solid var(--linha);border-radius:99px;padding:2px 9px;font-size:12px}
+	#aviso{color:var(--mudo);font-size:12px}
+	@media(max-width:900px){body{grid-template-columns:1fr;height:auto}header{grid-column:1}#bib,#lado{border:0}}
+</style>
+</head>
+<body>
+<header>
+	<h1>✦ Painel de Edição</h1>
+	<select id="projeto"></select>
+	<button id="novoProj">+ Novo vídeo</button>
+	<button id="studio">Abrir Studio</button>
+	<button id="atualizar" title="Baixa do GitHub o que foi salvo em outro computador">⬇ Atualizar</button>
+	<button id="salvar" class="p" title="Envia para o GitHub templates, peças e edições novas">⬆ Salvar na nuvem</button>
+</header>
+
+<section id="bib"></section>
+
+<section id="centro">
+	<div id="msgs"><div class="m ia">Oi! Escolha o vídeo em cima e me diga o que editar. Posso usar o que está na biblioteca ou criar elementos novos (eles ficam salvos para os próximos vídeos).</div></div>
+	<form id="f">
+		<textarea id="pedido" placeholder="Ex.: usa o template do depoimento e coloca a moeda 3D girando quando eu falar 'investimento'"></textarea>
+		<button class="p" id="enviar">Enviar</button>
+		<button type="button" id="parar" hidden>Parar</button>
+	</form>
+</section>
+
+<section id="lado">
+	<h2>Prévias</h2><div id="videos"><span id="aviso">Escolha um projeto.</span></div>
+	<h2>Conversa</h2><button id="zerar">Começar conversa nova neste vídeo</button>
+</section>
+
+<script>
+const T = location.hash.slice(1);
+const H = {'content-type':'application/json','x-painel-token':T};
+const $ = (s)=>document.querySelector(s);
+const api = async (p, corpo)=>{
+	const r = await fetch(p,{method:corpo?'POST':'GET',headers:H,body:corpo?JSON.stringify(corpo):undefined});
+	const j = await r.json(); if(!r.ok) throw new Error(j.erro||r.status); return j;
+};
+const proj = ()=>$('#projeto').value;
+const msg = (txt,cls)=>{const d=document.createElement('div');d.className='m '+cls;d.textContent=txt;$('#msgs').append(d);$('#msgs').scrollTop=1e9;return d;};
+
+async function biblioteca(){
+	const b = await api('/api/biblioteca');
+	const grupo=(titulo,itens,fn)=>itens.length?`<h2>${titulo} (${itens.length})</h2>`+itens.map(fn).join(''):'';
+	const item=(nome,sub,pedido)=>`<div class="item" data-p="${pedido.replace(/"/g,'&quot;')}">${nome}<small>${sub||''}</small></div>`;
+	$('#bib').innerHTML =
+		grupo('Templates de vídeo',b.templates,(t)=>item(t.nome,t.formato,`Usa o template "${t.nome}" como base`))+
+		grupo('Salvos por você',b.salvos,(s)=>item(s.nome,s.descricao,`Usa "${s.nome}" da biblioteca`))+
+		grupo('Peças e efeitos',b.pecas,(p)=>item(p.nome,p.descricao.slice(0,90),`Usa a peça ${p.nome}`))+
+		grupo('Modelos 3D',b.modelos3d,(m)=>item(m.nome,'objeto 3D',`Coloca o objeto 3D ${m.nome}`))+
+		grupo('Modelos Blender',b.blender,(m)=>item(m.nome,'script Blender',`Gera o modelo ${m.nome} com Blender`))+
+		`<h2>Sons</h2><div class="chips">${b.sfx.map(s=>`<span>${s}</span>`).join('')}</div>`+
+		`<h2>Fontes</h2><div class="chips">${b.fontes.map(s=>`<span>${s}</span>`).join('')}</div>`;
+}
+$('#bib').onclick=(e)=>{const i=e.target.closest('.item');if(i){$('#pedido').value=i.dataset.p+' ';$('#pedido').focus();}};
+
+async function projetos(){
+	const ps = await api('/api/projetos'); const atual = proj();
+	$('#projeto').innerHTML = '<option value="">(sem projeto)</option>'+ps.map(p=>`<option>${p.nome}</option>`).join('');
+	$('#projeto').value = atual; window._ps = ps; videos();
+}
+function videos(){
+	const p=(window._ps||[]).find(x=>x.nome===proj());
+	$('#videos').innerHTML = !p?'<span id="aviso">Escolha um projeto.</span>':p.videos.length?
+		p.videos.map(v=>`<video controls preload="metadata" src="/out/${v.arquivo}?t=${T}"></video><div id="aviso">${v.arquivo}</div>`).join(''):
+		'<span id="aviso">Nenhuma prévia ainda. Peça: "gera a prévia".</span>';
+}
+$('#projeto').onchange=videos;
+$('#novoProj').onclick=()=>{const n=prompt('Nome do vídeo (minúsculas e hífen):');if(n){$('#pedido').value=`Cria o projeto novo "${n}" e prepara para editar.`;$('#f').requestSubmit();}};
+$('#studio').onclick=async()=>{const r=await api('/api/studio',{});setTimeout(()=>window.open(r.url),2500);};
+$('#zerar').onclick=async()=>{await api('/api/novo-chat',{projeto:proj()});$('#msgs').innerHTML='';msg('Conversa nova. O que vamos editar?','ia');};
+$('#atualizar').onclick=async()=>{try{msg((await api('/api/sync/atualizar',{})).saida||'Atualizado.','ia');biblioteca();projetos();}catch(e){msg('Erro: '+e.message,'ia');}};
+$('#salvar').onclick=async()=>{try{msg((await api('/api/sync/salvar',{mensagem:'Edição pelo painel'})).saida||'Salvo na nuvem.','ia');}catch(e){msg('Erro: '+e.message,'ia');}};
+
+let ctrl=null;
+$('#parar').onclick=()=>{ctrl?.abort();api('/api/parar',{projeto:proj()});};
+$('#pedido').onkeydown=(e)=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('#f').requestSubmit();}};
+$('#f').onsubmit=async(e)=>{
+	e.preventDefault(); const pedido=$('#pedido').value.trim(); if(!pedido) return;
+	$('#pedido').value=''; msg(pedido,'eu'); $('#enviar').disabled=true; $('#parar').hidden=false;
+	ctrl=new AbortController(); let atual=null;
+	try{
+		const r=await fetch('/api/chat',{method:'POST',headers:H,signal:ctrl.signal,body:JSON.stringify({projeto:proj(),pedido})});
+		if(!r.ok) throw new Error((await r.json()).erro);
+		const rd=r.body.getReader(), dec=new TextDecoder(); let buf='';
+		for(;;){const {done,value}=await rd.read(); if(done)break; buf+=dec.decode(value,{stream:true});
+			const partes=buf.split('\n\n'); buf=partes.pop();
+			for(const p of partes){const ev=JSON.parse(p.replace(/^data: /,''));
+				if(ev.tipo==='texto') msg(ev.texto,'ia');
+				else if(ev.tipo==='acao') msg(ev.acao,'acao');
+				else if(ev.tipo==='erro') msg('⚠ '+ev.texto,'ia');}}
+	}catch(err){if(err.name!=='AbortError')msg('⚠ '+err.message,'ia');}
+	$('#enviar').disabled=false; $('#parar').hidden=true; biblioteca(); projetos();
+};
+if(!T) msg('Abra o endereço completo que apareceu no terminal (termina com #código).','ia'); else {biblioteca();projetos();}
+</script>
+</body>
+</html>
