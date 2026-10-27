@@ -64,14 +64,33 @@ try {
 	process.env.PATH += path.delimiter + (ehWin ? prefixo : path.join(prefixo, 'bin'));
 } catch {}
 const git = (...args) => execFileSync('git', args, {cwd: raiz, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe']});
+// Ao fechar, o git roda num grupo separado (e escondido) para o Ctrl+C / fechar a janela não matarem o envio no meio.
+let gitSeparado = false;
 const gitAsync = (...args) =>
-	new Promise((ok, falha) => execFile('git', args, {cwd: raiz, encoding: 'utf8'}, (e, saida, erro) => (e ? falha(Object.assign(e, {stderr: erro})) : ok(saida))));
+	new Promise((ok, falha) => execFile('git', args, {cwd: raiz, encoding: 'utf8', ...(gitSeparado ? {detached: true, windowsHide: true} : {})}, (e, saida, erro) => (e ? falha(Object.assign(e, {stderr: erro})) : ok(saida))));
 // Salvar no git (botão "Salvar" e o salvamento automático depois de cada pedido).
-const salvarGit = async (mensagem) => {
-	await gitAsync('add', '-A');
-	if (!(await gitAsync('status', '--porcelain')).trim()) return 'Nada novo para salvar.';
-	await gitAsync('commit', '-m', String(mensagem || 'Edição pelo painel').slice(0, 200));
-	return (await gitAsync('push').catch((e) => `Salvo neste PC, mas o envio falhou: ${String(e.stderr || e.message).slice(-300)}`)) || 'Salvo e enviado.';
+// Um salvamento por vez; se já há um rodando, quem chega espera o mesmo.
+let salvando = null;
+const salvarGit = (mensagem) => {
+	salvando ??= (async () => {
+		await gitAsync('add', '-A');
+		if ((await gitAsync('status', '--porcelain')).trim()) await gitAsync('commit', '-m', String(mensagem || 'Edição pelo painel').slice(0, 200));
+		else {
+			// Nada novo, mas pode ter ficado algo salvo neste PC sem enviar (ex.: a janela fechou no meio do envio).
+			const pendentes = Number((await gitAsync('rev-list', '--count', '@{u}..HEAD').catch(() => '0')).trim()) || 0;
+			if (!pendentes) return 'Nada novo para salvar.';
+		}
+		return (await gitAsync('push').catch((e) => `Salvo neste PC, mas o envio falhou: ${String(e.stderr || e.message).slice(-300)}`)) || 'Salvo e enviado.';
+	})().finally(() => (salvando = null));
+	return salvando;
+};
+// Salvamento automático ao fechar o painel (preferência "Salvar na nuvem ao fechar o painel", ligada por padrão).
+const salvarAoFechar = (limiteMs) => {
+	if (!cfg.prefs().salvarAoFechar) return Promise.resolve();
+	const salvar = salvarGit('Salvamento automático ao fechar o painel')
+		.then((s) => console.log(`Nuvem: ${String(s).trim().split('\n').at(-1) || 'ok'}`))
+		.catch((e) => console.log(`Nuvem: não consegui salvar (${String(e.stderr || e.message).trim().slice(-200)})`));
+	return limiteMs ? Promise.race([salvar, new Promise((ok) => setTimeout(ok, limiteMs))]) : salvar;
 };
 const nomeValido = (n) => !n || /^[a-z0-9-]+$/.test(n);
 
@@ -235,24 +254,22 @@ const projetos = () => {
 };
 
 // ---------- Chat com o Claude Code ----------
-const instrucao = (projeto, tema) => `Você está dentro do PAINEL DE EDIÇÃO do canal Mateus Dias. O usuário pede em texto e você edita.
-Projeto atual: "${projeto || 'nenhum (crie um com npm run novo se o pedido for um vídeo novo)'}".${resumoMidias(projeto)}
-Tema do vídeo: "${tema || 'aleatorios'}". ANTES de editar, leia biblioteca/temas/${tema || 'aleatorios'}/tema.json e aprendizado.md: são as regras aprendidas nos
-vídeos anteriores deste tema; siga-as e use os projetos listados em tema.json como base. Leia também as análises de vídeos modelo do tema
-(biblioteca/temas/${tema || 'aleatorios'}/modelos/*.md): são a base de estilo de edição e de roteiro do tema. Se criar um projeto novo, acrescente o nome dele em "projetos" do tema.json.
-Ao terminar uma edição, ou quando o usuário aprovar, reprovar ou corrigir algo, acrescente em aprendizado.md uma linha "- AAAA-MM-DD (projeto): lição" só com o que vale
-para os próximos vídeos deste tema (o que vale para todos os temas vai em .claude/skills/editar-video/SKILL.md). Se o tema não existir, crie a pasta com tema.json e aprendizado.md.
-Siga .claude/skills/editar-video/SKILL.md e o CLAUDE.md. Antes de criar algo, procure na biblioteca (src/pecas, src/pecas/tres, src/projetos,
-public/sfx, public/fontes, biblioteca/itens) e REUTILIZE. Se criar um elemento novo reaproveitável (peça, modelo 3D, template, efeito), coloque-o
-em src/pecas (ou src/pecas/tres) com um comentário de 1 a 3 linhas no topo dizendo o que é, e registre um item em biblioteca/itens/<nome>.json
-com {"nome","tipo","descricao","arquivo","exemplo"}. Responda em português, curto. Não faça render final sem o usuário aprovar; prévia pode.
-${cfg.config().modelo === 'auto' ? `Modelo automático: divida o trabalho por etapas com subagentes (ferramenta Agent) escolhendo o modelo de cada um:
-'haiku' para etapas mecânicas (ler transcrição, conferir arquivos, renomear), 'sonnet' para escrever e ajustar cenas, 'opus' para decisões
-criativas, análise de referências e roteiro. Faça você mesmo o que for rápido.
-` : ''}O usuário não é programador: não mostre código, diga o que mudou e como ver (prévia ou Studio). O painel tem botões de prévia e render
-final com barra de progresso (no PC ou no pod); quando terminar uma edição, sugira gerar a prévia por ele.
+const instrucao = (projeto, tema, primeira) => {
+	const t = tema || 'aleatorios';
+	return `PAINEL DE EDIÇÃO do canal Mateus Dias. O usuário pede em texto e você edita. Projeto: "${projeto || 'nenhum (npm run novo se for vídeo novo)'}". Tema: "${t}".${primeira ? resumoMidias(projeto) : ''}
+ECONOMIA DE LIMITE (prioridade máxima, sem baixar a qualidade da edição):
+- Responda em português, em no máximo 3 linhas; nada de narrar o que vai fazer nem repetir o que já disse. Sem código para o usuário: diga o que mudou e como ver (prévia ou Studio).
+- Nunca releia arquivo já lido nesta conversa. Arquivo grande (transcrição, edit.ts, JSON): Grep ou Read com offset/limit, nunca inteiro sem necessidade. Junte comandos independentes numa só chamada.
+- Não use subagentes. Não gere stills, prévias nem conferências que o pedido não exige; rode a conferência (npm run conferir) uma vez, antes da prévia.
+- Vídeo vertical (Reels/Shorts/TikTok): use também a skill .claude/skills/it-reelsmaker (corte por áudio, câmera virtual, legenda por palavra, recorte, rostos, master −14 LUFS, checklist). O SKILL.md dela é GRANDE: nunca leia inteiro. Veja os títulos com Grep "^## " e leia só a seção do passo atual (offset/limit); scripts em .claude/skills/it-reelsmaker/scripts (use references/scripts.md só para achar o comando certo). A composição continua nas peças do painel.
+- Reutilize antes de criar: procure em src/pecas, src/pecas/tres, src/projetos, public/sfx, public/fontes e biblioteca/itens (Grep por nome). Elemento novo reaproveitável: em src/pecas (ou src/pecas/tres) com comentário de 1 a 3 linhas no topo e item em biblioteca/itens/<nome>.json {"nome","tipo","descricao","arquivo","exemplo"}.
+${primeira ? `- Primeiro pedido desta conversa: leia .claude/skills/editar-video/SKILL.md, CLAUDE.md e biblioteca/temas/${t}/aprendizado.md (regras já aprendidas; siga-as). Só se for criar um vídeo novo ou refazer o estilo, leia também biblioteca/temas/${t}/modelos/*.md e use os projetos de tema.json como base; em ajuste pontual, NÃO leia os modelos. Projeto novo entra em "projetos" do tema.json. Tema inexistente: crie a pasta com tema.json e aprendizado.md.` : '- Esta conversa já tem as regras da skill e do tema carregadas; não releia.'}
+- Quando o usuário aprovar, reprovar ou corrigir algo, acrescente em biblioteca/temas/${t}/aprendizado.md uma linha "- AAAA-MM-DD (projeto): lição" (só o que vale para os próximos vídeos do tema; o que vale para todos vai na skill).
+- Não faça render final sem o usuário aprovar; prévia pode. O painel tem botões de prévia e render final com barra de progresso (PC ou pod): ao terminar uma edição, sugira gerar a prévia por ele.
 ${textoPrefs(cfg.prefs())}`;
+};
 
+const LIMITE_TURNOS = 12;
 const rodando = new Map();
 const chat = async (req, res) => {
 	const {projeto, pedido, tema} = await corpo(req);
@@ -276,9 +293,14 @@ const chat = async (req, res) => {
 	rodando.get(chave)?.kill();
 	historico.anotar(chave, 'eu', pedido);
 	const arqInstrucao = path.join(estado, 'instrucao.txt');
-	writeFileSync(arqInstrucao, instrucao(projeto, tema));
-	const args = ['-p', '--output-format', 'stream-json', '--verbose', '--permission-mode', 'acceptEdits', '--allowedTools', 'Bash,Read,Write,Edit,Glob,Grep', '--append-system-prompt-file', `"${arqInstrucao}"`];
-	if (sessoes[chave] && /^[\w-]+$/.test(sessoes[chave])) args.push('--resume', sessoes[chave]);
+	const primeira = !sessoes[chave] || (sessoes[chave + '#n'] ?? 0) >= LIMITE_TURNOS;
+	writeFileSync(arqInstrucao, instrucao(projeto, tema, primeira));
+	// Só as ferramentas necessárias, sem MCP, sem plugins/skills da conta e sem seções dinâmicas: menos tokens por pedido.
+	const args = ['-p', '--output-format', 'stream-json', '--verbose', '--permission-mode', 'acceptEdits', '--tools', 'Bash,Read,Write,Edit,Glob,Grep', '--allowedTools', 'Bash,Read,Write,Edit,Glob,Grep', '--strict-mcp-config', '--disable-slash-commands', '--setting-sources', 'project,local', '--exclude-dynamic-system-prompt-sections', '--append-system-prompt-file', `"${arqInstrucao}"`];
+	// Conversa muito longa custa mais a cada pedido: depois de LIMITE_TURNOS recomeça limpa (o estado está nos arquivos do projeto).
+	if (!primeira && /^[\w-]+$/.test(sessoes[chave])) args.push('--resume', sessoes[chave]);
+	else sessoes[chave + '#n'] = 0;
+	sessoes[chave + '#n'] = (sessoes[chave + '#n'] ?? 0) + 1;
 	const c = cfg.config();
 	let modelo = c.modelo;
 	let esforco = c.esforco;
@@ -286,7 +308,6 @@ const chat = async (req, res) => {
 		// Automático: modelo e esforço pelo tipo do pedido, e subagentes liberados para dividir as etapas.
 		const e = escolherModelo(pedido, {projetoNovo: !projeto});
 		({modelo, esforco} = e);
-		args[args.indexOf('--allowedTools') + 1] += ',Agent,Task';
 		enviar('acao', {acao: `Modelo automático: ${modelo} · esforço ${{low: 'baixo', medium: 'médio', high: 'alto'}[esforco]} (${e.motivo})`});
 	}
 	if (modelo && /^[a-z0-9][\w.-]{0,60}$/i.test(modelo)) args.push('--model', modelo);
@@ -363,7 +384,17 @@ process.on('exit', () => {
 	historico.gravarTudo();
 });
 // Ctrl+C e fechar a janela passam pelo 'exit' acima (encerra renders e grava o histórico).
-for (const s of ['SIGINT', 'SIGTERM', 'SIGHUP']) process.on(s, () => process.exit(0));
+// Antes de sair, salva na nuvem. No Windows, fechar a janela dá só alguns segundos: o commit (rápido) fica feito e,
+// se o envio não terminar a tempo, ele vai na próxima vez que o painel abrir.
+let fechando = false;
+for (const s of ['SIGINT', 'SIGTERM', 'SIGHUP']) process.on(s, async () => {
+	if (fechando) return process.exit(0);
+	fechando = true;
+	gitSeparado = true;
+	if (cfg.prefs().salvarAoFechar) console.log('\nSalvando na nuvem antes de fechar...');
+	await salvarAoFechar(s === 'SIGHUP' ? 8000 : 30000);
+	process.exit(0);
+});
 
 // O Studio roda no navegador, então abre num Chrome/Edge próprio (perfil separado em .painel/chrome) com a GPU forçada:
 // rasterização e composição na placa de vídeo, ignorando a lista de bloqueio, e ANGLE no Direct3D/Metal. Sem isso o
@@ -419,6 +450,7 @@ const arquivo = (req, res, f) => {
 	createReadStream(f).pipe(res);
 };
 
+let ultimoPedido = 0;
 const hostsOk = new Set([`localhost:${porta}`, `127.0.0.1:${porta}`]);
 const tokenOk = (t) => {
 	const a = Buffer.from(String(t ?? ''));
@@ -443,6 +475,15 @@ createServer(async (req, res) => {
 		}
 		const t = req.headers['x-painel-token'] ?? url.searchParams.get('t');
 		if (!tokenOk(t)) return json(res, {erro: 'Token inválido. Abra o endereço impresso no terminal.'}, 401);
+		if (p === '/api/fechou' && req.method === 'POST') {
+			// A aba do painel fechou. Espera um pouco: se a página voltar (recarregar, outra aba aberta), não salva.
+			const quando = Date.now();
+			ultimoPedido = quando;
+			setTimeout(() => { if (ultimoPedido === quando && !rodando.size) salvarAoFechar(); }, 10000);
+			res.writeHead(204);
+			return res.end();
+		}
+		ultimoPedido = Date.now();
 
 		if (p === '/api/biblioteca') return json(res, biblioteca());
 		if (p === '/api/projetos' && req.method === 'POST') return json(res, criarProjeto(await corpo(req)));
@@ -574,7 +615,24 @@ createServer(async (req, res) => {
 		}
 		if (p === '/api/claude') {
 			const instalado = await testar('claude', ['--version']);
-			return json(res, {instalado, logado: instalado && (await testar('claude', ['auth', 'status']))});
+			if (!instalado) return json(res, {instalado, logado: false});
+			// Lê o status para mostrar qual conta está conectada (o e-mail, se o Claude informar).
+			const st = await new Promise((fim) => {
+				let saida = '';
+				const pr = rodar('claude', ['auth', 'status'], {stdio: ['ignore', 'pipe', 'pipe']});
+				pr.stdout.on('data', (d) => (saida += d));
+				pr.stderr.on('data', (d) => (saida += d));
+				pr.on('error', () => fim({c: 1, saida}));
+				pr.on('close', (c) => fim({c, saida}));
+			});
+			const email = st.saida.match(/[\w.+-]+@[\w-]+(\.[\w-]+)+/)?.[0] ?? null;
+			return json(res, {instalado, logado: st.c === 0, email: st.c === 0 ? email : null});
+		}
+		if (p === '/api/claude/trocar' && req.method === 'POST') {
+			// Sai da conta atual e abre o login no navegador para entrar com outra.
+			await testar('claude', ['auth', 'logout']);
+			rodar('claude', ['auth', 'login'], {stdio: 'ignore', detached: true}).on('error', () => {}).unref();
+			return json(res, {ok: true});
 		}
 		if (p === '/api/claude/instalar' && req.method === 'POST') {
 			const ok = await new Promise((fim) => {
@@ -664,4 +722,6 @@ createServer(async (req, res) => {
 	const endereco = `http://localhost:${porta}/#${token}`;
 	console.log(`\nPainel de edição pronto: ${endereco}\n(não feche esta janela enquanto estiver editando)\n`);
 	if (!process.env.SEM_NAVEGADOR) abrirNoNavegador(endereco);
+	// Se da última vez a janela fechou antes de terminar o envio, envia agora.
+	if (cfg.prefs().salvarAoFechar) gitAsync('rev-list', '--count', '@{u}..HEAD').then((n) => { if (Number(n.trim()) > 0) salvarAoFechar(); }).catch(() => {});
 });

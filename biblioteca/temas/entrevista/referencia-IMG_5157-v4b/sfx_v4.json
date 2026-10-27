@@ -1,0 +1,383 @@
+{
+ "below_voice_db": 20,
+ "sounds": [
+  {
+   "file": "assets/sfx_pro/pro_riser.wav",
+   "at": 0.0,
+   "start": 0.45,
+   "db": 0,
+   "what": "subida até o 3D"
+  },
+  {
+   "file": "assets/sfx_pro/pro_sub_hit.wav",
+   "at": 0.72,
+   "start": 0,
+   "db": 0,
+   "what": "100 mil pousa"
+  },
+  {
+   "file": "assets/sfx_pro/pro_coin_soft.wav",
+   "at": 0.75,
+   "start": 0,
+   "db": 0,
+   "what": "moedas"
+  },
+  {
+   "file": "assets/sfx_pro/pro_ui_pop.wav",
+   "at": 1.42,
+   "start": 0,
+   "db": 0,
+   "what": "EM 30 DIAS"
+  },
+  {
+   "file": "assets/sfx_pro/pro_ui_tick.wav",
+   "at": 2.08,
+   "start": 0,
+   "db": 0,
+   "what": "TIKTOK SHOP"
+  },
+  {
+   "file": "assets/sfx_pro/pro_whoosh.wav",
+   "at": 2.55,
+   "start": 0,
+   "db": 0,
+   "what": "saída do gancho"
+  },
+  {
+   "file": "assets/sfx_pro/pro_ui_pop.wav",
+   "at": 5.15,
+   "start": 0,
+   "db": -3,
+   "what": "selo vídeo/live entra"
+  },
+  {
+   "file": "assets/sfx_pro/pro_ui_pop.wav",
+   "at": 5.27,
+   "start": 0,
+   "db": -4,
+   "what": "selo: segundo cartão"
+  },
+  {
+   "file": "assets/sfx_pro/pro_whoosh_short.wav",
+   "at": 5.4,
+   "start": 0,
+   "db": 0,
+   "what": "whip Lilian"
+  },
+  {
+   "file": "assets/sfx_pro/pro_swipe_glass.wav",
+   "at": 6.45,
+   "start": 0,
+   "db": -5,
+   "what": "selo sobe ao topo"
+  },
+  {
+   "file": "assets/sfx_pro/pro_ui_tick.wav",
+   "at": 7.69,
+   "start": 0,
+   "db": 0,
+   "what": "mais vendidos"
+  },
+  {
+   "file": "assets/sfx_pro/pro_ui_tick.wav",
+   "at": 9.96,
+   "start": 0,
+   "db": 0,
+   "what": "Black Friday"
+  },
+  {
+   "file": "assets/sfx_pro/pro_ui_pop.wav",
+   "at": 11.07,
+   "start": 0,
+   "db": 0,
+   "what": "fan 1"
+  },
+  {
+   "file": "assets/sfx_pro/pro_ui_pop.wav",
+   "at": 11.24,
+   "start": 0,
+   "db": -2,
+   "what": "fan 2"
+  },
+  {
+   "file": "assets/sfx_pro/pro_ui_pop.wav",
+   "at": 11.4,
+   "start": 0,
+   "db": -4,
+   "what": "fan 3"
+  },
+  {
+   "file": "assets/sfx_pro/pro_ui_pop.wav",
+   "at": 11.57,
+   "start": 0,
+   "db": -6,
+   "what": "fan 4"
+  },
+  {
+   "file": "assets/sfx_pro/pro_ui_pop.wav",
+   "at": 11.74,
+   "start": 0,
+   "db": -8,
+   "what": "fan 5"
+  },
+  {
+   "file": "assets/sfx_pro/pro_ui_tick.wav",
+   "at": 11.9,
+   "start": 0,
+   "db": -7,
+   "what": "filtro: selinho 1"
+  },
+  {
+   "file": "assets/sfx_pro/pro_ui_tick.wav",
+   "at": 11.97,
+   "start": 0,
+   "db": -7,
+   "what": "filtro: selinho 2"
+  },
+  {
+   "file": "assets/sfx_pro/pro_ui_tick.wav",
+   "at": 12.04,
+   "start": 0,
+   "db": -7,
+   "what": "filtro: selinho 3"
+  },
+  {
+   "file": "assets/sfx_pro/pro_ui_tick.wav",
+   "at": 12.11,
+   "start": 0,
+   "db": -7,
+   "what": "filtro: selinho 4"
+  },
+  {
+   "file": "assets/sfx_pro/pro_ui_tick.wav",
+   "at": 12.18,
+   "start": 0,
+   "db": -7,
+   "what": "filtro: selinho 5"
+  },
+  {
+   "file": "assets/sfx_pro/pro_whoosh.wav",
+   "at": 14.45,
+   "start": 0,
+   "db": 0,
+   "what": "whip S5"
+  },
+  {
+   "file": "assets/sfx_pro/pro_ui_pop.wav",
+   "at": 14.68,
+   "start": 0,
+   "db": -3,
+   "what": "selo vídeo/live entra"
+  },
+  {
+   "file": "assets/sfx_pro/pro_ui_pop.wav",
+   "at": 14.8,
+   "start": 0,
+   "db": -4,
+   "what": "selo: segundo cartão"
+  },
+  {
+   "file": "assets/sfx_pro/pro_swipe_glass.wav",
+   "at": 15.98,
+   "start": 0,
+   "db": -5,
+   "what": "selo sobe ao topo"
+  },
+  {
+   "file": "assets/sfx_pro/pro_whoosh_short.wav",
+   "at": 17.38,
+   "start": 0,
+   "db": -4,
+   "what": "live: entrada"
+  },
+  {
+   "file": "assets/sfx_pro/pro_card_land.wav",
+   "at": 17.46,
+   "start": 0,
+   "db": -4,
+   "what": "live: UI pousa"
+  },
+  {
+   "file": "assets/sfx_pro/pro_ui_pop.wav",
+   "at": 17.62,
+   "start": 0,
+   "db": -8,
+   "what": "live: comentários"
+  },
+  {
+   "file": "assets/sfx_pro/pro_swipe_glass.wav",
+   "at": 17.98,
+   "start": 0,
+   "db": -6,
+   "what": "live: saída"
+  },
+  {
+   "file": "assets/sfx_pro/pro_ui_tick.wav",
+   "at": 18.69,
+   "start": 0,
+   "db": 0,
+   "what": "+ FÁCIL"
+  },
+  {
+   "file": "assets/sfx_pro/pro_ui_tick.wav",
+   "at": 19.23,
+   "start": 0,
+   "db": 0,
+   "what": "+ PREVISÍVEL"
+  },
+  {
+   "file": "assets/sfx_pro/pro_ui_tick.wav",
+   "at": 21.98,
+   "start": 0,
+   "db": 0,
+   "what": "1 produto"
+  },
+  {
+   "file": "assets/sfx_pro/pro_ui_tick.wav",
+   "at": 22.67,
+   "start": 0,
+   "db": 0,
+   "what": "tíquete baixo"
+  },
+  {
+   "file": "assets/sfx_pro/pro_ui_tick.wav",
+   "at": 25.32,
+   "start": 0,
+   "db": 0,
+   "what": "frete grátis"
+  },
+  {
+   "file": "assets/sfx_pro/pro_whoosh.wav",
+   "at": 25.9,
+   "start": 0,
+   "db": 0,
+   "what": "entra VS"
+  },
+  {
+   "file": "assets/sfx_pro/pro_sub_hit.wav",
+   "at": 26.44,
+   "start": 0,
+   "db": 4,
+   "what": "VS colisão"
+  },
+  {
+   "file": "assets/sfx_pro/pro_phrase_hit.wav",
+   "at": 27.59,
+   "start": 0,
+   "db": -2,
+   "what": "os dois funcionam"
+  },
+  {
+   "file": "assets/sfx_pro/pro_ui_tick.wav",
+   "at": 31.33,
+   "start": 0,
+   "db": 0,
+   "what": "punch formato"
+  },
+  {
+   "file": "assets/sfx_pro/pro_ui_pop.wav",
+   "at": 31.89,
+   "start": 0,
+   "db": 0,
+   "what": "cartão sua cara"
+  },
+  {
+   "file": "assets/sfx_pro/pro_whoosh_short.wav",
+   "at": 34.1,
+   "start": 0,
+   "db": 0,
+   "what": "whip Lilian"
+  },
+  {
+   "file": "assets/sfx_pro/pro_counter_run.wav",
+   "at": 34.85,
+   "start": 0,
+   "db": -3,
+   "what": "GMV: contador sobe"
+  },
+  {
+   "file": "assets/sfx_pro/pro_ui_pop.wav",
+   "at": 36.19,
+   "start": 0,
+   "db": -3,
+   "what": "selo vídeo/live entra"
+  },
+  {
+   "file": "assets/sfx_pro/pro_counter_land.wav",
+   "at": 36.2,
+   "start": 0,
+   "db": -3,
+   "what": "GMV: pouso"
+  },
+  {
+   "file": "assets/sfx_pro/pro_card_land.wav",
+   "at": 36.22,
+   "start": 0,
+   "db": -5,
+   "what": "cartões vídeo/live"
+  },
+  {
+   "file": "assets/sfx_pro/pro_ui_pop.wav",
+   "at": 36.31,
+   "start": 0,
+   "db": -4,
+   "what": "selo: segundo cartão"
+  },
+  {
+   "file": "assets/sfx_pro/pro_energy_pulse.wav",
+   "at": 37.78,
+   "start": 0,
+   "db": -4,
+   "what": "live acende no GMV"
+  },
+  {
+   "file": "assets/sfx_pro/pro_whoosh_short.wav",
+   "at": 38.3,
+   "start": 0,
+   "db": 0,
+   "what": "whip grupo"
+  },
+  {
+   "file": "assets/sfx_pro/pro_ui_pop.wav",
+   "at": 41.52,
+   "start": 0,
+   "db": 0,
+   "what": "SIGA Danilow"
+  },
+  {
+   "file": "assets/sfx_pro/pro_ui_pop.wav",
+   "at": 42.34,
+   "start": 0,
+   "db": -1,
+   "what": "SIGA Lilian"
+  },
+  {
+   "file": "assets/sfx_pro/pro_ui_pop.wav",
+   "at": 42.86,
+   "start": 0,
+   "db": -2,
+   "what": "SIGA MVM"
+  },
+  {
+   "file": "assets/sfx_pro/pro_type_soft.wav",
+   "at": 44.1,
+   "start": 0,
+   "db": 0,
+   "what": "digitando comentário"
+  },
+  {
+   "file": "assets/sfx_pro/pro_whoosh.wav",
+   "at": 45.85,
+   "start": 0,
+   "db": 0,
+   "what": "cartão LEGACY"
+  },
+  {
+   "file": "assets/sfx_pro/pro_logo_sting.wav",
+   "at": 46.0,
+   "start": 0,
+   "db": -5,
+   "what": "assinatura final"
+  }
+ ]
+}

@@ -1,0 +1,183 @@
+{
+ "shots": [
+  {
+   "at": 0.0,
+   "z": 1.12,
+   "cx": 540,
+   "cy": 900,
+   "why": "hook R$100 mil",
+   "drift": 0.04
+  },
+  {
+   "at": 1.42,
+   "z": 1.32,
+   "cx": 540,
+   "cy": 860,
+   "why": "punch 30 dias"
+  },
+  {
+   "at": 2.7,
+   "z": 1.0,
+   "cx": 540,
+   "cy": 960,
+   "why": "S2 pergunta, os dois",
+   "drift": 0.03
+  },
+  {
+   "at": 5.4,
+   "z": 1.18,
+   "cx": 540,
+   "cy": 900,
+   "why": "S3 Lilian (whip)",
+   "drift": 0.03,
+   "whip": true
+  },
+  {
+   "at": 7.69,
+   "z": 1.3,
+   "cx": 540,
+   "cy": 860,
+   "why": "punch mais vendidos"
+  },
+  {
+   "at": 8.87,
+   "z": 1.12,
+   "cx": 540,
+   "cy": 900,
+   "why": "S4 hard cut",
+   "drift": 0.03
+  },
+  {
+   "at": 9.96,
+   "z": 1.22,
+   "cx": 540,
+   "cy": 880,
+   "why": "Black Friday"
+  },
+  {
+   "at": 11.07,
+   "z": 1.25,
+   "cx": 540,
+   "cy": 900,
+   "why": "punch cinco vídeos (v2: rosto longe do texto)"
+  },
+  {
+   "at": 12.46,
+   "z": 1.1,
+   "cx": 540,
+   "cy": 920,
+   "why": "pull-out promoção",
+   "drift": -0.03
+  },
+  {
+   "at": 14.53,
+   "z": 1.0,
+   "cx": 540,
+   "cy": 960,
+   "why": "S5 pergunta (whip)",
+   "drift": 0.03,
+   "whip": true
+  },
+  {
+   "at": 17.17,
+   "z": 1.18,
+   "cx": 540,
+   "cy": 840,
+   "why": "S6 Danilow live (v2: rosto longe do texto)",
+   "drift": 0.03
+  },
+  {
+   "at": 19.23,
+   "z": 1.25,
+   "cx": 540,
+   "cy": 820,
+   "why": "close previsível (v2: rosto longe do texto)"
+  },
+  {
+   "at": 20.94,
+   "z": 1.2,
+   "cx": 540,
+   "cy": 800,
+   "why": "É simples (v2: rosto longe do texto)",
+   "drift": 0.03
+  },
+  {
+   "at": 25.32,
+   "z": 1.3,
+   "cx": 540,
+   "cy": 800,
+   "why": "punch frete grátis (v2: rosto longe do texto)"
+  },
+  {
+   "at": 25.97,
+   "z": 1.0,
+   "cx": 540,
+   "cy": 960,
+   "why": "VS tela cheia (whip)",
+   "whip": true
+  },
+  {
+   "at": 27.59,
+   "z": 1.35,
+   "cx": 540,
+   "cy": 860,
+   "why": "Os dois funcionam close"
+  },
+  {
+   "at": 29.17,
+   "z": 1.12,
+   "cx": 540,
+   "cy": 900,
+   "why": "S9 formato",
+   "drift": 0.03
+  },
+  {
+   "at": 31.33,
+   "z": 1.3,
+   "cx": 540,
+   "cy": 860,
+   "why": "punch formato (cobre o um...)"
+  },
+  {
+   "at": 32.49,
+   "z": 1.12,
+   "cx": 540,
+   "cy": 900,
+   "why": "identificação",
+   "drift": 0.02
+  },
+  {
+   "at": 34.13,
+   "z": 1.15,
+   "cx": 540,
+   "cy": 900,
+   "why": "S10 Lilian (whip)",
+   "drift": 0.04,
+   "whip": true
+  },
+  {
+   "at": 36.19,
+   "z": 1.25,
+   "cx": 540,
+   "cy": 870,
+   "why": "vídeo e live"
+  },
+  {
+   "at": 38.33,
+   "z": 1.0,
+   "cx": 540,
+   "cy": 960,
+   "why": "S11 grupo (whip)",
+   "drift": 0.03,
+   "whip": true
+  },
+  {
+   "at": 43.7,
+   "z": 1.06,
+   "cx": 540,
+   "cy": 940,
+   "why": "deixe nos comentários",
+   "drift": 0.03
+  }
+ ]
+}

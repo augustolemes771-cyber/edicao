@@ -647,6 +647,7 @@ async function verificarClaude() {
 function atualizarPilulas() {
 	const c = S.claude;
 	const pc = $('#stClaude');
+	pc.title = c?.logado ? `Conta: ${c.email || 'conectada'} (clique para trocar)` : 'Claude Code neste computador';
 	pc.querySelector('.ponto').className = 'ponto ' + (!c ? '' : c.instalado && c.logado ? (S.chatAtivo ? 'ativo' : 'ok') : 'erro');
 	pc.querySelector('span').textContent = !c ? 'Claude' : !c.instalado ? 'Claude não instalado' : !c.logado ? 'Claude sem login' : S.chatAtivo ? 'Claude trabalhando' : `Claude${S.config?.modelo ? ' · ' + (S.config.modelo === 'auto' ? 'automático' : S.config.modelo) : ''}`;
 	const pod = S.config?.pod;
@@ -710,11 +711,13 @@ async function abrirPreferencias(inicial = 'edicao') {
 			chave('prefs.amostras', p.amostras ?? false, 'Receber amostras durante a edição para eu decidir', 'Ligado: nas escolhas de estilo, o Claude mostra 2 ou 3 opções em imagem e espera você escolher. Desligado: ele decide sozinho e segue até a prévia.') +
 			chave('prefs.confirmarFinal', p.confirmarFinal ?? true, 'Pedir confirmação antes do vídeo final', 'Evita gastar tempo renderizando sem querer.') +
 			chave('prefs.salvarSozinho', p.salvarSozinho ?? false, 'Salvar na nuvem sozinho', 'Envia para o GitHub ao terminar cada edição.') +
+			chave('prefs.salvarAoFechar', p.salvarAoFechar ?? true, 'Salvar na nuvem ao fechar o painel', 'Envia tudo para o GitHub quando você fecha a aba do painel ou a janela preta.') +
 			campo('Sempre faça', `<textarea name="prefs.sempre" rows="4" placeholder="Ex.: sempre coloque meu @ no final; nunca use a cor vermelha; legenda sempre em caixa alta.">${esc(p.sempre ?? '')}</textarea>`, 'Instruções que o Claude segue em todos os vídeos.'),
 		claude: `<h4>Claude</h4><p class="pref-desc">O modelo que faz as edições neste computador.</p>` +
-			campo('Modelo', sel('config.modelo', c.modelo ?? '', [['auto', 'Automático: escolhe modelo e esforço a cada etapa'], ['', 'Padrão da conta'], ['opus', 'Opus (mais capaz)'], ['sonnet', 'Sonnet (equilíbrio)'], ['haiku', 'Haiku (mais rápido e barato)']]), 'No automático, análise de referências, roteiro e criação de peças vão para o Opus com esforço alto; ajustes de edição, para o Sonnet; perguntas e comandos simples, para o Haiku. Dentro de um pedido grande, ele ainda divide as etapas entre os modelos.') +
+			campo('Modelo', sel('config.modelo', c.modelo ?? '', [['auto', 'Automático: escolhe modelo e esforço a cada etapa'], ['', 'Padrão da conta'], ['opus', 'Opus (mais capaz)'], ['sonnet', 'Sonnet (equilíbrio)'], ['haiku', 'Haiku (mais rápido e barato)']]), 'No automático (padrão, o que menos gasta): análise de referências e roteiro vão para o Opus com esforço médio; criação de peças, para o Sonnet; ajustes, para o Sonnet com esforço baixo; perguntas e comandos simples, para o Haiku.') +
 			campo('Esforço (quando o modelo não é automático)', sel('config.esforco', c.esforco ?? '', [['', 'Padrão'], ['low', 'Baixo (mais rápido)'], ['medium', 'Médio'], ['high', 'Alto (pensa mais)']])) +
-			`<p class="pref-desc">Status: ${S.claude ? (S.claude.instalado ? (S.claude.logado ? '<span class="selo ok">instalado e conectado</span>' : '<span class="selo alerta">falta entrar na conta</span>') : '<span class="selo erro">não instalado</span>') : '—'}</p>`,
+			`<p class="pref-desc">Status: ${S.claude ? (S.claude.instalado ? (S.claude.logado ? '<span class="selo ok">instalado e conectado</span>' : '<span class="selo alerta">falta entrar na conta</span>') : '<span class="selo erro">não instalado</span>') : '—'}</p>` +
+			(S.claude?.instalado ? `<p class="pref-desc">Conta: <b>${S.claude.logado ? esc(S.claude.email || 'conectada') : 'nenhuma'}</b></p><div class="linha"><button type="button" class="btn" id="pfTrocarConta">${ic('key')}<span>${S.claude.logado ? 'Trocar de conta' : 'Entrar na conta'}</span></button></div>` : ''),
 		pc: `<h4>Este computador</h4><p class="pref-desc">Só valem aqui. Ajuste se o Studio ou o render estiverem lentos ou falhando.</p>` +
 			chave('config.gpuStudio', c.gpuStudio ?? true, 'Usar a placa de vídeo (GPU) no Studio', 'Abre o Studio num navegador com aceleração forçada.') +
 			chave('config.gpuCodificador', c.gpuCodificador ?? true, 'Usar o codificador da placa de vídeo no render', 'NVENC/QuickSync/AMF: exporta mais rápido. Desligue se o vídeo sair com defeito.') +
@@ -749,6 +752,20 @@ async function abrirPreferencias(inicial = 'edicao') {
 	perm();
 	$('#pfPermitir').onclick = async () => { if ('Notification' in window) await Notification.requestPermission().catch(() => {}); perm(); };
 	$('#pfNao').onclick = fecharModal;
+	const trocar = $('#pfTrocarConta');
+	if (trocar) trocar.onclick = async () => {
+		if (S.chatAtivo) return aviso('Espere o Claude terminar o pedido atual antes de trocar de conta.', 'erro');
+		if (S.claude?.logado && !confirm('Sair da conta atual e entrar com outra?')) return;
+		trocar.disabled = true;
+		trocar.querySelector('span').textContent = 'Conclua o login na janela do navegador...';
+		try { await api('/api/claude/trocar', {}); } catch (e) { trocar.disabled = false; return avisoErro(e, 'Não consegui trocar'); }
+		fecharModal();
+		aviso('Entre com a outra conta na janela do navegador que abriu.', 'info');
+		await new Promise((r) => setTimeout(r, 1500));
+		clearInterval(lendoClaude);
+		lendoClaude = setInterval(verificarClaude, 3000);
+		verificarClaude();
+	};
 	const coletar = () => {
 		const out = {prefs: {}, config: {pod: {}}};
 		for (const el of $$('#formPrefs [name]')) {
@@ -789,6 +806,8 @@ async function abrirPreferencias(inicial = 'edicao') {
 	};
 }
 $('#abrirPrefs').onclick = () => abrirPreferencias();
+// Avisa o painel quando a aba fecha, para ele salvar na nuvem (ele espera alguns segundos e desiste se a página voltar).
+addEventListener('pagehide', () => { if (T) navigator.sendBeacon('/api/fechou?t=' + encodeURIComponent(T)); });
 
 // ---------- Tarefas (render, link, pack...) ----------
 const NOMES_TAREFA = {previa: 'Prévia', final: 'Vídeo final', transcrever: 'Transcrição', roteiro: 'Roteiro', conferir: 'Conferência', link: 'Baixar link', pack: 'Importar pack', 'preparar-pod': 'Preparar pod'};

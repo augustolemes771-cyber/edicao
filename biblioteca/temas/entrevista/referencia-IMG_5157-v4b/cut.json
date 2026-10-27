@@ -1,0 +1,175 @@
+{
+ "fps": 30,
+ "speed": 1.12,
+ "sources": {
+  "a": {
+   "file": "C:/Users/Administrator/Desktop/video2/IMG_5157.MOV",
+   "transcript": "edit/IMG_5157/transcripts/IMG_5157.json"
+  },
+  "ah": {
+   "file": "C:/Users/Administrator/Desktop/video2/IMG_5157.MOV",
+   "transcript": "edit/IMG_5157/transcripts/IMG_5157.json",
+   "speed": 1.25
+  },
+  "b": {
+   "file": "C:/Users/Administrator/Desktop/video2/IMG_5159.MOV",
+   "transcript": "edit/IMG_5157/transcripts/IMG_5159.json"
+  }
+ },
+ "look": {
+  "grade": "eq=contrast=1.06:saturation=1.04,vibrance=0.10,curves=master='0/0 0.25/0.23 0.5/0.5 0.8/0.81 1/0.97',scale=1620:2880:flags=lanczos",
+  "correct": "colorchannelmixer=rr=1.01:bb=1.05"
+ },
+ "scale": "none",
+ "ranges": [
+  {
+   "start": 0.167,
+   "end": 3.533,
+   "beat": "S1 hook: 100 mil em 30 dias",
+   "speaker": "A",
+   "source": "ah"
+  },
+  {
+   "start": 9.333,
+   "end": 12.367,
+   "beat": "S2 pergunta Lilian: com vídeo",
+   "speaker": "A",
+   "source": "a"
+  },
+  {
+   "start": 13.0,
+   "end": 16.87,
+   "beat": "S3 Lilian: mais vendidos",
+   "speaker": "L",
+   "source": "a"
+  },
+  {
+   "start": 22.533,
+   "end": 24.533,
+   "beat": "S4 Lilian: Black Friday, cinco vídeos",
+   "speaker": "L",
+   "source": "a"
+  },
+  {
+   "start": 24.767,
+   "end": 25.233,
+   "beat": "S4 Lilian: Black Friday, cinco vídeos (2)",
+   "speaker": "L",
+   "source": "a"
+  },
+  {
+   "start": 25.433,
+   "end": 28.433,
+   "beat": "S4 Lilian: Black Friday, cinco vídeos (3)",
+   "speaker": "L",
+   "source": "a"
+  },
+  {
+   "start": 28.633,
+   "end": 29.52,
+   "beat": "S4 Lilian: Black Friday, cinco vídeos (4)",
+   "speaker": "L",
+   "source": "a"
+  },
+  {
+   "start": 30.4,
+   "end": 33.367,
+   "beat": "S5 pergunta Danilow",
+   "speaker": "A",
+   "source": "a"
+  },
+  {
+   "start": 34.033,
+   "end": 43.9,
+   "beat": "S6 Danilow: live, tíquete baixo, frete grátis",
+   "speaker": "D",
+   "source": "a"
+  },
+  {
+   "start": 44.167,
+   "end": 47.733,
+   "beat": "S7+S8 qual o melhor? / os dois funcionam",
+   "speaker": "A",
+   "source": "a",
+   "speakers": [
+    {
+     "from": 45.85,
+     "to": 47.733,
+     "speaker": "D"
+    }
+   ]
+  },
+  {
+   "start": 47.9,
+   "end": 54.1,
+   "beat": "S9 Danilow: formato e método",
+   "speaker": "D",
+   "source": "ah"
+  },
+  {
+   "start": 5.7,
+   "end": 10.4,
+   "beat": "S10 Lilian: vídeo e live também",
+   "speaker": "L",
+   "source": "b"
+  },
+  {
+   "start": 12.533,
+   "end": 18.367,
+   "beat": "S11 CTA: siga e comente",
+   "speaker": "D",
+   "source": "b"
+  },
+  {
+   "start": 18.533,
+   "end": 21.2,
+   "beat": "S11 CTA: siga e comente (2)",
+   "speaker": "D",
+   "source": "b"
+  }
+ ],
+ "fix": {
+  "atuar": "faturar",
+  "R": "R$",
+  "$": "",
+  "tiquete": "tíquete",
+  "Dani": "Danilow,",
+  "Lou,": "",
+  "Lowe,": "",
+  "Lilia,": "Lilian,",
+  "MPM": "MVM"
+ },
+ "fix_at": [
+  {
+   "text": "dos",
+   "at": 44.58,
+   "to": "dos dois"
+  }
+ ],
+ "retime": [
+  {
+   "text": "e",
+   "at": 24.52,
+   "start": 24.77,
+   "end": 24.84
+  },
+  {
+   "text": "e",
+   "at": 28.48,
+   "start": 28.63,
+   "end": 28.7
+  },
+  {
+   "text": "promoção",
+   "at": 28.98,
+   "start": 28.9,
+   "end": 29.28
+  },
+  {
+   "text": "deles.",
+   "at": 29.34,
+   "start": 29.3,
+   "end": 29.5
+  }
+ ]
+}

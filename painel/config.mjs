@@ -12,12 +12,13 @@ export const PREFS_PADRAO = {
 	confirmarFinal: true,
 	amostras: false,
 	salvarSozinho: false,
+	salvarAoFechar: true,
 	sempre: '',
 };
 
 export const CONFIG_PADRAO = {
-	modelo: '',
-	esforco: '',
+	modelo: 'auto',
+	esforco: 'low',
 	gpuStudio: true,
 	gpuCodificador: true,
 	navegadorRender: '',
@@ -93,9 +94,12 @@ ${amostras}
 // perguntas curtas e comandos simples, para o mais rápido. Dentro do pedido, o Claude ainda pode usar subagentes por etapa.
 export const escolherModelo = (pedido, {projetoNovo = false} = {}) => {
 	const t = String(pedido).toLowerCase();
-	const pesado = /analis|refer[eê]ncia|copiar? (o )?estilo|recri|modelo do tema|do zero|cria(r)? (uma )?(pe[cç]a|cena|efeito|anima|template|tema)|3d|blender|roteiro|projeto novo|v[ií]deo novo|redesenh|refaz/.test(t);
-	if (pesado || projetoNovo || t.length > 500) return {modelo: 'opus', esforco: 'high', motivo: 'criação ou análise de estilo'};
-	const leve = t.length < 120 && (/\?\s*$/.test(t) || /^(gera|gerar|faz|fazer|roda|rodar) (a )?pr[eé]via|^(status|o que falta|quanto falta|lista|mostra)/.test(t));
-	if (leve) return {modelo: 'haiku', esforco: 'low', motivo: 'pergunta ou comando simples'};
-	return {modelo: 'sonnet', esforco: 'medium', motivo: 'ajuste de edição'};
+	// Opus só para decidir estilo/roteiro (análise de referência, vídeo ou projeto novo); criação de peça, 3D e refazer vão no Sonnet.
+	const decisao = /analis|refer[eê]ncia|copiar? (o )?estilo|recri|modelo do tema|roteiro|projeto novo|v[ií]deo novo/.test(t);
+	if (decisao || projetoNovo) return {modelo: 'opus', esforco: 'medium', motivo: 'decisão de estilo ou roteiro'};
+	const criacao = /do zero|cria(r)? (uma )?(pe[cç]a|cena|efeito|anima|template|tema)|3d|blender|redesenh|refaz/.test(t) || t.length > 500;
+	if (criacao) return {modelo: 'sonnet', esforco: 'medium', motivo: 'criação de peça ou cena'};
+	const leve = t.length < 160 && (/\?\s*$/.test(t) || /^(gera|gerar|faz|fazer|roda|rodar) (a )?pr[eé]via|^(status|o que falta|quanto falta|lista|mostra|renomeia|troca|muda|tira|coloca)/.test(t));
+	if (leve) return {modelo: 'haiku', esforco: 'low', motivo: 'pergunta ou ajuste simples'};
+	return {modelo: 'sonnet', esforco: 'low', motivo: 'ajuste de edição'};
 };
