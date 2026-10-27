@@ -12,3 +12,6 @@ public/projetos/*/
 .DS_Store
 .painel
 biblioteca/pack/arquivos/
+# Vídeos modelo dos temas ficam só no PC; a análise (.md) vai para o git.
+biblioteca/temas/*/modelos/*
+!biblioteca/temas/*/modelos/*.md

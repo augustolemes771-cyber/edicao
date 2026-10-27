@@ -10,12 +10,14 @@ export const PREFS_PADRAO = {
 	intensidade: 'normal',
 	legendaPadrao: 'palavra',
 	confirmarFinal: true,
+	amostras: false,
 	salvarSozinho: false,
 	sempre: '',
 };
 
 export const CONFIG_PADRAO = {
 	modelo: '',
+	esforco: '',
 	gpuStudio: true,
 	gpuCodificador: true,
 	navegadorRender: '',
@@ -67,10 +69,33 @@ export const criarConfig = (raiz, estado) => {
 };
 
 // Texto das preferências para a instrução do Claude.
+// 'auto' = a IA decide pelo conteúdo e pelo tema e diz em uma linha o que escolheu.
+const IA_DECIDE = 'a IA decide: escolha o que combina com o conteúdo, o tema e as referências, e diga em uma linha o que escolheu';
 export const textoPrefs = (p) => {
-	const intensidade = {calma: 'calma: poucos efeitos, só onde a fala pede', normal: 'normal: o ritmo das regras da skill', frenetica: 'frenética: evento novo a cada 0,3 a 0,6 s'}[p.intensidade] ?? p.intensidade;
+	const intensidade = p.intensidade === 'auto' ? IA_DECIDE : ({calma: 'calma: poucos efeitos, só onde a fala pede', normal: 'normal: o ritmo das regras da skill', frenetica: 'frenética: evento novo a cada 0,3 a 0,6 s'}[p.intensidade] ?? p.intensidade);
+	const formato = p.formatoPadrao === 'auto' ? `${IA_DECIDE} (vertical para Reels/Shorts/TikTok, horizontal para YouTube)` : p.formatoPadrao;
+	const legenda = p.legendaPadrao === 'auto' ? IA_DECIDE : p.legendaPadrao;
+	const amostras = p.amostras
+		? `- AMOSTRAS LIGADAS: em cada decisão de estilo que mude o resultado (abertura/gancho, tipografia, paleta, legenda, efeito principal, transições), ANTES de aplicar,
+  gere 2 ou 3 opções como imagens estáticas do mesmo momento (ex.: npx remotion still <projeto> out/amostra-<projeto>-a.jpg --frame=<quadro> --scale=0.5,
+  uma variação por vez no edit.ts) e mostre cada uma numa linha própria exatamente assim: [[amostra:A|out/amostra-<projeto>-a.jpg|descrição curta da opção]].
+  Depois PARE e espere o usuário escolher. Volte o edit.ts para a opção escolhida.`
+		: '- Amostras desligadas: decida sozinho e siga até a prévia, sem parar para perguntar o que dá para decidir.';
 	return `Preferências do usuário (valem para todo vídeo, salvo pedido contrário):
-- Formato padrão de vídeo novo: ${p.formatoPadrao}. Prévia em ${p.resPrevia}p (npm run preview -- <projeto> --res ${p.resPrevia}).
-- Intensidade da edição: ${intensidade}. Legenda padrão: ${p.legendaPadrao}.
+- Formato de vídeo novo: ${formato}. Prévia em ${p.resPrevia}p (npm run preview -- <projeto> --res ${p.resPrevia}).
+- Intensidade da edição: ${intensidade}.
+- Legenda: ${legenda}.
+${amostras}
 - ${p.confirmarFinal ? 'Nunca rode o render final sem o usuário pedir.' : 'Pode rodar o render final quando a prévia for aprovada.'}${p.sempre ? `\n- Sempre: ${p.sempre}` : ''}`;
+};
+
+// Modelo automático: escolhe modelo e esforço pelo tipo do pedido. Pedidos criativos ou de análise vão para o mais capaz;
+// perguntas curtas e comandos simples, para o mais rápido. Dentro do pedido, o Claude ainda pode usar subagentes por etapa.
+export const escolherModelo = (pedido, {projetoNovo = false} = {}) => {
+	const t = String(pedido).toLowerCase();
+	const pesado = /analis|refer[eê]ncia|copiar? (o )?estilo|recri|modelo do tema|do zero|cria(r)? (uma )?(pe[cç]a|cena|efeito|anima|template|tema)|3d|blender|roteiro|projeto novo|v[ií]deo novo|redesenh|refaz/.test(t);
+	if (pesado || projetoNovo || t.length > 500) return {modelo: 'opus', esforco: 'high', motivo: 'criação ou análise de estilo'};
+	const leve = t.length < 120 && (/\?\s*$/.test(t) || /^(gera|gerar|faz|fazer|roda|rodar) (a )?pr[eé]via|^(status|o que falta|quanto falta|lista|mostra)/.test(t));
+	if (leve) return {modelo: 'haiku', esforco: 'low', motivo: 'pergunta ou comando simples'};
+	return {modelo: 'sonnet', esforco: 'medium', motivo: 'ajuste de edição'};
 };

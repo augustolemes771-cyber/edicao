@@ -129,6 +129,8 @@ const lerTempo = (v) => {
 
 // ---------- Estado ----------
 const S = {
+	analisarAoBaixar: new Map(),
+	temaAberto: null,
 	temas: {temas: [], semTema: []},
 	projetos: [],
 	bib: null,
@@ -492,21 +494,73 @@ async function abrirTema(id) {
 			`<button class="btn mini" data-editar="${esc(pr.nome)}">${ic('edit')}<span>Editar</span></button>` +
 			`<button class="btn mini fantasma" data-studio2="${esc(pr.nome)}">${ic('monitor')}<span>Studio</span></button></div></div>`;
 	}).join('');
-	$('#tvc').innerHTML = `<div class="t-cab"><h1><small>Tema</small>${esc(t.nome)}</h1><button class="btn primario" id="tvnovo">${ic('plus')}<span>Novo vídeo neste tema</span></button><button class="btn" id="tvap">${ic('sparkles')}<span>Ver aprendizado</span></button><button class="btn icone fantasma" id="tvx" aria-label="Fechar">${ic('x')}</button></div>` +
+	$('#tvc').innerHTML = `<div class="t-cab"><h1><small>Tema</small>${esc(t.nome)}</h1><button class="btn" id="tvnovo">${ic('plus')}<span>Criar vídeo com este tema</span></button><button class="btn" id="tvap">${ic('sparkles')}<span>Ver aprendizado</span></button><button class="btn icone fantasma" id="tvx" aria-label="Fechar">${ic('x')}</button></div>` +
 		`<p class="t-desc">${esc(t.descricao)}${t.descricao ? ' · ' : ''}${t.regras} regra${t.regras === 1 ? '' : 's'} aprendida${t.regras === 1 ? '' : 's'}. Um vídeo novo segue essas regras e usa os vídeos abaixo como referência.</p>` +
+		`<div class="t-secao"><h3>${ic('wand')}Vídeos modelo<small>Envie qualquer vídeo com a edição que você quer: o Claude analisa a edição e o roteiro e usa como base deste tema.</small></h3>` +
+		zona(`tema:${id}`, 'Solte aqui um vídeo modelo', 'ou clique para escolher (mp4, mov, webm...)') +
+		colarLink(`tema:${id}`, 'ou cole o link do vídeo (YouTube, Instagram, TikTok...)') +
+		`<div class="modelos" id="tvModelos"></div></div>` +
+		`<div class="t-secao"><h3>${ic('film')}Vídeos feitos neste tema</h3></div>` +
 		`<div class="grade">${cards || `<div class="vazio" style="grid-column:1/-1">${ic('film')}<b>Nenhum vídeo neste tema ainda</b>Crie o primeiro: ele vai ensinar o Claude.</div>`}</div>`;
+	S.temaAberto = id;
+	carregarModelos(id);
 	$('#tv').hidden = false;
 	const escolher = (nome) => { $('#tv').hidden = true; $('#projeto').value = nome; aoTrocarProjeto(); };
 	$('#tvx').onclick = () => ($('#tv').hidden = true);
 	$('#tvap').onclick = () => verArquivo(`biblioteca/temas/${id}/aprendizado.md`, 'Aprendizado: ' + t.nome);
 	$('#tvnovo').onclick = () => { $('#tv').hidden = true; abrirNovoVideo({tema: id}); };
-	$('#tvc').onclick = (e) => {
+	$('#tvc').onclick = async (e) => {
+		const an = e.target.closest('[data-analisar]'), va = e.target.closest('[data-ver-analise]'), am = e.target.closest('[data-apagar-modelo]');
+		if (an) return analisarModelo(id, an.dataset.analisar);
+		if (va) return verArquivo(va.dataset.verAnalise, 'Análise: ' + va.dataset.nome);
+		if (am) {
+			if (!(await confirmar('Apagar vídeo modelo', `Apagar "${am.dataset.apagarModelo}" e a análise dele deste tema?`, {ok: 'Apagar', perigo: true}))) return;
+			try { await api('/api/tema-modelo/apagar', {tema: id, nome: am.dataset.apagarModelo}); aviso('Vídeo modelo apagado.', 'ok', {ms: 2500}); } catch (er) { avisoErro(er, 'Não apaguei'); }
+			return carregarModelos(id);
+		}
 		const c = e.target.closest('[data-copiar]'), pv = e.target.closest('[data-previa]'), st = e.target.closest('[data-studio2]'), ed = e.target.closest('[data-editar]');
 		if (c) { $('#tv').hidden = true; abrirNovoVideo({tema: id, base: c.dataset.copiar}); }
 		if (pv) { escolher(pv.dataset.previa); gerarPrevia(); }
 		if (ed) escolher(ed.dataset.editar);
 		if (st) studio(st.dataset.studio2);
 	};
+}
+
+// ---------- Vídeos modelo do tema ----------
+async function carregarModelos(id) {
+	const el = $('#tvModelos');
+	if (!el) return;
+	let lista;
+	try { lista = await api('/api/tema-modelos?tema=' + enc(id)); }
+	catch (e) { el.innerHTML = `<p class="t-desc">${e.emBreve ? 'Chega na próxima atualização do painel.' : esc(e.message)}</p>`; return; }
+	el.innerHTML = lista.length ? lista.map((m) =>
+		`<div class="modelo">` +
+		(m.video ? `<video controls preload="metadata" src="/tema-modelo/${enc(id)}/${enc(m.nome)}?t=${T}"></video>` : `<div class="sem-video">${ic('film')}O vídeo está em outro computador; a análise vale aqui também.</div>`) +
+		`<div class="modelo-info"><b title="${esc(m.nome)}">${esc(m.nome)}</b>` +
+		`<span class="selo ${m.analise ? 'ok' : 'alerta'}">${m.analise ? 'analisado: é base do tema' : 'ainda sem análise'}</span>` +
+		`<div class="acoes">` +
+		(m.analise ? `<button class="btn mini" data-ver-analise="${esc(m.analise)}" data-nome="${esc(m.nome)}">${ic('eye')}<span>Ver análise</span></button>` : '') +
+		(m.video ? `<button class="btn mini ${m.analise ? '' : 'primario'}" data-analisar="${esc(m.nome)}">${ic('search')}<span>${m.analise ? 'Analisar de novo' : 'Analisar agora'}</span></button>` : '') +
+		`<button class="btn mini fantasma" data-apagar-modelo="${esc(m.nome)}" title="Apagar">${ic('x')}</button></div></div></div>`).join('')
+		: `<p class="t-desc">Nenhum vídeo modelo ainda. Envie um vídeo de alguém cuja edição você admira: ele vira a base de estilo e roteiro deste tema.</p>`;
+}
+function analisarModelo(tema, nomes) {
+	nomes = [].concat(nomes);
+	const t = S.temas.temas.find((x) => x.id === tema);
+	const pasta = `biblioteca/temas/${tema}/modelos`;
+	$('#tv').hidden = true;
+	if ($('#tema').value !== tema) { $('#tema').value = tema; gravarLocal('tema', tema); }
+	if (proj()) { $('#projeto').value = ''; aoTrocarProjeto(); }
+	aviso('O Claude está analisando o vídeo modelo. Acompanhe na conversa.', 'info');
+	usarPedido(`Analise ${nomes.length > 1 ? 'os vídeos modelo' : 'o vídeo modelo'} ${nomes.map((n) => `"${n}"`).join(', ')} do tema "${t?.nome ?? tema}" (em ${pasta}/) para ser a base de estilo de edição e de roteiro deste tema.
+1. Com ffprobe e ffmpeg: duração, formato, fps; cortes por detecção de cena (select='gt(scene,0.3)'); quadros a cada 1 s numa folha de contato. Olhe os quadros.
+2. Transcreva o áudio com o mesmo motor de scripts/transcrever.mjs (palavras com tempo).
+3. Para cada vídeo, escreva ${pasta}/<nome sem extensão>.md com:
+   - Edição: ritmo (cortes por minuto e duração média dos planos), enquadramento e zoom, tipos de tela e cartelas, tipografia, cores, legenda, efeitos e transições, sons e trilha, abertura e fechamento, com os tempos.
+   - Roteiro: gancho dos primeiros segundos, estrutura com tempos, chamadas para ação, tom e vocabulário.
+   - Como recriar aqui: cada elemento ligado às peças da biblioteca (src/pecas, pack) ou ao que precisaria ser criado.
+4. Acrescente em biblioteca/temas/${tema}/aprendizado.md as regras gerais que valem para os próximos vídeos do tema, em linhas "- AAAA-MM-DD (modelo <nome>): regra".
+Não edite nenhum projeto e não copie o conteúdo, só o estilo. No fim, resuma em tópicos o estilo do tema.`, {enviar: true});
 }
 
 // ---------- Novo vídeo ----------
@@ -594,7 +648,7 @@ function atualizarPilulas() {
 	const c = S.claude;
 	const pc = $('#stClaude');
 	pc.querySelector('.ponto').className = 'ponto ' + (!c ? '' : c.instalado && c.logado ? (S.chatAtivo ? 'ativo' : 'ok') : 'erro');
-	pc.querySelector('span').textContent = !c ? 'Claude' : !c.instalado ? 'Claude não instalado' : !c.logado ? 'Claude sem login' : S.chatAtivo ? 'Claude trabalhando' : `Claude${S.config?.modelo ? ' · ' + S.config.modelo : ''}`;
+	pc.querySelector('span').textContent = !c ? 'Claude' : !c.instalado ? 'Claude não instalado' : !c.logado ? 'Claude sem login' : S.chatAtivo ? 'Claude trabalhando' : `Claude${S.config?.modelo ? ' · ' + (S.config.modelo === 'auto' ? 'automático' : S.config.modelo) : ''}`;
 	const pod = S.config?.pod;
 	const pp = $('#stPod');
 	const usando = usarPodAgora();
@@ -649,15 +703,17 @@ async function abrirPreferencias(inicial = 'edicao') {
 	const breve = S.configOk === false ? `<div class="em-breve">${ic('info')}As preferências chegam na próxima atualização do painel. Use "Atualizar e reabrir".</div>` : '';
 	const blocos = {
 		edicao: `<h4>Preferências de edição</h4><p class="pref-desc">Valem em todo computador (vão para a nuvem junto com a biblioteca). O Claude segue isso em toda edição.</p>` +
-			`<div class="grade-2">${campo('Formato padrão de vídeo novo', sel('prefs.formatoPadrao', p.formatoPadrao ?? 'vertical', [['vertical', 'Vertical (Reels/Shorts)'], ['horizontal', 'Horizontal (YouTube)']]))}` +
+			`<div class="grade-2">${campo('Formato padrão de vídeo novo', sel('prefs.formatoPadrao', p.formatoPadrao ?? 'vertical', [['auto', 'Deixar a IA decidir'], ['vertical', 'Vertical (Reels/Shorts)'], ['horizontal', 'Horizontal (YouTube)']]))}` +
 			campo('Resolução da prévia', sel('prefs.resPrevia', p.resPrevia ?? 720, [[540, '540p (mais rápida)'], [720, '720p'], [1080, '1080p (igual ao final)']])) +
-			campo('Intensidade da edição', sel('prefs.intensidade', p.intensidade ?? 'normal', [['calma', 'Calma'], ['normal', 'Normal'], ['frenetica', 'Frenética']])) +
-			campo('Legenda padrão', sel('prefs.legendaPadrao', p.legendaPadrao ?? 'palavra', [['palavra', 'Palavra por palavra'], ['ouro', 'Ouro'], ['impacto', 'Impacto'], ['neon', 'Neon']])) + '</div>' +
+			campo('Intensidade da edição', sel('prefs.intensidade', p.intensidade ?? 'normal', [['auto', 'Deixar a IA decidir'], ['calma', 'Calma'], ['normal', 'Normal'], ['frenetica', 'Frenética']])) +
+			campo('Legenda padrão', sel('prefs.legendaPadrao', p.legendaPadrao ?? 'palavra', [['auto', 'Deixar a IA decidir'], ['palavra', 'Palavra por palavra'], ['ouro', 'Ouro'], ['impacto', 'Impacto'], ['neon', 'Neon']])) + '</div>' +
+			chave('prefs.amostras', p.amostras ?? false, 'Receber amostras durante a edição para eu decidir', 'Ligado: nas escolhas de estilo, o Claude mostra 2 ou 3 opções em imagem e espera você escolher. Desligado: ele decide sozinho e segue até a prévia.') +
 			chave('prefs.confirmarFinal', p.confirmarFinal ?? true, 'Pedir confirmação antes do vídeo final', 'Evita gastar tempo renderizando sem querer.') +
 			chave('prefs.salvarSozinho', p.salvarSozinho ?? false, 'Salvar na nuvem sozinho', 'Envia para o GitHub ao terminar cada edição.') +
 			campo('Sempre faça', `<textarea name="prefs.sempre" rows="4" placeholder="Ex.: sempre coloque meu @ no final; nunca use a cor vermelha; legenda sempre em caixa alta.">${esc(p.sempre ?? '')}</textarea>`, 'Instruções que o Claude segue em todos os vídeos.'),
 		claude: `<h4>Claude</h4><p class="pref-desc">O modelo que faz as edições neste computador.</p>` +
-			campo('Modelo', sel('config.modelo', c.modelo ?? '', [['', 'Padrão da conta'], ['opus', 'Opus (mais capaz)'], ['sonnet', 'Sonnet (equilíbrio)'], ['haiku', 'Haiku (mais rápido e barato)']])) +
+			campo('Modelo', sel('config.modelo', c.modelo ?? '', [['auto', 'Automático: escolhe modelo e esforço a cada etapa'], ['', 'Padrão da conta'], ['opus', 'Opus (mais capaz)'], ['sonnet', 'Sonnet (equilíbrio)'], ['haiku', 'Haiku (mais rápido e barato)']]), 'No automático, análise de referências, roteiro e criação de peças vão para o Opus com esforço alto; ajustes de edição, para o Sonnet; perguntas e comandos simples, para o Haiku. Dentro de um pedido grande, ele ainda divide as etapas entre os modelos.') +
+			campo('Esforço (quando o modelo não é automático)', sel('config.esforco', c.esforco ?? '', [['', 'Padrão'], ['low', 'Baixo (mais rápido)'], ['medium', 'Médio'], ['high', 'Alto (pensa mais)']])) +
 			`<p class="pref-desc">Status: ${S.claude ? (S.claude.instalado ? (S.claude.logado ? '<span class="selo ok">instalado e conectado</span>' : '<span class="selo alerta">falta entrar na conta</span>') : '<span class="selo erro">não instalado</span>') : '—'}</p>`,
 		pc: `<h4>Este computador</h4><p class="pref-desc">Só valem aqui. Ajuste se o Studio ou o render estiverem lentos ou falhando.</p>` +
 			chave('config.gpuStudio', c.gpuStudio ?? true, 'Usar a placa de vídeo (GPU) no Studio', 'Abre o Studio num navegador com aceleração forçada.') +
@@ -790,7 +846,14 @@ function aoTerminarTarefa(t) {
 		if (['previa', 'final'].includes(t.tipo)) notificar(`${nome} falhou${de}`, String(t.erro || '').slice(0, 120));
 	}
 	if (['previa', 'final'].includes(t.tipo)) carregarProjetos().then(renderProntos).catch(() => {});
-	if (t.tipo === 'link') carregarMidias();
+	if (t.tipo === 'link') {
+		const tema = S.analisarAoBaixar.get(t.id);
+		if (tema) {
+			S.analisarAoBaixar.delete(t.id);
+			if (S.temaAberto === tema && !$('#tv').hidden) carregarModelos(tema);
+			if (t.estado === 'ok' && t.saida) analisarModelo(tema, [String(t.saida).split('/').pop()]);
+		} else carregarMidias();
+	}
 	if (t.tipo === 'pack') carregarBiblioteca();
 	carregarFluxo();
 }
@@ -885,7 +948,7 @@ function renderRender() {
 	const podSub = !S.config ? 'Configure o pod em Preferências' : usando ? (pod?.host ? `Vai para ${pod.host}` : 'Pod sem endereço: abra Preferências › Pod') : 'Desligado: roda neste computador';
 	el.innerHTML =
 		`<div class="pod-linha"><label class="interruptor"><input type="checkbox" id="usarPod" ${usando ? 'checked' : ''} ${!S.config ? 'disabled' : ''}><span class="trilho"></span><span class="txt">Renderizar no pod<small>${esc(podSub)}</small></span></label><button class="btn icone mini fantasma" id="cfgPod" title="Configurar o pod" aria-label="Configurar o pod">${ic('gear')}</button></div>` +
-		(!p ? `<div class="vazio" style="margin-bottom:12px">${ic('film')}<b>Escolha um vídeo</b>Selecione um vídeo no topo para gerar a prévia ou o resultado final.<br><button class="btn primario mini" id="rNovo">${ic('plus')}<span>Novo vídeo</span></button></div>` :
+		(!p ? `<div class="vazio" style="margin-bottom:12px">${ic('film')}<b>Escolha um vídeo</b>Selecione um vídeo no topo (ou crie em “Novo vídeo”, no topo) para gerar a prévia ou o resultado final.</div>` :
 			`<div class="cartao"><div class="cartao-topo"><h4>${ic('play')}Prévia</h4><span class="selo">rápida</span></div><p class="legenda">Para conferir a edição antes do final.</p>` +
 			`<div class="campo"><span class="rotulo">Resolução</span><div class="segmentos">${[540, 720, 1080].map((r) => `<label><input type="radio" name="res" value="${r}" ${r === res ? 'checked' : ''}><span>${r}p</span></label>`).join('')}</div></div>` +
 			`<div class="campo"><span class="rotulo">Trecho <small>(opcional, em segundos ou min:seg)</small></span><div class="trecho"><input type="text" id="trDe" placeholder="de 0:00" inputmode="decimal" aria-label="Início do trecho"><input type="text" id="trAte" placeholder="até o fim" inputmode="decimal" aria-label="Fim do trecho"></div></div>` +
@@ -905,7 +968,6 @@ function renderRender() {
 		atualizarPilulas();
 	};
 	$('#cfgPod').onclick = () => abrirPreferencias('pod');
-	$('#rNovo') && ($('#rNovo').onclick = () => abrirNovoVideo());
 	if (!p) return;
 	$$('[name=res]', el).forEach((r) => (r.onchange = () => gravarLocal('resPrevia', Number(r.value))));
 	$('#btPrevia').onclick = () => gerarPrevia();
@@ -1089,7 +1151,7 @@ function renderMidias() {
 function enviarArquivo(p, tipo, arq, barra) {
 	return new Promise((ok, erro) => {
 		const x = new XMLHttpRequest();
-		x.open('POST', `/api/midia?projeto=${enc(p)}&tipo=${tipo}&nome=${enc(arq.name)}`);
+		x.open('POST', tipo.startsWith('tema:') ? `/api/tema-modelo?tema=${enc(tipo.slice(5))}&nome=${enc(arq.name)}` : `/api/midia?projeto=${enc(p)}&tipo=${tipo}&nome=${enc(arq.name)}`);
 		x.setRequestHeader('x-painel-token', T);
 		x.upload.onprogress = (e) => { if (e.lengthComputable) barra.style.width = (e.loaded / e.total) * 100 + '%'; };
 		x.onload = () => { if (x.status === 200) return ok(); let m = x.status; try { m = JSON.parse(x.responseText || '{}').erro || m; } catch {} erro(new Error(m)); };
@@ -1099,7 +1161,8 @@ function enviarArquivo(p, tipo, arq, barra) {
 }
 async function enviarTodos(tipo, arqs, z) {
 	const p = proj();
-	if (!p || !arqs.length) return;
+	const tema = tipo.startsWith('tema:') ? tipo.slice(5) : null;
+	if ((!p && !tema) || !arqs.length) return;
 	const caixa = z.nextElementSibling, barra = caixa.querySelector('i'), rot = caixa.querySelector('small');
 	caixa.hidden = false;
 	let ok = 0;
@@ -1107,6 +1170,14 @@ async function enviarTodos(tipo, arqs, z) {
 		barra.style.width = '0';
 		rot.textContent = `Enviando ${a.name} (${i + 1} de ${arqs.length}, ${tam(a.size)})...`;
 		try { await enviarArquivo(p, tipo, a, barra); ok++; } catch (e) { aviso(`Não enviei "${a.name}": ${e.message}`, 'erro'); }
+	}
+	if (tema) {
+		caixa.hidden = true;
+		await carregarModelos(tema);
+		// Vídeo modelo enviado: já pede a análise de edição e roteiro.
+		const enviados = arqs.filter((a) => /\.(mp4|mov|m4v|webm|mkv)$/i.test(a.name));
+		if (enviados.length) analisarModelo(tema, enviados.map((a) => a.name.replace(/[^\w.\- ()]/g, '_')));
+		return;
 	}
 	if (ok) aviso(`${ok} arquivo${ok > 1 ? 's enviados' : ' enviado'} para ${tipo === 'referencias' ? 'as referências' : 'as mídias'}.`, 'ok', {ms: 3000});
 	await carregarMidias();
@@ -1133,6 +1204,12 @@ async function baixarLink(destino) {
 	const inp = $(`[data-link="${destino}"]`);
 	const url = inp.value.trim();
 	if (!/^https?:\/\/\S+$/i.test(url)) { aviso('Cole um link completo, começando com https://', 'alerta'); return inp.focus(); }
+	if (destino.startsWith('tema:')) {
+		const tema = destino.slice(5);
+		const id = await criarTarefa('link', {url, destino: 'tema', tema}, {projeto: null});
+		if (id) { inp.value = ''; S.analisarAoBaixar.set(id, tema); aviso('Baixando o vídeo modelo. Quando terminar, o Claude analisa sozinho.', 'info'); }
+		return;
+	}
 	const id = await criarTarefa('link', {url, destino});
 	if (id) { inp.value = ''; return; }
 	if (S.tarefasOk === false && destino === 'referencias') {
@@ -1230,7 +1307,23 @@ function msg(texto, quem = 'ia', {custo, t} = {}) {
 	}
 	const d = document.createElement('div');
 	d.className = 'm ' + (quem === 'erro' ? 'erro' : quem);
-	d.textContent = texto;
+	// Amostras do Claude: [[amostra:A|out/arquivo.jpg|descrição]] viram imagens com o botão de escolha.
+	const RE_AMOSTRA = /\[\[amostra:([^|\]]{1,12})\|([^|\]]+)\|([^\]]*)\]\]/g;
+	if (quem === 'ia' && texto.includes('[[amostra:')) {
+		const v = Date.now();
+		let html = '', ultimo = 0, cards = '';
+		const fechar = () => { if (cards) { html += `<div class="amostras">${cards}</div>`; cards = ''; } };
+		for (const m of texto.matchAll(RE_AMOSTRA)) {
+			const antes = texto.slice(ultimo, m.index);
+			if (antes.trim()) { fechar(); html += esc(antes.trim()) + '\n'; }
+			const arq = m[2].trim().split(/[\\/]/).pop();
+			cards += `<figure class="amostra-ia"><img src="/out/${enc(arq)}?t=${T}&v=${v}" alt="Opção ${esc(m[1])}" data-ver-midia="/out/${enc(arq)}?t=${T}&v=${v}" data-nome="${esc(arq)}"><figcaption><b>${esc(m[1])}</b> ${esc(m[3])}</figcaption><button class="btn mini primario" data-escolher="${esc(m[1])}">${ic('check')}<span>Quero esta</span></button></figure>`;
+			ultimo = m.index + m[0].length;
+		}
+		fechar();
+		if (texto.slice(ultimo).trim()) html += esc(texto.slice(ultimo).trim());
+		d.innerHTML = html;
+	} else d.textContent = texto;
 	const extra = [quando(t), custoTxt(custo)].filter(Boolean).join(' · ');
 	if (extra) d.insertAdjacentHTML('beforeend', `<span class="custo">${esc(extra)}</span>`);
 	msgs.append(d);
@@ -1241,25 +1334,27 @@ function boasVindas() {
 	const p = proj();
 	msgs.innerHTML = `<div class="boas-vindas"><div class="logo-g"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg></div>` +
 		`<h3>${p ? `Vamos editar “${esc(p)}”` : 'O que vamos criar hoje?'}</h3>` +
-		`<p>${p ? 'Diga o que quer mudar. Posso usar a biblioteca ou criar elementos novos (eles ficam salvos para os próximos vídeos).' : 'Escolha um vídeo no topo ou comece um novo. Posso fazer qualquer tipo de vídeo, copiar a edição de um vídeo da internet ou recriar um estilo.'}</p>` +
+		`<p>${p ? 'Diga o que quer mudar. Posso usar a biblioteca ou criar elementos novos (eles ficam salvos para os próximos vídeos).' : 'Escolha um vídeo no topo ou crie um em “Novo vídeo”. Posso fazer qualquer tipo de vídeo, copiar a edição de um vídeo da internet ou recriar um estilo.'}</p>` +
 		`<div class="ideias">` +
 		(p ? `<button data-ideia="previa">${ic('play')}<span><b>Gerar a prévia</b><br><small>Ver como está agora</small></span></button>` +
 			`<button data-ideia="refs">${ic('copy')}<span><b>Copiar um estilo</b><br><small>Cole o link de um vídeo de referência</small></span></button>` +
 			`<button data-ideia="midias">${ic('upload')}<span><b>Enviar o vídeo bruto</b><br><small>Arraste o arquivo para a aba Mídias</small></span></button>` +
 			`<button data-ideia="fluxo">${ic('list')}<span><b>Ver o passo a passo</b><br><small>O que falta até o vídeo final</small></span></button>`
-			: `<button data-ideia="novo">${ic('plus')}<span><b>Novo vídeo</b><br><small>Reels, Shorts ou YouTube</small></span></button>` +
+			: `<button data-ideia="modelo">${ic('wand')}<span><b>Ensinar um estilo</b><br><small>Envie um vídeo modelo para um tema</small></span></button>` +
 			`<button data-ideia="tema">${ic('grid')}<span><b>Ver vídeos do tema</b><br><small>Assistir e copiar um estilo</small></span></button>` +
 			`<button data-ideia="pack">${ic('layers')}<span><b>Explorar a biblioteca</b><br><small>Peças, sons, fontes e pack</small></span></button>` +
 			`<button data-ideia="prefs">${ic('gear')}<span><b>Preferências</b><br><small>Pod, modelo e jeito de editar</small></span></button>`) +
 		`</div></div>`;
 }
 msgs.addEventListener('click', (e) => {
+	const esc_ = e.target.closest('[data-escolher]');
+	if (esc_) return usarPedido(`Escolho a opção ${esc_.dataset.escolher}. Aplique e siga.`, {enviar: true});
 	const b = e.target.closest('[data-ideia]');
 	if (!b) return;
 	const v = b.dataset.ideia;
 	if (v === 'previa') gerarPrevia();
 	else if (['refs', 'midias', 'fluxo'].includes(v)) { mostrarAba(v); if (celular()) verSecao('lado'); if (v === 'refs') setTimeout(() => $('[data-link=referencias]')?.focus(), 50); }
-	else if (v === 'novo') abrirNovoVideo();
+	else if (v === 'modelo') { if (temaAtual()) abrirTema(temaAtual()); }
 	else if (v === 'tema') { if (temaAtual()) abrirTema(temaAtual()); }
 	else if (v === 'pack') { if (celular()) verSecao('biblioteca'); $('#busca').focus(); }
 	else if (v === 'prefs') abrirPreferencias();

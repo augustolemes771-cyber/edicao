@@ -24,7 +24,7 @@ export const urlOk = (u) => {
 	}
 };
 
-export const criarTarefas = ({raiz, estado, cfg, projetoOk, pastaMidia}) => {
+export const criarTarefas = ({raiz, estado, cfg, projetoOk, pastaMidia, temaOk, pastaModelos}) => {
 	const arq = path.join(estado, 'tarefas.json');
 	// Tarefa que estava rodando quando o painel fechou não volta sozinha.
 	const lista = lerJson(arq, []).map((t) => (['fila', 'rodando'].includes(t.estado) ? {...t, estado: 'erro', erro: 'O painel foi fechado durante a tarefa.', fim: t.fim ?? Date.now()} : t));
@@ -160,9 +160,9 @@ export const criarTarefas = ({raiz, estado, cfg, projetoOk, pastaMidia}) => {
 	};
 
 	const link = async (t) => {
-		const {url, destino} = t.opcoes;
+		const {url, destino, tema} = t.opcoes;
 		const exe = await ytdlp(t);
-		const dir = pastaMidia(t.projeto, destino);
+		const dir = destino === 'tema' ? pastaModelos(tema) : pastaMidia(t.projeto, destino);
 		mkdirSync(dir, {recursive: true});
 		const at = atualizador(t);
 		const ffmpeg = temFfmpeg();
@@ -262,7 +262,8 @@ export const criarTarefas = ({raiz, estado, cfg, projetoOk, pastaMidia}) => {
 	// Valida as opções e cria a tarefa. Lança Error com mensagem em português se algo estiver errado.
 	const criar = (tipo, projeto, opcoes = {}) => {
 		if (!TIPOS.includes(tipo)) throw new Error('Tipo de tarefa inválido');
-		const precisaProjeto = !['pack', 'preparar-pod'].includes(tipo);
+		// Link para um vídeo modelo de tema não precisa de projeto.
+		const precisaProjeto = !['pack', 'preparar-pod'].includes(tipo) && !(tipo === 'link' && opcoes.destino === 'tema');
 		if (precisaProjeto && !projetoOk(projeto)) throw new Error('Escolha um projeto válido');
 		const o = {};
 		if (RENDERS.includes(tipo)) {
@@ -280,7 +281,11 @@ export const criarTarefas = ({raiz, estado, cfg, projetoOk, pastaMidia}) => {
 		if (tipo === 'link') {
 			if (!urlOk(opcoes.url)) throw new Error('Link inválido (use um endereço http ou https)');
 			o.url = opcoes.url;
-			o.destino = opcoes.destino === 'midias' ? 'midias' : 'referencias';
+			o.destino = ['midias', 'tema'].includes(opcoes.destino) ? opcoes.destino : 'referencias';
+			if (o.destino === 'tema') {
+				if (!temaOk(opcoes.tema)) throw new Error('Tema inválido');
+				o.tema = opcoes.tema;
+			}
 		}
 		if (tipo === 'pack') {
 			// Caminhos deste PC: completos, existentes e sem começar com '-'. Vão como argumentos do node, sem shell.

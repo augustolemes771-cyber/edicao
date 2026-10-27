@@ -11,7 +11,7 @@ import {randomBytes, timingSafeEqual} from 'node:crypto';
 import {createReadStream, createWriteStream, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync} from 'node:fs';
 import {pipeline} from 'node:stream/promises';
 import path from 'node:path';
-import {criarConfig, textoPrefs} from './config.mjs';
+import {criarConfig, escolherModelo, textoPrefs} from './config.mjs';
 import {dentro, lerJson} from './comum.mjs';
 import {fluxo} from './fluxo.mjs';
 import {criarHistorico} from './historico.mjs';
@@ -161,7 +161,7 @@ usuário quer: olhe as imagens e extraia quadros dos vídeos com ffmpeg para ver
 };
 
 // ---------- Tarefas (prévia, final, transcrever, link, pack, pod...) ----------
-const tarefas = criarTarefas({raiz, estado, cfg, projetoOk, pastaMidia});
+const tarefas = criarTarefas({raiz, estado, cfg, projetoOk, pastaMidia, temaOk: (id) => temaOk(id), pastaModelos: (id) => pastaModelos(id)});
 
 // ---------- Projetos novos, prompts e pastas ----------
 const arqPrompts = path.join(raiz, 'biblioteca/prompts.json');
@@ -187,6 +187,23 @@ const abrirPasta = (dir) => {
 
 // ---------- Temas ----------
 const dirTemas = path.join(raiz, 'biblioteca/temas');
+// Vídeos modelo de cada tema: o vídeo fica só neste PC (biblioteca/temas/<tema>/modelos/, fora do git) e a análise
+// que o Claude escreve (<nome>.md, ao lado) vai para o git e serve de base de estilo e roteiro para o tema.
+const VIDEO = /\.(mp4|mov|m4v|webm|mkv)$/i;
+const temaOk = (id) => typeof id === 'string' && /^[a-z0-9-]+$/.test(id) && existsSync(path.join(dirTemas, id, 'tema.json'));
+const pastaModelos = (id) => path.join(dirTemas, id, 'modelos');
+const listarModelos = (id) => {
+	const dir = pastaModelos(id);
+	if (!existsSync(dir)) return [];
+	const arqs = readdirSync(dir);
+	const videos = arqs.filter((f) => VIDEO.test(f));
+	// Análises cujo vídeo não está neste PC também aparecem (vieram de outro computador pelo git).
+	const soAnalise = arqs.filter((f) => f.endsWith('.md') && !videos.some((v) => v.replace(VIDEO, '') === f.slice(0, -3)));
+	return [
+		...videos.map((f) => ({nome: f, tamanho: statSync(path.join(dir, f)).size, video: true, analise: arqs.includes(f.replace(VIDEO, '.md')) ? `biblioteca/temas/${id}/modelos/${f.replace(VIDEO, '.md')}` : null})),
+		...soAnalise.map((f) => ({nome: f.slice(0, -3), tamanho: 0, video: false, analise: `biblioteca/temas/${id}/modelos/${f}`})),
+	].sort((a, b) => a.nome.localeCompare(b.nome));
+};
 const temas = () => {
 	const formatos = Object.fromEntries(biblioteca().templates.map((t) => [t.nome, t.formato]));
 	const lista = existsSync(dirTemas)
@@ -194,7 +211,7 @@ const temas = () => {
 				const t = ler(path.join(dirTemas, d.name, 'tema.json'), {});
 				const ap = path.join(dirTemas, d.name, 'aprendizado.md');
 				const regras = existsSync(ap) ? readFileSync(ap, 'utf8').split('\n').filter((l) => l.startsWith('- ')).length : 0;
-				return {id: d.name, nome: t.nome ?? d.name, descricao: t.descricao ?? '', regras, projetos: (t.projetos ?? []).filter((n) => n in formatos).map((n) => ({nome: n, formato: formatos[n]}))};
+				return {id: d.name, nome: t.nome ?? d.name, descricao: t.descricao ?? '', regras, modelos: listarModelos(d.name).length, projetos: (t.projetos ?? []).filter((n) => n in formatos).map((n) => ({nome: n, formato: formatos[n]}))};
 			})
 		: [];
 	const usados = new Set(lista.flatMap((t) => t.projetos.map((p) => p.nome)));
@@ -221,14 +238,18 @@ const projetos = () => {
 const instrucao = (projeto, tema) => `Você está dentro do PAINEL DE EDIÇÃO do canal Mateus Dias. O usuário pede em texto e você edita.
 Projeto atual: "${projeto || 'nenhum (crie um com npm run novo se o pedido for um vídeo novo)'}".${resumoMidias(projeto)}
 Tema do vídeo: "${tema || 'aleatorios'}". ANTES de editar, leia biblioteca/temas/${tema || 'aleatorios'}/tema.json e aprendizado.md: são as regras aprendidas nos
-vídeos anteriores deste tema; siga-as e use os projetos listados em tema.json como base. Se criar um projeto novo, acrescente o nome dele em "projetos" do tema.json.
+vídeos anteriores deste tema; siga-as e use os projetos listados em tema.json como base. Leia também as análises de vídeos modelo do tema
+(biblioteca/temas/${tema || 'aleatorios'}/modelos/*.md): são a base de estilo de edição e de roteiro do tema. Se criar um projeto novo, acrescente o nome dele em "projetos" do tema.json.
 Ao terminar uma edição, ou quando o usuário aprovar, reprovar ou corrigir algo, acrescente em aprendizado.md uma linha "- AAAA-MM-DD (projeto): lição" só com o que vale
 para os próximos vídeos deste tema (o que vale para todos os temas vai em .claude/skills/editar-video/SKILL.md). Se o tema não existir, crie a pasta com tema.json e aprendizado.md.
 Siga .claude/skills/editar-video/SKILL.md e o CLAUDE.md. Antes de criar algo, procure na biblioteca (src/pecas, src/pecas/tres, src/projetos,
 public/sfx, public/fontes, biblioteca/itens) e REUTILIZE. Se criar um elemento novo reaproveitável (peça, modelo 3D, template, efeito), coloque-o
 em src/pecas (ou src/pecas/tres) com um comentário de 1 a 3 linhas no topo dizendo o que é, e registre um item em biblioteca/itens/<nome>.json
 com {"nome","tipo","descricao","arquivo","exemplo"}. Responda em português, curto. Não faça render final sem o usuário aprovar; prévia pode.
-O usuário não é programador: não mostre código, diga o que mudou e como ver (prévia ou Studio). O painel tem botões de prévia e render
+${cfg.config().modelo === 'auto' ? `Modelo automático: divida o trabalho por etapas com subagentes (ferramenta Agent) escolhendo o modelo de cada um:
+'haiku' para etapas mecânicas (ler transcrição, conferir arquivos, renomear), 'sonnet' para escrever e ajustar cenas, 'opus' para decisões
+criativas, análise de referências e roteiro. Faça você mesmo o que for rápido.
+` : ''}O usuário não é programador: não mostre código, diga o que mudou e como ver (prévia ou Studio). O painel tem botões de prévia e render
 final com barra de progresso (no PC ou no pod); quando terminar uma edição, sugira gerar a prévia por ele.
 ${textoPrefs(cfg.prefs())}`;
 
@@ -258,8 +279,18 @@ const chat = async (req, res) => {
 	writeFileSync(arqInstrucao, instrucao(projeto, tema));
 	const args = ['-p', '--output-format', 'stream-json', '--verbose', '--permission-mode', 'acceptEdits', '--allowedTools', 'Bash,Read,Write,Edit,Glob,Grep', '--append-system-prompt-file', `"${arqInstrucao}"`];
 	if (sessoes[chave] && /^[\w-]+$/.test(sessoes[chave])) args.push('--resume', sessoes[chave]);
-	const modelo = cfg.config().modelo;
+	const c = cfg.config();
+	let modelo = c.modelo;
+	let esforco = c.esforco;
+	if (modelo === 'auto') {
+		// Automático: modelo e esforço pelo tipo do pedido, e subagentes liberados para dividir as etapas.
+		const e = escolherModelo(pedido, {projetoNovo: !projeto});
+		({modelo, esforco} = e);
+		args[args.indexOf('--allowedTools') + 1] += ',Agent,Task';
+		enviar('acao', {acao: `Modelo automático: ${modelo} · esforço ${{low: 'baixo', medium: 'médio', high: 'alto'}[esforco]} (${e.motivo})`});
+	}
 	if (modelo && /^[a-z0-9][\w.-]{0,60}$/i.test(modelo)) args.push('--model', modelo);
+	if (['low', 'medium', 'high'].includes(esforco)) args.push('--effort', esforco);
 	const proc = rodar('claude', ehWin ? args : args.map((a) => a.replace(/^"|"$/g, '')), {stdio: ['pipe', 'pipe', 'pipe']});
 	proc.stdin.on('error', () => {});
 	proc.stdin.end(pedido);
@@ -403,7 +434,7 @@ createServer(async (req, res) => {
 	const url = new URL(req.url, 'http://x');
 	const p = url.pathname;
 	try {
-		if (!['/api/', '/out/', '/sfx/', '/fontes/', '/midia/', '/pack/'].some((x) => p.startsWith(x))) {
+		if (!['/api/', '/out/', '/sfx/', '/fontes/', '/midia/', '/pack/', '/tema-modelo/'].some((x) => p.startsWith(x))) {
 			const rel = p === '/' ? 'index.html' : p.slice(1);
 			const base = path.join(import.meta.dirname, 'web');
 			const f = path.join(base, rel);
@@ -467,6 +498,35 @@ createServer(async (req, res) => {
 			const dir = {midias: () => pastaMidia(projeto, 'midias'), referencias: () => pastaMidia(projeto, 'referencias'), saida: () => path.join(raiz, 'out'), projeto: () => path.join(raiz, 'src/projetos', projeto)}[onde];
 			if (!dir) return json(res, {erro: 'Pasta inválida'}, 400);
 			abrirPasta(dir());
+			return json(res, {ok: true});
+		}
+		if (p === '/api/tema-modelos') {
+			const tema = url.searchParams.get('tema');
+			if (!temaOk(tema)) return json(res, {erro: 'Tema inválido'}, 400);
+			return json(res, listarModelos(tema));
+		}
+		if (p === '/api/tema-modelo' && req.method === 'POST') {
+			// Vídeo modelo do tema: corpo = arquivo cru, como nas mídias.
+			const tema = url.searchParams.get('tema'), nome = nomeArquivo(url.searchParams.get('nome'));
+			if (!temaOk(tema) || !VIDEO.test(nome)) return json(res, {erro: 'Envie um vídeo (mp4, mov, m4v, webm ou mkv)'}, 400);
+			const dir = pastaModelos(tema);
+			mkdirSync(dir, {recursive: true});
+			const tmp = path.join(dir, `.${nome}.parte`);
+			try {
+				await pipeline(req, createWriteStream(tmp));
+				renameSync(tmp, path.join(dir, nome));
+			} catch (e) {
+				rmSync(tmp, {force: true});
+				throw e;
+			}
+			return json(res, {ok: true, nome});
+		}
+		if (p === '/api/tema-modelo/apagar' && req.method === 'POST') {
+			const {tema, nome} = await corpo(req);
+			if (!temaOk(tema)) return json(res, {erro: 'Tema inválido'}, 400);
+			const n = nomeArquivo(nome);
+			const base = n.replace(VIDEO, '').replace(/\.md$/, '');
+			for (const f of [n, `${base}.md`]) if (f) rmSync(path.join(pastaModelos(tema), f), {force: true});
 			return json(res, {ok: true});
 		}
 		if (p === '/api/midias') {
@@ -578,6 +638,11 @@ createServer(async (req, res) => {
 			const [, , proj, tipo, ...resto] = p.split('/');
 			if (!projetoOk(proj) || !['midias', 'referencias'].includes(tipo)) { res.writeHead(404); return res.end(); }
 			return arquivo(req, res, path.join(pastaMidia(proj, tipo), nomeArquivo(decodeURIComponent(resto.join('/')))));
+		}
+		if (p.startsWith('/tema-modelo/')) {
+			const [, , tema, ...resto] = p.split('/');
+			if (!temaOk(tema)) { res.writeHead(404); return res.end(); }
+			return arquivo(req, res, path.join(pastaModelos(tema), nomeArquivo(decodeURIComponent(resto.join('/')))));
 		}
 		if (p.startsWith('/sfx/')) return arquivo(req, res, path.join(raiz, 'public/sfx', path.basename(p)));
 		if (p.startsWith('/fontes/')) return arquivo(req, res, path.join(raiz, 'public/fontes', path.basename(p)));
