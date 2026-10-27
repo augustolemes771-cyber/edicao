@@ -57,7 +57,11 @@ const biblioteca = () => {
 			return {nome: d.name, formato: vertical ? 'vertical' : 'horizontal', arquivo: `src/projetos/${d.name}/edit.ts`};
 		});
 	const sfx = existsSync(path.join(raiz, 'public/sfx')) ? readdirSync(path.join(raiz, 'public/sfx')).filter((f) => f.endsWith('.wav')).map((f) => f.replace('.wav', '')) : [];
-	const fontes = [...new Set(readdirSync(path.join(raiz, 'public/fontes')).filter((f) => f.endsWith('.woff2') && !f.includes('-ext-')).map((f) => f.split('-latin')[0]))];
+	const fontes = {};
+	for (const f of readdirSync(path.join(raiz, 'public/fontes')).filter((f) => f.endsWith('.woff2') && !f.includes('-ext-'))) {
+		const m = /^(.+)-latin-(\d+)-(normal|italic)\.woff2$/.exec(f);
+		if (m) (fontes[m[1]] ??= []).push({arquivo: f, peso: Number(m[2]), estilo: m[3]});
+	}
 	const referencias = existsSync(path.join(raiz, 'docs/referencias')) ? readdirSync(path.join(raiz, 'docs/referencias')).filter((f) => f.endsWith('.md')) : [];
 	const dirItens = path.join(raiz, 'biblioteca/itens');
 	const salvos = existsSync(dirItens) ? readdirSync(dirItens).filter((f) => f.endsWith('.json')).map((f) => ler(path.join(dirItens, f), {})) : [];
@@ -148,7 +152,7 @@ const iniciarStudio = () => {
 process.on('exit', () => studio?.kill());
 
 // ---------- HTTP ----------
-const tipos = {'.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.mp4': 'video/mp4'};
+const tipos = {'.wav': 'audio/wav', '.woff2': 'font/woff2', '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.mp4': 'video/mp4'};
 const arquivo = (req, res, f) => {
 	if (!existsSync(f) || !statSync(f).isFile()) {
 		res.writeHead(404);
@@ -182,7 +186,7 @@ createServer(async (req, res) => {
 	const url = new URL(req.url, 'http://x');
 	const p = url.pathname;
 	try {
-		if (!p.startsWith('/api/') && !p.startsWith('/out/')) {
+		if (!['/api/', '/out/', '/sfx/', '/fontes/'].some((x) => p.startsWith(x))) {
 			const rel = p === '/' ? 'index.html' : p.slice(1);
 			const base = path.join(import.meta.dirname, 'web');
 			const f = path.join(base, rel);
@@ -194,6 +198,13 @@ createServer(async (req, res) => {
 
 		if (p === '/api/biblioteca') return json(res, biblioteca());
 		if (p === '/api/projetos') return json(res, projetos());
+		if (p === '/api/codigo') {
+			// Só arquivos de texto da biblioteca, para o botão "ver".
+			const rel = path.normalize(url.searchParams.get('f') ?? '');
+			const ok = /^(src[\\/]pecas|src[\\/]projetos|scripts[\\/]blender|docs[\\/]referencias|biblioteca)[\\/]/.test(rel) && /\.(tsx?|py|md|json)$/.test(rel) && !rel.includes('..');
+			if (!ok || !existsSync(path.join(raiz, rel))) return json(res, {erro: 'Arquivo não permitido'}, 400);
+			return json(res, {texto: readFileSync(path.join(raiz, rel), 'utf8')});
+		}
 		if (p === '/api/chat' && req.method === 'POST') return chat(req, res);
 		if (p === '/api/parar' && req.method === 'POST') {
 			const {projeto} = await corpo(req);
@@ -219,6 +230,8 @@ createServer(async (req, res) => {
 			return json(res, {saida: git('push')});
 		}
 		if (p.startsWith('/out/')) return arquivo(req, res, path.join(raiz, 'out', path.basename(p)));
+		if (p.startsWith('/sfx/')) return arquivo(req, res, path.join(raiz, 'public/sfx', path.basename(p)));
+		if (p.startsWith('/fontes/')) return arquivo(req, res, path.join(raiz, 'public/fontes', path.basename(p)));
 		res.writeHead(404);
 		res.end();
 	} catch (e) {

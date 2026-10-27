@@ -28,6 +28,15 @@
 	textarea{flex:1;resize:none;height:64px}
 	video{width:100%;border-radius:8px;background:#000;margin-bottom:6px}
 	.chips{display:flex;flex-wrap:wrap;gap:5px}.chips span{background:var(--card);border:1px solid var(--linha);border-radius:99px;padding:2px 9px;font-size:12px}
+	details{margin-bottom:8px}summary{cursor:pointer;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mudo);padding:6px 0;user-select:none}
+	summary:hover{color:var(--cor)}
+	.item{display:flex;justify-content:space-between;gap:8px;align-items:center}.item>div{min-width:0}
+	.ver{flex:none;padding:2px 8px;font-size:12px}
+	.som{display:flex;align-items:center;gap:8px;margin-bottom:6px;background:var(--card);border:1px solid var(--linha);border-radius:8px;padding:6px 10px}.som audio{height:28px;flex:1;min-width:0}
+	.fonte{background:var(--card);border:1px solid var(--linha);border-radius:8px;padding:8px 10px;margin-bottom:6px}.fonte b{font-size:12px;color:var(--mudo);font-weight:400}.fonte div{font-size:22px;line-height:1.2;margin-top:2px}
+	#modal{position:fixed;inset:0;background:#000c;display:flex;align-items:center;justify-content:center;z-index:9}#modal[hidden]{display:none}
+	#modal div{background:var(--card);border:1px solid var(--linha);border-radius:12px;width:min(900px,92vw);max-height:85vh;display:flex;flex-direction:column}
+	#modal header{border:0;grid-column:auto}#modal pre{margin:0;padding:0 16px 16px;overflow:auto;font-size:12px}
 	#aviso{color:var(--mudo);font-size:12px}
 	@media(max-width:900px){body{grid-template-columns:1fr;height:auto}header{grid-column:1}#bib,#lado{border:0}}
 </style>
@@ -58,6 +67,7 @@
 	<h2>Conversa</h2><button id="zerar">Começar conversa nova neste vídeo</button>
 </section>
 
+<div id="modal" hidden><div><header><h1 id="mtitulo" style="font-size:13px"></h1><button id="mfechar">Fechar</button></header><pre id="mtexto"></pre></div></div>
 <script>
 const T = location.hash.slice(1);
 const H = {'content-type':'application/json','x-painel-token':T};
@@ -71,18 +81,32 @@ const msg = (txt,cls)=>{const d=document.createElement('div');d.className='m '+c
 
 async function biblioteca(){
 	const b = await api('/api/biblioteca');
-	const grupo=(titulo,itens,fn)=>itens.length?`<h2>${titulo} (${itens.length})</h2>`+itens.map(fn).join(''):'';
-	const item=(nome,sub,pedido)=>`<div class="item" data-p="${pedido.replace(/"/g,'&quot;')}">${nome}<small>${sub||''}</small></div>`;
+	const aberto = JSON.parse(localStorage.getItem('abertas')||'{}');
+	const caixa=(id,titulo,n,corpo,padrao=true)=>n?`<details data-id="${id}" ${(aberto[id]??padrao)?'open':''}><summary>${titulo} (${n})</summary>${corpo}</details>`:'';
+	const esc=(t)=>String(t).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+	const item=(nome,sub,pedido,arq,extra='')=>`<div class="item" data-p="${esc(pedido)}"><div>${esc(nome)}<small>${esc(sub||'')}</small></div><span>${extra}${arq?`<button class="ver" data-arq="${esc(arq)}" title="Ver o conteúdo">ver</button>`:''}</span></div>`;
+	const fam=(n)=>n.replace(/(^|-)(\w)/g,(_,x,c)=>(x?' ':'')+c.toUpperCase());
+	document.getElementById('fontcss')?.remove();
+	const st=document.createElement('style'); st.id='fontcss';
+	st.textContent=Object.entries(b.fontes).flatMap(([n,v])=>v.map(f=>`@font-face{font-family:"p-${n}";font-weight:${f.peso};font-style:${f.estilo};src:url(/fontes/${f.arquivo}?t=${T})}`)).join('');
+	document.head.append(st);
 	$('#bib').innerHTML =
-		grupo('Templates de vídeo',b.templates,(t)=>item(t.nome,t.formato,`Usa o template "${t.nome}" como base`))+
-		grupo('Salvos por você',b.salvos,(s)=>item(s.nome,s.descricao,`Usa "${s.nome}" da biblioteca`))+
-		grupo('Peças e efeitos',b.pecas,(p)=>item(p.nome,p.descricao.slice(0,90),`Usa a peça ${p.nome}`))+
-		grupo('Modelos 3D',b.modelos3d,(m)=>item(m.nome,'objeto 3D',`Coloca o objeto 3D ${m.nome}`))+
-		grupo('Modelos Blender',b.blender,(m)=>item(m.nome,'script Blender',`Gera o modelo ${m.nome} com Blender`))+
-		`<h2>Sons</h2><div class="chips">${b.sfx.map(s=>`<span>${s}</span>`).join('')}</div>`+
-		`<h2>Fontes</h2><div class="chips">${b.fontes.map(s=>`<span>${s}</span>`).join('')}</div>`;
+		caixa('templates','Templates de vídeo',b.templates.length,b.templates.map(t=>item(t.nome,t.formato,`Usa o template "${t.nome}" como base`,t.arquivo,`<button class="ver" data-studio="${esc(t.nome)}" title="Abrir no Studio">▶</button> `)).join(''))+
+		caixa('salvos','Salvos por você',b.salvos.length,b.salvos.map(s=>item(s.nome,s.descricao,`Usa "${s.nome}" da biblioteca`,s.arquivo)).join(''))+
+		caixa('pecas','Peças e efeitos',b.pecas.length,b.pecas.map(p=>item(p.nome,p.descricao.slice(0,90),`Usa a peça ${p.nome}`,p.arquivo)).join(''),false)+
+		caixa('3d','Modelos 3D',b.modelos3d.length,b.modelos3d.map(m=>item(m.nome,'objeto 3D',`Coloca o objeto 3D ${m.nome}`,m.arquivo)).join(''),false)+
+		caixa('blender','Modelos Blender',b.blender.length,b.blender.map(m=>item(m.nome,'script Blender',`Gera o modelo ${m.nome} com Blender`,m.arquivo)).join(''),false)+
+		caixa('sons','Sons',b.sfx.length,b.sfx.map(s=>`<div class="som"><span>${s}</span><audio controls preload="none" src="/sfx/${s}.wav?t=${T}"></audio></div>`).join(''),false)+
+		caixa('fontes','Fontes',Object.keys(b.fontes).length,Object.entries(b.fontes).map(([n,v])=>{const w=v.map(f=>f.peso).sort((x,y)=>y-x)[0];return `<div class="fonte"><b>${fam(n)} · ${v.map(f=>f.peso+(f.estilo==='italic'?'i':'')).join(', ')}</b><div style="font-family:'p-${n}';font-weight:${w}">Mateus Dias 0123</div></div>`}).join(''),false);
+	document.querySelectorAll('#bib details').forEach(d=>d.ontoggle=()=>{aberto[d.dataset.id]=d.open;localStorage.setItem('abertas',JSON.stringify(aberto));});
 }
-$('#bib').onclick=(e)=>{const i=e.target.closest('.item');if(i){$('#pedido').value=i.dataset.p+' ';$('#pedido').focus();}};
+$('#bib').onclick=async(e)=>{
+	const v=e.target.closest('.ver');
+	if(v?.dataset.studio){const r=await api('/api/studio',{});setTimeout(()=>window.open(r.url+'/'+v.dataset.studio),2500);return;}
+	if(v){try{const r=await api('/api/codigo?f='+encodeURIComponent(v.dataset.arq));$('#mtitulo').textContent=v.dataset.arq;$('#mtexto').textContent=r.texto;$('#modal').hidden=false;}catch(err){msg('Erro: '+err.message,'ia');}return;}
+	const i=e.target.closest('.item');if(i){$('#pedido').value=i.dataset.p+' ';$('#pedido').focus();}
+};
+$('#modal').onclick=(e)=>{if(e.target.id==='modal'||e.target.id==='mfechar')$('#modal').hidden=true;};
 
 async function projetos(){
 	const ps = await api('/api/projetos'); const atual = proj();
