@@ -3,6 +3,8 @@
 //   {"fim":true, "saida":"out/..."}  ou  {"erro":"mensagem"}
 // Uso: node scripts/render-job.mjs --projeto P --tipo previa|final [--res 540|720|1080] [--de SEG] [--ate SEG]
 // Variável BROWSER: caminho de um Chrome/headless_shell (na nuvem, onde o Remotion não baixa o dele).
+// Variável GL: renderizador WebGL do Chrome (padrão 'angle'; no pod Linux com placa NVIDIA, 'angle-egl' ou 'egl').
+// Variável HW=0: não tenta o codificador da placa de vídeo.
 import {spawn, spawnSync} from 'node:child_process';
 import {existsSync, mkdirSync, renameSync, rmSync} from 'node:fs';
 import path from 'node:path';
@@ -38,6 +40,9 @@ const falhar = (msg) => {
 	emitir({erro: String(msg).slice(-700)});
 	process.exit(1);
 };
+// Erro solto (ex.: EPIPE do ffmpeg interno) também vira a linha {"erro"} que o painel entende.
+process.on('uncaughtException', (e) => falhar(e?.message ?? e));
+process.on('unhandledRejection', (e) => falhar(e?.message ?? e));
 if (!projeto || !/^[a-z0-9-]+$/.test(projeto)) falhar('Projeto inválido');
 if (![540, 720, 1080].includes(res)) falhar('Resolução da prévia: 540, 720 ou 1080');
 mkdirSync('out', {recursive: true});
@@ -64,7 +69,8 @@ try {
 
 	// 3. Renderizar. Mesmas opções do remotion.config.ts e dos scripts preview.sh e finalizar.sh.
 	const browserExecutable = process.env.BROWSER || null;
-	const chromiumOptions = {gl: 'angle'};
+	const gl = ['angle', 'angle-egl', 'egl', 'swangle', 'swiftshader', 'vulkan'].includes(process.env.GL) ? process.env.GL : 'angle';
+	const chromiumOptions = {gl};
 	const inputProps = {projeto, duracaoFonte: 0};
 	const composition = await selectComposition({serveUrl, id: projeto, inputProps, browserExecutable, chromiumOptions});
 	let frameRange = null;

@@ -1,0 +1,42 @@
+[
+ {
+  "titulo": "Cortar pausas e notas faladas",
+  "texto": "Transcreva se ainda não tiver transcrição, gere o roteiro e leia inteiro. Corte as notas faladas para a IA (e faça o que elas pedem), as repetições, os erros de fala e as pausas longas. Cada borda de corte cai num silêncio medido no áudio, não no tempo da palavra. Depois me diga o que saiu e quanto o vídeo encurtou."
+ },
+ {
+  "titulo": "Legenda palavra por palavra",
+  "texto": "Coloque a legenda palavra por palavra no estilo das minhas preferências, com uma ênfase a cada uma ou duas frases nas palavras-chave (serif, cor, caixa, círculo ou grande). Cor de destaque com contraste sobre a roupa. Confira as palavras repetidas e os nomes próprios."
+ },
+ {
+  "titulo": "Mais ritmo",
+  "texto": "O vídeo está parado. Aumente o ritmo seguindo a skill e o tema: zoom seco em começo de frase a cada 3 a 6 s, uma cartela por ideia-chave, transições só nas trocas de assunto e sons curtos nos impactos. Não cubra o rosto nem a tela gravada."
+ },
+ {
+  "titulo": "Colocar trilha",
+  "texto": "Escolha e coloque uma trilha que combine com o tom do vídeo, uns 22 dB abaixo da voz, com entrada e saída suaves. A voz fica intacta. Me diga qual trilha usou."
+ },
+ {
+  "titulo": "Preparar para Reels",
+  "texto": "Transforme este vídeo em um Reel vertical 1080x1920 de até 60 s: escolha o trecho mais forte, abra com um gancho nos 2 primeiros segundos, legenda palavra por palavra, ritmo das referências verticais e chamada no final. Tudo dentro da área segura das redes."
+ },
+ {
+  "titulo": "Conferir e gerar prévia",
+  "texto": "Rode o tsc e o conferir, corrija o que der erro, renderize stills dos momentos principais para auditar (nada cortado na borda, nada sobre o rosto, nada adiantado à fala) e gere a prévia leve. Não faça o render final."
+ },
+ {
+  "titulo": "Copiar a edição do vídeo de referência",
+  "texto": "Analise o vídeo de referência que está em referencias/ antes de editar. Com ffmpeg: detecte os cortes (select='gt(scene,0.3)' com showinfo) e calcule o tempo médio entre cortes; extraia um quadro por segundo (fps=1) e olhe os quadros; anote o ritmo, a tipografia (fonte, peso, tamanho, posição, caixa alta, contorno, sombra), as cores, os efeitos (zoom, tremor, flash, transições, legendas, cartelas, emojis, molduras) e os sons (whoosh, pop, trilha, silêncios). Escreva tudo em public/projetos/<projeto>/referencias/analise.md com uma tabela 'efeito da referência → peça da biblioteca que reproduz'. Depois recrie a edição no meu vídeo usando as peças da biblioteca (crie peça nova só se nenhuma servir e registre na biblioteca), sem copiar o conteúdo, e gere a prévia."
+ },
+ {
+  "titulo": "Recriar no estilo do link",
+  "texto": "Baixei um vídeo de referência pelo link para referencias/. Analise o estilo dele (cortes por detecção de cena, quadros a cada 1 s, ritmo, tipografia, cores, efeitos e sons), escreva a análise em referencias/analise.md e aplique esse estilo ao meu vídeo com as peças da biblioteca. Mostre a prova estática de um quadro antes de animar um estilo novo."
+ },
+ {
+  "titulo": "Gancho forte na abertura",
+  "texto": "Reescreva os primeiros 3 segundos para prender: texto grande com a promessa do vídeo, zoom de entrada e som de impacto, sincronizado com a fala. Se a melhor frase estiver no meio do vídeo, sugira trazê-la para o começo."
+ },
+ {
+  "titulo": "Revisar antes do final",
+  "texto": "Assista à prévia em stills a cada 2 s e faça uma lista do que está errado ou fraco (legenda atrasada, texto cortado, efeito sobre o rosto, corte seco, som alto). Corrija tudo e me mostre a lista do que mudou."
+ }
+]

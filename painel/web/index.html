@@ -3,287 +3,118 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Painel de Edição</title>
-<style>
-	:root{--bg:#030405;--card:#0d1214;--linha:#1c2528;--txt:#eef3f3;--mudo:#8a9a9b;--cor:#12d4cd;--cor2:#00A8A3}
-	*{box-sizing:border-box}
-	body{margin:0;height:100vh;display:grid;grid-template-columns:300px 1fr 380px;grid-template-rows:auto 1fr;background:var(--bg);color:var(--txt);font:14px/1.45 system-ui,sans-serif}
-	header{grid-column:1/4;display:flex;gap:10px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--linha)}
-	header h1{font-size:16px;margin:0 auto 0 0;color:var(--cor)}
-	select,button,textarea{font:inherit;color:var(--txt);background:var(--card);border:1px solid var(--linha);border-radius:8px;padding:7px 11px}
-	button{cursor:pointer}button:hover{border-color:var(--cor2)}
-	button.p{background:var(--cor2);border-color:var(--cor2);color:#021}
-	section{overflow:auto;padding:14px;min-height:0}
-	#bib{border-right:1px solid var(--linha)}#lado{border-left:1px solid var(--linha)}
-	h2{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mudo);margin:18px 0 8px}
-	h2:first-child{margin-top:0}
-	.item{background:var(--card);border:1px solid var(--linha);border-radius:8px;padding:7px 10px;margin-bottom:6px;cursor:pointer}
-	.item:hover{border-color:var(--cor2)}.item small{display:block;color:var(--mudo)}
-	#centro{display:flex;flex-direction:column;padding:0}
-	#msgs{flex:1;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
-	.m{max-width:85%;padding:9px 13px;border-radius:12px;white-space:pre-wrap}
-	.eu{align-self:flex-end;background:var(--cor2);color:#021}.ia{background:var(--card);border:1px solid var(--linha)}
-	.acao{font-size:12px;color:var(--mudo);font-family:ui-monospace,monospace}
-	form{display:flex;gap:8px;padding:12px;border-top:1px solid var(--linha)}
-	textarea{flex:1;resize:none;height:64px}
-	video{width:100%;border-radius:8px;background:#000;margin-bottom:6px}
-	.chips{display:flex;flex-wrap:wrap;gap:5px}.chips span{background:var(--card);border:1px solid var(--linha);border-radius:99px;padding:2px 9px;font-size:12px}
-	details{margin-bottom:8px}summary{cursor:pointer;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mudo);padding:6px 0;user-select:none}
-	summary:hover{color:var(--cor)}
-	.item{display:flex;justify-content:space-between;gap:8px;align-items:center}.item>div{min-width:0}
-	.ver{flex:none;padding:2px 8px;font-size:12px}
-	.som{display:flex;align-items:center;gap:8px;margin-bottom:6px;background:var(--card);border:1px solid var(--linha);border-radius:8px;padding:6px 10px}.som audio{height:28px;flex:1;min-width:0}
-	.fonte{background:var(--card);border:1px solid var(--linha);border-radius:8px;padding:8px 10px;margin-bottom:6px}.fonte b{font-size:12px;color:var(--mudo);font-weight:400}.fonte div{font-size:22px;line-height:1.2;margin-top:2px}
-	#modal{position:fixed;inset:0;background:#000c;display:flex;align-items:center;justify-content:center;z-index:9}#modal[hidden]{display:none}
-	#modal div{background:var(--card);border:1px solid var(--linha);border-radius:12px;width:min(900px,92vw);max-height:85vh;display:flex;flex-direction:column}
-	#modal header{border:0;grid-column:auto}#modal pre{margin:0;padding:0 16px 16px;overflow:auto;font-size:12px}
-	#claude{margin:12px 16px 0;padding:12px 14px;border:1px solid var(--cor2);border-radius:10px;background:#00a8a31a;display:flex;gap:12px;align-items:center}#claude span{flex:1}#claude[hidden]{display:none}
-	#tv{position:fixed;inset:0;background:#000d;z-index:8;overflow:auto;padding:24px}#tv[hidden]{display:none}
-	#tv .caixa{max-width:1200px;margin:0 auto;background:var(--bg);border:1px solid var(--linha);border-radius:14px;padding:20px}
-	#tv .topo{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px}#tv .topo h1{font-size:20px;margin:0 auto 0 0;color:var(--cor)}
-	#tv .grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:16px}
-	#tv .card{background:var(--card);border:1px solid var(--linha);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:8px}
-	#tv .card video,#tv .vazio{width:100%;aspect-ratio:16/9;border-radius:8px;background:#000;margin:0}
-	#tv .card video.v{aspect-ratio:9/16;max-height:420px;object-fit:contain}
-	#tv .vazio{display:flex;align-items:center;justify-content:center;text-align:center;color:var(--mudo);font-size:12px;padding:10px;border:1px dashed var(--linha)}
-	#tv .acoes{display:flex;gap:6px;flex-wrap:wrap}#tv .acoes button{font-size:12px;padding:5px 9px}
-	.zona{border:1px dashed var(--linha);border-radius:10px;padding:12px;text-align:center;color:var(--mudo);cursor:pointer;font-size:13px}.zona.on,.zona:hover{border-color:var(--cor);color:var(--txt)}
-	.arq{display:flex;align-items:center;gap:8px;margin-top:6px;background:var(--card);border:1px solid var(--linha);border-radius:8px;padding:5px 8px;font-size:12px}
-	.arq img{width:34px;height:34px;object-fit:cover;border-radius:4px}.arq .n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.arq button{padding:1px 7px}
-	.prog{height:4px;background:var(--linha);border-radius:2px;margin-top:4px}.prog i{display:block;height:100%;width:0;background:var(--cor);border-radius:2px}
-	#notas{width:100%;height:70px;margin-top:8px;font-size:12px}
-	#aviso{color:var(--mudo);font-size:12px}
-	@media(max-width:900px){body{grid-template-columns:1fr;height:auto}header{grid-column:1}#bib,#lado{border:0}}
-</style>
+<meta name="color-scheme" content="dark">
+<title>Painel de Edição · Mateus Dias</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23030405'/%3E%3Cpath d='M12 9l11 7-11 7z' fill='%2312d4cd'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="app.css">
 </head>
-<body>
-<header>
-	<h1>✦ Painel de Edição</h1>
-	<select id="tema" title="Tema: tudo que for feito nele vira aprendizado para os próximos vídeos do mesmo tema"></select>
-	<button id="novoTema" title="Criar um tema novo">+ Tema</button>
-	<select id="projeto"></select>
-	<button id="novoProj">+ Novo vídeo</button>
-	<button id="studio">Abrir Studio</button>
-	<button id="atualizar" title="Baixa a versão mais recente do GitHub e reabre o painel">⬇ Atualizar e reabrir</button>
-	<button id="salvar" class="p" title="Envia para o GitHub templates, peças e edições novas">⬆ Salvar na nuvem</button>
+<body class="ver-conversa">
+
+<header id="topo">
+	<div class="marca">
+		<span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg></span>
+		<div><b>Painel de Edição</b><small>Mateus Dias</small></div>
+	</div>
+
+	<div class="seletores">
+		<label class="campo-topo" title="Tema: tudo que for feito nele vira aprendizado para os próximos vídeos do mesmo tema">
+			<span>Tema</span>
+			<select id="tema"></select>
+		</label>
+		<button class="btn icone" id="novoTema" title="Criar um tema novo" aria-label="Criar um tema novo" data-ic="plus"></button>
+		<label class="campo-topo largo" title="Vídeo (projeto) que você está editando">
+			<span>Vídeo</span>
+			<select id="projeto"></select>
+		</label>
+		<button class="btn primario" id="novoProj" data-ic="plus">Novo vídeo</button>
+	</div>
+
+	<div class="status" id="status">
+		<button class="pilula" id="stClaude" title="Claude Code neste computador"><i class="ponto"></i><span>Claude</span></button>
+		<button class="pilula" id="stPod" title="Pod (computador na nuvem para renderizar)"><i class="ponto"></i><span>Pod</span></button>
+		<button class="pilula" id="stTarefas" title="Tarefas rodando"><i class="ponto"></i><span>Sem tarefas</span><em class="mini-barra" hidden><i></i></em></button>
+	</div>
+
+	<div class="acoes-topo">
+		<button class="btn" id="studio" data-ic="monitor" title="Abrir o Remotion Studio (editor visual) com a placa de vídeo">Studio</button>
+		<button class="btn" id="salvar" data-ic="cloud-up" title="Envia para o GitHub templates, peças e edições novas">Salvar na nuvem</button>
+		<button class="btn icone" id="atualizar" data-ic="refresh" title="Atualizar e reabrir: baixa a versão mais recente do GitHub e reabre o painel" aria-label="Atualizar e reabrir"></button>
+		<button class="btn icone" id="abrirPrefs" data-ic="gear" title="Preferências" aria-label="Preferências"></button>
+	</div>
 </header>
 
-<section id="bib"></section>
+<main id="app">
+	<aside id="bib" class="coluna">
+		<div class="coluna-topo">
+			<h2>Biblioteca</h2>
+			<div class="busca">
+				<span data-ic="search"></span>
+				<input id="busca" type="search" placeholder="Buscar peças, sons, fontes, pack..." autocomplete="off">
+			</div>
+		</div>
+		<div id="bibLista" class="rolavel"><div class="carregando">Carregando a biblioteca...</div></div>
+	</aside>
 
-<section id="centro">
-	<div id="claude" hidden></div>
-	<div id="msgs"><div class="m ia">Oi! Escolha o vídeo em cima e me diga o que editar. Posso usar o que está na biblioteca ou criar elementos novos (eles ficam salvos para os próximos vídeos).</div></div>
-	<form id="f">
-		<textarea id="pedido" placeholder="Ex.: usa o template do depoimento e coloca a moeda 3D girando quando eu falar 'investimento'"></textarea>
-		<button class="p" id="enviar">Enviar</button>
-		<button type="button" id="parar" hidden>Parar</button>
-	</form>
-</section>
+	<section id="centro" class="coluna">
+		<div id="claude" class="faixa" hidden></div>
+		<div class="conversa-topo">
+			<div>
+				<h2 id="convTitulo">Conversa</h2>
+				<small id="convSub">Escolha um vídeo e diga o que editar.</small>
+			</div>
+			<button class="btn fantasma" id="zerar" data-ic="chat-plus" title="Começar conversa nova neste vídeo">Conversa nova</button>
+		</div>
+		<div id="msgs" class="rolavel" aria-live="polite"></div>
+		<div class="compositor">
+			<div class="atalhos">
+				<div id="chips" class="chips"></div>
+				<button class="btn fantasma mini" id="gerAtalhos" data-ic="edit" title="Adicionar ou remover atalhos de pedido">Atalhos</button>
+			</div>
+			<form id="f">
+				<textarea id="pedido" rows="3" placeholder="Ex.: usa o template do depoimento e coloca a moeda 3D girando quando eu falar 'investimento'"></textarea>
+				<div class="form-acoes">
+					<small class="dica"><kbd>Enter</kbd> envia · <kbd>Shift</kbd>+<kbd>Enter</kbd> nova linha</small>
+					<button type="button" class="btn perigo" id="parar" data-ic="stop" hidden>Parar</button>
+					<button class="btn primario" id="enviar" data-ic="send">Enviar</button>
+				</div>
+			</form>
+		</div>
+	</section>
 
-<section id="lado">
-	<h2>Prévias</h2><div id="videos"><span id="aviso">Escolha um projeto.</span></div>
-	<h2>Mídias do vídeo</h2><div id="midias"><span id="aviso">Escolha um projeto.</span></div>
-	<h2>Referências</h2><div id="refs"><span id="aviso">Escolha um projeto.</span></div>
-	<h2>Conversa</h2><button id="zerar">Começar conversa nova neste vídeo</button>
-</section>
+	<aside id="lado" class="coluna">
+		<nav class="abas" role="tablist">
+			<button role="tab" data-aba="render" class="on" data-ic="play">Render</button>
+			<button role="tab" data-aba="fluxo" data-ic="list">Fluxo</button>
+			<button role="tab" data-aba="midias" data-ic="film">Mídias</button>
+			<button role="tab" data-aba="refs" data-ic="star">Referências</button>
+		</nav>
+		<div class="rolavel painel-aba" id="aba-render"></div>
+		<div class="rolavel painel-aba" id="aba-fluxo" hidden></div>
+		<div class="rolavel painel-aba" id="aba-midias" hidden></div>
+		<div class="rolavel painel-aba" id="aba-refs" hidden></div>
+	</aside>
+</main>
 
-<div id="tv" hidden><div class="caixa" id="tvc"></div></div>
-<div id="modal" hidden><div><header><h1 id="mtitulo" style="font-size:13px"></h1><button id="mfechar">Fechar</button></header><pre id="mtexto"></pre></div></div>
-<script>
-const T = location.hash.slice(1);
-const H = {'content-type':'application/json','x-painel-token':T};
-const $ = (s)=>document.querySelector(s);
-const api = async (p, corpo)=>{
-	const r = await fetch(p,{method:corpo?'POST':'GET',headers:H,body:corpo?JSON.stringify(corpo):undefined});
-	const j = await r.json(); if(!r.ok) throw new Error(j.erro||r.status); return j;
-};
-const proj = ()=>$('#projeto').value;
-const msg = (txt,cls)=>{const d=document.createElement('div');d.className='m '+cls;d.textContent=txt;$('#msgs').append(d);$('#msgs').scrollTop=1e9;return d;};
+<nav id="navCel" aria-label="Seções">
+	<button data-ver="biblioteca" data-ic="book">Biblioteca</button>
+	<button data-ver="conversa" class="on" data-ic="chat">Conversa</button>
+	<button data-ver="lado" data-ic="sliders">Vídeo</button>
+</nav>
 
-async function biblioteca(){
-	const b = await api('/api/biblioteca');
-	const aberto = JSON.parse(localStorage.getItem('abertas')||'{}');
-	const caixa=(id,titulo,n,corpo,padrao=true)=>n?`<details data-id="${id}" ${(aberto[id]??padrao)?'open':''}><summary>${titulo} (${n})</summary>${corpo}</details>`:'';
-	const esc=(t)=>String(t).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
-	const item=(nome,sub,pedido,arq,extra='')=>`<div class="item" data-p="${esc(pedido)}"><div>${esc(nome)}<small>${esc(sub||'')}</small></div><span>${extra}${arq?`<button class="ver" data-arq="${esc(arq)}" title="Ver o conteúdo">ver</button>`:''}</span></div>`;
-	const fam=(n)=>n.replace(/(^|-)(\w)/g,(_,x,c)=>(x?' ':'')+c.toUpperCase());
-	document.getElementById('fontcss')?.remove();
-	const st=document.createElement('style'); st.id='fontcss';
-	st.textContent=Object.entries(b.fontes).flatMap(([n,v])=>v.map(f=>`@font-face{font-family:"p-${n}";font-weight:${f.peso};font-style:${f.estilo};src:url(/fontes/${f.arquivo}?t=${T})}`)).join('');
-	document.head.append(st);
-	$('#bib').innerHTML =
-		caixa('temas','Templates por tema',window._temas.temas.length,window._temas.temas.map(t=>`<details data-id="tema-${t.id}" ${(aberto['tema-'+t.id]??false)?'open':''}><summary style="text-transform:none;letter-spacing:0;font-size:13px;color:var(--txt)">${esc(t.nome)} <small style="color:var(--mudo)">· ${t.projetos.length} vídeo${t.projetos.length===1?'':'s'} · ${t.regras} regra${t.regras===1?'':'s'} aprendida${t.regras===1?'':'s'}</small></summary><small style="color:var(--mudo);display:block;margin-bottom:6px">${esc(t.descricao)}</small>`+
-			`<div class="item" data-tema="${t.id}"><div><b>▶ Ver vídeos e opções</b><small>assistir, criar novo ou copiar um estilo</small></div></div>`+
-			item('Aprendizado deste tema',t.regras+' regras: cresce a cada vídeo',`Mostre o aprendizado do tema ${t.nome}`,`biblioteca/temas/${t.id}/aprendizado.md`)+
-			t.projetos.map(p=>item(p.nome,p.formato,`Cria um vídeo novo no tema "${t.id}" usando o projeto "${p.nome}" como base`,`src/projetos/${p.nome}/edit.ts`,`<button class="ver" data-studio="${esc(p.nome)}" title="Abrir no Studio">▶</button> `)).join('')+'</details>').join('')+
-			(window._temas.semTema.length?`<details data-id="tema-sem"><summary style="text-transform:none;letter-spacing:0;font-size:13px;color:var(--txt)">Sem tema <small style="color:var(--mudo)">· ${window._temas.semTema.length}</small></summary>`+window._temas.semTema.map(p=>item(p.nome,p.formato,`Coloca o projeto "${p.nome}" em um tema`,`src/projetos/${p.nome}/edit.ts`)).join('')+'</details>':''),true)+
-		caixa('salvos','Salvos por você',b.salvos.length,b.salvos.map(s=>item(s.nome,s.descricao,`Usa "${s.nome}" da biblioteca`,s.arquivo)).join(''))+
-		caixa('pecas','Peças e efeitos',b.pecas.length,b.pecas.map(p=>item(p.nome,p.descricao.slice(0,90),`Usa a peça ${p.nome}`,p.arquivo)).join(''),false)+
-		caixa('3d','Modelos 3D',b.modelos3d.length,b.modelos3d.map(m=>item(m.nome,'objeto 3D',`Coloca o objeto 3D ${m.nome}`,m.arquivo)).join(''),false)+
-		caixa('blender','Modelos Blender',b.blender.length,b.blender.map(m=>item(m.nome,'script Blender',`Gera o modelo ${m.nome} com Blender`,m.arquivo)).join(''),false)+
-		caixa('sons','Sons',b.sfx.length,b.sfx.map(s=>`<div class="som"><span>${s}</span><audio controls preload="none" src="/sfx/${s}.wav?t=${T}"></audio></div>`).join(''),false)+
-		caixa('fontes','Fontes',Object.keys(b.fontes).length,Object.entries(b.fontes).map(([n,v])=>{const w=v.map(f=>f.peso).sort((x,y)=>y-x)[0];return `<div class="fonte"><b>${fam(n)} · ${v.map(f=>f.peso+(f.estilo==='italic'?'i':'')).join(', ')}</b><div style="font-family:'p-${n}';font-weight:${w}">Mateus Dias 0123</div></div>`}).join(''),false);
-	document.querySelectorAll('#bib details').forEach(d=>d.ontoggle=()=>{aberto[d.dataset.id]=d.open;localStorage.setItem('abertas',JSON.stringify(aberto));});
-}
-$('#bib').onclick=async(e)=>{
-	const v=e.target.closest('.ver');
-	if(v?.dataset.studio){studio(v.dataset.studio);return;}
-	if(v){try{const r=await api('/api/codigo?f='+encodeURIComponent(v.dataset.arq));$('#mtitulo').textContent=v.dataset.arq;$('#mtexto').textContent=r.texto;$('#modal').hidden=false;}catch(err){msg('Erro: '+err.message,'ia');}return;}
-	const ti=e.target.closest('[data-tema]');if(ti){return abrirTema(ti.dataset.tema);}
-	const i=e.target.closest('.item');if(i){$('#pedido').value=i.dataset.p+' ';$('#pedido').focus();}
-};
-$('#modal').onclick=(e)=>{if(e.target.id==='modal'||e.target.id==='mfechar')$('#modal').hidden=true;};
+<!-- Tela do tema -->
+<div id="tv" class="sobreposicao" hidden><div class="tela" id="tvc"></div></div>
 
-async function projetos(){
-	const ps = await api('/api/projetos'); const atual = proj();
-	const grupos=(window._temas?.temas||[]).map(t=>`<optgroup label="${t.nome}">${t.projetos.map(p=>`<option>${p.nome}</option>`).join('')}</optgroup>`).join('');
-	const sem=(window._temas?.semTema||[]).map(p=>`<option>${p.nome}</option>`).join('');
-	$('#projeto').innerHTML = '<option value="">(sem projeto)</option>'+grupos+(sem?`<optgroup label="Sem tema">${sem}</optgroup>`:'');
-	$('#projeto').value = atual; window._ps = ps; videos(); midias();
-}
-function videos(){
-	const p=(window._ps||[]).find(x=>x.nome===proj());
-	$('#videos').innerHTML = !p?'<span id="aviso">Escolha um projeto.</span>':p.videos.length?
-		p.videos.map(v=>`<video controls preload="metadata" src="/out/${v.arquivo}?t=${T}"></video><div id="aviso">${v.arquivo}</div>`).join(''):
-		'<span id="aviso">Nenhuma prévia ainda. Peça: "gera a prévia".</span>';
-}
-const tam=(n)=>n>1e9?(n/1e9).toFixed(1)+' GB':n>1e6?(n/1e6).toFixed(1)+' MB':Math.max(1,Math.round(n/1e3))+' KB';
-const eImg=(n)=>/\.(png|jpe?g|webp|gif|svg)$/i.test(n);
-async function midias(){
-	const pr=proj();
-	if(!pr){$('#midias').innerHTML=$('#refs').innerHTML='<span id="aviso">Escolha um projeto.</span>';return;}
-	let d; try{d=await api('/api/midias?projeto='+pr);}catch(e){$('#midias').innerHTML=$('#refs').innerHTML='<span id="aviso">'+e.message+'</span>';return;}
-	const esc=(x)=>String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
-	const lista=(tipo,itens)=>itens.map(m=>`<div class="arq">${eImg(m.nome)?`<img src="/midia/${pr}/${tipo}/${encodeURIComponent(m.nome)}?t=${T}">`:'📄'}<span class="n" title="${esc(m.nome)}">${esc(m.nome)}</span><small>${tam(m.tamanho)}</small><button data-ap="${tipo}|${esc(m.nome)}" title="Apagar">✕</button></div>`).join('');
-	const zona=(tipo,txt)=>`<div class="zona" data-z="${tipo}">${txt}<input type="file" multiple hidden></div><div class="prog" hidden><i></i></div>`;
-	$('#midias').innerHTML=zona('midias','Solte aqui o vídeo bruto, imagens, áudios... ou clique para escolher')+lista('midias',d.midias);
-	$('#refs').innerHTML=zona('referencias','Solte aqui vídeos, prints e imagens de referência')+lista('referencias',d.referencias)+
-		`<textarea id="notas" placeholder="Links e observações sobre as referências (ex.: youtube.com/..., 'quero o ritmo do segundo 10 a 20')">${esc(d.notas)}</textarea>`;
-	$('#notas').onchange=()=>api('/api/notas',{projeto:pr,texto:$('#notas').value}).then(()=>msg('Referências salvas. O Claude lê isso no próximo pedido.','acao')).catch(e=>msg('Erro: '+e.message,'ia'));
-}
-function enviar(pr,tipo,arq,barra){
-	return new Promise((ok,erro)=>{
-		const x=new XMLHttpRequest();
-		x.open('POST',`/api/midia?projeto=${pr}&tipo=${tipo}&nome=${encodeURIComponent(arq.name)}`);
-		x.setRequestHeader('x-painel-token',T);
-		x.upload.onprogress=(e)=>{if(e.lengthComputable)barra.firstChild.style.width=(e.loaded/e.total*100)+'%';};
-		x.onload=()=>x.status===200?ok():erro(new Error((JSON.parse(x.responseText||'{}').erro)||x.status));
-		x.onerror=()=>erro(new Error('Falha no envio'));
-		x.send(arq);
-	});
-}
-async function enviarTodos(tipo,arqs,zona){
-	const pr=proj(), barra=zona.nextElementSibling; barra.hidden=false;
-	for(const a of arqs){barra.firstChild.style.width='0';zona.firstChild.textContent='Enviando '+a.name+'...';
-		try{await enviar(pr,tipo,a,barra);}catch(e){msg('Não enviei "'+a.name+'": '+e.message,'ia');}}
-	midias();
-}
-document.addEventListener('click',(e)=>{
-	const z=e.target.closest('.zona'); if(z){z.querySelector('input').click();}
-	const ap=e.target.closest('[data-ap]');
-	if(ap){const [tipo,nome]=ap.dataset.ap.split('|'); if(confirm('Apagar "'+nome+'" deste projeto?'))api('/api/midia/apagar',{projeto:proj(),tipo,nome}).then(midias);}
-});
-document.addEventListener('change',(e)=>{const z=e.target.closest('.zona');if(z&&e.target.files.length)enviarTodos(z.dataset.z,[...e.target.files],z);});
-document.addEventListener('dragover',(e)=>{const z=e.target.closest('.zona');if(z){e.preventDefault();z.classList.add('on');}});
-document.addEventListener('dragleave',(e)=>e.target.closest?.('.zona')?.classList.remove('on'));
-document.addEventListener('drop',(e)=>{const z=e.target.closest('.zona');if(z){e.preventDefault();z.classList.remove('on');enviarTodos(z.dataset.z,[...e.dataTransfer.files],z);}});
-$('#projeto').onchange=()=>{midias();
-	const t=(window._temas?.temas||[]).find(t=>t.projetos.some(p=>p.nome===proj()));
-	if(t) $('#tema').value=t.id; localStorage.setItem('tema',$('#tema').value); videos();
-};
-$('#tema').onchange=()=>localStorage.setItem('tema',$('#tema').value);
-$('#novoTema').onclick=async()=>{
-	const nome=prompt('Nome do tema novo (ex.: Aulas, Lançamento, Podcast):'); if(!nome) return;
-	const descricao=prompt('Descreva em uma frase como são os vídeos desse tema (opcional):')||'';
-	try{const r=await api('/api/temas',{nome,descricao}); await temas(); $('#tema').value=r.id; localStorage.setItem('tema',r.id); biblioteca();
-		msg(`Tema "${nome}" criado. Os vídeos feitos nele vão ensinar o Claude: ele anota o que você aprova ou corrige.`,'ia');}catch(e){msg('Erro: '+e.message,'ia');}
-};
-async function temas(){
-	window._temas=await api('/api/temas'); const atual=$('#tema').value||localStorage.getItem('tema')||'';
-	$('#tema').innerHTML=window._temas.temas.map(t=>`<option value="${t.id}">${t.nome}</option>`).join('');
-	$('#tema').value=window._temas.temas.some(t=>t.id===atual)?atual:(window._temas.temas[0]?.id||'');
-}
-$('#novoProj').onclick=()=>{const n=prompt(`Nome do vídeo no tema "${$('#tema').selectedOptions[0]?.textContent}" (minúsculas e hífen):`);if(n){$('#pedido').value=`Cria o projeto novo "${n}" no tema "${$('#tema').value}" e prepara para editar.`;$('#f').requestSubmit();}};
-const studio=async(rota='')=>{msg('Abrindo o Studio com a placa de vídeo (GPU)... pode levar alguns segundos.','acao');const r=await api('/api/studio',{rota}).catch(()=>({ok:false}));if(!r.ok)msg('O Studio não abriu. Tente de novo.','ia');};
-$('#studio').onclick=()=>studio();
-$('#zerar').onclick=async()=>{await api('/api/novo-chat',{projeto:proj()});$('#msgs').innerHTML='';msg('Conversa nova. O que vamos editar?','ia');};
-$('#atualizar').onclick=async()=>{
-	if(!confirm('Vou baixar a versão mais recente e reabrir o painel. Uma janela nova vai abrir e esta aba para de funcionar. Continuar?')) return;
-	try{await api('/api/reiniciar',{});}catch{}
-	document.body.innerHTML='<div style="padding:40px;font:16px system-ui;color:#eef3f3"><h2 style="color:#12d4cd">Reabrindo o painel...</h2><p>Uma janela preta vai aparecer e, em alguns segundos, o painel abre numa aba nova. Pode fechar esta aba.</p></div>';
-	setTimeout(()=>window.close(),4000);
-};
-$('#salvar').onclick=async()=>{try{msg((await api('/api/sync/salvar',{mensagem:'Edição pelo painel'})).saida||'Salvo na nuvem.','ia');}catch(e){msg('Erro: '+e.message,'ia');}};
+<!-- Janela genérica (ver conteúdo, formulários, confirmações) -->
+<div id="modal" class="sobreposicao" hidden>
+	<div class="janela" role="dialog" aria-modal="true" aria-labelledby="mtitulo">
+		<div class="janela-topo"><h3 id="mtitulo"></h3><button class="btn icone fantasma" id="mfechar" data-ic="x" aria-label="Fechar"></button></div>
+		<div class="janela-corpo" id="mcorpo"></div>
+		<div class="janela-rodape" id="mrodape" hidden></div>
+	</div>
+</div>
 
-async function abrirTema(id){
-	const [{temas:ts},ps]=await Promise.all([api('/api/temas'),api('/api/projetos')]);
-	const t=ts.find(x=>x.id===id); if(!t) return;
-	const esc=(x)=>String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
-	const cards=t.projetos.map(pr=>{
-		const v=(ps.find(x=>x.nome===pr.nome)?.videos||[])[0];
-		const vert=pr.formato==='vertical';
-		return `<div class="card"><b>${esc(pr.nome)}</b><small style="color:var(--mudo)">${pr.formato}${v?' · '+esc(v.arquivo):''}</small>`+
-			(v?`<video class="${vert?'v':''}" controls preload="metadata" src="/out/${encodeURIComponent(v.arquivo)}?t=${T}"></video>`:
-			`<div class="vazio">Ainda sem vídeo final neste computador.<br>Peça a prévia para assistir aqui.</div>`)+
-			`<div class="acoes"><button class="p" data-copiar="${esc(pr.nome)}">Copiar este estilo</button>`+
-			`<button data-previa="${esc(pr.nome)}">${v?'Gerar prévia de novo':'Gerar prévia'}</button><button data-studio2="${esc(pr.nome)}">Studio</button></div></div>`;
-	}).join('');
-	$('#tvc').innerHTML=`<div class="topo"><h1>${esc(t.nome)}</h1><button class="p" id="tvnovo">＋ Novo vídeo neste tema</button><button id="tvap">Ver aprendizado</button><button id="tvx">Fechar</button></div>`+
-		`<small style="color:var(--mudo)">${esc(t.descricao)} · ${t.regras} regra${t.regras===1?'':'s'} aprendida${t.regras===1?'':'s'}. Um vídeo novo segue essas regras e usa os vídeos abaixo como referência.</small>`+
-		`<div class="grade">${cards||'<span id="aviso">Nenhum vídeo neste tema ainda. Crie o primeiro: ele vai ensinar o Claude.</span>'}</div>`;
-	$('#tv').hidden=false;
-	const pedir=(texto,projeto)=>{$('#tv').hidden=true;if(projeto!==undefined)$('#projeto').value=projeto;$('#tema').value=id;localStorage.setItem('tema',id);videos();$('#pedido').value=texto;$('#f').requestSubmit();};
-	$('#tvx').onclick=()=>$('#tv').hidden=true;
-	$('#tvap').onclick=async()=>{const r=await api('/api/codigo?f='+encodeURIComponent(`biblioteca/temas/${id}/aprendizado.md`));$('#mtitulo').textContent='Aprendizado: '+t.nome;$('#mtexto').textContent=r.texto;$('#modal').hidden=false;};
-	$('#tvnovo').onclick=()=>{const n=prompt(`Nome do vídeo novo no tema "${t.nome}" (minúsculas e hífen):`);if(n)pedir(`Cria o projeto novo "${n}" no tema "${id}" seguindo as regras do aprendizado do tema e usando os vídeos do tema como referência.`,'');};
-	$('#tvc').onclick=(e)=>{
-		const c=e.target.closest('[data-copiar]'),pv=e.target.closest('[data-previa]'),st=e.target.closest('[data-studio2]');
-		if(c){const o=c.dataset.copiar;const n=prompt(`Nome do vídeo novo (cópia do estilo de "${o}"):`);if(n)pedir(`Cria o projeto novo "${n}" no tema "${id}" copiando o estilo de edição do projeto "${o}": mesma estrutura de cenas, tipos de cena, efeitos de câmera, legenda, ritmo e sons de src/projetos/${o}/edit.ts, mais as regras do aprendizado do tema. Troque só o conteúdo (textos e tempos pela fala do vídeo novo). Não copie a transcrição nem a mídia do original.`,'');}
-		if(pv)pedir(`Gera a prévia do projeto "${pv.dataset.previa}".`,pv.dataset.previa);
-		if(st)studio(st.dataset.studio2);
-	};
-}
-let lendo=null;
-async function claude(){
-	const c=$('#claude'); let st;
-	try{st=await api('/api/claude');}catch{return;}
-	if(st.instalado&&st.logado){c.hidden=true;clearInterval(lendo);return;}
-	c.hidden=false;
-	if(!st.instalado) c.innerHTML='<span>O Claude Code ainda não está instalado neste computador. É ele que faz as edições.</span><button class="p" id="cb">Instalar automaticamente</button>';
-	else c.innerHTML='<span>Falta entrar na sua conta do Claude neste computador.</span><button class="p" id="cb">Entrar na conta</button>';
-	$('#cb').onclick=async(e)=>{
-		const b=e.target; b.disabled=true;
-		if(!st.instalado){
-			b.textContent='Instalando... (1 a 3 minutos)';
-			const r=await api('/api/claude/instalar',{}).catch(()=>({ok:false}));
-			if(!r.instalado){b.disabled=false;b.textContent='Não consegui. Tentar de novo';return;}
-			return claude();
-		}
-		await api('/api/claude/entrar',{}); b.textContent='Conclua o login na janela do navegador...';
-		clearInterval(lendo); lendo=setInterval(claude,3000);
-	};
-}
-let ctrl=null;
-$('#parar').onclick=()=>{ctrl?.abort();api('/api/parar',{projeto:proj()});};
-$('#pedido').onkeydown=(e)=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('#f').requestSubmit();}};
-$('#f').onsubmit=async(e)=>{
-	e.preventDefault(); const pedido=$('#pedido').value.trim(); if(!pedido) return;
-	$('#pedido').value=''; msg(pedido,'eu'); $('#enviar').disabled=true; $('#parar').hidden=false;
-	ctrl=new AbortController(); let atual=null;
-	try{
-		const r=await fetch('/api/chat',{method:'POST',headers:H,signal:ctrl.signal,body:JSON.stringify({projeto:proj(),pedido,tema:$('#tema').value})});
-		if(!r.ok) throw new Error((await r.json()).erro);
-		const rd=r.body.getReader(), dec=new TextDecoder(); let buf='';
-		for(;;){const {done,value}=await rd.read(); if(done)break; buf+=dec.decode(value,{stream:true});
-			const partes=buf.split('\n\n'); buf=partes.pop();
-			for(const p of partes){const ev=JSON.parse(p.replace(/^data: /,''));
-				if(ev.tipo==='texto') msg(ev.texto,'ia');
-				else if(ev.tipo==='acao') msg(ev.acao,'acao');
-				else if(ev.tipo==='erro') msg('⚠ '+ev.texto,'ia');}}
-	}catch(err){if(err.name!=='AbortError')msg('⚠ '+err.message,'ia');}
-	$('#enviar').disabled=false; $('#parar').hidden=true; temas().then(()=>{biblioteca();projetos();}); claude();
-};
-if(!T) msg('Abra o endereço completo que apareceu no terminal (termina com #código).','ia'); else {temas().then(()=>{biblioteca();projetos();});claude();}
-</script>
+<div id="toasts" aria-live="polite"></div>
+
+<script src="app.js"></script>
 </body>
 </html>

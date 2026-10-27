@@ -6,11 +6,17 @@
 // token aleatório (gerado a cada início e impresso no terminal) e recusa Host/Origin que não sejam o próprio painel.
 // Assim nenhum site aberto no navegador consegue mandar pedidos para ele.
 import {createServer} from 'node:http';
-import {spawn, execFileSync} from 'node:child_process';
+import {spawn, execFile, execFileSync} from 'node:child_process';
 import {randomBytes, timingSafeEqual} from 'node:crypto';
 import {createReadStream, createWriteStream, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync} from 'node:fs';
 import {pipeline} from 'node:stream/promises';
 import path from 'node:path';
+import {criarConfig, textoPrefs} from './config.mjs';
+import {dentro, lerJson} from './comum.mjs';
+import {fluxo} from './fluxo.mjs';
+import {criarHistorico} from './historico.mjs';
+import {testarPod} from './pod.mjs';
+import {criarTarefas} from './tarefas.mjs';
 
 const raiz = path.resolve(import.meta.dirname, '..');
 const porta = Number(process.env.PORTA ?? 4000);
@@ -20,16 +26,27 @@ mkdirSync(estado, {recursive: true});
 const arqSessoes = path.join(estado, 'sessoes.json');
 const ler = (f, padrao) => (existsSync(f) ? JSON.parse(readFileSync(f, 'utf8')) : padrao);
 const sessoes = ler(arqSessoes, {});
+const cfg = criarConfig(raiz, estado);
+const historico = criarHistorico(estado);
 
 const json = (res, dados, codigo = 200) => {
 	res.writeHead(codigo, {'content-type': 'application/json; charset=utf-8'});
 	res.end(JSON.stringify(dados));
 };
 const corpo = (req) =>
-	new Promise((ok) => {
+	new Promise((ok, falha) => {
 		let t = '';
-		req.on('data', (c) => (t += c));
-		req.on('end', () => ok(t ? JSON.parse(t) : {}));
+		req.on('data', (c) => {
+			t += c;
+			if (t.length > 2e6) req.destroy();
+		});
+		req.on('end', () => {
+			try {
+				ok(t ? JSON.parse(t) : {});
+			} catch {
+				falha(Object.assign(new Error('Corpo da requisição inválido'), {codigo: 400}));
+			}
+		});
 	});
 // No Windows, npm/claude/npx são .cmd e só rodam por shell. Por isso nada digitado pelo usuário vai nos argumentos:
 // o pedido vai pela entrada padrão e a instrução do painel por arquivo.
@@ -47,6 +64,15 @@ try {
 	process.env.PATH += path.delimiter + (ehWin ? prefixo : path.join(prefixo, 'bin'));
 } catch {}
 const git = (...args) => execFileSync('git', args, {cwd: raiz, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe']});
+const gitAsync = (...args) =>
+	new Promise((ok, falha) => execFile('git', args, {cwd: raiz, encoding: 'utf8'}, (e, saida, erro) => (e ? falha(Object.assign(e, {stderr: erro})) : ok(saida))));
+// Salvar no git (botão "Salvar" e o salvamento automático depois de cada pedido).
+const salvarGit = async (mensagem) => {
+	await gitAsync('add', '-A');
+	if (!(await gitAsync('status', '--porcelain')).trim()) return 'Nada novo para salvar.';
+	await gitAsync('commit', '-m', String(mensagem || 'Edição pelo painel').slice(0, 200));
+	return (await gitAsync('push').catch((e) => `Salvo neste PC, mas o envio falhou: ${String(e.stderr || e.message).slice(-300)}`)) || 'Salvo e enviado.';
+};
 const nomeValido = (n) => !n || /^[a-z0-9-]+$/.test(n);
 
 // ---------- Biblioteca ----------
@@ -81,7 +107,30 @@ const biblioteca = () => {
 	const referencias = existsSync(path.join(raiz, 'docs/referencias')) ? readdirSync(path.join(raiz, 'docs/referencias')).filter((f) => f.endsWith('.md')) : [];
 	const dirItens = path.join(raiz, 'biblioteca/itens');
 	const salvos = existsSync(dirItens) ? readdirSync(dirItens).filter((f) => f.endsWith('.json')).map((f) => ler(path.join(dirItens, f), {})) : [];
-	return {pecas, modelos3d, blender, templates, sfx, fontes, referencias, salvos};
+	return {pecas, modelos3d, blender, templates, sfx, fontes, referencias, salvos, pack: pack()};
+};
+
+// ---------- Pack de efeitos ----------
+// Catálogo em biblioteca/pack/catalogo.json (git). Os arquivos ficam em biblioteca/pack/arquivos ou, se o pack foi
+// catalogado no lugar, na pasta gravada em .painel/pack.json ({raiz}), que é deste PC.
+const raizesPack = () => {
+	const r = lerJson(path.join(estado, 'pack.json'), {})?.raiz;
+	const local = typeof r === 'string' && path.isAbsolute(r) && existsSync(r) ? [path.resolve(r)] : [];
+	return [...local, path.join(raiz, 'biblioteca/pack/arquivos')];
+};
+// Primeiro na pasta de .painel/pack.json, depois em biblioteca/pack/arquivos; sempre preso dentro da pasta.
+const acharPack = (rel, raizes = raizesPack()) => {
+	for (const base of raizes) {
+		const f = dentro(base, rel);
+		if (f && existsSync(f) && statSync(f).isFile()) return f;
+	}
+	return null;
+};
+const pack = () => {
+	const cat = lerJson(path.join(raiz, 'biblioteca/pack/catalogo.json'), []);
+	const itens = Array.isArray(cat) ? cat : Array.isArray(cat?.itens) ? cat.itens : [];
+	const raizes = raizesPack();
+	return itens.filter((i) => i && typeof i.arquivo === 'string').map((i) => ({...i, baixado: Boolean(acharPack(i.arquivo, raizes))}));
 };
 
 // ---------- Mídias e referências de cada vídeo ----------
@@ -109,6 +158,31 @@ Mídias do vídeo (public/projetos/${proj}/): ${lista('midias')}.
 Referências (public/projetos/${proj}/referencias/): ${lista('referencias')}.
 ${notas ? `Links e observações do usuário sobre as referências:\n${notas}\n` : ''}Use as mídias listadas como material do vídeo (se o vídeo principal não se chamar video.mp4, ajuste "video" em edit.ts). As referências mostram o estilo que o
 usuário quer: olhe as imagens e extraia quadros dos vídeos com ffmpeg para ver, e copie o jeito de editar (ritmo, tipografia, efeitos), sem copiar o conteúdo.`;
+};
+
+// ---------- Tarefas (prévia, final, transcrever, link, pack, pod...) ----------
+const tarefas = criarTarefas({raiz, estado, cfg, projetoOk, pastaMidia});
+
+// ---------- Projetos novos, prompts e pastas ----------
+const arqPrompts = path.join(raiz, 'biblioteca/prompts.json');
+const criarProjeto = ({nome, tema, formato}) => {
+	const id = slug(nome ?? '');
+	if (!id || id.length > 60) throw Object.assign(new Error('Nome do projeto inválido'), {codigo: 400});
+	if (existsSync(path.join(raiz, 'src/projetos', id))) throw Object.assign(new Error('Já existe um projeto com esse nome'), {codigo: 400});
+	const vertical = (formato ?? cfg.prefs().formatoPadrao) === 'vertical';
+	execFileSync(process.execPath, [path.join(raiz, 'scripts/novo.mjs'), id, ...(vertical ? ['--vertical'] : [])], {cwd: raiz, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe']});
+	const idTema = nomeValido(tema) && tema && existsSync(path.join(dirTemas, tema, 'tema.json')) ? tema : 'aleatorios';
+	const arqTema = path.join(dirTemas, idTema, 'tema.json');
+	const t = ler(arqTema, {nome: idTema, descricao: '', projetos: []});
+	t.projetos = [...new Set([...(t.projetos ?? []), id])];
+	mkdirSync(path.dirname(arqTema), {recursive: true});
+	writeFileSync(arqTema, JSON.stringify(t, null, 1));
+	return {nome: id, tema: idTema, formato: vertical ? 'vertical' : 'horizontal'};
+};
+const abrirPasta = (dir) => {
+	mkdirSync(dir, {recursive: true});
+	const [cmd, ...a] = ehWin ? ['explorer.exe'] : process.platform === 'darwin' ? ['open'] : ['xdg-open'];
+	spawn(cmd, [...a, dir], {stdio: 'ignore', detached: true}).on('error', () => {}).unref();
 };
 
 // ---------- Temas ----------
@@ -154,20 +228,38 @@ Siga .claude/skills/editar-video/SKILL.md e o CLAUDE.md. Antes de criar algo, pr
 public/sfx, public/fontes, biblioteca/itens) e REUTILIZE. Se criar um elemento novo reaproveitável (peça, modelo 3D, template, efeito), coloque-o
 em src/pecas (ou src/pecas/tres) com um comentário de 1 a 3 linhas no topo dizendo o que é, e registre um item em biblioteca/itens/<nome>.json
 com {"nome","tipo","descricao","arquivo","exemplo"}. Responda em português, curto. Não faça render final sem o usuário aprovar; prévia pode.
-O usuário não é programador: não mostre código, diga o que mudou e como ver (prévia ou Studio).`;
+O usuário não é programador: não mostre código, diga o que mudou e como ver (prévia ou Studio). O painel tem botões de prévia e render
+final com barra de progresso (no PC ou no pod); quando terminar uma edição, sugira gerar a prévia por ele.
+${textoPrefs(cfg.prefs())}`;
 
 const rodando = new Map();
 const chat = async (req, res) => {
 	const {projeto, pedido, tema} = await corpo(req);
 	if (!nomeValido(projeto) || !nomeValido(tema) || typeof pedido !== 'string' || !pedido.trim()) return json(res, {erro: 'Pedido inválido'}, 400);
 	res.writeHead(200, {'content-type': 'text/event-stream; charset=utf-8', 'cache-control': 'no-cache', connection: 'keep-alive'});
-	const enviar = (tipo, dados) => res.write(`data: ${JSON.stringify({tipo, ...dados})}\n\n`);
+	let falhou = false;
+	const enviar = (tipo, dados) => {
+		if (tipo === 'texto') historico.anotar(chave, 'ia', dados.texto);
+		if (tipo === 'acao') historico.anotar(chave, 'acao', dados.acao);
+		if (tipo === 'erro') {
+			falhou = true;
+			historico.anotar(chave, 'erro', dados.texto);
+		}
+		if (tipo === 'fim') {
+			if (dados.erro) falhou = true;
+			historico.custo(chave, dados.custo);
+		}
+		if (!res.writableEnded) res.write(`data: ${JSON.stringify({tipo, ...dados})}\n\n`);
+	};
 	const chave = projeto || '_geral';
 	rodando.get(chave)?.kill();
+	historico.anotar(chave, 'eu', pedido);
 	const arqInstrucao = path.join(estado, 'instrucao.txt');
 	writeFileSync(arqInstrucao, instrucao(projeto, tema));
 	const args = ['-p', '--output-format', 'stream-json', '--verbose', '--permission-mode', 'acceptEdits', '--allowedTools', 'Bash,Read,Write,Edit,Glob,Grep', '--append-system-prompt-file', `"${arqInstrucao}"`];
 	if (sessoes[chave] && /^[\w-]+$/.test(sessoes[chave])) args.push('--resume', sessoes[chave]);
+	const modelo = cfg.config().modelo;
+	if (modelo && /^[a-z0-9][\w.-]{0,60}$/i.test(modelo)) args.push('--model', modelo);
 	const proc = rodar('claude', ehWin ? args : args.map((a) => a.replace(/^"|"$/g, '')), {stdio: ['pipe', 'pipe', 'pipe']});
 	proc.stdin.on('error', () => {});
 	proc.stdin.end(pedido);
@@ -203,12 +295,27 @@ const chat = async (req, res) => {
 		enviar('erro', {texto: 'Claude Code não encontrado. Use o botão "Instalar automaticamente" no topo da conversa.'});
 		res.end();
 	});
-	proc.on('close', (c) => {
+	proc.on('close', async (c) => {
 		if (rodando.get(chave) === proc) rodando.delete(chave);
 		if (c) enviar('erro', {texto: erro.trim().slice(-400) || `Terminou com código ${c}`});
+		// Salvar sozinho: commit e push depois de cada pedido que terminou sem erro.
+		if (!c && !falhou && !parado && cfg.prefs().salvarSozinho) {
+			try {
+				const saida = await salvarGit(`Painel${projeto ? ` (${projeto})` : ''}: ${pedido.trim().split('\n')[0].slice(0, 120)}`);
+				enviar('acao', {acao: `Salvo no git: ${saida.trim().split('\n').at(-1) || 'ok'}`});
+			} catch (e) {
+				enviar('erro', {texto: `Não consegui salvar no git: ${String(e.stderr || e.message).slice(-300)}`});
+			}
+		}
 		res.end();
 	});
-	res.on('close', () => proc.kill());
+	let parado = false;
+	res.on('close', () => {
+		if (proc.exitCode === null) {
+			parado = true;
+			proc.kill();
+		}
+	});
 };
 
 // ---------- Remotion Studio ----------
@@ -221,7 +328,11 @@ const iniciarStudio = () => {
 process.on('exit', () => {
 	studio?.kill();
 	for (const pr of rodando.values()) pr.kill();
+	tarefas.encerrarTudo();
+	historico.gravarTudo();
 });
+// Ctrl+C e fechar a janela passam pelo 'exit' acima (encerra renders e grava o histórico).
+for (const s of ['SIGINT', 'SIGTERM', 'SIGHUP']) process.on(s, () => process.exit(0));
 
 // O Studio roda no navegador, então abre num Chrome/Edge próprio (perfil separado em .painel/chrome) com a GPU forçada:
 // rasterização e composição na placa de vídeo, ignorando a lista de bloqueio, e ANGLE no Direct3D/Metal. Sem isso o
@@ -258,14 +369,14 @@ const esperarPorta = async (porta, ms = 40000) => {
 };
 
 // ---------- HTTP ----------
-const tipos = {'.wav': 'audio/wav', '.woff2': 'font/woff2', '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.mp4': 'video/mp4', '.mov': 'video/quicktime', '.webm': 'video/webm', '.m4v': 'video/mp4', '.mp3': 'audio/mpeg', '.m4a': 'audio/mp4', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.gif': 'image/gif', '.svg': 'image/svg+xml', '.pdf': 'application/pdf'};
+const tipos = {'.wav': 'audio/wav', '.woff2': 'font/woff2', '.woff': 'font/woff', '.ttf': 'font/ttf', '.otf': 'font/otf', '.json': 'application/json', '.txt': 'text/plain; charset=utf-8', '.md': 'text/plain; charset=utf-8', '.mkv': 'video/x-matroska', '.ogg': 'audio/ogg', '.flac': 'audio/flac', '.aac': 'audio/aac', '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.mp4': 'video/mp4', '.mov': 'video/quicktime', '.webm': 'video/webm', '.m4v': 'video/mp4', '.mp3': 'audio/mpeg', '.m4a': 'audio/mp4', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.gif': 'image/gif', '.svg': 'image/svg+xml', '.pdf': 'application/pdf'};
 const arquivo = (req, res, f) => {
 	if (!existsSync(f) || !statSync(f).isFile()) {
 		res.writeHead(404);
 		return res.end();
 	}
 	const tam = statSync(f).size;
-	const tipo = tipos[path.extname(f)] ?? 'application/octet-stream';
+	const tipo = tipos[path.extname(f).toLowerCase()] ?? 'application/octet-stream';
 	const m = /bytes=(\d*)-(\d*)/.exec(req.headers.range ?? '');
 	if (m) {
 		const ini = m[1] ? Number(m[1]) : 0;
@@ -292,7 +403,7 @@ createServer(async (req, res) => {
 	const url = new URL(req.url, 'http://x');
 	const p = url.pathname;
 	try {
-		if (!['/api/', '/out/', '/sfx/', '/fontes/', '/midia/'].some((x) => p.startsWith(x))) {
+		if (!['/api/', '/out/', '/sfx/', '/fontes/', '/midia/', '/pack/'].some((x) => p.startsWith(x))) {
 			const rel = p === '/' ? 'index.html' : p.slice(1);
 			const base = path.join(import.meta.dirname, 'web');
 			const f = path.join(base, rel);
@@ -303,7 +414,61 @@ createServer(async (req, res) => {
 		if (!tokenOk(t)) return json(res, {erro: 'Token inválido. Abra o endereço impresso no terminal.'}, 401);
 
 		if (p === '/api/biblioteca') return json(res, biblioteca());
+		if (p === '/api/projetos' && req.method === 'POST') return json(res, criarProjeto(await corpo(req)));
 		if (p === '/api/projetos') return json(res, projetos());
+		if (p === '/api/config' && req.method === 'POST') {
+			cfg.salvar(await corpo(req));
+			return json(res, {prefs: cfg.prefs(), config: cfg.config()});
+		}
+		if (p === '/api/config') return json(res, {prefs: cfg.prefs(), config: cfg.config()});
+		if (p === '/api/tarefas' && req.method === 'POST') {
+			const {tipo, projeto, opcoes} = await corpo(req);
+			try {
+				return json(res, {id: tarefas.criar(tipo, projeto, opcoes ?? {})});
+			} catch (e) {
+				return json(res, {erro: e.message}, 400);
+			}
+		}
+		if (p === '/api/tarefas') return json(res, tarefas.listar());
+		if (p === '/api/tarefas/cancelar' && req.method === 'POST') {
+			const {id} = await corpo(req);
+			return tarefas.cancelar(String(id ?? '')) ? json(res, {ok: true}) : json(res, {erro: 'Tarefa não encontrada ou já terminada'}, 400);
+		}
+		if (p === '/api/pod/testar' && req.method === 'POST') {
+			try {
+				return json(res, await testarPod(cfg.config().pod));
+			} catch (e) {
+				return json(res, {ok: false, texto: e.message});
+			}
+		}
+		if (p === '/api/fluxo') {
+			const proj = url.searchParams.get('projeto');
+			if (proj && !nomeValido(proj)) return json(res, {erro: 'Projeto inválido'}, 400);
+			return json(res, fluxo({raiz, projeto: proj, projetoOk, tarefas}));
+		}
+		if (p === '/api/historico') {
+			const proj = url.searchParams.get('projeto') || '';
+			if (!nomeValido(proj)) return json(res, {erro: 'Projeto inválido'}, 400);
+			return json(res, historico.ler(proj || '_geral'));
+		}
+		if (p === '/api/prompts' && req.method === 'POST') {
+			const lista = await corpo(req);
+			if (!Array.isArray(lista) || lista.length > 200) return json(res, {erro: 'Lista de atalhos inválida'}, 400);
+			const limpos = lista
+				.filter((x) => x && typeof x.titulo === 'string' && typeof x.texto === 'string' && x.titulo.trim() && x.texto.trim())
+				.map((x) => ({titulo: x.titulo.trim().slice(0, 80), texto: x.texto.trim().slice(0, 6000)}));
+			writeFileSync(arqPrompts, JSON.stringify(limpos, null, 1) + '\n');
+			return json(res, limpos);
+		}
+		if (p === '/api/prompts') return json(res, lerJson(arqPrompts, []));
+		if (p === '/api/abrir-pasta' && req.method === 'POST') {
+			const {projeto, onde} = await corpo(req);
+			if (onde !== 'saida' && !projetoOk(projeto)) return json(res, {erro: 'Projeto inválido'}, 400);
+			const dir = {midias: () => pastaMidia(projeto, 'midias'), referencias: () => pastaMidia(projeto, 'referencias'), saida: () => path.join(raiz, 'out'), projeto: () => path.join(raiz, 'src/projetos', projeto)}[onde];
+			if (!dir) return json(res, {erro: 'Pasta inválida'}, 400);
+			abrirPasta(dir());
+			return json(res, {ok: true});
+		}
 		if (p === '/api/midias') {
 			const proj = url.searchParams.get('projeto');
 			if (!projetoOk(proj)) return json(res, {erro: 'Projeto inválido'}, 400);
@@ -379,8 +544,10 @@ createServer(async (req, res) => {
 		}
 		if (p === '/api/novo-chat' && req.method === 'POST') {
 			const {projeto} = await corpo(req);
+			if (!nomeValido(projeto)) return json(res, {erro: 'Projeto inválido'}, 400);
 			delete sessoes[projeto || '_geral'];
 			writeFileSync(arqSessoes, JSON.stringify(sessoes));
+			historico.limpar(projeto || '_geral');
 			return json(res, {ok: true});
 		}
 		if (p === '/api/studio' && req.method === 'POST') {
@@ -404,10 +571,7 @@ createServer(async (req, res) => {
 		if (p === '/api/sync/atualizar' && req.method === 'POST') return json(res, {saida: git('pull', '--rebase', '--autostash')});
 		if (p === '/api/sync/salvar' && req.method === 'POST') {
 			const {mensagem} = await corpo(req);
-			git('add', '-A');
-			if (!git('status', '--porcelain').trim()) return json(res, {saida: 'Nada novo para salvar.'});
-			git('commit', '-m', String(mensagem || 'Edição pelo painel').slice(0, 200));
-			return json(res, {saida: git('push')});
+			return json(res, {saida: await salvarGit(mensagem)});
 		}
 		if (p.startsWith('/out/')) return arquivo(req, res, path.join(raiz, 'out', path.basename(p)));
 		if (p.startsWith('/midia/')) {
@@ -417,11 +581,18 @@ createServer(async (req, res) => {
 		}
 		if (p.startsWith('/sfx/')) return arquivo(req, res, path.join(raiz, 'public/sfx', path.basename(p)));
 		if (p.startsWith('/fontes/')) return arquivo(req, res, path.join(raiz, 'public/fontes', path.basename(p)));
+		if (p.startsWith('/pack/')) {
+			let rel;
+			try { rel = decodeURIComponent(p.slice('/pack/'.length)); } catch { rel = ''; }
+			const f = rel && !rel.includes('\0') ? acharPack(rel) : null;
+			if (!f) { res.writeHead(404); return res.end(); }
+			return arquivo(req, res, f);
+		}
 		res.writeHead(404);
 		res.end();
 	} catch (e) {
 		const msg = String(e.stderr || e.message || e);
-		if (!res.headersSent) json(res, {erro: msg.slice(-600)}, 500);
+		if (!res.headersSent) json(res, {erro: msg.slice(-600)}, e?.codigo ?? 500);
 		else res.end();
 	}
 }).listen(porta, '127.0.0.1', () => {

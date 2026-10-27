@@ -26,16 +26,25 @@ Contrato entre o servidor (`painel/servidor.mjs` e módulos) e a página (`paine
 |---|---|
 | `GET /api/config` | `{prefs, config}`. `prefs` (git, vale em todo PC): `{formatoPadrao:'vertical'\|'horizontal', resPrevia:540\|720\|1080, intensidade:'calma'\|'normal'\|'frenetica', legendaPadrao:'palavra'\|'ouro'\|'impacto'\|'neon', confirmarFinal, salvarSozinho, sempre}`. `config` (só este PC): `{modelo:''\|'sonnet'\|'opus'\|'haiku', gpuStudio, gpuCodificador, navegadorRender, notificar, pod:{ativo, host, porta, usuario, chave, pasta, gl}}` |
 | `POST /api/config {prefs?, config?}` | salva só as chaves enviadas |
-| `POST /api/tarefas {tipo, projeto, opcoes}` | cria tarefa e devolve `{id}`. `tipo`: `previa`, `final`, `transcrever`, `roteiro`, `conferir`, `link`, `pack`, `preparar-pod`. `opcoes`: `{res, de, ate, pod}` (render; `pod` true/false sobrepõe o padrão), `{url, destino:'midias'\|'referencias'}` (link), `{url}` (pack: link do Google Drive ou caminho de .zip) |
+| `POST /api/tarefas {tipo, projeto, opcoes}` | cria tarefa e devolve `{id}`. `tipo`: `previa`, `final`, `transcrever`, `roteiro`, `conferir`, `link`, `pack`, `preparar-pod`. `opcoes`: `{res, de, ate, pod}` (render; `pod` true/false sobrepõe o padrão), `{url, destino:'midias'\|'referencias'}` (link), pack: `{url}` (link do Google Drive, caminho completo de um .zip ou de uma pasta deste PC), `{caminho, noLugar:true}` (cataloga a pasta sem copiar), `{url, pasta}` (link do Drive + pasta local como raiz, baixa só o que falta), `{soFaltando:true}` (sozinho ou junto com os outros). Opções inválidas: status 400 com `{erro}`. `projeto` é ignorado em `pack` e `preparar-pod` |
 | `GET /api/tarefas` | `[{id, tipo, projeto, estado:'fila'\|'rodando'\|'ok'\|'erro'\|'cancelado', fase, pct:0..100\|null, eta:segundos\|null, onde:'pc'\|'pod', saida, aviso, erro, log:[últimas linhas], inicio, fim}]`, mais novas primeiro. Renders rodam um por vez (fila). |
-| `POST /api/tarefas/cancelar {id}` | |
+| `POST /api/tarefas/cancelar {id}` | cancela da fila ou encerra o processo (no pod, também o render remoto). 400 se já terminou |
 | `POST /api/pod/testar` | `{ok, texto}` (conexão, GPU, Node e ffmpeg do pod) |
 | `GET /api/fluxo?projeto=` | `{etapas: [{id, nome, feito, detalhe, acao: {tipo:'tarefa'\|'chat', valor}}]}`: projeto, mídia, transcrição, roteiro, cenas, conferir, prévia, final |
 | `GET /api/historico?projeto=` | `[{quem:'eu'\|'ia'\|'acao'\|'erro', texto, t, custo?}]` (conversa salva neste PC) |
 | `GET /api/prompts` · `POST /api/prompts [{titulo, texto}]` | atalhos de pedido (em `biblioteca/prompts.json`, no git) |
 | `POST /api/projetos {nome, tema, formato}` | cria o projeto (`scripts/novo.mjs`) e o registra no tema |
 | `POST /api/abrir-pasta {projeto, onde:'midias'\|'referencias'\|'saida'\|'projeto'}` | abre a pasta no explorador do PC |
-| `GET /pack/<caminho>` | arquivo do pack (`biblioteca/pack/arquivos/`, fora do git) |
+| `GET /pack/<caminho>` | arquivo do pack: procura primeiro na `raiz` de `.painel/pack.json` (se existir) e depois em `biblioteca/pack/arquivos/` (fora do git); 404 se não achar ou se sair da pasta |
 
 `pack` em `/api/biblioteca`: `[{nome, categoria, tipo:'video'\|'audio'\|'imagem'\|'fonte'\|'lut'\|'modelo3d'\|'outro', arquivo, tamanho, baixado}]`, lido de
-`biblioteca/pack/catalogo.json` (no git). `baixado` diz se o arquivo existe neste PC.
+`biblioteca/pack/catalogo.json` (no git). `baixado` diz se o arquivo existe neste PC (mesma busca do `/pack/`). Os demais campos do catálogo (ex.: `origem`) vêm junto.
+
+Detalhes das tarefas:
+- `saida`: caminho relativo à raiz (`out/x.mp4` no render, `public/projetos/<p>/[referencias/]arquivo.mp4` no link, `docs/<p>/transcript-lines.txt` no roteiro).
+- `transcrever`, `roteiro` e `conferir` têm `pct: null` (só `fase` e `log`).
+- No pod, `fase` termina com "no pod" e a barra junta os passos: enviar código (0-4), mídias (4-20), dependências (20-23), render (23-95), baixar (95-100).
+- O link usa `.painel/bin/yt-dlp` (baixado do GitHub oficial na primeira vez) quando não há yt-dlp no PATH.
+- `POST /api/projetos` devolve `{nome (slug), tema, formato}`; tema inexistente vira `aleatorios`; sem `formato` usa `prefs.formatoPadrao`.
+- `POST /api/prompts` grava a lista limpa (`titulo` até 80, `texto` até 6000 caracteres) e a devolve.
+- `/api/historico` com `custo` na última fala da IA ou numa linha `acao` "Pedido concluído"; com `prefs.salvarSozinho`, o chat termina com uma `acao` "Salvo no git: ..." (ou um `erro`).
