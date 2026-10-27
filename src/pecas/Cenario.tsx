@@ -1,5 +1,5 @@
 import React, {useMemo} from 'react';
-import {AbsoluteFill, interpolate, random, spring, useCurrentFrame, useVideoConfig} from 'remotion';
+import {AbsoluteFill, getRemotionEnvironment, interpolate, random, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {ThreeCanvas} from '@remotion/three';
 import {useThree} from '@react-three/fiber';
 import * as THREE from 'three';
@@ -425,6 +425,7 @@ const Topicos: React.FC<{cena: Cena}> = ({cena}) => {
 export const Cenario: React.FC<{cena: Cena}> = ({cena}) => {
 	const frame = useCurrentFrame();
 	const {fps, width, height} = useVideoConfig();
+	const leve = !getRemotionEnvironment().isRendering;
 	const fundo = FUNDO[cena.superficie ?? 'papel'];
 	const escuro = cena.superficie === 'escuro';
 	const duracao = (cena.ate - cena.de) * fps;
@@ -464,11 +465,12 @@ export const Cenario: React.FC<{cena: Cena}> = ({cena}) => {
 				</AbsoluteFill>
 			)}
 			{cena.objetos && cena.objetos.length > 0 && (
+				// No Studio a sombra e o serrilhado ficam mais leves para aliviar a GPU; o render final usa a qualidade cheia.
 				<ThreeCanvas
 					width={width}
 					height={height}
 					shadows="variance"
-					gl={{alpha: true, antialias: true, preserveDrawingBuffer: true}}
+					gl={{alpha: true, antialias: !leve, preserveDrawingBuffer: true}}
 					camera={{fov: FOV, position: camDe, near: 0.1, far: 100}}
 					style={{position: 'absolute', inset: 0}}
 				>
@@ -479,10 +481,10 @@ export const Cenario: React.FC<{cena: Cena}> = ({cena}) => {
 						position={[-5, 7, 9]}
 						intensity={escuro ? 1.6 : 2.4}
 						castShadow
-						shadow-mapSize-width={2048}
-						shadow-mapSize-height={2048}
-						shadow-radius={14}
-						shadow-blurSamples={20}
+						shadow-mapSize-width={leve ? 1024 : 2048}
+						shadow-mapSize-height={leve ? 1024 : 2048}
+						shadow-radius={leve ? 8 : 14}
+						shadow-blurSamples={leve ? 8 : 20}
 						shadow-camera-left={-8}
 						shadow-camera-right={8}
 						shadow-camera-top={8}
