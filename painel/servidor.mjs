@@ -30,6 +30,21 @@ const corpo = (req) =>
 		req.on('data', (c) => (t += c));
 		req.on('end', () => ok(t ? JSON.parse(t) : {}));
 	});
+// No Windows, npm/claude/npx são .cmd e só rodam por shell. Por isso nada digitado pelo usuário vai nos argumentos:
+// o pedido vai pela entrada padrão e a instrução do painel por arquivo.
+const ehWin = process.platform === 'win32';
+const rodar = (cmd, args, opcoes = {}) => spawn(cmd, args, {cwd: raiz, env: process.env, shell: ehWin, ...opcoes});
+const testar = (cmd, args) =>
+	new Promise((ok) => {
+		const pr = rodar(cmd, args, {stdio: 'ignore'});
+		pr.on('error', () => ok(false));
+		pr.on('close', (c) => ok(c === 0));
+	});
+// O npm instala o claude numa pasta que pode não estar no PATH deste processo.
+try {
+	const prefixo = execFileSync(ehWin ? 'npm.cmd' : 'npm', ['prefix', '-g'], {encoding: 'utf8', shell: ehWin}).trim();
+	process.env.PATH += path.delimiter + (ehWin ? prefixo : path.join(prefixo, 'bin'));
+} catch {}
 const git = (...args) => execFileSync('git', args, {cwd: raiz, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe']});
 const nomeValido = (n) => !n || /^[a-z0-9-]+$/.test(n);
 
@@ -99,9 +114,13 @@ const chat = async (req, res) => {
 	const enviar = (tipo, dados) => res.write(`data: ${JSON.stringify({tipo, ...dados})}\n\n`);
 	const chave = projeto || '_geral';
 	rodando.get(chave)?.kill();
-	const args = ['-p', pedido, '--output-format', 'stream-json', '--verbose', '--permission-mode', 'acceptEdits', '--allowedTools', 'Bash,Read,Write,Edit,Glob,Grep', '--append-system-prompt', instrucao(projeto)];
-	if (sessoes[chave]) args.push('--resume', sessoes[chave]);
-	const proc = spawn('claude', args, {cwd: raiz, env: process.env, stdio: ['ignore', 'pipe', 'pipe']});
+	const arqInstrucao = path.join(estado, 'instrucao.txt');
+	writeFileSync(arqInstrucao, instrucao(projeto));
+	const args = ['-p', '--output-format', 'stream-json', '--verbose', '--permission-mode', 'acceptEdits', '--allowedTools', 'Bash,Read,Write,Edit,Glob,Grep', '--append-system-prompt-file', `"${arqInstrucao}"`];
+	if (sessoes[chave] && /^[\w-]+$/.test(sessoes[chave])) args.push('--resume', sessoes[chave]);
+	const proc = rodar('claude', ehWin ? args : args.map((a) => a.replace(/^"|"$/g, '')), {stdio: ['pipe', 'pipe', 'pipe']});
+	proc.stdin.on('error', () => {});
+	proc.stdin.end(pedido);
 	rodando.set(chave, proc);
 	let resto = '';
 	proc.stdout.on('data', (d) => {
@@ -131,7 +150,7 @@ const chat = async (req, res) => {
 	let erro = '';
 	proc.stderr.on('data', (d) => (erro += d));
 	proc.on('error', () => {
-		enviar('erro', {texto: 'Claude Code não encontrado. Instale com: npm i -g @anthropic-ai/claude-code e rode "claude" uma vez para entrar na sua conta.'});
+		enviar('erro', {texto: 'Claude Code não encontrado. Use o botão "Instalar automaticamente" no topo da conversa.'});
 		res.end();
 	});
 	proc.on('close', (c) => {
@@ -146,7 +165,7 @@ const chat = async (req, res) => {
 let studio = null;
 const iniciarStudio = () => {
 	if (studio) return;
-	studio = spawn('npx', ['remotion', 'studio', '--port=3000', '--no-open'], {cwd: raiz, stdio: 'ignore'});
+	studio = rodar('npx', ['remotion', 'studio', '--port=3000', '--no-open'], {stdio: 'ignore'});
 	studio.on('close', () => (studio = null));
 };
 process.on('exit', () => studio?.kill());
@@ -198,6 +217,23 @@ createServer(async (req, res) => {
 
 		if (p === '/api/biblioteca') return json(res, biblioteca());
 		if (p === '/api/projetos') return json(res, projetos());
+		if (p === '/api/claude') {
+			const instalado = await testar('claude', ['--version']);
+			return json(res, {instalado, logado: instalado && (await testar('claude', ['auth', 'status']))});
+		}
+		if (p === '/api/claude/instalar' && req.method === 'POST') {
+			const ok = await new Promise((fim) => {
+				const pr = rodar('npm', ['i', '-g', '@anthropic-ai/claude-code'], {stdio: 'ignore'});
+				pr.on('error', () => fim(false));
+				pr.on('close', (c) => fim(c === 0));
+			});
+			return json(res, {ok, instalado: ok && (await testar('claude', ['--version']))});
+		}
+		if (p === '/api/claude/entrar' && req.method === 'POST') {
+			// Abre o login no navegador; o painel confere o status até terminar.
+			rodar('claude', ['auth', 'login'], {stdio: 'ignore', detached: true}).on('error', () => {}).unref();
+			return json(res, {ok: true});
+		}
 		if (p === '/api/codigo') {
 			// Só arquivos de texto da biblioteca, para o botão "ver".
 			const rel = path.normalize(url.searchParams.get('f') ?? '');

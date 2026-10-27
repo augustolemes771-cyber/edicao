@@ -37,6 +37,7 @@
 	#modal{position:fixed;inset:0;background:#000c;display:flex;align-items:center;justify-content:center;z-index:9}#modal[hidden]{display:none}
 	#modal div{background:var(--card);border:1px solid var(--linha);border-radius:12px;width:min(900px,92vw);max-height:85vh;display:flex;flex-direction:column}
 	#modal header{border:0;grid-column:auto}#modal pre{margin:0;padding:0 16px 16px;overflow:auto;font-size:12px}
+	#claude{margin:12px 16px 0;padding:12px 14px;border:1px solid var(--cor2);border-radius:10px;background:#00a8a31a;display:flex;gap:12px;align-items:center}#claude span{flex:1}
 	#aviso{color:var(--mudo);font-size:12px}
 	@media(max-width:900px){body{grid-template-columns:1fr;height:auto}header{grid-column:1}#bib,#lado{border:0}}
 </style>
@@ -54,6 +55,7 @@
 <section id="bib"></section>
 
 <section id="centro">
+	<div id="claude" hidden></div>
 	<div id="msgs"><div class="m ia">Oi! Escolha o vídeo em cima e me diga o que editar. Posso usar o que está na biblioteca ou criar elementos novos (eles ficam salvos para os próximos vídeos).</div></div>
 	<form id="f">
 		<textarea id="pedido" placeholder="Ex.: usa o template do depoimento e coloca a moeda 3D girando quando eu falar 'investimento'"></textarea>
@@ -126,6 +128,26 @@ $('#zerar').onclick=async()=>{await api('/api/novo-chat',{projeto:proj()});$('#m
 $('#atualizar').onclick=async()=>{try{msg((await api('/api/sync/atualizar',{})).saida||'Atualizado.','ia');biblioteca();projetos();}catch(e){msg('Erro: '+e.message,'ia');}};
 $('#salvar').onclick=async()=>{try{msg((await api('/api/sync/salvar',{mensagem:'Edição pelo painel'})).saida||'Salvo na nuvem.','ia');}catch(e){msg('Erro: '+e.message,'ia');}};
 
+let lendo=null;
+async function claude(){
+	const c=$('#claude'); let st;
+	try{st=await api('/api/claude');}catch{return;}
+	if(st.instalado&&st.logado){c.hidden=true;clearInterval(lendo);return;}
+	c.hidden=false;
+	if(!st.instalado) c.innerHTML='<span>O Claude Code ainda não está instalado neste computador. É ele que faz as edições.</span><button class="p" id="cb">Instalar automaticamente</button>';
+	else c.innerHTML='<span>Falta entrar na sua conta do Claude neste computador.</span><button class="p" id="cb">Entrar na conta</button>';
+	$('#cb').onclick=async(e)=>{
+		const b=e.target; b.disabled=true;
+		if(!st.instalado){
+			b.textContent='Instalando... (1 a 3 minutos)';
+			const r=await api('/api/claude/instalar',{}).catch(()=>({ok:false}));
+			if(!r.instalado){b.disabled=false;b.textContent='Não consegui. Tentar de novo';return;}
+			return claude();
+		}
+		await api('/api/claude/entrar',{}); b.textContent='Conclua o login na janela do navegador...';
+		clearInterval(lendo); lendo=setInterval(claude,3000);
+	};
+}
 let ctrl=null;
 $('#parar').onclick=()=>{ctrl?.abort();api('/api/parar',{projeto:proj()});};
 $('#pedido').onkeydown=(e)=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('#f').requestSubmit();}};
@@ -144,9 +166,9 @@ $('#f').onsubmit=async(e)=>{
 				else if(ev.tipo==='acao') msg(ev.acao,'acao');
 				else if(ev.tipo==='erro') msg('⚠ '+ev.texto,'ia');}}
 	}catch(err){if(err.name!=='AbortError')msg('⚠ '+err.message,'ia');}
-	$('#enviar').disabled=false; $('#parar').hidden=true; biblioteca(); projetos();
+	$('#enviar').disabled=false; $('#parar').hidden=true; biblioteca(); projetos(); claude();
 };
-if(!T) msg('Abra o endereço completo que apareceu no terminal (termina com #código).','ia'); else {biblioteca();projetos();}
+if(!T) msg('Abra o endereço completo que apareceu no terminal (termina com #código).','ia'); else {biblioteca();projetos();claude();}
 </script>
 </body>
 </html>
