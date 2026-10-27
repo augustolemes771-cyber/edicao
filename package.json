@@ -15,7 +15,8 @@
     "tsc": "tsc --noEmit",
     "novo": "node scripts/novo.mjs",
     "musica": "bash scripts/musica.sh",
-    "painel": "node painel/servidor.mjs"
+    "painel": "node painel/servidor.mjs",
+    "miniaturas": "tsx scripts/miniaturas.ts"
   },
   "dependencies": {
     "@react-three/fiber": "9.2.0",
