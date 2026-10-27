@@ -227,5 +227,10 @@ createServer(async (req, res) => {
 		else res.end();
 	}
 }).listen(porta, '127.0.0.1', () => {
-	console.log(`\nPainel de edição pronto. Abra:\n\n  http://localhost:${porta}/#${token}\n`);
+	const endereco = `http://localhost:${porta}/#${token}`;
+	console.log(`\nPainel de edição pronto: ${endereco}\n(não feche esta janela enquanto estiver editando)\n`);
+	if (!process.env.SEM_NAVEGADOR) {
+		const [cmd, ...a] = process.platform === 'darwin' ? ['open'] : process.platform === 'win32' ? ['cmd', '/c', 'start', ''] : ['xdg-open'];
+		spawn(cmd, [...a, endereco], {stdio: 'ignore', detached: true}).on('error', () => {}).unref();
+	}
 });

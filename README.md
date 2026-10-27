@@ -19,16 +19,14 @@ Três frentes:
 
 ## Painel de edição (qualquer PC, qualquer conta do Claude)
 
-```bash
-git clone https://github.com/augustolemes771-cyber/edicao.git && cd edicao && npm install
-npm i -g @anthropic-ai/claude-code && claude    # uma vez: entra na conta do Claude deste PC
-npm run painel                                 # abre o endereço http://localhost:4000/#código impresso no terminal
-```
+**Primeira vez em um PC:** instale o [Node.js](https://nodejs.org) e o Git, baixe esta pasta (`git clone https://github.com/augustolemes771-cyber/edicao.git`)
+e dê **dois cliques em `Abrir Painel.command`** (Mac) ou **`Abrir Painel.bat`** (Windows). Ele instala o resto, pede o login da
+sua conta do Claude e abre o painel no navegador. **Nas próximas vezes:** os mesmos dois cliques.
 
 No painel: biblioteca (templates, peças, 3D, sons, fontes) à esquerda, conversa no centro, prévias à direita. Você pede,
-o Claude edita o projeto e cria elementos novos, que ficam na biblioteca. **⬆ Salvar na nuvem** envia tudo ao GitHub e
-**⬇ Atualizar** traz em outro computador. Vídeos brutos (`*.mp4`) não vão para o git: copie-os para
-`public/projetos/<nome>/`. O painel só aceita conexões do próprio computador e exige o código do endereço.
+o Claude edita e cria elementos novos, que ficam na biblioteca. **⬆ Salvar na nuvem** envia tudo ao GitHub e **⬇ Atualizar**
+traz em outro computador. Vídeos brutos (`*.mp4`) não vão para o git: copie-os para `public/projetos/<nome>/`.
+O painel só aceita conexões do próprio computador e exige o código do endereço (o navegador já abre com ele).
 
 ## Instalar (uma vez)
 
