@@ -47,6 +47,11 @@
 	#tv .card video.v{aspect-ratio:9/16;max-height:420px;object-fit:contain}
 	#tv .vazio{display:flex;align-items:center;justify-content:center;text-align:center;color:var(--mudo);font-size:12px;padding:10px;border:1px dashed var(--linha)}
 	#tv .acoes{display:flex;gap:6px;flex-wrap:wrap}#tv .acoes button{font-size:12px;padding:5px 9px}
+	.zona{border:1px dashed var(--linha);border-radius:10px;padding:12px;text-align:center;color:var(--mudo);cursor:pointer;font-size:13px}.zona.on,.zona:hover{border-color:var(--cor);color:var(--txt)}
+	.arq{display:flex;align-items:center;gap:8px;margin-top:6px;background:var(--card);border:1px solid var(--linha);border-radius:8px;padding:5px 8px;font-size:12px}
+	.arq img{width:34px;height:34px;object-fit:cover;border-radius:4px}.arq .n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.arq button{padding:1px 7px}
+	.prog{height:4px;background:var(--linha);border-radius:2px;margin-top:4px}.prog i{display:block;height:100%;width:0;background:var(--cor);border-radius:2px}
+	#notas{width:100%;height:70px;margin-top:8px;font-size:12px}
 	#aviso{color:var(--mudo);font-size:12px}
 	@media(max-width:900px){body{grid-template-columns:1fr;height:auto}header{grid-column:1}#bib,#lado{border:0}}
 </style>
@@ -77,6 +82,8 @@
 
 <section id="lado">
 	<h2>Prévias</h2><div id="videos"><span id="aviso">Escolha um projeto.</span></div>
+	<h2>Mídias do vídeo</h2><div id="midias"><span id="aviso">Escolha um projeto.</span></div>
+	<h2>Referências</h2><div id="refs"><span id="aviso">Escolha um projeto.</span></div>
 	<h2>Conversa</h2><button id="zerar">Começar conversa nova neste vídeo</button>
 </section>
 
@@ -132,7 +139,7 @@ async function projetos(){
 	const grupos=(window._temas?.temas||[]).map(t=>`<optgroup label="${t.nome}">${t.projetos.map(p=>`<option>${p.nome}</option>`).join('')}</optgroup>`).join('');
 	const sem=(window._temas?.semTema||[]).map(p=>`<option>${p.nome}</option>`).join('');
 	$('#projeto').innerHTML = '<option value="">(sem projeto)</option>'+grupos+(sem?`<optgroup label="Sem tema">${sem}</optgroup>`:'');
-	$('#projeto').value = atual; window._ps = ps; videos();
+	$('#projeto').value = atual; window._ps = ps; videos(); midias();
 }
 function videos(){
 	const p=(window._ps||[]).find(x=>x.nome===proj());
@@ -140,7 +147,47 @@ function videos(){
 		p.videos.map(v=>`<video controls preload="metadata" src="/out/${v.arquivo}?t=${T}"></video><div id="aviso">${v.arquivo}</div>`).join(''):
 		'<span id="aviso">Nenhuma prévia ainda. Peça: "gera a prévia".</span>';
 }
-$('#projeto').onchange=()=>{
+const tam=(n)=>n>1e9?(n/1e9).toFixed(1)+' GB':n>1e6?(n/1e6).toFixed(1)+' MB':Math.max(1,Math.round(n/1e3))+' KB';
+const eImg=(n)=>/\.(png|jpe?g|webp|gif|svg)$/i.test(n);
+async function midias(){
+	const pr=proj();
+	if(!pr){$('#midias').innerHTML=$('#refs').innerHTML='<span id="aviso">Escolha um projeto.</span>';return;}
+	let d; try{d=await api('/api/midias?projeto='+pr);}catch(e){$('#midias').innerHTML=$('#refs').innerHTML='<span id="aviso">'+e.message+'</span>';return;}
+	const esc=(x)=>String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+	const lista=(tipo,itens)=>itens.map(m=>`<div class="arq">${eImg(m.nome)?`<img src="/midia/${pr}/${tipo}/${encodeURIComponent(m.nome)}?t=${T}">`:'📄'}<span class="n" title="${esc(m.nome)}">${esc(m.nome)}</span><small>${tam(m.tamanho)}</small><button data-ap="${tipo}|${esc(m.nome)}" title="Apagar">✕</button></div>`).join('');
+	const zona=(tipo,txt)=>`<div class="zona" data-z="${tipo}">${txt}<input type="file" multiple hidden></div><div class="prog" hidden><i></i></div>`;
+	$('#midias').innerHTML=zona('midias','Solte aqui o vídeo bruto, imagens, áudios... ou clique para escolher')+lista('midias',d.midias);
+	$('#refs').innerHTML=zona('referencias','Solte aqui vídeos, prints e imagens de referência')+lista('referencias',d.referencias)+
+		`<textarea id="notas" placeholder="Links e observações sobre as referências (ex.: youtube.com/..., 'quero o ritmo do segundo 10 a 20')">${esc(d.notas)}</textarea>`;
+	$('#notas').onchange=()=>api('/api/notas',{projeto:pr,texto:$('#notas').value}).then(()=>msg('Referências salvas. O Claude lê isso no próximo pedido.','acao')).catch(e=>msg('Erro: '+e.message,'ia'));
+}
+function enviar(pr,tipo,arq,barra){
+	return new Promise((ok,erro)=>{
+		const x=new XMLHttpRequest();
+		x.open('POST',`/api/midia?projeto=${pr}&tipo=${tipo}&nome=${encodeURIComponent(arq.name)}`);
+		x.setRequestHeader('x-painel-token',T);
+		x.upload.onprogress=(e)=>{if(e.lengthComputable)barra.firstChild.style.width=(e.loaded/e.total*100)+'%';};
+		x.onload=()=>x.status===200?ok():erro(new Error((JSON.parse(x.responseText||'{}').erro)||x.status));
+		x.onerror=()=>erro(new Error('Falha no envio'));
+		x.send(arq);
+	});
+}
+async function enviarTodos(tipo,arqs,zona){
+	const pr=proj(), barra=zona.nextElementSibling; barra.hidden=false;
+	for(const a of arqs){barra.firstChild.style.width='0';zona.firstChild.textContent='Enviando '+a.name+'...';
+		try{await enviar(pr,tipo,a,barra);}catch(e){msg('Não enviei "'+a.name+'": '+e.message,'ia');}}
+	midias();
+}
+document.addEventListener('click',(e)=>{
+	const z=e.target.closest('.zona'); if(z){z.querySelector('input').click();}
+	const ap=e.target.closest('[data-ap]');
+	if(ap){const [tipo,nome]=ap.dataset.ap.split('|'); if(confirm('Apagar "'+nome+'" deste projeto?'))api('/api/midia/apagar',{projeto:proj(),tipo,nome}).then(midias);}
+});
+document.addEventListener('change',(e)=>{const z=e.target.closest('.zona');if(z&&e.target.files.length)enviarTodos(z.dataset.z,[...e.target.files],z);});
+document.addEventListener('dragover',(e)=>{const z=e.target.closest('.zona');if(z){e.preventDefault();z.classList.add('on');}});
+document.addEventListener('dragleave',(e)=>e.target.closest?.('.zona')?.classList.remove('on'));
+document.addEventListener('drop',(e)=>{const z=e.target.closest('.zona');if(z){e.preventDefault();z.classList.remove('on');enviarTodos(z.dataset.z,[...e.dataTransfer.files],z);}});
+$('#projeto').onchange=()=>{midias();
 	const t=(window._temas?.temas||[]).find(t=>t.projetos.some(p=>p.nome===proj()));
 	if(t) $('#tema').value=t.id; localStorage.setItem('tema',$('#tema').value); videos();
 };

@@ -8,7 +8,8 @@
 import {createServer} from 'node:http';
 import {spawn, execFileSync} from 'node:child_process';
 import {randomBytes, timingSafeEqual} from 'node:crypto';
-import {createReadStream, existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync} from 'node:fs';
+import {createReadStream, createWriteStream, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync} from 'node:fs';
+import {pipeline} from 'node:stream/promises';
 import path from 'node:path';
 
 const raiz = path.resolve(import.meta.dirname, '..');
@@ -83,6 +84,33 @@ const biblioteca = () => {
 	return {pecas, modelos3d, blender, templates, sfx, fontes, referencias, salvos};
 };
 
+// ---------- Mídias e referências de cada vídeo ----------
+// Mídias: public/projetos/<projeto>/ (o que o vídeo usa). Referências: public/projetos/<projeto>/referencias/ (arquivos) e
+// src/projetos/<projeto>/referencias.md (links e observações, que vão para o git). Os arquivos de mídia não vão para o git.
+const EXTENSOES = /\.(mp4|mov|m4v|webm|mkv|mp3|wav|m4a|aac|png|jpe?g|webp|gif|svg|pdf|txt|md|json|srt)$/i;
+const projetoOk = (n) => typeof n === 'string' && /^[a-z0-9-]+$/.test(n) && existsSync(path.join(raiz, 'src/projetos', n));
+const pastaMidia = (proj, tipo) => path.join(raiz, 'public/projetos', proj, tipo === 'referencias' ? 'referencias' : '');
+const nomeArquivo = (n) => path.basename(String(n ?? '')).replace(/[^\w.\- ()]/g, '_').slice(0, 120);
+const listarMidias = (proj, tipo) => {
+	const dir = pastaMidia(proj, tipo);
+	if (!existsSync(dir)) return [];
+	return readdirSync(dir, {withFileTypes: true})
+		.filter((d) => d.isFile() && EXTENSOES.test(d.name))
+		.map((d) => ({nome: d.name, tamanho: statSync(path.join(dir, d.name)).size}))
+		.sort((a, b) => a.nome.localeCompare(b.nome));
+};
+const arqNotas = (proj) => path.join(raiz, 'src/projetos', proj, 'referencias.md');
+const resumoMidias = (proj) => {
+	if (!projetoOk(proj)) return '';
+	const lista = (t) => listarMidias(proj, t).map((m) => m.nome).join(', ') || '(nenhuma)';
+	const notas = existsSync(arqNotas(proj)) ? readFileSync(arqNotas(proj), 'utf8').trim() : '';
+	return `
+Mídias do vídeo (public/projetos/${proj}/): ${lista('midias')}.
+Referências (public/projetos/${proj}/referencias/): ${lista('referencias')}.
+${notas ? `Links e observações do usuário sobre as referências:\n${notas}\n` : ''}Use as mídias listadas como material do vídeo (se o vídeo principal não se chamar video.mp4, ajuste "video" em edit.ts). As referências mostram o estilo que o
+usuário quer: olhe as imagens e extraia quadros dos vídeos com ffmpeg para ver, e copie o jeito de editar (ritmo, tipografia, efeitos), sem copiar o conteúdo.`;
+};
+
 // ---------- Temas ----------
 const dirTemas = path.join(raiz, 'biblioteca/temas');
 const temas = () => {
@@ -117,7 +145,7 @@ const projetos = () => {
 
 // ---------- Chat com o Claude Code ----------
 const instrucao = (projeto, tema) => `Você está dentro do PAINEL DE EDIÇÃO do canal Mateus Dias. O usuário pede em texto e você edita.
-Projeto atual: "${projeto || 'nenhum (crie um com npm run novo se o pedido for um vídeo novo)'}".
+Projeto atual: "${projeto || 'nenhum (crie um com npm run novo se o pedido for um vídeo novo)'}".${resumoMidias(projeto)}
 Tema do vídeo: "${tema || 'aleatorios'}". ANTES de editar, leia biblioteca/temas/${tema || 'aleatorios'}/tema.json e aprendizado.md: são as regras aprendidas nos
 vídeos anteriores deste tema; siga-as e use os projetos listados em tema.json como base. Se criar um projeto novo, acrescente o nome dele em "projetos" do tema.json.
 Ao terminar uma edição, ou quando o usuário aprovar, reprovar ou corrigir algo, acrescente em aprendizado.md uma linha "- AAAA-MM-DD (projeto): lição" só com o que vale
@@ -230,7 +258,7 @@ const esperarPorta = async (porta, ms = 40000) => {
 };
 
 // ---------- HTTP ----------
-const tipos = {'.wav': 'audio/wav', '.woff2': 'font/woff2', '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.mp4': 'video/mp4'};
+const tipos = {'.wav': 'audio/wav', '.woff2': 'font/woff2', '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.mp4': 'video/mp4', '.mov': 'video/quicktime', '.webm': 'video/webm', '.m4v': 'video/mp4', '.mp3': 'audio/mpeg', '.m4a': 'audio/mp4', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.gif': 'image/gif', '.svg': 'image/svg+xml', '.pdf': 'application/pdf'};
 const arquivo = (req, res, f) => {
 	if (!existsSync(f) || !statSync(f).isFile()) {
 		res.writeHead(404);
@@ -264,7 +292,7 @@ createServer(async (req, res) => {
 	const url = new URL(req.url, 'http://x');
 	const p = url.pathname;
 	try {
-		if (!['/api/', '/out/', '/sfx/', '/fontes/'].some((x) => p.startsWith(x))) {
+		if (!['/api/', '/out/', '/sfx/', '/fontes/', '/midia/'].some((x) => p.startsWith(x))) {
 			const rel = p === '/' ? 'index.html' : p.slice(1);
 			const base = path.join(import.meta.dirname, 'web');
 			const f = path.join(base, rel);
@@ -276,6 +304,39 @@ createServer(async (req, res) => {
 
 		if (p === '/api/biblioteca') return json(res, biblioteca());
 		if (p === '/api/projetos') return json(res, projetos());
+		if (p === '/api/midias') {
+			const proj = url.searchParams.get('projeto');
+			if (!projetoOk(proj)) return json(res, {erro: 'Projeto inválido'}, 400);
+			return json(res, {midias: listarMidias(proj, 'midias'), referencias: listarMidias(proj, 'referencias'), notas: existsSync(arqNotas(proj)) ? readFileSync(arqNotas(proj), 'utf8') : ''});
+		}
+		if (p === '/api/midia' && req.method === 'POST') {
+			// Corpo = o arquivo cru, gravado direto no disco (vídeos grandes não passam pela memória).
+			const proj = url.searchParams.get('projeto'), tipo = url.searchParams.get('tipo'), nome = nomeArquivo(url.searchParams.get('nome'));
+			if (!projetoOk(proj) || !['midias', 'referencias'].includes(tipo) || !EXTENSOES.test(nome)) return json(res, {erro: 'Arquivo ou projeto inválido (tipos aceitos: vídeo, áudio, imagem, pdf, texto)'}, 400);
+			const dir = pastaMidia(proj, tipo);
+			mkdirSync(dir, {recursive: true});
+			const tmp = path.join(dir, `.${nome}.parte`);
+			try {
+				await pipeline(req, createWriteStream(tmp));
+				renameSync(tmp, path.join(dir, nome));
+			} catch (e) {
+				rmSync(tmp, {force: true});
+				throw e;
+			}
+			return json(res, {ok: true, nome});
+		}
+		if (p === '/api/midia/apagar' && req.method === 'POST') {
+			const {projeto, tipo, nome} = await corpo(req);
+			if (!projetoOk(projeto) || !['midias', 'referencias'].includes(tipo)) return json(res, {erro: 'Inválido'}, 400);
+			rmSync(path.join(pastaMidia(projeto, tipo), nomeArquivo(nome)), {force: true});
+			return json(res, {ok: true});
+		}
+		if (p === '/api/notas' && req.method === 'POST') {
+			const {projeto, texto} = await corpo(req);
+			if (!projetoOk(projeto)) return json(res, {erro: 'Projeto inválido'}, 400);
+			writeFileSync(arqNotas(projeto), String(texto ?? '').slice(0, 20000));
+			return json(res, {ok: true});
+		}
 		if (p === '/api/temas' && req.method === 'GET') return json(res, temas());
 		if (p === '/api/temas' && req.method === 'POST') {
 			const {nome, descricao} = await corpo(req);
@@ -349,6 +410,11 @@ createServer(async (req, res) => {
 			return json(res, {saida: git('push')});
 		}
 		if (p.startsWith('/out/')) return arquivo(req, res, path.join(raiz, 'out', path.basename(p)));
+		if (p.startsWith('/midia/')) {
+			const [, , proj, tipo, ...resto] = p.split('/');
+			if (!projetoOk(proj) || !['midias', 'referencias'].includes(tipo)) { res.writeHead(404); return res.end(); }
+			return arquivo(req, res, path.join(pastaMidia(proj, tipo), nomeArquivo(decodeURIComponent(resto.join('/')))));
+		}
 		if (p.startsWith('/sfx/')) return arquivo(req, res, path.join(raiz, 'public/sfx', path.basename(p)));
 		if (p.startsWith('/fontes/')) return arquivo(req, res, path.join(raiz, 'public/fontes', path.basename(p)));
 		res.writeHead(404);
