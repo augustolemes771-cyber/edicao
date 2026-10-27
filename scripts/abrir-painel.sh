@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Prepara tudo sozinho (só na primeira vez) e abre o painel no navegador.
 cd "$(dirname "$0")/.." || exit 1
+if ! command -v node >/dev/null && command -v brew >/dev/null; then echo "Instalando o Node.js..."; brew install node ffmpeg; fi
 if ! command -v node >/dev/null; then
 	echo "Falta instalar o Node.js: https://nodejs.org (botão LTS). Depois dê dois cliques de novo."; read -r -p "Enter para sair"; exit 1
 fi
