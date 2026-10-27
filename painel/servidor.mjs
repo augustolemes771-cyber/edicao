@@ -190,7 +190,10 @@ const iniciarStudio = () => {
 	studio = rodar('npx', ['remotion', 'studio', '--port=3000', '--no-open'], {stdio: 'ignore'});
 	studio.on('close', () => (studio = null));
 };
-process.on('exit', () => studio?.kill());
+process.on('exit', () => {
+	studio?.kill();
+	for (const pr of rodando.values()) pr.kill();
+});
 
 // O Studio roda no navegador, então abre num Chrome/Edge próprio (perfil separado em .painel/chrome) com a GPU forçada:
 // rasterização e composição na placa de vídeo, ignorando a lista de bloqueio, e ANGLE no Direct3D/Metal. Sem isso o
@@ -325,6 +328,17 @@ createServer(async (req, res) => {
 			const pronto = await esperarPorta(3000);
 			if (pronto) abrirNoNavegador(`http://localhost:3000/${/^[\w-]*$/.test(rota ?? '') ? (rota ?? '') : ''}`, true);
 			return json(res, {ok: pronto});
+		}
+		if (p === '/api/reiniciar' && req.method === 'POST') {
+			// Baixa a versão nova, reabre o arquivo de iniciar deste PC (que confere as dependências e abre o painel) e encerra este processo.
+			// O pull acontece antes, para o .bat não ser reescrito enquanto roda.
+			let saida = '';
+			try { saida = git('pull', '--rebase', '--autostash'); } catch (e) { saida = String(e.stderr || e.message).slice(-300); }
+			const [cmd, ...a] = ehWin ? ['cmd', '/c', 'start', '', 'Painel - Instalar e Abrir.bat'] : process.platform === 'darwin' ? ['open', 'Abrir Painel.command'] : ['bash', 'scripts/abrir-painel.sh'];
+			spawn(cmd, a, {cwd: raiz, stdio: 'ignore', detached: true}).on('error', () => {}).unref();
+			json(res, {ok: true, saida});
+			setTimeout(() => process.exit(0), 700);
+			return;
 		}
 		if (p === '/api/sync/atualizar' && req.method === 'POST') return json(res, {saida: git('pull', '--rebase', '--autostash')});
 		if (p === '/api/sync/salvar' && req.method === 'POST') {

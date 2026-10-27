@@ -59,7 +59,7 @@
 	<select id="projeto"></select>
 	<button id="novoProj">+ Novo vídeo</button>
 	<button id="studio">Abrir Studio</button>
-	<button id="atualizar" title="Baixa do GitHub o que foi salvo em outro computador">⬇ Atualizar</button>
+	<button id="atualizar" title="Baixa a versão mais recente do GitHub e reabre o painel">⬇ Atualizar e reabrir</button>
 	<button id="salvar" class="p" title="Envia para o GitHub templates, peças e edições novas">⬆ Salvar na nuvem</button>
 </header>
 
@@ -160,7 +160,12 @@ $('#novoProj').onclick=()=>{const n=prompt(`Nome do vídeo no tema "${$('#tema')
 const studio=async(rota='')=>{msg('Abrindo o Studio com a placa de vídeo (GPU)... pode levar alguns segundos.','acao');const r=await api('/api/studio',{rota}).catch(()=>({ok:false}));if(!r.ok)msg('O Studio não abriu. Tente de novo.','ia');};
 $('#studio').onclick=()=>studio();
 $('#zerar').onclick=async()=>{await api('/api/novo-chat',{projeto:proj()});$('#msgs').innerHTML='';msg('Conversa nova. O que vamos editar?','ia');};
-$('#atualizar').onclick=async()=>{try{msg((await api('/api/sync/atualizar',{})).saida||'Atualizado.','ia');biblioteca();projetos();}catch(e){msg('Erro: '+e.message,'ia');}};
+$('#atualizar').onclick=async()=>{
+	if(!confirm('Vou baixar a versão mais recente e reabrir o painel. Uma janela nova vai abrir e esta aba para de funcionar. Continuar?')) return;
+	try{await api('/api/reiniciar',{});}catch{}
+	document.body.innerHTML='<div style="padding:40px;font:16px system-ui;color:#eef3f3"><h2 style="color:#12d4cd">Reabrindo o painel...</h2><p>Uma janela preta vai aparecer e, em alguns segundos, o painel abre numa aba nova. Pode fechar esta aba.</p></div>';
+	setTimeout(()=>window.close(),4000);
+};
 $('#salvar').onclick=async()=>{try{msg((await api('/api/sync/salvar',{mensagem:'Edição pelo painel'})).saida||'Salvo na nuvem.','ia');}catch(e){msg('Erro: '+e.message,'ia');}};
 
 async function abrirTema(id){
