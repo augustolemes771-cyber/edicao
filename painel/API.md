@@ -14,7 +14,7 @@ Contrato entre o servidor (`painel/servidor.mjs` e módulos) e a página (`paine
 | `GET /api/midias?projeto=` | `{midias: [{nome, tamanho}], referencias: [...], notas}` |
 | `POST /api/midia?projeto=&tipo=midias\|referencias&nome=` | corpo = arquivo cru |
 | `POST /api/midia/apagar {projeto, tipo, nome}` · `POST /api/notas {projeto, texto}` | |
-| `POST /api/chat {projeto, tema, pedido}` | SSE: `{tipo:'texto', texto}`, `{tipo:'acao', acao}`, `{tipo:'erro', texto}`, `{tipo:'fim', erro, custo}` |
+| `POST /api/chat {projeto, tema, pedido, papel?}` | SSE: `{tipo:'texto', texto}`, `{tipo:'acao', acao}`, `{tipo:'erro', texto}`, `{tipo:'fim', erro, custo}` |
 | `POST /api/parar {projeto}` · `POST /api/novo-chat {projeto}` | |
 | `GET /api/claude` · `POST /api/claude/instalar` · `POST /api/claude/entrar` | `{instalado, logado}` |
 | `GET /api/codigo?f=` | `{texto}` de arquivos da biblioteca |
@@ -53,3 +53,15 @@ Detalhes das tarefas:
 - `/api/historico` com `custo` na última fala da IA ou numa linha `acao` "Pedido concluído"; com `prefs.salvarSozinho`, o chat termina com uma `acao` "Salvo no git: ..." (ou um `erro`).
 
 No chat, com `modelo: 'auto'` o servidor escolhe modelo e esforço pelo pedido (`escolherModelo` em painel/config.mjs), avisa numa linha `acao` e libera subagentes. Com `prefs.amostras`, o Claude responde com linhas `[[amostra:A|out/arquivo.jpg|descrição]]`, que a página mostra como imagens com o botão "Quero esta".
+
+## Assistente e pendências
+
+| Rota | Retorno |
+|---|---|
+| `POST /api/chat {..., papel:'assistente'}` | Assistente em paralelo ao editor (processo e conversa próprios, chave `<projeto>~assist`); não edita o projeto em andamento, anota pendências |
+| `GET /api/pendencias?projeto=` | `{lista:[{id, texto, t?, cena?, imagem?, origem, em, feito?}], bloco, editor, assistente}`; `bloco` = andamento do próximo bloco `{n, total, etapa, pct, fase?, etapas:[{nome, estado, pct}]}` |
+| `POST /api/pendencias/nova {projeto, texto, t?, cena?, imagem?}` | Nota numa imagem da prévia ou quadro de um bloco |
+| `POST /api/pendencias/apagar {projeto, id}` · `POST /api/pendencias/feito {projeto, id, feito}` | |
+
+O editor lista e marca com `node scripts/pendencias.mjs <projeto> [feito <id>...]`; o `npm run bloco` sai com código 2 enquanto houver pendência aberta.
+O `npm run bloco` grava o andamento em `.painel/pendencias/<projeto>-bloco.json` e o mapa da folha em `out/<projeto>-bloco-N.json`.
