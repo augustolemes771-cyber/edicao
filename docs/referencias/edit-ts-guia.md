@@ -32,6 +32,25 @@ Toda cena tem `de`, `ate`, e opcionais `modo` ('cheia' | 'sobre' | 'atras'), `so
 `cartao` (palavras + tempos), `letras` (linha1/linha2), `kicker` (pequeno/grande), `comentarios`, `cenario` (3D), `gigante`, `retrato`, `topicos`, `xadrez`, `vitrine`, `anel`, `rec`, `alertas`.
 Detalhes de campos: `grep -n "tipo: 'NOME'" -A8 src/motor/plano.ts` (só a cena que for usar).
 
+## Roteiro em ordem de história e cortes no silêncio
+- `trechos: (o) => [[ini, fim], ...]` (tempo ORIGINAL, na ordem em que entram; pode repetir trecho, ex.: gancho com o resultado) no lugar de `cortes`.
+- `silencios: silencios as Trecho[]` com `import silencios from './silencios.json'` (comece com `[]`): as bordas se encaixam nas pausas medidas
+  (`npm run silencios -- <nome>`; o `bloco` e o render medem sozinhos).
+- Legenda `mare` (vidro no meio, abaixo do rosto) com `falantes: (b) => [{de, ate, nome: 'PERGUNTA'}]` mostra quem fala.
+
+## Peças com acabamento de produção (src/pecas/ModeloEntrevista.tsx; y em px de um quadro 1080x1920)
+`numero3d {texto, rotulo?, abaixo?, em?, y?}` (número em ouro 3D, gancho/resultado) · `live {host?, espectadores?, comentarios?, coracoes?}`
+(interface de live sobre o vídeo, ~1,5 s) · `frase {palavras: [{texto, em, destaque?}]}` (frase grande, vídeo escurecido) ·
+`selo {texto, chip?, y?}` · `chips {itens: [{texto, em}], numerado?, y?}` (um por vez) · `siga {itens: [{texto, em}]}` ·
+`comentario {texto}` · `final {marca, sub?}`. Cena que repete a fala: `esconderLegenda: true`.
+
+## Qualidade e fluxo por blocos (painel)
+- `npm run qualidade -- <nome> [--de s --ate s]`: textos ao mesmo tempo, texto repetindo a legenda, leitura curta, trecho parado (> 3 s) ou
+  poluído, zoom acima da resolução, corte fora da pausa, efeito repetido, início sem gancho, área segura.
+- `npm run bloco -- <nome> <n> --seg 10 --res 720`: análise + render só do trecho n + folha de quadros (`out/<nome>-bloco-n-folha.jpg`,
+  2 por segundo) + áudio (pausa morta, estouro). Imprime a linha `[[bloco:n/total|vídeo|efeitos|resumo]]` que o painel mostra com
+  "Aprovar e seguir".
+
 ## Fluxo curto
 `npm run preparar -- <nome>` (mídia + transcrição + roteiro de uma vez) → escrever `edit.ts` → `npm run conferir -- <nome>` → `npm run preview -- <nome>`.
 Exemplos prontos: `src/projetos/reels-exemplo/edit.ts` (vertical) e `depoimento-danilow/edit.ts`. Não leia o `plano.ts` inteiro.

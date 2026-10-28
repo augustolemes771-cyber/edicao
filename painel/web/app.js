@@ -713,6 +713,8 @@ async function abrirPreferencias(inicial = 'edicao') {
 			campo('Resolução da prévia', sel('prefs.resPrevia', p.resPrevia ?? 720, [[540, '540p (mais rápida)'], [720, '720p'], [1080, '1080p (igual ao final)']])) +
 			campo('Intensidade da edição', sel('prefs.intensidade', p.intensidade ?? 'normal', [['auto', 'Deixar a IA decidir'], ['calma', 'Calma'], ['normal', 'Normal'], ['frenetica', 'Frenética']])) +
 			campo('Legenda padrão', sel('prefs.legendaPadrao', p.legendaPadrao ?? 'palavra', [['auto', 'Deixar a IA decidir'], ['palavra', 'Palavra por palavra'], ['ouro', 'Ouro'], ['impacto', 'Impacto'], ['neon', 'Neon']])) + '</div>' +
+			chave('prefs.blocos', p.blocos ?? true, 'Editar por blocos (rápido e sem perder qualidade)', 'O Claude faz os primeiros segundos, confere a qualidade sozinho (análise automática + revisão dos quadros) e mostra o trecho pronto. Você aprova e ele segue para o próximo.') +
+			campo('Tamanho de cada bloco', sel('prefs.segBloco', p.segBloco ?? 10, [[6, '~6 s (mais paradas)'], [10, '~10 s (recomendado)'], [15, '~15 s (menos paradas)']])) +
 			chave('prefs.amostras', p.amostras ?? false, 'Receber amostras durante a edição para eu decidir', 'Ligado: nas escolhas de estilo, o Claude mostra 2 ou 3 opções em imagem e espera você escolher. Desligado: ele decide sozinho e segue até a prévia.') +
 			chave('prefs.participar', p.participar ?? true, 'Modo participativo', 'O Claude mostra o plano e espera sua aprovação antes de editar, avisa a cada etapa e pergunta o que mudar no final. Desligue para ele seguir sozinho até a prévia.') +
 			chave('prefs.confirmarFinal', p.confirmarFinal ?? true, 'Pedir confirmação antes do vídeo final', 'Evita gastar tempo renderizando sem querer.') +
@@ -1548,7 +1550,31 @@ function msg(texto, quem = 'ia', {custo, t} = {}) {
 	d.className = 'm ' + (quem === 'erro' ? 'erro' : quem);
 	// Amostras do Claude: [[amostra:A|out/arquivo.jpg|descrição]] viram imagens com o botão de escolha.
 	const RE_AMOSTRA = /\[\[amostra:([^|\]]{1,12})\|([^|\]]+)\|([^\]]*)\]\]/g;
-	if (quem === 'ia' && texto.includes('[[amostra:')) {
+	// Bloco do fluxo por blocos: [[bloco:N/T|out/<p>-bloco-N.mp4|efeitos|resumo da qualidade]] vira o cartão com o trecho
+	// renderizado, os efeitos, a nota da análise e os botões de aprovar e de pedir ajuste.
+	const RE_BLOCO = /\[\[bloco:(\d+)\/(\d+)\|([^|\]]+)\|([^|\]]*)\|([^\]]*)\]\]/g;
+	if (quem === 'ia' && texto.includes('[[bloco:')) {
+		const v = Date.now();
+		let html = '', ultimo = 0;
+		for (const m of texto.matchAll(RE_BLOCO)) {
+			const antes = texto.slice(ultimo, m.index).trim();
+			if (antes) html += esc(antes) + '\n';
+			const [, n, total, caminho, efeitos, qa] = m;
+			const arq = caminho.trim().split(/[\\/]/).pop();
+			const folha = arq.replace(/\.mp4$/i, '-folha.jpg');
+			const limpo = /tudo certo|0 erro\(s\), 0 aviso/i.test(qa);
+			html += `<div class="bloco-ia"><div class="bloco-topo"><b>Bloco ${esc(n)} de ${esc(total)}</b><span class="selo ${limpo ? 'ok' : 'alerta'}">${esc(qa || 'sem análise')}</span></div>` +
+				`<video controls playsinline preload="metadata" src="/out/${enc(arq)}?t=${T}&v=${v}"></video>` +
+				`<div class="bloco-efeitos">${efeitos.split(',').map((e) => e.trim()).filter(Boolean).map((e) => `<span class="chip">${esc(e)}</span>`).join('')}</div>` +
+				`<div class="acoes"><button class="btn primario" data-aprovar="${esc(n)}/${esc(total)}">${ic('check')}<span>${n === total ? 'Aprovar e gerar a prévia completa' : 'Aprovar e seguir'}</span></button>` +
+				`<button class="btn" data-ajuste="${esc(n)}">${ic('edit')}<span>Pedir ajuste</span></button>` +
+				`<button class="btn fantasma" data-ver-midia="/out/${enc(folha)}?t=${T}&v=${v}" data-nome="${esc(folha)}">${ic('grid')}<span>Quadros</span></button></div></div>`;
+			ultimo = m.index + m[0].length;
+		}
+		const resto = texto.slice(ultimo).trim();
+		if (resto) html += esc(resto);
+		d.innerHTML = html;
+	} else if (quem === 'ia' && texto.includes('[[amostra:')) {
 		const v = Date.now();
 		let html = '', ultimo = 0, cards = '';
 		const fechar = () => { if (cards) { html += `<div class="amostras">${cards}</div>`; cards = ''; } };
@@ -1586,6 +1612,14 @@ function boasVindas() {
 		`</div></div>`;
 }
 msgs.addEventListener('click', (e) => {
+	const apr = e.target.closest('[data-aprovar]');
+	if (apr) {
+		const [n, total] = apr.dataset.aprovar.split('/').map(Number);
+		apr.disabled = true;
+		return usarPedido(n >= total ? `Bloco ${n} aprovado (último). Gere a prévia completa do vídeo.` : `Bloco ${n} aprovado. Siga para o bloco ${n + 1}.`, {enviar: true});
+	}
+	const aj = e.target.closest('[data-ajuste]');
+	if (aj) return usarPedido(`Ajuste no bloco ${aj.dataset.ajuste}: `);
 	const esc_ = e.target.closest('[data-escolher]');
 	if (esc_) return usarPedido(`Escolho a opção ${esc_.dataset.escolher}. Aplique e siga.`, {enviar: true});
 	const b = e.target.closest('[data-ideia]');

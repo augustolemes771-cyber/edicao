@@ -20,7 +20,9 @@
     "painel": "node painel/servidor.mjs",
     "miniaturas": "tsx scripts/miniaturas.ts",
     "silencios": "node scripts/silencios.mjs",
-    "preparar-video": "node scripts/preparar-video.mjs"
+    "preparar-video": "node scripts/preparar-video.mjs",
+    "qualidade": "tsx scripts/qualidade.ts",
+    "bloco": "tsx scripts/bloco.ts"
   },
   "dependencies": {
     "@react-three/fiber": "9.2.0",

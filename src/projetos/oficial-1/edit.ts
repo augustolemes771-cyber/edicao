@@ -98,11 +98,15 @@ export const oficial1: Edit = {
 			// Pergunta: aberto
 			{tipo: 'chicote', em: pergunta},
 			{tipo: 'zoom', em: pergunta, escala: 1, ...ABERTO},
+			{tipo: 'zoom', em: b.at('método'), escala: 1.08, ...ABERTO},
+			{tipo: 'zoom', em: b.at('evolução'), escala: 1.18, x: 0.32, y: 0.3},
 			// Virada e resultado
 			{tipo: 'chicote', em: resposta},
 			{tipo: 'zoom', em: resposta, escala: 1.25, ...P},
 			{tipo: 'zoom', em: b.at('mês'), escala: 1.35, ...P},
 			{tipo: 'zoom', em: b.say('primeira live').inicio, escala: 1.12, ...P},
+			{tipo: 'zoom', em: b.at('consegui'), escala: 1.22, ...P},
+			{tipo: 'zoom', em: b.say('aprender o método').fim, escala: 1.32, ...P},
 			{tipo: 'zoom', em: b.at('20', 2), escala: 1.2, ...BAIXO},
 			{tipo: 'zoom', em: b.at('namorado'), escala: 1.25, ...P},
 			// Lição: um punch por "tentar", clarão na virada
@@ -142,7 +146,7 @@ export const oficial1: Edit = {
 				som: 'impacto',
 			},
 			// 2. Nome na tela
-			{tipo: 'pilula', de: b.at('Paola') + 0.05, ate: b.say('há mais de um ano').fim + 0.1, rotulo: '+1 ano de TikTok Shop', nome: 'Paola', y: 0.49, som: 'swish'},
+			{tipo: 'pilula', de: b.at('Paola') + 0.05, ate: b.say('há mais de um ano').fim + 0.1, rotulo: '+1 ano de TikTok Shop', nome: 'Paola', y: 0.49, esconderLegenda: true, som: 'swish'},
 			// 3. A live vazia: 1 espectador, só a irmã comentando
 			{
 				tipo: 'live',
@@ -172,7 +176,6 @@ export const oficial1: Edit = {
 				de: b.say('Faz menos').inicio - 0.02,
 				ate: b.say('aí na primeira live').inicio - 0.1,
 				texto: 'MENOS DE 1 MÊS',
-				chip: 'NO MÉTODO',
 				esconderLegenda: true,
 				som: 'tick',
 			},

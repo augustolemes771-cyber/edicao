@@ -11,6 +11,8 @@ export const PREFS_PADRAO = {
 	legendaPadrao: 'palavra',
 	confirmarFinal: true,
 	amostras: false,
+	blocos: true,
+	segBloco: 10,
 	participar: true,
 	salvarSozinho: false,
 	salvarAoFechar: true,
@@ -83,6 +85,24 @@ export const textoPrefs = (p) => {
   uma variação por vez no edit.ts) e mostre cada uma numa linha própria exatamente assim: [[amostra:A|out/amostra-<projeto>-a.jpg|descrição curta da opção]].
   Depois PARE e espere o usuário escolher. Volte o edit.ts para a opção escolhida.`
 		: '- Amostras desligadas: decida sozinho e siga até a prévia, sem parar para perguntar o que dá para decidir (a não ser o plano do modo participativo, se estiver ligado).';
+	const seg = [6, 10, 15].includes(Number(p.segBloco)) ? Number(p.segBloco) : 10;
+	const blocos = p.blocos !== false
+		? `
+- FLUXO POR BLOCOS (ligado; o foco é volume com qualidade, sem parar): o vídeo é feito em blocos de ~${seg} s, cada um aprovado antes do próximo.
+  (1) Bloco 1: escreva no edit.ts o roteiro inteiro (trechos/cortes, legenda) mas só as cenas e a câmera até o fim do bloco 1. Rode
+  \`npm run bloco -- <projeto> 1 --seg ${seg} --res ${p.resPrevia}\`. (2) Ele já faz a análise de qualidade (⚠/✗), renderiza só o trecho e
+  gera a folha de quadros: LEIA a folha (Read na imagem out/<projeto>-bloco-N-folha.jpg) e confira: texto sobre o rosto, texto cortado na
+  borda, leitura difícil, efeito fora do tempo da fala, tela poluída, trecho parado, efeito sem sentido. Se houver erro (✗), aviso (⚠) que
+  dá para resolver ou defeito na folha, corrija e rode o bloco de novo (no máximo 1 vez). (3) Responda em até 3 linhas com o que o bloco
+  tem e copie EXATAMENTE a linha [[bloco:...]] que o comando imprimiu; PARE e espere. (4) "Bloco N aprovado": faça só o bloco N+1, sem
+  mexer nos aprovados. "Ajuste no bloco N": corrija só ele e rode o bloco N de novo. Depois do último: gere a prévia completa.
+  Este comando é exigido pelo fluxo (vale mais que a regra de não gerar prévias).
+- CRIATIVIDADE COM SENTIDO (em todo bloco): pelo menos UMA ideia visual nova tirada do que é dito naquele trecho (live vazia → interface
+  de live com 1 espectador; número → número 3D; lista → chips um por vez; virada → frase grande; nome → pílula; pergunta → plano aberto).
+  Não repita o efeito principal do bloco anterior. Se nenhuma peça servir, crie uma nova em src/pecas com acabamento de produção (mola,
+  tipografia e paleta do tema, sombra suave; nada de clip-art, fonte gótica ou símbolo solto) e registre em biblioteca/itens.
+  Sem poluir: um texto por vez, um evento a cada ~2 s, todo efeito ligado a uma palavra ou ideia falada, legenda no meio.`
+		: '';
 	const participar = p.participar !== false
 		? `
 - MODO PARTICIPATIVO (o usuário quer acompanhar e decidir junto; vale mais que o limite de 3 linhas): (1) ANTES de editar um vídeo, mande o PLANO em até 8 linhas (gancho, estrutura, 3 a 6 cenas e efeitos principais, 3D se houver, o que descartou) e PARE esperando a aprovação ou as mudanças; não escreva o edit.ts antes. (2) Depois de aprovado, escreva UMA linha de status ao fim de cada etapa (ex.: "Transcrição pronta: 106 s, 378 palavras"). (3) Ao terminar, resuma em 3 linhas o que fez, diga onde ver (aba Prévias) e pergunte o que quer mudar. Em ajuste pequeno que o usuário pediu, pule o plano e aplique direto.`
@@ -91,7 +111,7 @@ export const textoPrefs = (p) => {
 - Formato de vídeo novo: ${formato}. Prévia em ${p.resPrevia}p (npm run preview -- <projeto> --res ${p.resPrevia}).
 - Intensidade da edição: ${intensidade}.
 - Legenda: ${legenda}.
-${amostras}${participar}
+${amostras}${blocos}${participar}
 - ${p.confirmarFinal ? 'Nunca rode o render final sem o usuário pedir.' : 'Pode rodar o render final quando a prévia for aprovada.'}${p.sempre ? `\n- Sempre: ${p.sempre}` : ''}`;
 };
 

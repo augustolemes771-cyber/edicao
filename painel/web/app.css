@@ -484,3 +484,10 @@ details[open]>summary .seta{transform:rotate(90deg)}
 .and-form input{flex:1;min-width:0}
 
 .digitando .agora{font-size:12px;opacity:.85;margin-left:6px;align-self:center}
+
+/* Bloco do fluxo por blocos na conversa */
+.bloco-ia{margin:6px 0;background:var(--bg);border:1px solid var(--linha);border-radius:var(--r-3);padding:10px;display:flex;flex-direction:column;gap:8px;white-space:normal;max-width:420px}
+.bloco-ia video{width:100%;max-height:520px;background:#000;border-radius:var(--r-2);object-fit:contain}
+.bloco-topo{display:flex;align-items:center;gap:8px;justify-content:space-between}.bloco-topo .selo{max-width:65%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bloco-efeitos{display:flex;flex-wrap:wrap;gap:5px}.bloco-efeitos .chip{font-size:11px;padding:2px 8px;border-radius:99px;border:1px solid var(--linha);color:var(--mudo)}
+.bloco-ia .acoes{display:flex;flex-wrap:wrap;gap:6px}

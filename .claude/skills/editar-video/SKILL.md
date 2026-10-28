@@ -82,6 +82,14 @@ ler o `aprendizado.md` do tema e seguir. Ao terminar, ou quando o usuário aprov
   (zoom em cada emenda, chicote só na troca de falante), um evento a cada ~2 s, legenda no meio e um texto por vez.
 - Nada de fonte gótica, celular 3D genérico ou símbolos soltos: o usuário reprovou.
 
+## Fluxo por blocos do painel (28/10/2026)
+
+- O foco é volume com qualidade: o vídeo sai em blocos de ~10 s (`npm run bloco -- <projeto> <n>`), cada um com análise automática
+  (`npm run qualidade`), render só do trecho e folha de quadros. Ler a folha antes de mostrar; corrigir no máximo uma vez; mostrar a linha
+  `[[bloco:...]]` e esperar o "aprovado". Bloco aprovado não se mexe.
+- Em todo bloco, pelo menos uma ideia visual nova tirada da fala daquele trecho, sem repetir o efeito principal do bloco anterior e sem
+  poluir (um texto por vez, evento a cada ~2 s, legenda no meio).
+
 ## Depois da entrega
 
 - Não renderizar de novo sem pedido. Ajuste depois da entrega vai para o código e para esta skill; render novo só
