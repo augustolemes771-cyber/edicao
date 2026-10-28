@@ -44,6 +44,7 @@ export const segundoo: Edit = {
 			],
 			de: b.at('celular'),
 			ate: b.say('internet').fim + 0.8,
+			esconderLegenda: true,
 		},
 	],
 };
