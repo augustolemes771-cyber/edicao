@@ -120,7 +120,7 @@ export const oficial1: Edit = {
 				tipo: 'drama',
 				de: b.at('depois') - 0.05,
 				ate: b.say('abrir uma live').fim + 0.4,
-				pequeno: 'LIVE',
+				pequeno: 'DEPOIS DESSE DIA',
 				grande: 'NUNCA MAIS',
 				em: nunca,
 				apaga: live,
