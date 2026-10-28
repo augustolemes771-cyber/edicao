@@ -69,7 +69,21 @@ const erroSsh = (codigo, stderr) => {
 const semSsh = (e) => (e?.code === 'ENOENT' ? new Error('ssh não encontrado neste computador. No Windows: Configurações > Aplicativos > Recursos opcionais > Cliente OpenSSH.') : e);
 
 // Comando remoto simples: devolve {codigo, saida, erro}.
-export const sshRodar = async (pod, comando, {entrada, aoSaida, aoProc} = {}) => {
+// O sshd do pod (exposto na internet) recusa conexões novas ao acaso quando há 10+ tentativas pendentes de robôs ("startups").
+// Falha logo ao conectar (saída 255, sem nenhuma saída, em poucos segundos) = nem chegou a rodar: tenta de novo, até 4 vezes.
+const caiuAoConectar = (r, t0) => r.codigo === 255 && !r.saida && Date.now() - t0 < 25000 && /closed|reset|refused|banner|kex|timed out|broken pipe/i.test(r.erro);
+const espera = (ms) => new Promise((ok) => setTimeout(ok, ms));
+export const sshRodar = async (pod, comando, opcoes = {}) => {
+	let r;
+	for (let tent = 0; tent < 4; tent++) {
+		const t0 = Date.now();
+		r = await sshRodarUma(pod, comando, opcoes);
+		if (opcoes.entrada || !caiuAoConectar(r, t0)) return r;
+		await espera(1500 * (tent + 1));
+	}
+	return r;
+};
+const sshRodarUma = async (pod, comando, {entrada, aoSaida, aoProc} = {}) => {
 	let saida = '', erro = '';
 	try {
 		const codigo = await executar(exe('ssh'), sshArgs(pod, comando), {
@@ -111,7 +125,18 @@ const scpArgs = (pod, local, remoto) => [
 ];
 // Um arquivo local para um caminho remoto SEM espaços. Caminho local absoluto: o scp do Windows entende "C:\..." como
 // arquivo local (um "./nome" relativo ele não achou). Fora do Windows, nome com ":" vai como "./nome" na pasta dele.
-export const scpPara = (t, pod, local, remoto) =>
+export const scpPara = async (t, pod, local, remoto) => {
+	for (let tent = 0; ; tent++) {
+		const t0 = Date.now();
+		try {
+			return await scpUma(t, pod, local, remoto);
+		} catch (e) {
+			if (tent >= 3 || t?.cancelado || Date.now() - t0 > 25000 || !/closed|reset|refused|banner|kex|timed out|broken pipe/i.test(String(e.message))) throw e;
+			await espera(1500 * (tent + 1));
+		}
+	}
+};
+const scpUma = (t, pod, local, remoto) =>
 	new Promise((ok, falha) => {
 		if (!existsSync(local)) return falha(new Error(`Arquivo para enviar ao pod não encontrado: ${local}`));
 		const relativo = !ehWin && path.basename(local).includes(':');

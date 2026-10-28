@@ -65,6 +65,13 @@ if command -v nvidia-smi >/dev/null && ! tem_egl; then
 	tem_egl || echo "Aviso: não consegui instalar os gráficos da GPU (o render usa a CPU para o WebGL)"
 fi
 
+# O SSH do pod é público e robôs de varredura enchem as conexões pendentes: acima de 10 o sshd recusa conexões novas ao acaso
+# (o painel via "pod indisponível"). Aumenta o limite e recarrega o sshd.
+if [ -f /etc/ssh/sshd_config ] && ! grep -qE '^MaxStartups[[:space:]]+100' /etc/ssh/sshd_config; then
+	echo 'MaxStartups 100:30:300' | $SUDO tee -a /etc/ssh/sshd_config >/dev/null
+	$SUDO pkill -HUP -x sshd 2>/dev/null || true
+fi
+
 passo 95 'Conferindo'
 echo "Node: $(node -v)"
 echo "ffmpeg: $(ffmpeg -version | head -1 | cut -d' ' -f3)"
