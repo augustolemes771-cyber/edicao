@@ -7,7 +7,8 @@ import transcricao from './transcricao.json';
 // Roteiro (falas reordenadas): gancho "arrisca, vai ser a melhor decisão" → gratidão (Felipe, Danilow e Matheus fizeram
 // diferença; o usuário pediu esse trecho logo depois do gancho) → dúvida (mais uma mentoria?) → dor (batendo cabeça com
 // produto) → o que aprendeu (escolher, analisar, testar) → resultado (escolha bem feita, diferença até hoje na operação) → agradecimento → cartão final.
-// Rosto em x .55 y .45; céu livre no topo. Blusa azul: ouro tem contraste. Fonte 576 de largura: zoom curto (≤ 1,15).
+// Rosto em x .55 y .45; céu livre no topo. Blusa azul: ouro tem contraste. A fonte era 576 de largura: o video.mp4 agora
+// é 1080x1920 (Real-ESRGAN animevideov3 2x misturado 60/40 com o original; o original fica em video-576.mp4). Zoom curto (≤ 1,15).
 const P = {x: 0.55, y: 0.45};
 
 export const depoimento: Edit = {
