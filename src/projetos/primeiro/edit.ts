@@ -153,7 +153,7 @@ export const primeiro: Edit = {
 			},
 			// 2. Nome na tela
 			// 1 ANO em ouro 3D com o nome dela na mesma cor
-			{tipo: 'numero3d', de: b.at('TikTok') - 0.15, ate: b.say('há mais de um ano').fim + 0.3, texto: '1 ANO', rotulo: 'TIKTOK SHOP', abaixo: 'Paola', nomeOuro: true, y: 380, em: b.at('Há') - 0.05, esconderLegenda: true, som: 'grave'},
+			{tipo: 'numero3d', de: b.at('TikTok') - 0.15, ate: b.say('há mais de um ano').fim + 0.3, texto: '1 ANO', rotulo: 'TIKTOK SHOP', y: 330, em: b.at('Há') - 0.05, esconderLegenda: true, som: 'grave'},
 			// 3. A live vazia: 1 espectador, só a irmã comentando
 			{
 				tipo: 'live',
