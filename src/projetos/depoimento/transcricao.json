@@ -71,7 +71,7 @@
  },
  {
   "text": " sou",
-  "startMs": 4020,
+  "startMs": 4280,
   "endMs": 4280,
   "timestampMs": null,
   "confidence": 0.561434
@@ -568,8 +568,8 @@
  },
  {
   "text": " eu",
-  "startMs": 29390,
-  "endMs": 29520,
+  "startMs": 29850,
+  "endMs": 29960,
   "timestampMs": null,
   "confidence": 0.999872
  },
@@ -701,8 +701,8 @@
  },
  {
   "text": " tomar,",
-  "startMs": 35770,
-  "endMs": 36240,
+  "startMs": 35890,
+  "endMs": 36220,
   "timestampMs": null,
   "confidence": 0.999811
  },
@@ -1051,14 +1051,14 @@
  },
  {
   "text": " e",
-  "startMs": 54510,
-  "endMs": 54630,
+  "startMs": 54950,
+  "endMs": 55000,
   "timestampMs": null,
   "confidence": 0.976323
  },
  {
   "text": " eu",
-  "startMs": 54630,
+  "startMs": 55000,
   "endMs": 54950,
   "timestampMs": null,
   "confidence": 0.99988
