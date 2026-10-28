@@ -1,8 +1,8 @@
 import type {Edit} from '../../motor/plano';
 import transcricao from './transcricao.json';
 
-export const segundo: Edit = {
-	pasta: 'projetos/segundo',
+export const segundoo: Edit = {
+	pasta: 'projetos/segundoo',
 	video: 'video.mp4',
 	formato: 'vertical',
 	verificarCurva: false,
