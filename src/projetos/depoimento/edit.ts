@@ -20,16 +20,16 @@ export const depoimento: Edit = {
 	extraFim: 2.6,
 	silencios: silencios as Trecho[],
 	transcricao,
-	// Bordas numéricas, cada uma no ponto mais baixo de energia medido perto da palavra (abaixo de -38 dB, salvo onde a
-	// fala é contínua): o vento deixa poucas pausas no silencios.json e o Whisper erra até 0,4 s aqui ("foi", "Então").
-	// A lição e o resultado são contínuos na gravação (35,99–52,08): o gancho termina exatamente onde a lição começa.
+	// Bordas numéricas, cada uma no ponto mais baixo de energia perto da palavra, conferidas com o Whisper palavra por palavra
+	// num recorte do áudio: o vento deixa poucas pausas no silencios.json e o Whisper do projeto erra até 0,4 s aqui
+	// ("tomar" acaba em 36,22, não em 36,0). Lição, resultado e agradecimento são contínuos na gravação (36,31–54,8):
+	// o gancho termina exatamente onde a lição começa.
 	trechos: () => [
-		[32.06, 35.99], // arrisca, arrisca porque vai ser a melhor decisão que vocês vão tomar
+		[32.06, 36.31], // arrisca, arrisca porque vai ser a melhor decisão que vocês vão tomar
 		[17.32, 22.75], // às vezes a gente fica pensando... mais uma mentoria, gente
 		[23.53, 29.6], // pra você que não entende sobre live... qualquer produto
-		[3.7, 16.86], // sou muito grata... Felipe, Danilo, o Matheus... na mentoria deles
-		[35.99, 52.08], // vocês vão entender mais sobre escolha de produto... até hoje na minha operação
-		[52.1, 54.8], // então, meninos, muito obrigada pela ajuda
+		[4.25, 16.86], // muito grata... Felipe, Danilo, o Matheus... na mentoria deles
+		[36.31, 54.8], // vocês vão entender mais sobre escolha de produto... muito obrigada pela ajuda
 	],
 	legenda: {
 		estilo: 'mare',
@@ -56,7 +56,7 @@ export const depoimento: Edit = {
 			.map((t, i) => ({tipo: 'zoom' as const, em: t, escala: niveis[i % niveis.length], suave: 0.12, ...P}));
 		const emendas = b.emendas.map((e, i) => ({tipo: 'zoom' as const, em: e, escala: niveis[(i + 1) % niveis.length], ...P}));
 		const duvida = b.say('Às vezes a gente').inicio;
-		const virada = b.say('sou muito grata').inicio;
+		const virada = b.say('muito grata').inicio;
 		const licao = b.say('vocês vão entender mais').inicio;
 		return [
 			{tipo: 'zoom', em: 0, escala: 1.12, ...P},
