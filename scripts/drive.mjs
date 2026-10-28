@@ -32,9 +32,11 @@ const robo = (de, para) => {
 	if (ehWin) {
 		try {
 			// /XO: não sobrescreve o que é mais novo no destino. Códigos 0-7 = sucesso.
-			execFileSync('robocopy', [de, para, '/E', '/XO', '/R:1', '/W:1', '/NFL', '/NDL', '/NJH', '/NJS', '/NP']);
+			// Saída descartada: com muitos erros por arquivo ela passava do buffer e a falha era engolida.
+			execFileSync('robocopy', [de, para, '/E', '/XO', '/R:1', '/W:1', '/NFL', '/NDL', '/NJH', '/NJS', '/NP'], {stdio: 'ignore', windowsHide: true});
 		} catch (e) {
-			if (e.status >= 8) throw new Error(`robocopy falhou (${e.status}) copiando ${de}`);
+			// Sem status = nem rodou (robocopy não encontrado) ou foi morto: também é falha.
+			if (typeof e.status !== 'number' || e.status >= 8) throw new Error(`robocopy falhou (${e.status ?? e.code ?? e.signal}) copiando ${de}`);
 		}
 	} else execFileSync('rsync', ['-a', '-u', de + '/', para + '/']);
 };
