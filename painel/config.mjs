@@ -12,6 +12,7 @@ export const PREFS_PADRAO = {
 	confirmarFinal: true,
 	amostras: false,
 	blocos: true,
+	modoStudio: false,
 	segBloco: 10,
 	duracaoMax: 59,
 	participar: true,
@@ -88,7 +89,17 @@ export const textoPrefs = (p) => {
 		: '- Amostras desligadas: decida sozinho e siga até a prévia, sem parar para perguntar o que dá para decidir (a não ser o plano do modo participativo, se estiver ligado).';
 	const dur = Math.max(10, Math.min(3600, Number(p.duracaoMax) || 59));
 	const seg = [6, 10, 15].includes(Number(p.segBloco)) ? Number(p.segBloco) : 10;
-	const blocos = p.blocos !== false
+	const studio = `
+- MODO STUDIO (ligado; vale mais que o fluxo por blocos e que as prévias): NÃO renderize nada (nem npm run bloco, preview, previas,
+  render) até o usuário dizer que está pronto. Logo depois de preparar o vídeo, rode \`node scripts/proxy.mjs <projeto>\` (cópia leve para o
+  Studio; pode rodar em segundo plano). A cada mudança no edit.ts: rode a análise de qualidade sem render
+  (\`npx tsx scripts/qualidade.ts <projeto>\`, ou com --de/--ate do trecho mexido) e corrija os ✗ e os ⚠ que dá para resolver; se criou um
+  efeito NOVO, confira com no máximo 1 still leve daquele momento (npx remotion still <projeto> out/still-<projeto>.jpg --frame=<quadro> --scale=0.4)
+  e leia a imagem. Termine dizendo em até 3 linhas o que mudou e onde (min:seg), e escreva numa linha própria exatamente [[studio:<segundo>]]
+  (o segundo do primeiro trecho mudado) para o painel mostrar o botão de abrir no Studio. Quando o usuário disser "pronto"/"pode renderizar",
+  aplique as pendências e rode o render final (o painel tem o botão; ou npm run final se ele pedir), no pod se estiver ligado.
+- CRIATIVIDADE COM SENTIDO: pelo menos uma ideia visual nova por trecho, ligada ao que é dito; sem poluir (um texto por vez, legenda no meio).`;
+	const blocos = p.modoStudio ? studio : p.blocos !== false
 		? `
 - FLUXO POR BLOCOS (ligado; o foco é volume com qualidade, sem parar): o vídeo é feito em blocos de ~${seg} s, cada um aprovado antes do próximo.
   (1) Bloco 1: escreva no edit.ts o roteiro inteiro (trechos/cortes, legenda) mas só as cenas e a câmera até o fim do bloco 1. Rode

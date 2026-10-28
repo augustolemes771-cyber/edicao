@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {
 	AbsoluteFill,
 	getRemotionEnvironment,
@@ -21,9 +21,28 @@ export type PropsVideo = {projeto: string; duracaoFonte: number};
 
 const VOLUME_SFX = dbParaGanho(-15);
 
+// Studio: assiste com a cópia leve (720p, scripts/proxy.mjs) quando ela existe; o render sempre usa o original.
+const leveExiste = new Map<string, boolean>();
+const useFonteStudio = (pasta: string, video?: string) => {
+	const {isStudio, isRendering} = getRemotionEnvironment();
+	const leve = isStudio && !isRendering && video && !video.includes('/') ? staticFile(`${pasta}/_leve/${video.replace(/\.[^.]+$/, '.mp4')}`) : null;
+	const [ok, setOk] = useState(leve ? (leveExiste.get(leve) ?? false) : false);
+	useEffect(() => {
+		if (!leve || leveExiste.has(leve)) return;
+		fetch(leve, {method: 'HEAD'})
+			.then((r) => {
+				leveExiste.set(leve, r.ok);
+				setOk(r.ok);
+			})
+			.catch(() => leveExiste.set(leve, false));
+	}, [leve]);
+	return leve && ok ? leve : video ? staticFile(`${pasta}/${video}`) : '';
+};
+
 // Vídeo decupado, com os cortes das notas faladas aplicados.
 const Base: React.FC<{edit: Edit; montagem: Montagem; pessoa?: boolean}> = ({edit, montagem, pessoa}) => {
 	const {fps} = useVideoConfig();
+	const fonte = useFonteStudio(edit.pasta, edit.video);
 	if (!edit.video) {
 		return (
 			<AbsoluteFill style={{backgroundColor: '#15181a', justifyContent: 'center', alignItems: 'center'}}>
@@ -70,7 +89,7 @@ const Base: React.FC<{edit: Edit; montagem: Montagem; pessoa?: boolean}> = ({edi
 					<Sequence key={i} from={from} durationInFrames={dur} layout="none">
 						{/* OffthreadVideo extrai os quadros com o ffmpeg: o Video do @remotion/media travava no Windows. */}
 						<OffthreadVideo
-							src={staticFile(`${edit.pasta}/${edit.video}`)}
+							src={fonte}
 							trimBefore={Math.round(ini * fps)}
 							style={{width: '100%', height: '100%', objectFit: 'cover'}}
 						/>

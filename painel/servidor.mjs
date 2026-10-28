@@ -535,7 +535,8 @@ const chat = async (req, res) => {
 			if (faltam.length) enviar('faltam', {arquivos: faltam});
 		}
 		// Imagens de como a edição está ficando: se o edit.ts mudou depois das últimas, gera de novo (não gasta limite do Claude).
-		if (!c && !falhou && !parado && projeto && projetoOk(projeto)) {
+		// No modo Studio nada renderiza até o final (nem as imagens da aba Prévias).
+		if (!c && !falhou && !parado && projeto && projetoOk(projeto) && !cfg.prefs().modoStudio) {
 			try {
 				const m = lerJson(path.join(raiz, 'out/previas', projeto, 'manifest.json'), null);
 				const edit = path.join(raiz, 'src/projetos', projeto, 'edit.ts');
@@ -928,6 +929,8 @@ createServer(async (req, res) => {
 		}
 		if (p === '/api/studio' && req.method === 'POST') {
 			const {rota} = await corpo(req);
+			// Cópia leve (720p) dos vídeos do projeto para o Studio não travar; o Studio troca sozinho quando ela fica pronta.
+			if (projetoOk(rota)) spawn(process.execPath, [path.join(raiz, 'scripts/proxy.mjs'), rota], {cwd: raiz, stdio: 'ignore', windowsHide: true}).on('error', () => {});
 			iniciarStudio();
 			const pronto = await esperarPorta(3000);
 			if (pronto) abrirNoNavegador(`http://localhost:3000/${/^[\w-]*$/.test(rota ?? '') ? (rota ?? '') : ''}`, true);

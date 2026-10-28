@@ -77,7 +77,7 @@ const ligarPublico = (destino) => {
 		if (!existsSync(de)) return;
 		if (statSync(de).isDirectory()) {
 			for (const nome of readdirSync(de)) {
-				if (nome === 'referencias' || nome.endsWith('.parte')) continue;
+				if (nome === 'referencias' || nome === '_leve' || nome.endsWith('.parte')) continue;
 				if (rel === 'projetos' && !process.env.PUBLICO_INTEIRO && nome !== projeto) continue;
 				ligar(path.join(rel, nome));
 			}

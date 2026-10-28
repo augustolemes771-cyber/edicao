@@ -721,6 +721,7 @@ async function abrirPreferencias(inicial = 'edicao') {
 			campo('Resolução da prévia', sel('prefs.resPrevia', p.resPrevia ?? 720, [[540, '540p (mais rápida)'], [720, '720p'], [1080, '1080p (igual ao final)']])) +
 			campo('Intensidade da edição', sel('prefs.intensidade', p.intensidade ?? 'normal', [['auto', 'Deixar a IA decidir'], ['calma', 'Calma'], ['normal', 'Normal'], ['frenetica', 'Frenética']])) +
 			campo('Legenda padrão', sel('prefs.legendaPadrao', p.legendaPadrao ?? 'palavra', [['auto', 'Deixar a IA decidir'], ['palavra', 'Palavra por palavra'], ['ouro', 'Ouro'], ['impacto', 'Impacto'], ['neon', 'Neon']])) + '</div>' +
+			chave('prefs.modoStudio', p.modoStudio ?? false, 'Modo Studio (sem render até o final)', 'Mais rápido neste PC: o Claude só muda a edição e confere a qualidade sem renderizar; você assiste no Studio (com uma cópia leve em 720p) e pede ajustes. O render acontece uma vez, quando você disser que está pronto. Ligado, ele vale no lugar do "Editar por blocos".') +
 			chave('prefs.blocos', p.blocos ?? true, 'Editar por blocos (rápido e sem perder qualidade)', 'O Claude faz os primeiros segundos, confere a qualidade sozinho (análise automática + revisão dos quadros) e mostra o trecho pronto. Você aprova e ele segue para o próximo.') +
 			campo('Duração máxima do vídeo final', sel('prefs.duracaoMax', p.duracaoMax ?? 59, [[30, '30 s'], [45, '45 s'], [59, '59 s (padrão Reels/Shorts)'], [90, '90 s'], [180, '3 min'], [600, '10 min'], [3600, 'Sem limite prático']])) +
 			campo('Tamanho de cada bloco', sel('prefs.segBloco', p.segBloco ?? 10, [[6, '~6 s (mais paradas)'], [10, '~10 s (recomendado)'], [15, '~15 s (menos paradas)']])) +
@@ -1612,6 +1613,10 @@ function msg(texto, quem = 'ia', {custo, t} = {}) {
 		if (texto.slice(ultimo).trim()) html += esc(texto.slice(ultimo).trim());
 		d.innerHTML = html;
 	} else d.textContent = texto;
+	// Modo Studio: [[studio:segundo]] vira o botão de abrir no Studio.
+	if (quem === 'ia' && texto.includes('[[studio')) {
+		d.innerHTML = d.innerHTML.replace(/\[\[studio(?::([\d.]+))?\]\]/g, (_, seg) => `<button class="btn mini primario" data-studio="${esc(seg ?? '')}">${ic('monitor')}<span>Ver no Studio${seg ? ` (${Math.floor(seg / 60)}:${String(Math.floor(seg % 60)).padStart(2, '0')})` : ''}</span></button>`);
+	}
 	const extra = [quando(t), custoTxt(custo)].filter(Boolean).join(' · ');
 	if (extra) d.insertAdjacentHTML('beforeend', `<span class="custo">${esc(extra)}</span>`);
 	msgs.append(d);
@@ -1643,6 +1648,11 @@ msgs.addEventListener('click', (e) => {
 	}
 	const aj = e.target.closest('[data-ajuste]');
 	if (aj) return usarPedido(`Ajuste no bloco ${aj.dataset.ajuste}: `);
+	const st = e.target.closest('[data-studio]');
+	if (st) {
+		if (st.dataset.studio) aviso(`No Studio, vá para ${Math.floor(st.dataset.studio / 60)}:${String(Math.floor(st.dataset.studio % 60)).padStart(2, '0')} (a mudança está aí).`, 'info', {ms: 6000});
+		return studio(proj());
+	}
 	const qd = e.target.closest('[data-quadros]');
 	if (qd) return abrirQuadros(qd.dataset.quadros, qd.dataset.v);
 	const esc_ = e.target.closest('[data-escolher]');
