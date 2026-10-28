@@ -279,7 +279,7 @@ export const renderNoPod = async ({t, raiz, estado, podCfg, projeto, tipo, res, 
 	const args = ['--projeto', q(projeto), '--tipo', tipo, '--res', String(res)];
 	if (de !== undefined) args.push('--de', String(de));
 	if (ate !== undefined) args.push('--ate', String(ate));
-	let saidaRemota = null, erroRemoto = null;
+	let saidaRemota = null, erroRemoto = null, glQueFuncionou = null;
 	const r = await sshRodar(pod, `cd ${q(pod.pasta)} && GL=${q(pod.gl)} ${hw ? '' : 'HW=0 '}exec node scripts/render-job.mjs ${args.join(' ')}`, {
 		aoProc: (p) => t.procs.add(p),
 		aoSaida: (l) => {
@@ -291,11 +291,20 @@ export const renderNoPod = async ({t, raiz, estado, podCfg, projeto, tipo, res, 
 			}
 			if (ev.fase) atualizar({fase: `${ev.fase} no pod`, pct: 23 + ((ev.pct ?? 0) / 100) * 72, eta: ev.eta ?? null});
 			if (ev.aviso) atualizar({aviso: ev.aviso});
+			if (ev.gl) glQueFuncionou = ev.gl;
 			if (ev.erro) erroRemoto = ev.erro;
 			if (ev.fim) saidaRemota = ev.saida;
 		},
 	});
 	parar();
+	// O modo de WebGL que funcionou no pod fica salvo: o próximo render já começa por ele.
+	if (glQueFuncionou && GLS.includes(glQueFuncionou) && estado) {
+		try {
+			const arq = path.join(estado, 'config.json');
+			const c = JSON.parse(readFileSync(arq, 'utf8'));
+			writeFileSync(arq, JSON.stringify({...c, pod: {...(c.pod ?? {}), gl: glQueFuncionou}}, null, 1));
+		} catch {}
+	}
 	if (erroRemoto) throw new Error(erroRemoto);
 	if (r.codigo !== 0 || !saidaRemota) throw new Error(r.codigo === 255 ? erroSsh(r.codigo, r.erro) : r.erro.trim().slice(-500) || `Render no pod terminou com código ${r.codigo}`);
 	if (!/^out\/[\w.-]+\.mp4$/.test(saidaRemota)) throw new Error('Saída inesperada do render no pod');

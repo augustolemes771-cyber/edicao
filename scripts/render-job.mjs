@@ -171,15 +171,27 @@ try {
 	};
 	// Tenta o codificador da placa (NVENC, VideoToolbox...). O Remotion não volta sozinho para a CPU se ele listar o codificador
 	// mas não conseguir abri-lo, então repetimos com a CPU. HW=0 desliga a tentativa.
-	if (process.env.HW === '0') {
-		await renderMedia({...opcoes, hardwareAcceleration: 'disable'});
-	} else {
+	const renderizar = async (o) => {
+		if (process.env.HW === '0') return renderMedia({...o, hardwareAcceleration: 'disable'});
 		try {
-			await renderMedia({...opcoes, hardwareAcceleration: 'if-possible'});
+			await renderMedia({...o, hardwareAcceleration: 'if-possible'});
 		} catch (e) {
 			if (!/nvenc|videotoolbox|vaapi|qsv|amf|encoder|Conversion failed/i.test(String(e?.message))) throw e;
 			emitir({aviso: 'Codificador da placa indisponível neste computador: usando a CPU.'});
-			await renderMedia({...opcoes, hardwareAcceleration: 'disable'});
+			await renderMedia({...o, hardwareAcceleration: 'disable'});
+		}
+	};
+	// WebGL (cenas 3D): se o modo escolhido não abre neste computador (comum em pod com a placa liberada só para cálculo),
+	// tenta os outros e por último o swangle (sem placa: sempre funciona, só o 3D fica mais lento). Avisa qual funcionou.
+	const modosGl = [...new Set([gl, 'egl', 'angle-egl', 'angle', 'swangle'])];
+	for (const [i, modo] of modosGl.entries()) {
+		try {
+			await renderizar({...opcoes, chromiumOptions: {...chromiumOptions, gl: modo}});
+			if (modo !== gl) emitir({aviso: `WebGL "${gl}" não abriu aqui: renderizou com "${modo}".`, gl: modo});
+			break;
+		} catch (e) {
+			if (!/webgl|gl context|egl|angle|gpu process|GLES/i.test(String(e?.message)) || i === modosGl.length - 1) throw e;
+			emitir({fase: `WebGL "${modo}" falhou, tentando "${modosGl[i + 1]}"`, pct: base});
 		}
 	}
 
