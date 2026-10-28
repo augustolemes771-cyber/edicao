@@ -1627,7 +1627,7 @@ function boasVindas() {
 	const p = proj();
 	msgs.innerHTML = `<div class="boas-vindas"><div class="logo-g"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg></div>` +
 		`<h3>${p ? `Vamos editar “${esc(p)}”` : 'O que vamos criar hoje?'}</h3>` +
-		`<p>${p ? 'Diga o que quer mudar. Posso usar a biblioteca ou criar elementos novos (eles ficam salvos para os próximos vídeos).' : 'Escolha um vídeo no topo ou crie um em “Novo vídeo”. Posso fazer qualquer tipo de vídeo, copiar a edição de um vídeo da internet ou recriar um estilo.'}</p>` +
+		`<p>${p ? 'Peça as alterações no Claude Code (arquivo “Claude Code - Editar.bat”). Aqui você vê o resultado, abre no Studio e deixa observações nas imagens da aba Prévias.' : 'Escolha um vídeo no topo. Os pedidos de edição são feitos no Claude Code (arquivo “Claude Code - Editar.bat”); aqui você vê e anota.'}</p>` +
 		`<div class="ideias">` +
 		(p ? `<button data-ideia="previa">${ic('play')}<span><b>Gerar a prévia</b><br><small>Ver como está agora</small></span></button>` +
 			`<button data-ideia="refs">${ic('copy')}<span><b>Copiar um estilo</b><br><small>Cole o link de um vídeo de referência</small></span></button>` +
@@ -1812,15 +1812,6 @@ $('#f').onsubmit = async (e) => {
 		} else aviso('O erro continua depois de 2 tentativas automáticas. Veja a mensagem na conversa.', 'erro');
 	} else if (projetoChat && !faltam) { delete (S.autoMidias ?? {})[projetoChat]; if (!ultimoErro) delete (S.autoErro ?? {})[projetoChat]; }
 };
-
-// ---------- Só visualizar: os pedidos vão pelo Claude Code; o painel mostra o resultado e recebe as observações ----------
-const aplicarSoVer = () => {
-	const on = lerLocal('soVer', false) === true;
-	document.body.classList.toggle('so-ver', on);
-	$('#soVer').classList.toggle('on', on);
-	$('#soVer').querySelector('span').textContent = on ? 'Voltar a pedir aqui' : 'Só visualizar';
-};
-$('#soVer').onclick = () => { gravarLocal('soVer', !(lerLocal('soVer', false) === true)); aplicarSoVer(); };
 
 // ---------- Assistente: atende em paralelo enquanto o editor trabalha ----------
 // Responde dúvidas e faz o que não mexe no vídeo em andamento; mudança no vídeo vira pendência, que o editor aplica antes do
@@ -2044,7 +2035,6 @@ async function iniciar() {
 	pollTarefas();
 	pollBloco();
 	mostrarAtualizacao();
-	aplicarSoVer();
 }
 // Topo: data e hora da última atualização do painel (último commit neste PC).
 async function mostrarAtualizacao() {
