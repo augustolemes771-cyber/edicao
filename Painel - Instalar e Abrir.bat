@@ -43,7 +43,7 @@ if errorlevel 1 (
 )
 echo.
 echo Abrindo o painel. Nao feche esta janela enquanto estiver editando.
-node painel\servidor.mjs
+node scripts\supervisor.mjs
 goto fim
 :semgit
 echo Nao consegui instalar o Git. Instale em https://git-scm.com e abra este arquivo de novo.

@@ -915,6 +915,13 @@ createServer(async (req, res) => {
 			setTimeout(() => process.exit(0), 700);
 			return;
 		}
+		if (p === '/api/reiniciar' && req.method === 'POST') {
+			// Só funciona sob o supervisor (scripts/supervisor.mjs), que religa o painel com a saída 75.
+			if (!process.env.SUPERVISOR) return json(res, {erro: 'Abra o painel pelo "Painel - Instalar e Abrir.bat" (com supervisor) para reiniciar por aqui.'}, 400);
+			json(res, {ok: true});
+			setTimeout(() => process.exit(75), 300);
+			return;
+		}
 		if (p === '/api/sync/atualizar' && req.method === 'POST') return json(res, {saida: git('pull', '--rebase', '--autostash')});
 		if (p === '/api/sync/salvar' && req.method === 'POST') {
 			const {mensagem} = await corpo(req);

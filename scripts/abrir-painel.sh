@@ -9,4 +9,4 @@ fi
 if ! command -v claude >/dev/null; then echo "Instalando o Claude Code..."; npm i -g @anthropic-ai/claude-code || sudo npm i -g @anthropic-ai/claude-code || exit 1; fi
 if ! claude auth status >/dev/null 2>&1; then echo "Entre na sua conta do Claude (abre o navegador):"; claude auth login; fi
 git pull --rebase --autostash >/dev/null 2>&1
-exec node painel/servidor.mjs
+exec node scripts/supervisor.mjs
