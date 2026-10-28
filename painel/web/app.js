@@ -288,7 +288,6 @@ function aoTrocarProjeto({historico = true} = {}) {
 	S.fluxo = null;
 	$('#convTitulo').textContent = p ? p : 'Conversa geral';
 	$('#convSub').textContent = p ? `${formatoDe(p) === 'vertical' ? 'Vertical (Reels/Shorts)' : 'Horizontal (YouTube)'} · tema ${$('#tema').selectedOptions[0]?.textContent ?? ''}` : 'Sem vídeo escolhido: bom para criar um vídeo novo ou tirar dúvidas.';
-	if (historico) carregarHistorico();
 	renderRender();
 	carregarMidias();
 	if (S.abaEsq === 'previas') carregarPrevias();
@@ -419,13 +418,17 @@ $('#bibLista').onclick = async (e) => {
 	const i = e.target.closest('[data-p]');
 	if (i) usarPedido(i.dataset.p + ' ');
 };
-function usarPedido(texto, {enviar = false} = {}) {
-	if (celular()) verSecao('conversa');
-	$('#pedido').value = texto;
-	ajustarCaixa();
-	if (enviar) return $('#f').requestSubmit();
-	$('#pedido').focus();
-	$('#pedido').setSelectionRange(texto.length, texto.length);
+// A IA roda só pelo Claude Code: botão que já tem o pedido pronto abre o Claude Code com ele; pedido para completar vai copiado.
+async function usarPedido(texto, {enviar = false} = {}) {
+	if (enviar) {
+		try {
+			await api('/api/abrir-code', {projeto: proj(), pedido: texto});
+			aviso('Claude Code aberto numa janela nova, já com o pedido. Acompanhe por lá; o player atualiza sozinho.', 'ok', {ms: 5000});
+		} catch (e) { avisoErro(e, 'Não abri o Claude Code'); }
+		return;
+	}
+	try { await navigator.clipboard.writeText(texto); } catch {}
+	aviso('Pedido copiado. Complete e cole no Claude Code (botão “Pedir ao Claude”, no topo).', 'info', {ms: 5000});
 }
 function importarPack() {
 	abrirModal({
@@ -2262,13 +2265,12 @@ async function iniciar() {
 	decorar();
 	carregarFontes();
 	mostrarAba(['props', 'render', 'fluxo', 'refs'].includes(S.aba) ? S.aba : 'props');
-	mostrarAba(['midias', 'biblioteca', 'previas', 'conversa'].includes(lerLocal('abaEsq', '')) ? lerLocal('abaEsq', '') : 'midias');
+	mostrarAba(['midias', 'biblioteca', 'previas'].includes(lerLocal('abaEsq', '')) ? lerLocal('abaEsq', '') : 'midias');
 	if (!T) {
 		msgs.innerHTML = `<div class="boas-vindas"><h3>Endereço incompleto</h3><p>Abra o endereço completo que apareceu no terminal (termina com #código).</p></div>`;
 		return;
 	}
 	boasVindas();
-	verificarPendente();
 	await carregarConfig();
 	await atualizarTudo();
 	aoTrocarProjeto();

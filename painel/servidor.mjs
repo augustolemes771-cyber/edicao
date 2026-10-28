@@ -772,12 +772,16 @@ createServer(async (req, res) => {
 		if (p === '/api/prompts') return json(res, lerJson(arqPrompts, []));
 		// Abre o Claude Code numa janela de terminal, na pasta do painel, já com o contexto do vídeo escolhido.
 		if (p === '/api/abrir-code' && req.method === 'POST') {
-			const {projeto} = await corpo(req);
+			const {projeto, pedido} = await corpo(req);
 			if (!nomeValido(projeto)) return json(res, {erro: 'Projeto inválido'}, 400);
-			// Só texto fixo e o nome do projeto ([a-z0-9-]): nada do usuário vai para a linha de comando.
-			const inicio = projeto
-				? `Vamos editar o video ${projeto}. Rode node scripts/contexto.mjs ${projeto}, leia o que ele imprime e espere o meu pedido (responda so: pronto).`
-				: 'Rode node scripts/contexto.mjs, leia e espere o meu pedido (responda so: pronto).';
+			// Só texto fixo e o nome do projeto ([a-z0-9-]) vão para a linha de comando; o pedido de um botão do painel vai por
+			// arquivo (.painel/pedido.txt), que o Claude lê.
+			const temPedido = typeof pedido === 'string' && pedido.trim();
+			if (temPedido) writeFileSync(path.join(estado, 'pedido.txt'), pedido.trim().slice(0, 8000));
+			const ctx = projeto ? `node scripts/contexto.mjs ${projeto}` : 'node scripts/contexto.mjs';
+			const inicio = temPedido
+				? `${projeto ? `Vamos editar o video ${projeto}. ` : ''}Rode ${ctx} e siga o que ele imprime. Depois leia .painel/pedido.txt e faca o que ele pede.`
+				: `${projeto ? `Vamos editar o video ${projeto}. ` : ''}Rode ${ctx}, leia o que ele imprime e espere o meu pedido (responda so: pronto).`;
 			try {
 				if (ehWin) {
 					spawn('cmd.exe', [`/c start "Claude Code" /d "${raiz}" cmd /k claude "${inicio}"`], {windowsVerbatimArguments: true, detached: true, stdio: 'ignore', windowsHide: false}).unref();

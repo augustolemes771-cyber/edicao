@@ -53,7 +53,6 @@
 			<button role="tab" data-aba="midias" class="on" data-ic="film">Mídias</button>
 			<button role="tab" data-aba="biblioteca" data-ic="book">Biblioteca</button>
 			<button role="tab" data-aba="previas" data-ic="eye">Prévias</button>
-			<button role="tab" data-aba="conversa" data-ic="chat">Conversa</button>
 		</nav>
 		<div class="rolavel painel-aba" id="aba-midias"></div>
 		<div class="painel-aba coluna-aba" id="aba-biblioteca" hidden>
@@ -66,8 +65,8 @@
 			<div id="bibLista" class="rolavel"><div class="carregando">Carregando a biblioteca...</div></div>
 		</div>
 		<div class="rolavel painel-aba" id="aba-previas" hidden></div>
-		<div class="painel-aba coluna-aba" id="aba-conversa" hidden>
-			<div id="claude" class="faixa" hidden></div>
+		<!-- Conversa desativada: a IA roda só pelo Claude Code (botão "Pedir ao Claude"). Fica escondida porque o código antigo ainda a referencia. -->
+		<div id="aba-conversa" hidden style="display:none">
 			<div class="conversa-topo">
 				<div>
 					<h2 id="convTitulo">Conversa</h2>
@@ -98,6 +97,7 @@
 
 	<!-- Centro: o player (mesma composição do Studio, atualiza sozinho quando a edição muda) -->
 	<section id="centro" class="coluna">
+		<div id="claude" class="faixa" hidden></div>
 		<div class="player-topo">
 			<b id="plTitulo">Player</b><small id="plSub"></small>
 			<span class="esp"></span>
