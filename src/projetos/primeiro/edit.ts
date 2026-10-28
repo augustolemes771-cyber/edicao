@@ -62,7 +62,7 @@ export const primeiro: Edit = {
 			const ps = o.palavras.filter((p) => p.inicio >= a && p.fim <= z);
 			let ini = a;
 			for (let i = 0; i < ps.length - 1; i++) {
-				if (ps[i + 1].inicio - ps[i].fim <= 0.12) continue;
+				if (ps[i + 1].inicio - ps[i].fim <= 0.09) continue;
 				const fimSub = ps[i].fim + 0.04;
 				const proxIni = ps[i + 1].inicio - 0.03;
 				if (fimSub - ini < 0.25 || z - proxIni < 0.25) continue;
