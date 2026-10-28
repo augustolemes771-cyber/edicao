@@ -8,6 +8,7 @@
 import {spawn, spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {copyFileSync, existsSync, linkSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, statSync} from 'node:fs';
+import net from 'node:net';
 import os from 'node:os';
 import path from 'node:path';
 import {bundle} from '@remotion/bundler';
@@ -228,8 +229,18 @@ try {
 	const gl = ['angle', 'angle-egl', 'egl', 'swangle', 'swiftshader', 'vulkan'].includes(process.env.GL) ? process.env.GL : 'angle';
 	const chromiumOptions = {gl};
 	const inputProps = {projeto, duracaoFonte: 0};
+	// Porta livre pedida ao sistema: com o Studio do painel escutando em 0.0.0.0:3000, o Remotion achava a 3000 livre
+	// (testa só 127.0.0.1) e o render abria a página do Studio ("not a valid Remotion project").
+	const port = await new Promise((ok) => {
+		const s = net.createServer();
+		s.once('error', () => ok(null));
+		s.listen(0, () => {
+			const p = s.address().port;
+			s.close(() => ok(p));
+		});
+	});
 	etapa('abrir');
-	const composition = await selectComposition({serveUrl, id: projeto, inputProps, browserExecutable, chromiumOptions});
+	const composition = await selectComposition({serveUrl, id: projeto, inputProps, browserExecutable, chromiumOptions, port});
 	let frameRange = null;
 	let sufixo = '';
 	if (tipo !== 'final' && (de || ate)) {
@@ -245,6 +256,7 @@ try {
 		serveUrl,
 		composition,
 		inputProps,
+		port,
 		codec: 'h264',
 		outputLocation: path.join(raiz, brutoRel),
 		overwrite: true,
