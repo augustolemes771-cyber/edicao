@@ -722,6 +722,7 @@ async function abrirPreferencias(inicial = 'edicao') {
 			campo('Intensidade da edição', sel('prefs.intensidade', p.intensidade ?? 'normal', [['auto', 'Deixar a IA decidir'], ['calma', 'Calma'], ['normal', 'Normal'], ['frenetica', 'Frenética']])) +
 			campo('Legenda padrão', sel('prefs.legendaPadrao', p.legendaPadrao ?? 'palavra', [['auto', 'Deixar a IA decidir'], ['palavra', 'Palavra por palavra'], ['ouro', 'Ouro'], ['impacto', 'Impacto'], ['neon', 'Neon']])) + '</div>' +
 			chave('prefs.blocos', p.blocos ?? true, 'Editar por blocos (rápido e sem perder qualidade)', 'O Claude faz os primeiros segundos, confere a qualidade sozinho (análise automática + revisão dos quadros) e mostra o trecho pronto. Você aprova e ele segue para o próximo.') +
+			campo('Duração máxima do vídeo final', sel('prefs.duracaoMax', p.duracaoMax ?? 59, [[30, '30 s'], [45, '45 s'], [59, '59 s (padrão Reels/Shorts)'], [90, '90 s'], [180, '3 min'], [600, '10 min'], [3600, 'Sem limite prático']])) +
 			campo('Tamanho de cada bloco', sel('prefs.segBloco', p.segBloco ?? 10, [[6, '~6 s (mais paradas)'], [10, '~10 s (recomendado)'], [15, '~15 s (menos paradas)']])) +
 			chave('prefs.amostras', p.amostras ?? false, 'Receber amostras durante a edição para eu decidir', 'Ligado: nas escolhas de estilo, o Claude mostra 2 ou 3 opções em imagem e espera você escolher. Desligado: ele decide sozinho e segue até a prévia.') +
 			chave('prefs.participar', p.participar ?? true, 'Modo participativo', 'O Claude mostra o plano e espera sua aprovação antes de editar, avisa a cada etapa e pergunta o que mudar no final. Desligue para ele seguir sozinho até a prévia.') +
@@ -794,7 +795,7 @@ async function abrirPreferencias(inicial = 'edicao') {
 			const [raiz, ...k] = el.name.split('.');
 			let alvo = out[raiz];
 			while (k.length > 1) alvo = alvo[k.shift()];
-			alvo[k[0]] = el.type === 'checkbox' ? el.checked : el.type === 'number' || /^(resPrevia)$/.test(k[0]) ? Number(el.value) : el.value;
+			alvo[k[0]] = el.type === 'checkbox' ? el.checked : el.type === 'number' || /^(resPrevia|duracaoMax|segBloco)$/.test(k[0]) ? Number(el.value) : el.value;
 		}
 		return out;
 	};

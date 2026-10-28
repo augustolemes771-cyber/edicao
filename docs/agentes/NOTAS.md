@@ -17,3 +17,4 @@
 - Não fiz: render solto no pod que sobrevive à queda de SSH (a recuperação em `renderNoPod` está sendo mexida por outro agente; mudar o
   modelo de execução sem testar no pod real é arriscado). Proposta: `nohup node scripts/render-job.mjs ... > out/.render-<id>.log &` e o painel
   faz `tail -n +1 -f` no log, reconectando pelo id.
+- Nova preferência `duracaoMax` (padrão 59, em `biblioteca/preferencias.json`): `scripts/qualidade.ts`/`conferir.ts` devem comparar `duracaoEditada` com ela (em vez do 60 s fixo).

@@ -98,9 +98,9 @@ Leia `docs/estilo-do-usuario.md` (ritmo, paleta, receitas emoção→efeito, 3D,
 
 ## Duração máxima (regra do usuário, 28/10/2026)
 
-Vídeo final com no máximo 59 s e dinâmico: corte as pausas (bordas no silêncio medido), tire enrolação e, só se faltar, acelere a fala de
+Vídeo final com no máximo 59 s por padrão (preferência `duracaoMax` do painel, ou duração citada no pedido, manda no lugar) e dinâmico: corte as pausas (bordas no silêncio medido), tire enrolação e, só se faltar, acelere a fala de
 leve (até 1,08x). O motor ainda NÃO tem velocidade por trecho (`src/motor/plano.ts`, `VideoEditado.tsx`): enquanto não houver, resolva só com cortes
-e deixe o pedido em `docs/agentes/NOTAS.md`. Conferir `duracaoEditada <= 59` antes de qualquer prévia/render.
+e deixe o pedido em `docs/agentes/NOTAS.md`. Conferir `duracaoEditada <= duração máxima` antes de qualquer prévia/render.
 
 ## Depois da entrega
 

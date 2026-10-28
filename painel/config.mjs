@@ -13,6 +13,7 @@ export const PREFS_PADRAO = {
 	amostras: false,
 	blocos: true,
 	segBloco: 10,
+	duracaoMax: 59,
 	participar: true,
 	salvarSozinho: false,
 	salvarAoFechar: true,
@@ -85,6 +86,7 @@ export const textoPrefs = (p) => {
   uma variação por vez no edit.ts) e mostre cada uma numa linha própria exatamente assim: [[amostra:A|out/amostra-<projeto>-a.jpg|descrição curta da opção]].
   Depois PARE e espere o usuário escolher. Volte o edit.ts para a opção escolhida.`
 		: '- Amostras desligadas: decida sozinho e siga até a prévia, sem parar para perguntar o que dá para decidir (a não ser o plano do modo participativo, se estiver ligado).';
+	const dur = Math.max(10, Math.min(3600, Number(p.duracaoMax) || 59));
 	const seg = [6, 10, 15].includes(Number(p.segBloco)) ? Number(p.segBloco) : 10;
 	const blocos = p.blocos !== false
 		? `
@@ -107,7 +109,7 @@ export const textoPrefs = (p) => {
   Não repita o efeito principal do bloco anterior. Se nenhuma peça servir, crie uma nova em src/pecas com acabamento de produção (mola,
   tipografia e paleta do tema, sombra suave; nada de clip-art, fonte gótica ou símbolo solto) e registre em biblioteca/itens.
   Sem poluir: um texto por vez, um evento a cada ~2 s, todo efeito ligado a uma palavra ou ideia falada, legenda no meio.
-- DURAÇÃO: o vídeo final tem no máximo 59 s, dinâmico: corte as pausas (silêncio medido), enrolação e repetições; só se faltar, acelere a fala até 1,08x (hoje sem suporte no motor: use cortes).
+- DURAÇÃO: o vídeo final tem no máximo ${dur} s (preferência do usuário; se o pedido citar outra duração, vale a do pedido), dinâmico: corte as pausas (silêncio medido), enrolação e repetições; só se faltar, acelere a fala até 1,08x (hoje sem suporte no motor: use cortes). Se o conteúdo for curto, não estique.
 - ESTILO DO USUÁRIO: antes de editar, leia docs/estilo-do-usuario.md (receitas emoção→efeito, o que ele reprova) e src/pecas/efeitos/README.md
   (ImpactoDor, ObjetoVoaAoCentro, Texto3DImpacto). Dor/revolta = tremida + glitch + aberração vermelha/ciano + vinheta pulsante; 3D só com sentido.`
 		: '';
