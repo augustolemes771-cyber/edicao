@@ -33,3 +33,8 @@ Regras aprendidas nos vídeos deste tema. O Claude lê isto antes de editar e ac
 - 2026-10-28 (modelo WhatsApp Video 2026-10-27 at 14.42.56 (1)): na legenda, só a palavra-chave da frase vira pílula roxa com itálico serifado; no máximo uma por frase.
 - 2026-10-28 (modelo WhatsApp Video 2026-10-27 at 14.42.56 (1)): transições por função: chicote = troca de falante; desfoque curto = entrar no close da mesma cena; clarão = só gancho e síntese.
 - 2026-10-28 (primeiro): trechos vizinhos que se sobrepõem no original duplicam palavras/quadros; dividir a sobreposição ao meio. Frase de dor: estática, tela cheia, palavra por palavra, sem zoom de câmera.
+
+- 2026-10-28 (modelo WhatsApp Video 2026-10-27 at 14.42.56 (1)): Layout vertical fixo: rosto em y 25–50%, legenda de vidro em y 62–68%, chips/selos pequenos no topo (y ~4%) ou logo acima da legenda; nunca dois textos no mesmo lugar ao mesmo tempo.
+- 2026-10-28 (modelo WhatsApp Video 2026-10-27 at 14.42.56 (1)): Receita de resposta: opinião forte em 1 frase ("é a mais fácil, mais previsível") + 3 itens curtos como chips ✓ um por vez no mesmo lugar. Pergunta-duelo + "os dois funcionam, escolha o que é a sua cara" fecha sem tomar partido.
+- 2026-10-28 (modelo WhatsApp Video 2026-10-27 at 14.42.56 (1)): CTA falado promete resposta ("deixe sua dúvida que nós vamos te responder") e a caixa de comentário digitada acompanha a fala. Cartão final de marca ~3 s em roxo com partículas.
+- 2026-10-28 (modelo WhatsApp Video 2026-10-27 at 14.42.56 (1)): Ao transcrever, o Whisper inventa "Legenda por ..." no cartão final sem fala e erra nomes/jargão (tíquete, marcas, convidados): apagar a linha e corrigir antes de legendar.
