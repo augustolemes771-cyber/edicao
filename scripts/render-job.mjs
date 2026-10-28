@@ -160,7 +160,9 @@ try {
 		...(tipo === 'final' ? {audioCodec: 'aac', audioBitrate: '320k'} : {}),
 		imageFormat: 'jpeg',
 		jpegQuality: 95,
-		concurrency: null,
+		// CONC (o pod passa o nº de núcleos): usa todos, não só metade como o padrão do Remotion.
+		concurrency: Number(process.env.CONC) > 0 ? Number(process.env.CONC) : null,
+		...(Number(process.env.CONC) > 0 ? {offthreadVideoCacheSizeInBytes: Math.floor(os.totalmem() * 0.4), offthreadVideoThreads: Number(process.env.CONC)} : {}),
 		frameRange,
 		browserExecutable,
 		chromiumOptions,
@@ -183,10 +185,12 @@ try {
 	};
 	// WebGL (cenas 3D): se o modo escolhido não abre neste computador (comum em pod com a placa liberada só para cálculo),
 	// tenta os outros e por último o swangle (sem placa: sempre funciona, só o 3D fica mais lento). Avisa qual funcionou.
+	const t0 = Date.now();
 	const modosGl = [...new Set([gl, 'egl', 'angle-egl', 'angle', 'swangle'])];
 	for (const [i, modo] of modosGl.entries()) {
 		try {
 			await renderizar({...opcoes, chromiumOptions: {...chromiumOptions, gl: modo}});
+			emitir({aviso: `Render: WebGL "${modo}", ${opcoes.concurrency ?? 'padrão'} threads, ${composition.durationInFrames} quadros em ${((Date.now() - t0) / 1000).toFixed(0)}s (${(composition.durationInFrames / Math.max(1, (Date.now() - t0) / 1000)).toFixed(1)} q/s).`});
 			if (modo !== gl) emitir({aviso: `WebGL "${gl}" não abriu aqui: renderizou com "${modo}".`, gl: modo});
 			break;
 		} catch (e) {

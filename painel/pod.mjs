@@ -280,7 +280,7 @@ export const renderNoPod = async ({t, raiz, estado, podCfg, projeto, tipo, res, 
 	if (de !== undefined) args.push('--de', String(de));
 	if (ate !== undefined) args.push('--ate', String(ate));
 	let saidaRemota = null, erroRemoto = null, glQueFuncionou = null;
-	const r = await sshRodar(pod, `cd ${q(pod.pasta)} && GL=${q(pod.gl)} ${hw ? '' : 'HW=0 '}exec node scripts/render-job.mjs ${args.join(' ')}`, {
+	const r = await sshRodar(pod, `cd ${q(pod.pasta)} && GL=${q(pod.gl)} CONC=$(nproc) ${hw ? '' : 'HW=0 '}exec node scripts/render-job.mjs ${args.join(' ')}`, {
 		aoProc: (p) => t.procs.add(p),
 		aoSaida: (l) => {
 			let ev;
