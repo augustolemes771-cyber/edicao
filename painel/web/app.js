@@ -748,6 +748,7 @@ async function abrirPreferencias(inicial = 'edicao') {
 			`<p class="pref-desc">Status: ${S.claude ? (S.claude.instalado ? (S.claude.logado ? '<span class="selo ok">instalado e conectado</span>' : '<span class="selo alerta">falta entrar na conta</span>') : '<span class="selo erro">não instalado</span>') : '—'}</p>` +
 			(S.claude?.instalado ? `<p class="pref-desc">Conta: <b>${S.claude.logado ? esc(S.claude.email || 'conectada') : 'nenhuma'}</b></p><div class="linha"><button type="button" class="btn" id="pfTrocarConta">${ic('key')}<span>${S.claude.logado ? 'Trocar de conta' : 'Entrar na conta'}</span></button></div>` : ''),
 		pc: `<h4>Este computador</h4><p class="pref-desc">Só valem aqui. Ajuste se o Studio ou o render estiverem lentos ou falhando.</p>` +
+			chave('config.sincronizar', c.sincronizar ?? true, 'Sincronizar com a nuvem sozinho', 'A cada 20 s o painel puxa o que foi editado numa sessão do Claude na nuvem (o player atualiza sozinho) e envia os seus ajustes, transcrições e projetos. Os vídeos não vão para a nuvem.') +
 			chave('config.gpuStudio', c.gpuStudio ?? true, 'Usar a placa de vídeo (GPU) no Studio', 'Abre o Studio num navegador com aceleração forçada.') +
 			chave('config.gpuCodificador', c.gpuCodificador ?? true, 'Usar o codificador da placa de vídeo no render', 'NVENC/QuickSync/AMF: exporta mais rápido. Desligue se o vídeo sair com defeito.') +
 			txt('config.navegadorRender', c.navegadorRender, 'Navegador usado no render', 'deixe vazio para automático', 'text', 'Caminho de um Chrome/Chromium específico, se precisar.'),
@@ -2077,7 +2078,7 @@ function carregarPlayer({manterQuadro = false} = {}) {
 		$('#palcoVazio').innerHTML = `${ic('film')}<b>Escolha um vídeo no topo</b>O vídeo toca aqui, com a linha do tempo embaixo. Os pedidos de edição vão pelo Claude Code; o player atualiza sozinho a cada mudança.`;
 		return;
 	}
-	if (PL.projeto !== p) { PL.meta = null; PL.quadro = 0; PL.sel = null; manterQuadro = false; }
+	if (PL.projeto !== p) { PL.meta = null; PL.quadro = 0; PL.sel = null; manterQuadro = false; carregarAjustes(); }
 	PL.projeto = p;
 	$('#palcoVazio').hidden = true;
 	f.hidden = false;
@@ -2107,6 +2108,7 @@ addEventListener('message', (e) => {
 async function vigiarPlayer() {
 	try {
 		const r = await api('/api/player');
+		mostrarSinc(r.sinc);
 		$('#palcoErro').hidden = !r.erro;
 		if (r.erro) $('#palcoErro').innerHTML = `<b>A edição tem um erro e o player mostra a última versão boa:</b><pre>${esc(r.erro)}</pre>`;
 		if (r.versao && r.versao !== PL.versao) {
@@ -2117,6 +2119,19 @@ async function vigiarPlayer() {
 	} catch {}
 	setTimeout(vigiarPlayer, 1500);
 }
+// Nuvem: o que uma sessão do Claude na nuvem enviou chega sozinho (o player recompila); os ajustes daqui sobem sozinhos.
+let avisouPainel = false;
+function mostrarSinc(sc) {
+	const b = $('#stNuvem');
+	if (!sc || !b) return;
+	const ligado = S.config?.sincronizar !== false;
+	b.querySelector('.ponto').className = 'ponto ' + (!ligado ? '' : sc.erro ? 'erro' : sc.em ? 'ok' : 'alerta');
+	const s = sc.em ? Math.round((Date.now() - sc.em) / 1000) : null;
+	b.querySelector('span').textContent = !ligado ? 'Nuvem desligada' : sc.erro ? 'Nuvem: erro' : s === null ? 'Nuvem...' : `Nuvem há ${s < 60 ? s + ' s' : Math.round(s / 60) + ' min'}`;
+	b.title = sc.erro ? `Não sincronizou: ${sc.erro}` : `Recebidas ${sc.recebidos} e enviadas ${sc.enviados} atualizações nesta sessão. Clique para sincronizar agora.`;
+	if (sc.painelMudou && !avisouPainel) { avisouPainel = true; aviso('Chegou uma atualização do próprio painel. Clique em Atualizar (topo) quando puder.', 'info', {ms: 8000}); }
+}
+$('#stNuvem').onclick = async () => { try { mostrarSinc(await api('/api/sinc', {})); aviso('Sincronizado com a nuvem.', 'ok', {ms: 1800}); } catch (e) { avisoErro(e, 'Não sincronizei'); } };
 const irPara = (q) => { PL.quadro = Math.max(0, Math.min((PL.meta?.quadros ?? 1) - 1, Math.round(q))); paraPlayer({cmd: 'ir', quadro: PL.quadro}); moverCursor(); };
 const passo = (n) => { paraPlayer({cmd: 'pause'}); irPara(PL.quadro + n); };
 function teclaPlayer(e) {
@@ -2186,11 +2201,12 @@ function renderLinha(manterCentro = false) {
 	let regua = '';
 	for (let t = 0; t <= m.duracao + 0.001; t += passoR) regua += `<span class="tick" style="left:${x(t)}px"><i></i>${t >= 60 ? `${Math.floor(t / 60)}:${String(Math.round(t % 60)).padStart(2, '0')}` : `${t}s`}</span>`;
 	for (const pr of m.problemas ?? []) if (typeof pr.tempo === 'number') regua += `<span class="tl-prob ${esc(pr.gravidade)}" style="left:${x(pr.tempo)}px" title="${esc(pr.texto)}"></span>`;
-	const clip = (faixa, i, de, ate, rot, extra = '', cls = '') => `<div class="clip ${cls} ${PL.sel?.faixa === faixa && PL.sel?.i === i ? 'sel' : ''}" data-faixa="${faixa}" data-i="${i}" style="left:${x(de)}px;width:${w(de, ate)}px;${extra}" title="${esc(rot)}"><span>${esc(rot)}</span></div>`;
+	const ehSel = (faixa, i) => PL.sel?.faixa === faixa && (PL.sel.chave ? (faixa === 'cenas' ? m.cenas[i]?.chave : m.camera[i]?.chave) === PL.sel.chave : PL.sel.i === i);
+	const clip = (faixa, i, de, ate, rot, extra = '', cls = '') => `<div class="clip ${cls} ${ehSel(faixa, i) ? 'sel' : ''}" data-faixa="${faixa}" data-i="${i}" style="left:${x(de)}px;width:${w(de, ate)}px;${extra}" title="${esc(rot)}"><span>${esc(rot)}</span></div>`;
 	const linhas = {
 		legenda: m.legenda.map((p, i) => clip('legenda', i, p.de, p.ate, p.texto, '', 'texto')).join(''),
-		cenas: m.cenas.map((c, i) => clip('cenas', i, c.de, c.ate, `${c.tipo}${c.texto ? ' · ' + c.texto : ''}`, `--c:${CORES_CENA[c.tipo] ?? '#5b8def'}`, 'efeito')).join(''),
-		camera: m.camera.map((c, i) => `<div class="marca-cam ${rotuloCabe(m.camera.map((k) => k.em), i) ? '' : 'sem-rotulo'} ${PL.sel?.faixa === 'camera' && PL.sel?.i === i ? 'sel' : ''}" data-faixa="camera" data-i="${i}" style="left:${x(c.em)}px" title="${esc(c.tipo)} em ${fmtT(c.em, true)}"><i></i><span>${esc(c.tipo)}</span></div>`).join(''),
+		cenas: m.cenas.map((c, i) => clip('cenas', i, c.de, c.ate, `${c.tipo}${c.texto ? ' · ' + c.texto : ''}`, `--c:${CORES_CENA[c.tipo] ?? '#5b8def'}`, `efeito ${AJ.lista.cenas?.[c.chave] ? 'ajustado' : ''}`)).join(''),
+		camera: m.camera.map((c, i) => `<div class="marca-cam ${rotuloCabe(m.camera.map((k) => k.em), i) ? '' : 'sem-rotulo'} ${ehSel('camera', i) ? 'sel' : ''}" data-faixa="camera" data-i="${i}" style="left:${x(c.em)}px" title="${esc(c.tipo)} em ${fmtT(c.em, true)}"><i></i><span>${esc(c.tipo)}</span></div>`).join(''),
 		trechos: m.trechos.map((t, i) => clip('trechos', i, t.de, t.ate, `gravação ${fmtT(t.fonteDe)}–${fmtT(t.fonteAte)}`, '', 'video')).join(''),
 		audio: (m.musica ? `<div class="clip musica" style="left:0;width:${w(0, m.duracao)}px" title="Música: ${esc(m.musica)}"><span>♪ ${esc(m.musica)}</span></div>` : '') +
 			m.sons.map((s, i) => `<div class="marca-som ${rotuloCabe(m.sons.map((k) => k.t), i) ? '' : 'sem-rotulo'} ${PL.sel?.faixa === 'audio' && PL.sel?.i === i ? 'sel' : ''}" data-faixa="audio" data-i="${i}" style="left:${x(s.t)}px" title="${esc(s.som)} em ${fmtT(s.t, true)}"><i></i><span>${esc(s.som)}</span></div>`).join(''),
@@ -2212,26 +2228,60 @@ function moverCursor(seguir = true) {
 	if (seguir && PL.tocando && (xx > rolo.scrollLeft + rolo.clientWidth - 40 || xx < rolo.scrollLeft)) rolo.scrollLeft = xx - 60;
 }
 // Clicar/arrastar na régua ou no fundo move o cursor; clicar num item seleciona e mostra os detalhes.
+// Efeitos e marcas de câmera também se arrastam (mover; nas bordas do efeito, mudar início e fim): vira ajuste manual.
 (() => {
 	const rolo = $('#tlRolo');
-	let arrastando = false;
+	let arrastando = false, puxando = null;
 	const tempoDe = (e) => (e.clientX - $('#tl').getBoundingClientRect().left) / PL.px;
+	const quadroSnap = (t) => Math.max(0, Math.round(t * (PL.meta?.fps ?? 30)) / (PL.meta?.fps ?? 30));
 	rolo.addEventListener('pointerdown', (e) => {
 		if (!PL.meta || e.button !== 0) return;
 		const item = e.target.closest('[data-faixa]');
 		if (item) {
-			PL.sel = {faixa: item.dataset.faixa, i: Number(item.dataset.i)};
-			const d = itemSel();
-			if (d) irPara(d.de * PL.meta.fps + 1);
-			renderLinha();
-			mostrarAba('props');
-			renderDetalhes();
+			const faixa = item.dataset.faixa, i = Number(item.dataset.i);
+			const obj = faixa === 'cenas' ? PL.meta.cenas[i] : faixa === 'camera' ? PL.meta.camera[i] : null;
+			PL.sel = {faixa, i, chave: obj?.chave};
+			if (obj?.chave) {
+				const r = item.getBoundingClientRect();
+				const modo = faixa === 'camera' ? 'mover' : e.clientX - r.left < 7 ? 'ini' : r.right - e.clientX < 7 ? 'fim' : 'mover';
+				puxando = {item, faixa, obj, modo, x0: e.clientX, left0: parseFloat(item.style.left), w0: parseFloat(item.style.width) || 0, moveu: false};
+				rolo.setPointerCapture(e.pointerId);
+				return;
+			}
+			selecionar();
 			return;
 		}
 		arrastando = true;
 		rolo.setPointerCapture(e.pointerId);
 		paraPlayer({cmd: 'pause'});
 		irPara(tempoDe(e) * PL.meta.fps);
+	});
+	const selecionar = () => {
+		const d = itemSel();
+		if (d) irPara(d.de * PL.meta.fps + 1);
+		renderLinha();
+		mostrarAba('props');
+		renderDetalhes();
+	};
+	rolo.addEventListener('pointermove', (e) => {
+		if (!puxando) return;
+		const dx = e.clientX - puxando.x0;
+		if (Math.abs(dx) > 3) puxando.moveu = true;
+		if (!puxando.moveu) return;
+		const {item, modo, left0, w0} = puxando;
+		if (modo === 'mover') item.style.left = Math.max(0, left0 + dx) + 'px';
+		else if (modo === 'ini') { const l = Math.max(0, Math.min(left0 + w0 - 6, left0 + dx)); item.style.left = l + 'px'; item.style.width = left0 + w0 - l + 'px'; }
+		else item.style.width = Math.max(6, w0 + dx) + 'px';
+	});
+	rolo.addEventListener('pointerup', () => {
+		if (!puxando) return;
+		const {item, faixa, obj, moveu} = puxando;
+		puxando = null;
+		if (!moveu) return selecionar();
+		const de = quadroSnap(parseFloat(item.style.left) / PL.px);
+		if (faixa === 'camera') return salvarAjuste('camera', obj.chave, {em: de}, `${obj.tipo} movido para ${fmtT(de, true)}`);
+		const ate = quadroSnap((parseFloat(item.style.left) + parseFloat(item.style.width)) / PL.px);
+		salvarAjuste('cenas', obj.chave, {de, ate}, `${obj.tipo}: ${fmtT(de, true)} até ${fmtT(ate, true)}`);
 	});
 	rolo.addEventListener('pointermove', (e) => { if (arrastando) irPara(tempoDe(e) * PL.meta.fps); });
 	rolo.addEventListener('pointerup', () => (arrastando = false));
@@ -2250,35 +2300,134 @@ function moverCursor(seguir = true) {
 function itemSel() {
 	const m = PL.meta, s = PL.sel;
 	if (!m || !s) return null;
-	if (s.faixa === 'legenda') { const p = m.legenda[s.i]; return p && {tipo: 'Legenda', de: p.de, ate: p.ate, linhas: [['Texto', p.texto]]}; }
-	if (s.faixa === 'cenas') { const c = m.cenas[s.i]; return c && {tipo: `Efeito: ${c.tipo}`, de: c.de, ate: c.ate, linhas: [['Tipo', c.tipo], ['Texto', c.texto || '—'], ['Como aparece', {cheia: 'tela cheia', sobre: 'sobre o vídeo', atras: 'atrás da pessoa'}[c.modo] ?? c.modo]]}; }
-	if (s.faixa === 'trechos') { const t = m.trechos[s.i]; return t && {tipo: 'Trecho do vídeo', de: t.de, ate: t.ate, linhas: [['Da gravação', `${fmtT(t.fonteDe, true)} até ${fmtT(t.fonteAte, true)}`]]}; }
-	if (s.faixa === 'camera') { const c = m.camera[s.i]; return c && {tipo: `Câmera: ${c.tipo}`, de: c.em, ate: c.em + 0.5, linhas: [['Efeito', c.tipo]]}; }
-	if (s.faixa === 'audio') { const a = m.sons[s.i]; return a && {tipo: `Som: ${a.som}`, de: a.t, ate: a.t + 0.5, linhas: [['Som', a.som]]}; }
+	// Efeitos e câmera: pela chave (o índice muda quando a edição recompila).
+	const porChave = (lista) => (s.chave ? lista.find((x) => x.chave === s.chave) : null) ?? lista[s.i];
+	if (s.faixa === 'legenda') { const p = m.legenda[s.i]; return p && {faixa: 'legenda', tipo: 'Legenda', de: p.de, ate: p.ate, p}; }
+	if (s.faixa === 'cenas') { const c = porChave(m.cenas); return c && {faixa: 'cenas', tipo: `Efeito: ${c.tipo}`, de: c.de, ate: c.ate, c}; }
+	if (s.faixa === 'trechos') { const t = m.trechos[s.i]; return t && {faixa: 'trechos', tipo: 'Trecho do vídeo', de: t.de, ate: t.ate, t}; }
+	if (s.faixa === 'camera') { const c = porChave(m.camera); return c && {faixa: 'camera', tipo: `Câmera: ${c.tipo}`, de: c.em, ate: c.em + 0.5, c}; }
+	if (s.faixa === 'audio') { const a = m.sons[s.i]; return a && {faixa: 'audio', tipo: `Som: ${a.som}`, de: a.t, ate: a.t + 0.5, a}; }
 	return null;
 }
+// Ajustes manuais: guardados em src/projetos/ajustes.json por cima da edição do Claude (Ctrl+Z desfaz).
+const AJ = {lista: {}, desfazer: []};
+async function carregarAjustes() {
+	try { AJ.lista = proj() ? await api('/api/ajustes?projeto=' + enc(proj())) : {}; } catch { AJ.lista = {}; }
+	AJ.desfazer = [];
+}
+async function salvarAjuste(tipo, chave, mudanca, descricao, {substituir = false, semDesfazer = false} = {}) {
+	const atual = AJ.lista[tipo]?.[chave] ?? null;
+	const valor = mudanca === null ? null : tipo === 'palavras' ? mudanca : substituir ? mudanca : {...(atual ?? {}), ...mudanca, ...(mudanca.campos ? {campos: {...(atual?.campos ?? {}), ...mudanca.campos}} : {})};
+	try {
+		const r = await api('/api/ajustes', {projeto: proj(), tipo, chave, valor});
+		if (!semDesfazer) AJ.desfazer.push({tipo, chave, anterior: atual, descricao});
+		AJ.lista = r.ajustes ?? {};
+		aviso(`${descricao}. O player atualiza em instantes.`, 'ok', {ms: 2200});
+	} catch (e) { avisoErro(e, 'Não salvei o ajuste'); renderLinha(); }
+}
+async function desfazerAjuste() {
+	const u = AJ.desfazer.pop();
+	if (!u) return aviso('Nada para desfazer.', 'info', {ms: 1500});
+	await salvarAjuste(u.tipo, u.chave, u.anterior, `Desfeito: ${u.descricao}`, {substituir: true, semDesfazer: true});
+}
+document.addEventListener('keydown', (e) => {
+	if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && !e.target.closest('input,textarea,select') && $('#modal').hidden) { e.preventDefault(); desfazerAjuste(); }
+});
+const numT = (v) => { const n = Number(String(v).replace(',', '.')); return Number.isFinite(n) ? Math.max(0, Math.round(n * 1000) / 1000) : null; };
 function renderDetalhes() {
 	const el = $('#aba-props');
 	if (!el) return;
 	const m = PL.meta;
-	if (!proj()) { el.innerHTML = `<div class="vazio">${ic('sliders')}<b>Nada selecionado</b>Escolha um vídeo e clique num item da linha do tempo para ver os detalhes.</div>`; return; }
+	if (!proj()) { el.innerHTML = `<div class="vazio">${ic('sliders')}<b>Nada selecionado</b>Escolha um vídeo e clique num item da linha do tempo para ver e editar.</div>`; return; }
 	if (!m) { el.innerHTML = '<div class="carregando">Abrindo o vídeo...</div>'; return; }
 	const d = itemSel();
 	const tabela = (linhas) => `<dl class="props">${linhas.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>`;
-	if (d) {
-		el.innerHTML = `<div class="cartao"><div class="cartao-topo"><h4>${esc(d.tipo)}</h4><button class="btn icone mini fantasma" id="dtFechar" title="Tirar a seleção" aria-label="Tirar a seleção">${ic('x')}</button></div>` +
-			tabela([['Começa', fmtT(d.de, true)], ['Termina', fmtT(d.ate, true)], ['Duração', `${(d.ate - d.de).toFixed(2)} s`], ...d.linhas]) +
-			`<div class="linha" style="gap:8px;margin-top:12px;flex-wrap:wrap"><button class="btn mini" id="dtTocar">${ic('play')}<span>Tocar este trecho</span></button><button class="btn mini primario" id="dtNota">${ic('edit')}<span>Pedir mudança aqui</span></button></div>` +
-			`<p class="legenda" style="margin-top:10px">A mudança vira pendência: o Claude Code aplica antes do próximo render. Para pedir agora, diga a ele: “aplique as pendências”.</p></div>`;
+	const nota = `<button class="btn mini fantasma" id="dtNota">${ic('chat')}<span>Pedir ao Claude</span></button>`;
+	const topo = (t, ajustado) => `<div class="cartao-topo"><h4>${esc(t)}${ajustado ? ' <span class="selo cor">ajustado à mão</span>' : ''}</h4><button class="btn icone mini fantasma" id="dtFechar" title="Tirar a seleção" aria-label="Tirar a seleção">${ic('x')}</button></div>`;
+	const tempoCampos = (de, ate, soInicio = false) => `<div class="grade-2"><div class="campo"><label class="rotulo">Começa (s)</label><input id="edDe" type="number" step="0.05" min="0" value="${de.toFixed(2)}"></div>${soInicio ? '' : `<div class="campo"><label class="rotulo">Termina (s)</label><input id="edAte" type="number" step="0.05" min="0" value="${ate.toFixed(2)}"></div>`}</div>`;
+	const ligarComuns = () => {
 		$('#dtFechar').onclick = () => { PL.sel = null; renderLinha(); renderDetalhes(); };
-		$('#dtTocar').onclick = () => { irPara(d.de * m.fps); paraPlayer({cmd: 'play'}); };
-		$('#dtNota').onclick = () => notaPendencia({t: d.de, cena: `${d.tipo} (${fmtT(d.de)}–${fmtT(d.ate)})${d.linhas[1] ? ': ' + d.linhas[1][1] : ''}`});
+		$('#dtTocar') && ($('#dtTocar').onclick = () => { irPara(d.de * m.fps); paraPlayer({cmd: 'play'}); });
+		$('#dtNota') && ($('#dtNota').onclick = () => notaPendencia({t: d.de, cena: `${d.tipo} (${fmtT(d.de)}–${fmtT(d.ate)})`}));
+	};
+	if (d?.faixa === 'cenas') {
+		const c = d.c, aj = AJ.lista.cenas?.[c.chave];
+		const campo = ([k, v]) => Array.isArray(v)
+			? `<div class="campo"><label class="rotulo">${esc(k)} <small>(um por linha)</small></label><textarea data-campo="${esc(k)}" data-tipo="lista" rows="${Math.min(6, v.length + 1)}">${esc(v.join('\n'))}</textarea></div>`
+			: typeof v === 'number' ? `<div class="campo"><label class="rotulo">${esc(k)}</label><input data-campo="${esc(k)}" data-tipo="num" type="number" step="any" value="${v}"></div>`
+			: String(v).length > 50 ? `<div class="campo"><label class="rotulo">${esc(k)}</label><textarea data-campo="${esc(k)}" rows="3">${esc(v)}</textarea></div>`
+			: `<div class="campo"><label class="rotulo">${esc(k)}</label><input data-campo="${esc(k)}" type="text" value="${esc(v)}"></div>`;
+		el.innerHTML = `<div class="cartao editor-item">${topo(d.tipo, !!aj)}` + tempoCampos(c.de, c.ate) +
+			Object.entries(c.campos ?? {}).filter(([k]) => !/^(src|arquivo|imagem|video|pasta|fonte|cor|paleta|som)$/i.test(k)).map(campo).join('') +
+			`<label class="chk"><input type="checkbox" id="edSom" ${c.som ? 'checked' : ''}><span><b>Som de entrada${c.som ? `: ${esc(c.som)}` : ''}</b><small>Desligue para tirar o som deste efeito.</small></span></label>` +
+			`<div class="acoes-editor"><button class="btn primario" id="edSalvar">${ic('check')}<span>Aplicar</span></button><button class="btn" id="dtTocar">${ic('play')}<span>Tocar</span></button>${nota}</div>` +
+			`<div class="acoes-editor"><button class="btn mini perigo" id="edRemover">${ic('trash')}<span>Remover efeito</span></button>${aj ? `<button class="btn mini fantasma" id="edRestaurar">${ic('refresh')}<span>Voltar ao original</span></button>` : ''}</div></div>`;
+		ligarComuns();
+		$('#edSalvar').onclick = () => {
+			const campos = {};
+			$$('[data-campo]', el).forEach((x) => {
+				const k = x.dataset.campo, orig = c.campos[k];
+				const v = x.dataset.tipo === 'lista' ? x.value.split('\n').map((l) => l.trim()).filter(Boolean) : x.dataset.tipo === 'num' ? Number(x.value) : x.value;
+				if (JSON.stringify(v) !== JSON.stringify(orig)) campos[k] = v;
+			});
+			if (!$('#edSom').checked && c.som) campos.som = null;
+			const mud = {};
+			const de = numT($('#edDe').value), ate = numT($('#edAte').value);
+			if (de !== null && Math.abs(de - c.de) > 0.001) mud.de = de;
+			if (ate !== null && Math.abs(ate - c.ate) > 0.001) mud.ate = ate;
+			if (Object.keys(campos).length) mud.campos = campos;
+			if (!Object.keys(mud).length) return aviso('Nada mudou.', 'info', {ms: 1500});
+			salvarAjuste('cenas', c.chave, mud, `${c.tipo} ajustado`);
+		};
+		$('#edRemover').onclick = () => { salvarAjuste('cenas', c.chave, {removida: true}, `${c.tipo} removido`); PL.sel = null; };
+		$('#edRestaurar') && ($('#edRestaurar').onclick = () => salvarAjuste('cenas', c.chave, null, `${c.tipo} voltou ao original`));
+		return;
+	}
+	if (d?.faixa === 'legenda') {
+		const p = d.p, ajustado = p.palavras.some((w) => AJ.lista.palavras?.[w.i] !== undefined);
+		el.innerHTML = `<div class="cartao editor-item">${topo('Legenda', ajustado)}` + tabela([['Começa', fmtT(p.de, true)], ['Termina', fmtT(p.ate, true)]]) +
+			`<div class="campo"><label class="rotulo">Palavras <small>(corrija o texto de cada uma)</small></label><div class="palavras-ed">${p.palavras.map((w) => `<input data-i="${w.i}" value="${esc(w.texto)}" size="${Math.max(2, w.texto.length)}">`).join('')}</div></div>` +
+			`<div class="acoes-editor"><button class="btn primario" id="edSalvar">${ic('check')}<span>Aplicar</span></button><button class="btn" id="dtTocar">${ic('play')}<span>Tocar</span></button>${nota}</div>` +
+			(ajustado ? `<div class="acoes-editor"><button class="btn mini fantasma" id="edRestaurar">${ic('refresh')}<span>Voltar ao original</span></button></div>` : '') + '</div>';
+		ligarComuns();
+		$('#edSalvar').onclick = async () => {
+			const mudou = $$('.palavras-ed input', el).filter((x) => x.value !== p.palavras.find((w) => String(w.i) === x.dataset.i)?.texto);
+			if (!mudou.length) return aviso('Nada mudou.', 'info', {ms: 1500});
+			for (const x of mudou) await salvarAjuste('palavras', x.dataset.i, x.value.trim(), `Legenda: “${x.value.trim()}”`);
+		};
+		$('#edRestaurar') && ($('#edRestaurar').onclick = async () => { for (const w of p.palavras) if (AJ.lista.palavras?.[w.i] !== undefined) await salvarAjuste('palavras', String(w.i), null, 'Legenda voltou ao original'); });
+		return;
+	}
+	if (d?.faixa === 'camera') {
+		const c = d.c, aj = AJ.lista.camera?.[c.chave];
+		el.innerHTML = `<div class="cartao editor-item">${topo(d.tipo, !!aj)}` + tempoCampos(c.em, 0, true) +
+			`<div class="acoes-editor"><button class="btn primario" id="edSalvar">${ic('check')}<span>Aplicar</span></button><button class="btn" id="dtTocar">${ic('play')}<span>Tocar</span></button>${nota}</div>` +
+			`<div class="acoes-editor"><button class="btn mini perigo" id="edRemover">${ic('trash')}<span>Remover</span></button>${aj ? `<button class="btn mini fantasma" id="edRestaurar">${ic('refresh')}<span>Voltar ao original</span></button>` : ''}</div></div>`;
+		ligarComuns();
+		$('#edSalvar').onclick = () => { const em = numT($('#edDe').value); if (em !== null && Math.abs(em - c.em) > 0.001) salvarAjuste('camera', c.chave, {em}, `${c.tipo} em ${fmtT(em, true)}`); };
+		$('#edRemover').onclick = () => { salvarAjuste('camera', c.chave, {removida: true}, `${c.tipo} removido`); PL.sel = null; };
+		$('#edRestaurar') && ($('#edRestaurar').onclick = () => salvarAjuste('camera', c.chave, null, `${c.tipo} voltou ao original`));
+		return;
+	}
+	if (d?.faixa === 'audio') {
+		const a = d.a;
+		el.innerHTML = `<div class="cartao editor-item">${topo(d.tipo, false)}` + tabela([['Toca em', fmtT(a.t, true)], ['Som', a.som]]) +
+			`<div class="acoes-editor"><button class="btn" id="dtTocar">${ic('play')}<span>Tocar</span></button>${a.chave ? `<button class="btn mini perigo" id="edSemSom">${ic('x')}<span>Tirar este som</span></button>` : ''}${nota}</div></div>`;
+		ligarComuns();
+		$('#edSemSom') && ($('#edSemSom').onclick = () => salvarAjuste('cenas', a.chave, {campos: {som: null}}, `Som ${a.som} tirado`));
+		return;
+	}
+	if (d?.faixa === 'trechos') {
+		el.innerHTML = `<div class="cartao editor-item">${topo(d.tipo, false)}` + tabela([['Começa', fmtT(d.de, true)], ['Termina', fmtT(d.ate, true)], ['Da gravação', `${fmtT(d.t.fonteDe, true)} até ${fmtT(d.t.fonteAte, true)}`]]) +
+			`<p class="legenda">Os cortes da gravação ficam no roteiro: para mudar, peça ao Claude.</p><div class="acoes-editor"><button class="btn" id="dtTocar">${ic('play')}<span>Tocar</span></button>${nota}</div></div>`;
+		ligarComuns();
 		return;
 	}
 	const probs = (m.problemas ?? []).slice(0, 30);
+	const nAj = ['cenas', 'camera', 'palavras'].reduce((n, k) => n + Object.keys(AJ.lista[k] ?? {}).length, 0);
 	el.innerHTML = `<div class="cartao"><div class="cartao-topo"><h4>${ic('film')}${esc(proj())}</h4></div>` +
-		tabela([['Duração', fmtT(m.duracao, true)], ['Formato', `${m.largura}×${m.altura}`], ['Trechos da gravação', m.trechos.length], ['Efeitos', m.cenas.length], ['Telas de legenda', m.legenda.length], ['Sons', m.sons.length], ['Música', m.musica || '—']]) +
-		`<p class="legenda" style="margin-top:10px">Clique num item da linha do tempo para ver os detalhes e pedir uma mudança naquele ponto.</p></div>` +
+		tabela([['Duração', fmtT(m.duracao, true)], ['Formato', `${m.largura}×${m.altura}`], ['Trechos da gravação', m.trechos.length], ['Efeitos', m.cenas.length], ['Telas de legenda', m.legenda.length], ['Sons', m.sons.length], ['Música', m.musica || '—'], ['Ajustes à mão', nAj || '—']]) +
+		`<p class="legenda" style="margin-top:10px">Clique num item da linha do tempo para editar: texto, palavras da legenda, início e fim. Arraste os efeitos para mover; puxe as bordas para mudar a duração. Ctrl+Z desfaz.</p></div>` +
 		(probs.length ? `<div class="titulo-secao">${ic('alert')}Conferência automática</div>` + probs.map((p) => `<button class="prob ${esc(p.gravidade)}" ${typeof p.tempo === 'number' ? `data-t="${p.tempo}"` : ''}><b>${typeof p.tempo === 'number' ? fmtT(p.tempo) : '—'}</b><span>${esc(p.texto)}</span></button>`).join('') : '');
 	el.querySelectorAll('.prob[data-t]').forEach((b) => (b.onclick = () => irPara(Number(b.dataset.t) * m.fps)));
 }

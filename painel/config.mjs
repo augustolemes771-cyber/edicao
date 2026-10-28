@@ -28,6 +28,7 @@ export const CONFIG_PADRAO = {
 	gpuCodificador: true,
 	navegadorRender: '',
 	notificar: true,
+	sincronizar: true,
 	pod: {ativo: false, host: '', porta: 22, usuario: 'root', chave: '', pasta: '/workspace/edicao', gl: 'angle-egl'},
 };
 

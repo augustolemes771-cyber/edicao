@@ -21,5 +21,9 @@ if (projeto) {
 	const abertas = criarPendencias(estado).abertas(projeto);
 	linhas.push(abertas.length ? `PENDÊNCIAS deixadas no painel (aplique antes de qualquer render e marque: node scripts/pendencias.mjs ${projeto} feito <id> ...):\n${textoPendencias(abertas)}` : '- Sem pendências abertas no painel.');
 }
+if (projeto) {
+	const aj = lerJson(path.join(raiz, 'src/projetos/ajustes.json'), {})[projeto];
+	if (aj) linhas.push(`- AJUSTES MANUAIS do usuário no painel (src/projetos/ajustes.json, valem por cima do edit.ts; respeite):\n${JSON.stringify(aj, null, 1).slice(0, 3000)}`);
+}
 linhas.push('- Os marcadores [[bloco:...]], [[amostra:...]] e [[studio:...]] só viram botões no chat do painel: aqui, diga em texto onde ver (arquivo em out/ ou "abra o vídeo no Studio / aba Prévias do painel").');
 console.log(linhas.join('\n'));

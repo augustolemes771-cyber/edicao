@@ -108,6 +108,40 @@ const salvarGit = (mensagem) => {
 	})().finally(() => (salvando = null));
 	return salvando;
 };
+// Sincronização com a nuvem (Preferências › Sincronizar, ligada por padrão): a cada 20 s envia os arquivos de projeto feitos
+// aqui (ajustes manuais, transcrições, edit.ts, biblioteca; mídia nunca vai) e puxa o que uma sessão do Claude na nuvem
+// enviou para a mesma branch. O player recompila sozinho com o que chegar.
+const sinc = {em: 0, recebidos: 0, enviados: 0, erro: null, painelMudou: false};
+const sincronizar = async () => {
+	if (!cfg.config().sincronizar || process.env.SEM_SALVAR || salvando) return;
+	const trava = (async () => {
+		try {
+			if (!(await gitAsync('config', 'user.email').catch(() => '')).trim()) await gitAsync('config', 'user.email', 'painel@edicao.local');
+			if (!(await gitAsync('config', 'user.name').catch(() => '')).trim()) await gitAsync('config', 'user.name', 'Painel de Edição');
+			await gitAsync('add', '--', 'src', 'biblioteca', 'docs');
+			if ((await gitAsync('diff', '--cached', '--name-only')).trim()) await gitAsync('commit', '-q', '-m', 'Painel: ajustes e arquivos de projeto (sincronização)');
+			await gitAsync('fetch', '-q', 'origin');
+			const atras = Number((await gitAsync('rev-list', '--count', 'HEAD..@{u}')).trim()) || 0;
+			if (atras) {
+				const mudou = (await gitAsync('diff', '--name-only', 'HEAD', '@{u}')).split('\n');
+				await gitAsync('pull', '-q', '--rebase', '--autostash');
+				if (mudou.some((f) => /^painel\/(?!web\/)|^package(-lock)?\.json$/.test(f))) sinc.painelMudou = true;
+			}
+			const frente = Number((await gitAsync('rev-list', '--count', '@{u}..HEAD')).trim()) || 0;
+			if (frente) await gitAsync('push', '-q');
+			Object.assign(sinc, {em: Date.now(), recebidos: sinc.recebidos + atras, enviados: sinc.enviados + frente, erro: null, ultimaRecebida: atras ? Date.now() : sinc.ultimaRecebida});
+		} catch (e) {
+			// Conflito no pull: desfaz o rebase e avisa (nada se perde: os commits daqui continuam no PC).
+			await gitAsync('rebase', '--abort').catch(() => {});
+			sinc.erro = String(e.stderr || e.message).trim().split('\n').slice(-3).join(' ').slice(0, 300);
+		}
+	})();
+	salvando = trava.then(() => '');
+	await trava.finally(() => (salvando = null));
+};
+setInterval(sincronizar, 20000);
+setTimeout(sincronizar, 3000);
+
 // Salvamento automático ao fechar o painel (preferência "Salvar na nuvem ao fechar o painel", ligada por padrão).
 const salvarAoFechar = (limiteMs) => {
 	// SEM_SALVAR=1: cópias de teste (testar-painel, agentes) não fazem commit/push do que estiver na pasta ao serem encerradas.
@@ -693,7 +727,8 @@ createServer(async (req, res) => {
 		const t = req.headers['x-painel-token'] ?? url.searchParams.get('t');
 		if (!tokenOk(t)) return json(res, {erro: 'Token inválido. Abra o endereço impresso no terminal.'}, 401);
 		if (!cookieOk(req)) res.setHeader('set-cookie', `painel-t=${token}; Path=/; SameSite=Strict; HttpOnly`);
-		if (p === '/api/player') return json(res, player.estado());
+		if (p === '/api/player') return json(res, {...player.estado(), sinc});
+		if (p === '/api/sinc' && req.method === 'POST') { await sincronizar(); return json(res, sinc); }
 		if (p === '/api/fechou' && req.method === 'POST') {
 			// A aba do painel fechou. Espera um pouco: se a página voltar (recarregar, outra aba aberta), não salva.
 			const quando = Date.now();
@@ -943,6 +978,43 @@ createServer(async (req, res) => {
 				const [data, commit, assunto] = execFileSync('git', ['log', '-1', '--format=%cI%n%h%n%s'], {cwd: raiz, encoding: 'utf8', windowsHide: true}).trim().split('\n');
 				return json(res, {data, commit, assunto});
 			} catch { return json(res, {data: null}); }
+		}
+		// Ajustes manuais da linha do tempo (src/projetos/ajustes.json). O player recompila sozinho ao salvar.
+		if (p === '/api/ajustes' && req.method === 'POST') {
+			const {projeto, tipo, chave, valor} = await corpo(req);
+			if (!projetoOk(projeto) || !['cenas', 'camera', 'palavras'].includes(tipo) || typeof chave !== 'string' || !/^[\w-]{1,40}(@\d+\.\d{2})?$/.test(chave)) return json(res, {erro: 'Ajuste inválido'}, 400);
+			const limpo = (v) => {
+				if (v === null || v === undefined) return null;
+				if (tipo === 'palavras') return String(v).slice(0, 80);
+				const r = {};
+				for (const k of ['de', 'ate', 'em']) if (Number.isFinite(Number(v[k])) && v[k] !== null && v[k] !== '') r[k] = Math.max(0, Math.round(Number(v[k]) * 1000) / 1000);
+				if (v.removida) r.removida = true;
+				if (tipo === 'cenas' && v.campos && typeof v.campos === 'object') {
+					r.campos = {};
+					for (const [k, x] of Object.entries(v.campos).slice(0, 40)) {
+						if (!/^[A-Za-z]\w{0,30}$/.test(k)) continue;
+						if (typeof x === 'string') r.campos[k] = x.slice(0, 500);
+						else if (typeof x === 'number' && Number.isFinite(x)) r.campos[k] = x;
+						else if (typeof x === 'boolean' || x === null) r.campos[k] = x;
+						else if (Array.isArray(x)) r.campos[k] = x.slice(0, 30).map((y) => String(y).slice(0, 200));
+					}
+				}
+				return r;
+			};
+			const arq = path.join(raiz, 'src/projetos/ajustes.json');
+			const todos = lerJson(arq, {});
+			const aj = (todos[projeto] ??= {});
+			const v = limpo(valor);
+			if (v === null || (typeof v === 'object' && !Object.keys(v).length)) delete (aj[tipo] ?? {})[chave];
+			else (aj[tipo] ??= {})[chave] = v;
+			if (aj[tipo] && !Object.keys(aj[tipo]).length) delete aj[tipo];
+			if (!Object.keys(aj).length) delete todos[projeto];
+			writeFileSync(arq, JSON.stringify(todos, null, 1) + '\n');
+			return json(res, {ok: true, ajustes: todos[projeto] ?? {}});
+		}
+		if (p === '/api/ajustes') {
+			const proj = url.searchParams.get('projeto') ?? '';
+			return json(res, projetoOk(proj) ? (lerJson(path.join(raiz, 'src/projetos/ajustes.json'), {})[proj] ?? {}) : {});
 		}
 		if (p === '/api/pendencias') {
 			const proj = url.searchParams.get('projeto') ?? '';

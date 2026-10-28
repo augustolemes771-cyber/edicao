@@ -614,3 +614,15 @@ dl.props dt{color:var(--mudo)}dl.props dd{margin:0;word-break:break-word}
 .comecar-rodape small{color:var(--mudo);font-size:11.5px;text-align:center}
 .chk{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--linha);cursor:pointer}
 .chk input{margin-top:3px;accent-color:var(--cor)}.chk span{display:flex;flex-direction:column}.chk small{color:var(--mudo);font-size:12px}
+/* Edição manual no painel */
+.editor-item .campo{margin-top:10px}
+.editor-item input[type=text],.editor-item input[type=number],.editor-item textarea{width:100%}
+.acoes-editor{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.palavras-ed{display:flex;flex-wrap:wrap;gap:6px}
+.palavras-ed input{width:auto;min-width:40px;padding:5px 8px;font-size:13px}
+.clip.efeito{cursor:grab}
+.clip.efeito::before,.clip.efeito::after{content:'';position:absolute;top:0;bottom:0;width:6px;cursor:ew-resize}
+.clip.efeito::before{left:0}.clip.efeito::after{right:0}
+.clip.ajustado{box-shadow:inset 0 -3px 0 #fff9}
+.marca-cam{cursor:grab}
+@media(max-width:1500px){.status .pilula span{display:none}.status .pilula{padding:0 9px}#studio span.rot,#salvar span.rot{display:none}}

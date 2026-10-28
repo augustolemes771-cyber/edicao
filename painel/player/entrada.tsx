@@ -21,6 +21,13 @@ const textoDe = (c: Record<string, unknown>) => {
 	return '';
 };
 
+// Campos que o painel deixa editar à mão: textos, números e listas de texto da cena (o resto fica no edit.ts).
+const FIXOS = new Set(['tipo', 'de', 'ate', 'modo', 'entra', 'sai', 'chave', 'somFinal', 'impactoAtivo', 'impacto']);
+const camposEditaveis = (c: Record<string, unknown>) =>
+	Object.fromEntries(
+		Object.entries(c).filter(([k, v]) => !FIXOS.has(k) && (typeof v === 'string' || typeof v === 'number' || (Array.isArray(v) && v.length && v.every((x) => typeof x === 'string')))),
+	);
+
 const App: React.FC = () => {
 	const edit = projetos[projeto];
 	const [fonte, setFonte] = useState<number | null>(edit && !edit.video ? (edit.duracao ?? 10) : null);
@@ -48,7 +55,7 @@ const App: React.FC = () => {
 		});
 		const sons: {t: number; som: string}[] = [];
 		for (const c of m.cenas) {
-			if (c.somFinal) sons.push({t: c.de, som: String(c.somFinal)});
+			if (c.somFinal) sons.push({t: c.de, som: String(c.somFinal), chave: c.chave});
 			for (const s of (c as {sons?: {em: number; som: string}[]}).sons ?? []) sons.push({t: c.de + s.em, som: s.som});
 		}
 		avisar({
@@ -59,9 +66,9 @@ const App: React.FC = () => {
 			largura,
 			altura,
 			trechos,
-			cenas: m.cenas.map((c) => ({tipo: c.tipo, de: c.de, ate: c.ate, modo: c.modo, texto: textoDe(c as unknown as Record<string, unknown>).slice(0, 80)})),
-			legenda: m.legenda.map((p) => ({de: p.de, ate: p.ate, texto: p.palavras.map((w) => w.texto).join(' ').trim()})),
-			camera: m.camera.map((c) => ({tipo: c.tipo, em: c.em})),
+			cenas: m.cenas.map((c) => ({tipo: c.tipo, de: c.de, ate: c.ate, modo: c.modo, chave: c.chave, som: c.somFinal ?? null, texto: textoDe(c as unknown as Record<string, unknown>).slice(0, 80), campos: camposEditaveis(c as unknown as Record<string, unknown>)})),
+			legenda: m.legenda.map((p) => ({de: p.de, ate: p.ate, texto: p.palavras.map((w) => w.texto).join(' ').trim(), palavras: p.palavras.map((w) => ({i: w.indice, texto: w.texto}))})),
+			camera: m.camera.map((c) => ({tipo: c.tipo, em: c.em, chave: (c as {chave?: string}).chave ?? ''})),
 			sons,
 			musica: edit.musica?.arquivo ?? null,
 			problemas: m.problemas,

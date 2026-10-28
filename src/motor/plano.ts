@@ -2,6 +2,7 @@ import type {Caption} from '@remotion/captions';
 import type {TipoObjeto3D} from '../pecas/tres/Objetos3D';
 import {elevenLabsTranscriptToCaptions} from '@remotion/elevenlabs';
 import {CURVA_PADRAO, type Curva} from './curva';
+import ajustesTodos from '../projetos/ajustes.json';
 import {
 	criarBusca,
 	encaixarNoSilencio,
@@ -337,7 +338,15 @@ export type Edit = {
 	cenas: (b: Busca) => Cena[];
 };
 
+// Ajustes manuais feitos no painel (src/projetos/ajustes.json, por projeto): valem por cima do edit.ts, no player, no
+// render e na conferência. Cada cena e efeito de câmera é achado pela chave "tipo@início" calculada pelo edit.ts.
+export type AjusteCena = {de?: number; ate?: number; removida?: boolean; campos?: Record<string, string | number | boolean | null | string[]>};
+export type Ajustes = {cenas?: Record<string, AjusteCena>; camera?: Record<string, {em?: number; removida?: boolean}>; palavras?: Record<string, string>};
+export const chaveAjuste = (tipo: string, t: number) => `${tipo}@${t.toFixed(2)}`;
+export const ajustesDe = (edit: Edit): Ajustes => (ajustesTodos as Record<string, Ajustes>)[edit.pasta.split('/').pop() ?? ''] ?? {};
+
 export type CenaNoPlano = Cena & {
+	chave: string;
 	modo: Modo;
 	entra: 'corte' | 'anima';
 	sai: 'corte' | 'anima';
@@ -526,7 +535,13 @@ export const montar = (edit: Edit, duracaoFonte: number): Montagem => {
 		busca.emendas.push(Math.round(acumulado * FPS_PLANO) / FPS_PLANO);
 	}
 
-	const brutas = edit.cenas(busca);
+	const aj = ajustesDe(edit);
+	const brutas = edit.cenas(busca).flatMap((c) => {
+		const chave = Number.isFinite(c.de) ? chaveAjuste(c.tipo, c.de) : '';
+		const a = aj.cenas?.[chave];
+		if (a?.removida) return [];
+		return [{...c, ...(a?.campos ?? {}), ...(a?.de !== undefined ? {de: a.de} : {}), ...(a?.ate !== undefined ? {ate: a.ate} : {}), chave} as Cena & {chave: string}];
+	});
 	const telaFinal = edit.telaFinal ? edit.telaFinal(busca) : null;
 	const erroAncora = (e: ErroAncora) => problemas.push({gravidade: 'erro', texto: `âncora ${e.busca}: ${e.motivo}`});
 	busca.erros.forEach(erroAncora);
@@ -602,7 +617,12 @@ export const montar = (edit: Edit, duracaoFonte: number): Montagem => {
 		}
 	}
 
-	const camera = (edit.camera?.(busca) ?? []).filter((e) => {
+	const camera = (edit.camera?.(busca) ?? []).flatMap((e) => {
+		const chave = Number.isFinite(e.em) ? chaveAjuste(e.tipo, e.em) : '';
+		const a = aj.camera?.[chave];
+		if (a?.removida) return [];
+		return [{...e, ...(a?.em !== undefined ? {em: a.em} : {}), chave} as EfeitoCamera & {chave: string}];
+	}).filter((e) => {
 		if (Number.isFinite(e.em)) return true;
 		problemas.push({gravidade: 'erro', texto: `efeito de câmera ${e.tipo} sem tempo válido`});
 		return false;
@@ -610,10 +630,12 @@ export const montar = (edit: Edit, duracaoFonte: number): Montagem => {
 	camera.sort((a, b) => a.em - b.em);
 	busca.erros.slice(errosAntes).forEach(erroAncora);
 
-	const legenda = edit.legenda ? paginar(palavras, edit.legenda, validas, telaFinal, busca.emendas) : [];
+	// Texto corrigido à mão só na tela: as âncoras do edit.ts continuam achando a fala original.
+	const palavrasTela = aj.palavras ? palavras.map((w) => (aj.palavras![String(w.indice)] !== undefined ? {...w, texto: aj.palavras![String(w.indice)]} : w)) : palavras;
+	const legenda = edit.legenda ? paginar(palavrasTela, edit.legenda, validas, telaFinal, busca.emendas) : [];
 
 	const falantes = typeof edit.legenda?.falantes === 'function' ? edit.legenda.falantes(busca) : (edit.legenda?.falantes ?? []);
-	return {legenda, falantes, camera, cortes, mantidos, duracaoEditada, palavras, cenas: validas, problemas, curva, telaFinal};
+	return {legenda, falantes, camera, cortes, mantidos, duracaoEditada, palavras: palavrasTela, cenas: validas, problemas, curva, telaFinal};
 };
 
 const TEXTO_PROPRIO: TipoCena[] = [
