@@ -7,6 +7,7 @@ import {neonExemplo} from './neon-exemplo/edit';
 import {oficial1} from './oficial-1/edit';
 import {primeiro} from './primeiro/edit';
 import {segundoo} from './segundoo/edit';
+import {depoimento} from './depoimento/edit';
 
 // Cada projeto novo entra aqui. O nome vira o id da composição no Studio e no render.
 export const projetos: Record<string, Edit> = {
@@ -18,4 +19,5 @@ export const projetos: Record<string, Edit> = {
 	'oficial-1': oficial1,
 	'primeiro': primeiro,
 	'segundoo': segundoo,
+	depoimento,
 };
