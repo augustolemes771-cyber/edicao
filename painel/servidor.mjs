@@ -493,8 +493,18 @@ const chat = async (req, res) => {
 		enviar('erro', {texto: 'Claude Code não encontrado. Use o botão "Instalar automaticamente" no topo da conversa.'});
 		res.end();
 	});
-	proc.on('close', async (c) => {
-		if (rodando.get(chave) === proc) rodando.delete(chave);
+	proc.on('close', async (codigo, sinal) => {
+		// Morto por sinal (Parar, substituído, OOM) vem com código null: não é sucesso.
+		const c = codigo ?? (sinal ? 1 : 0);
+		if (proc.parado) parado = true;
+		// Substituído por um pedido novo na mesma conversa: o estado (pendente, bloco, fila) já é do processo novo.
+		if (rodando.get(chave) !== proc) return res.end();
+		rodando.delete(chave);
+		// Sessão que não existe mais neste PC (--resume falha sempre com código 1): o próximo pedido começa limpa.
+		if (c && /No conversation found/i.test(erro)) {
+			delete sessoes[chave];
+			writeFileSync(arqSessoes, JSON.stringify(sessoes));
+		}
 		if (!assistente) try { rmSync(arqPendente, {force: true}); } catch {}
 		// Bloco mostrado ao usuário: o próximo para aprovar está pronto.
 		if (!assistente && projetoOk(projeto)) {
@@ -507,7 +517,7 @@ const chat = async (req, res) => {
 			try { rmSync(arqFila(chave), {force: true}); } catch {}
 			if (sobra.length) enviar('sobrou', {pedido: sobra.join('\n')});
 		}
-		if (c) enviar('erro', {texto: erro.trim().slice(-400) || `Terminou com código ${c}`});
+		if (c && !parado) enviar('erro', {texto: erro.trim().slice(-400) || (codigo === null ? `Interrompido (${sinal})` : `Terminou com código ${c}`)});
 		// Salvar sozinho: commit e push depois de cada pedido que terminou sem erro.
 		if (!c && !falhou && !parado && cfg.prefs().salvarSozinho) {
 			try {
@@ -616,7 +626,11 @@ const arquivo = (req, res, f) => {
 	const m = /bytes=(\d*)-(\d*)/.exec(req.headers.range ?? '');
 	if (m) {
 		const ini = m[1] ? Number(m[1]) : 0;
-		const fim = m[2] ? Number(m[2]) : tam - 1;
+		const fim = m[2] ? Math.min(Number(m[2]), tam - 1) : tam - 1;
+		if (ini > fim) {
+			res.writeHead(416, {'content-range': `bytes */${tam}`});
+			return res.end();
+		}
 		res.writeHead(206, {'content-type': tipo, 'content-range': `bytes ${ini}-${fim}/${tam}`, 'accept-ranges': 'bytes', 'content-length': fim - ini + 1});
 		return createReadStream(f, {start: ini, end: fim}).pipe(res);
 	}
@@ -635,7 +649,8 @@ const tokenOk = (t) => {
 createServer(async (req, res) => {
 	// Bloqueia DNS rebinding e páginas de outros sites.
 	if (!hostsOk.has(req.headers.host ?? '')) { res.writeHead(403); return res.end(); }
-	if (req.headers.origin && !hostsOk.has(new URL(req.headers.origin).host)) { res.writeHead(403); return res.end(); }
+	// Origin que não é URL ("null" de iframe/arquivo local) fazia new URL lançar fora do try e derrubava o painel.
+	if (req.headers.origin && !hostsOk.has(URL.canParse(req.headers.origin) ? new URL(req.headers.origin).host : '')) { res.writeHead(403); return res.end(); }
 
 	const url = new URL(req.url, 'http://x');
 	const p = url.pathname;
@@ -643,8 +658,8 @@ createServer(async (req, res) => {
 		if (!['/api/', '/out/', '/previas/', '/sfx/', '/fontes/', '/midia/', '/pack/', '/tema-modelo/'].some((x) => p.startsWith(x))) {
 			const rel = p === '/' ? 'index.html' : p.slice(1);
 			const base = path.join(import.meta.dirname, 'web');
-			const f = path.join(base, rel);
-			if (!f.startsWith(base)) { res.writeHead(403); return res.end(); }
+			const f = dentro(base, rel);
+			if (!f) { res.writeHead(403); return res.end(); }
 			return arquivo(req, res, f);
 		}
 		const t = req.headers['x-painel-token'] ?? url.searchParams.get('t');
@@ -886,7 +901,9 @@ createServer(async (req, res) => {
 		}
 		if (p === '/api/parar' && req.method === 'POST') {
 			const {projeto} = await corpo(req);
-			matar(rodando.get(projeto || '_geral'));
+			const pr = rodando.get(projeto || '_geral');
+			if (pr) pr.parado = true;
+			matar(pr);
 			return json(res, {ok: true});
 		}
 		if (p === '/api/novo-chat' && req.method === 'POST') {

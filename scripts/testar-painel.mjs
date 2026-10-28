@@ -30,6 +30,14 @@ if (token) {
 		const r = await get(rota);
 		ok(`GET ${rota}`, r.ok, `status ${r.status}`);
 	}
+	// Segurança e robustez: nada disso pode derrubar o painel nem passar.
+	const st = (rota, headers = {}) => fetch(`http://127.0.0.1:4999${rota}`, {headers}).then((r) => r.status, () => 0);
+	ok('Origin "null" é recusado sem derrubar', (await st('/api/tarefas', {'x-painel-token': token, origin: 'null'})) === 403);
+	ok('Origin de outro site é recusado', (await st('/api/tarefas', {'x-painel-token': token, origin: 'http://evil.com'})) === 403);
+	ok('sem token dá 401', (await st('/api/tarefas')) === 401);
+	ok('Range fora do arquivo dá 416', (await st('/app.css', {range: 'bytes=999999999-'})) === 416);
+	ok('caminho fora de painel/web dá 403/404', [403, 404].includes(await st('/%2e%2e/servidor.mjs')));
+	ok('painel continua de pé', (await get('/api/tarefas')).ok);
 }
 srv.kill();
 console.log(falhas ? `\n${falhas} falha(s).` : '\nTudo certo.');
