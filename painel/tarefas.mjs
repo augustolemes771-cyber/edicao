@@ -313,7 +313,8 @@ export const criarTarefas = ({raiz, estado, cfg, projetoOk, pastaMidia, temaOk, 
 			};
 			o.soFaltando = Boolean(opcoes.soFaltando);
 			if (opcoes.noLugar) {
-				o.url = caminho(opcoes.caminho, true);
+				// Retomada: as opções gravadas trazem o caminho já validado em url.
+				o.url = caminho(opcoes.caminho ?? opcoes.url, true);
 				if (!o.url) throw new Error('Pasta do pack inválida (caminho completo de uma pasta deste PC)');
 				o.noLugar = true;
 			} else if (opcoes.url) {
@@ -327,6 +328,8 @@ export const criarTarefas = ({raiz, estado, cfg, projetoOk, pastaMidia, temaOk, 
 				}
 			} else if (!o.soFaltando) throw new Error('Informe o link do Google Drive, um .zip ou uma pasta');
 		}
+		// Pod escolhido no pedido fica gravado: ao retomar depois de reiniciar, vai para o mesmo lugar.
+		if (RENDERS.includes(tipo) && typeof opcoes.pod === 'boolean') o.pod = opcoes.pod;
 		if (tipo === 'preparar-pod' || (RENDERS.includes(tipo) && (opcoes.pod ?? cfg.config().pod.ativo))) {
 			// Valida já, para o erro aparecer na hora (host, usuário, pasta, chave).
 			validarPod(cfg.config().pod);
