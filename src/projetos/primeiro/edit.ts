@@ -30,7 +30,7 @@ export const primeiro: Edit = {
 	trechos: (o) => {
 		// [início, fim] no tempo original, com folga; as bordas se encaixam nas pausas medidas (silencios.json).
 		const fala = (de: string, ate: string, folga = 0.12): Trecho => [o.say(de).inicio - 0.06, o.say(ate).fim + folga];
-		return [
+		const lista: Trecho[] = [
 			fala('eu fiz 20 mil em GMV', 'eu fiz 20 mil em GMV'),
 			fala('Tô aqui com a Paola', 'há quanto tempo que você faz live shop'),
 			fala('Faz mais de um ano', 'comecei a fazer'),
@@ -47,6 +47,15 @@ export const primeiro: Edit = {
 			fala('segue o Danilow ele é o cara', 'segue o Danilow ele é o cara'),
 			fala('Se você tá travado', 'vamos pra cima'),
 		];
+		// Trechos vizinhos que se sobrepõem no original repetem quadros e palavras: divide a sobreposição ao meio.
+		for (let i = 1; i < lista.length; i++) {
+			if (lista[i][0] < lista[i - 1][1] && lista[i][0] > lista[i - 1][0]) {
+				const meio = (lista[i][0] + lista[i - 1][1]) / 2;
+				lista[i - 1] = [lista[i - 1][0], meio];
+				lista[i] = [meio, lista[i][1]];
+			}
+		}
+		return lista;
 	},
 	legenda: {
 		estilo: 'mare',
@@ -100,7 +109,6 @@ export const primeiro: Edit = {
 			{tipo: 'zoom', em: b.at('única') - 0.1, escala: 1.32, suave: 1.3, ...P},
 			{tipo: 'zoom', em: b.at('irmã'), escala: 1.3, ...P},
 			{tipo: 'zoom', em: b.at('frustrava'), escala: 1.15, ...P},
-			{tipo: 'zoom', em: b.at('nunca'), escala: 1.35, suave: 0.6, ...P},
 			// Pergunta: aberto
 			{tipo: 'chicote', em: pergunta},
 			{tipo: 'zoom', em: pergunta, escala: 1, ...ABERTO},
@@ -177,6 +185,10 @@ export const primeiro: Edit = {
 				palavras: [
 					{texto: 'NUNCA', em: b.at('nunca')},
 					{texto: 'MAIS', em: b.at('mais'), destaque: true},
+					{texto: 'TENTEI', em: b.at('tentei')},
+					{texto: 'ABRIR', em: b.at('abrir')},
+					{texto: 'UMA', em: b.at('uma', 2)},
+					{texto: 'LIVE', em: b.at('live', 4), destaque: true},
 				],
 				som: 'pop',
 			},
