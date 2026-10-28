@@ -1813,6 +1813,15 @@ $('#f').onsubmit = async (e) => {
 	} else if (projetoChat && !faltam) { delete (S.autoMidias ?? {})[projetoChat]; if (!ultimoErro) delete (S.autoErro ?? {})[projetoChat]; }
 };
 
+// ---------- Só visualizar: os pedidos vão pelo Claude Code; o painel mostra o resultado e recebe as observações ----------
+const aplicarSoVer = () => {
+	const on = lerLocal('soVer', false) === true;
+	document.body.classList.toggle('so-ver', on);
+	$('#soVer').classList.toggle('on', on);
+	$('#soVer').querySelector('span').textContent = on ? 'Voltar a pedir aqui' : 'Só visualizar';
+};
+$('#soVer').onclick = () => { gravarLocal('soVer', !(lerLocal('soVer', false) === true)); aplicarSoVer(); };
+
 // ---------- Assistente: atende em paralelo enquanto o editor trabalha ----------
 // Responde dúvidas e faz o que não mexe no vídeo em andamento; mudança no vídeo vira pendência, que o editor aplica antes do
 // próximo render. Assim dá para ir pedindo as próximas alterações sem parar a etapa atual.
@@ -2035,6 +2044,7 @@ async function iniciar() {
 	pollTarefas();
 	pollBloco();
 	mostrarAtualizacao();
+	aplicarSoVer();
 }
 // Topo: data e hora da última atualização do painel (último commit neste PC).
 async function mostrarAtualizacao() {

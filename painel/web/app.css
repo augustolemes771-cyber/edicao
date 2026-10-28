@@ -525,3 +525,8 @@ details[open]>summary .seta{transform:rotate(90deg)}
 .form-acoes:has(#destino:not([hidden])) .dica{display:none}
 .atualizado{font-size:11.5px;color:var(--mudo);white-space:nowrap;margin-right:4px}
 @media (max-width:1250px){.atualizado{display:none}}
+/* Só visualizar: sem caixa de pedido (os pedidos vão pelo Claude Code) */
+.aviso-so-ver{display:none;font-size:13px;color:var(--mudo);background:var(--card);border:1px dashed var(--linha);border-radius:var(--r-3);padding:10px 12px;margin-bottom:8px}
+body.so-ver .aviso-so-ver{display:block}
+body.so-ver #f,body.so-ver .atalhos,body.so-ver #zerar{display:none}
+#soVer.on{border-color:var(--cor2);color:var(--cor)}
