@@ -366,14 +366,14 @@ const pendencias = criarPendencias(estado);
 
 const LIMITE_TURNOS = 12;
 // Processos pesados rodando agora (para mostrar "ffmpeg rodando" em vez de silêncio durante comandos longos).
-const PESADOS = ['ffmpeg', 'ffprobe', 'main', 'whisper', 'blender', 'chrome-headless-shell', 'yt-dlp'];
+const PESADOS = ['ffmpeg', 'ffprobe', 'main', 'whisper', 'whisper-cli', 'blender', 'chrome-headless-shell', 'yt-dlp'];
 let cachePesados = {em: 0, nomes: []};
 const processosPesados = () =>
 	new Promise((ok) => {
 		if (Date.now() - cachePesados.em < 8000) return ok(cachePesados.nomes);
 		const fim = (txt) => {
 			const nomes = [...new Set(txt.split(/\r?\n/).map((l) => l.replace(/^"?([^",]+?)(\.exe)?"?[ ,].*$/, '$1').trim().toLowerCase()).filter((n) => PESADOS.includes(n)))];
-			cachePesados = {em: Date.now(), nomes: nomes.map((n) => (n === 'main' ? 'whisper (transcrição)' : n))};
+			cachePesados = {em: Date.now(), nomes: nomes.map((n) => (n === 'main' ? 'whisper (transcrição na CPU)' : n === 'whisper-cli' ? 'whisper (transcrição na placa NVIDIA)' : n))};
 			ok(cachePesados.nomes);
 		};
 		const [cmd, a] = ehWin ? ['tasklist', ['/FO', 'CSV', '/NH']] : ['ps', ['-A', '-o', 'comm=']];
