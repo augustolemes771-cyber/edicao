@@ -136,7 +136,11 @@ export const Drama: React.FC<{cena: De<'drama'>}> = ({cena}) => {
 	const escuro = sobe * saida;
 	// Feixe: abre de um ponto no topo e varre um pouco ao acender
 	const giro = interpolate(frame, [0, 16], [0.16, 0], lim);
-	const polig = `${(x + 0.02 + giro) * 100},0 ${(x + 0.32 + giro) * 100},0 ${(x + 0.26) * 100},70 ${(x - 0.4) * 100},70`;
+	// O cone segue abrindo além do rodapé (110) para a luz chegar ao fim do quadro, sem corte seco
+	const cone = (a: number, b: number) => a + (b - a) * (110 / 70);
+	const eL = (x + 0.02 + giro) * 100;
+	const eR = (x + 0.32 + giro) * 100;
+	const polig = `${eL},0 ${eR},0 ${cone(eR, (x + 0.26) * 100)},110 ${cone(eL, (x - 0.4) * 100)},110`;
 
 	const flash = Math.max(
 		interpolate(frame - batida, [0, 7], [0.42, 0], lim) * (frame >= batida ? 1 : 0),
@@ -154,12 +158,17 @@ export const Drama: React.FC<{cena: De<'drama'>}> = ({cena}) => {
 					</filter>
 					<mask id="furoLuz" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100">
 						<rect width="100" height="100" fill="#fff" />
-						<polygon points={polig} fill="#000" filter="url(#borraLuz)" opacity={acende * pulsa(batida)} />
+						<polygon points={polig} fill="url(#furoGrad)" filter="url(#borraLuz)" opacity={acende * pulsa(batida)} />
 					</mask>
+					<linearGradient id="furoGrad" x1="0" y1="0" x2="0" y2="1">
+						<stop offset="0" stopColor="#000" />
+						<stop offset="0.55" stopColor="#000" />
+						<stop offset="1" stopColor="#6a6a6a" />
+					</linearGradient>
 					<linearGradient id="feixe" x1="0" y1="0" x2="0" y2="1">
 						<stop offset="0" stopColor="#eef2ff" stopOpacity="0.55" />
-						<stop offset="0.6" stopColor="#cfd8f5" stopOpacity="0.16" />
-						<stop offset="1" stopColor="#cfd8f5" stopOpacity="0" />
+						<stop offset="0.6" stopColor="#cfd8f5" stopOpacity="0.2" />
+						<stop offset="1" stopColor="#cfd8f5" stopOpacity="0.08" />
 					</linearGradient>
 				</defs>
 				<rect width="100" height="100" fill="#04040a" opacity="0.96" mask="url(#furoLuz)" />
@@ -174,7 +183,7 @@ export const Drama: React.FC<{cena: De<'drama'>}> = ({cena}) => {
 						'radial-gradient(circle, rgba(255,255,255,0.95) 0 1.2px, transparent 2px), radial-gradient(circle, rgba(255,255,255,0.6) 0 0.8px, transparent 1.5px)',
 					backgroundSize: '58px 77px, 31px 43px',
 					backgroundPosition: `${frame * 0.5}px ${-frame * 0.8}px, ${-frame * 0.3}px ${-frame * 0.5}px`,
-					clipPath: `polygon(${(x + 0.02 + giro) * 100}% 0, ${(x + 0.32 + giro) * 100}% 0, ${(x + 0.26) * 100}% 70%, ${(x - 0.4) * 100}% 70%)`,
+					clipPath: `polygon(${eL}% 0, ${eR}% 0, ${cone(eR, (x + 0.26) * 100)}% 110%, ${cone(eL, (x - 0.4) * 100)}% 110%)`,
 				}}
 			/>
 			<AbsoluteFill style={{filter: sombra}}>
