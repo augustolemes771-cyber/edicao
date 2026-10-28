@@ -292,7 +292,7 @@ function aoTrocarProjeto({historico = true} = {}) {
 	renderRender();
 	carregarMidias();
 	if (S.aba === 'previas') carregarPrevias();
-	if (S.aba === 'andamento') carregarAndamento();
+	if (S.aba === 'fluxo') carregarAndamento();
 	carregarFluxo();
 }
 $('#projeto').onchange = () => aoTrocarProjeto();
@@ -429,7 +429,7 @@ function usarPedido(texto, {enviar = false} = {}) {
 function importarPack() {
 	abrirModal({
 		titulo: 'Importar pack',
-		corpo: `<div class="campo"><label class="rotulo" for="packUrl">Link do Google Drive ou caminho do arquivo .zip</label><input id="packUrl" type="text" autofocus placeholder="https://drive.google.com/... ou C:\\Downloads\\pack.zip"><span class="ajuda">O painel baixa, descompacta e organiza os arquivos no catálogo do pack. Pode levar alguns minutos: acompanhe na aba Render.</span></div>`,
+		corpo: `<div class="campo"><label class="rotulo" for="packUrl">Link do Google Drive ou caminho do arquivo .zip</label><input id="packUrl" type="text" autofocus placeholder="https://drive.google.com/... ou C:\\Downloads\\pack.zip"><span class="ajuda">O painel baixa, descompacta e organiza os arquivos no catálogo do pack. Pode levar alguns minutos: acompanhe na aba Gerar.</span></div>`,
 		rodape: `<button class="btn fantasma" id="pkNao">Cancelar</button><button class="btn primario" id="pkSim">${ic('download')}<span>Importar</span></button>`,
 	});
 	$('#pkNao').onclick = fecharModal;
@@ -738,7 +738,7 @@ async function abrirPreferencias(inicial = 'edicao') {
 			chave('config.gpuStudio', c.gpuStudio ?? true, 'Usar a placa de vídeo (GPU) no Studio', 'Abre o Studio num navegador com aceleração forçada.') +
 			chave('config.gpuCodificador', c.gpuCodificador ?? true, 'Usar o codificador da placa de vídeo no render', 'NVENC/QuickSync/AMF: exporta mais rápido. Desligue se o vídeo sair com defeito.') +
 			txt('config.navegadorRender', c.navegadorRender, 'Navegador usado no render', 'deixe vazio para automático', 'text', 'Caminho de um Chrome/Chromium específico, se precisar.'),
-		pod: `<h4>Pod (computador na nuvem)</h4><p class="pref-desc">Um computador com placa de vídeo forte (ex.: RunPod) que renderiza por você. Ligue aqui para ser o padrão; na aba Render dá para escolher a cada vez.</p>` +
+		pod: `<h4>Pod (computador na nuvem)</h4><p class="pref-desc">Um computador com placa de vídeo forte (ex.: RunPod) que renderiza por você. Ligue aqui para ser o padrão; na aba Gerar dá para escolher a cada vez.</p>` +
 			chave('config.pod.ativo', pod.ativo ?? false, 'Renderizar no pod por padrão', 'Desligado: tudo roda neste computador.') +
 			`<div class="campo"><label class="rotulo">Comando SSH do RunPod</label><input type="text" id="pfSshCola" placeholder="Cole aqui: ssh root@194.68.245.12 -p 13456 -i ~/.ssh/id_ed25519"><span class="ajuda">Só isso: o painel preenche endereço, porta e usuário. A chave padrão do seu PC é usada se você não informar outra. Fica salvo ao clicar em Salvar ou Testar.</span></div>` +
 			`<details><summary class="rotulo">Avançado (preenchido sozinho)</summary>` +
@@ -864,7 +864,7 @@ async function abrirPreferencias(inicial = 'edicao') {
 	campoPod('host')?.addEventListener('input', (e) => { if (/\s/.test(e.target.value) && lerSsh(e.target.value)) aviso('Comando SSH lido: preenchi endereço, porta e usuário.', 'ok'); });
 	$('#pfPreparar').onclick = async () => {
 		if (S.configOk !== false) await salvar(true);
-		if (await criarTarefa('preparar-pod', {}, {projeto: proj()})) resultado('Preparando o pod (instala Node, ffmpeg e o projeto). Acompanhe na aba Render.', null);
+		if (await criarTarefa('preparar-pod', {}, {projeto: proj()})) resultado('Preparando o pod (instala Node, ffmpeg e o projeto). Acompanhe na aba Gerar.', null);
 	};
 }
 $('#abrirPrefs').onclick = () => abrirPreferencias();
@@ -877,7 +877,7 @@ const ESTADOS = {fila: ['Na fila', ''], rodando: ['Rodando', 'cor'], ok: ['Pront
 async function criarTarefa(tipo, opcoes = {}, {projeto = proj(), silencioso = false} = {}) {
 	try {
 		const r = await api('/api/tarefas', {tipo, projeto, opcoes});
-		if (!silencioso) aviso(`${NOMES_TAREFA[tipo] ?? tipo}: ${S.tarefas.some((t) => t.estado === 'rodando' && ['previa', 'final'].includes(t.tipo)) && ['previa', 'final'].includes(tipo) ? 'entrou na fila.' : 'começou.'} Acompanhe na aba Render.`, 'info');
+		if (!silencioso) aviso(`${NOMES_TAREFA[tipo] ?? tipo}: ${S.tarefas.some((t) => t.estado === 'rodando' && ['previa', 'final'].includes(t.tipo)) && ['previa', 'final'].includes(tipo) ? 'entrou na fila.' : 'começou.'} Acompanhe na aba Gerar.`, 'info');
 		S.tarefasOk = true;
 		await pollTarefas();
 		return r?.id ?? true;
@@ -946,7 +946,7 @@ function aoTerminarTarefa(t) {
 	}
 	if (t.tipo === 'pack') carregarBiblioteca();
 	if (t.tipo === 'previas') carregarPrevias();
-	if (S.aba === 'andamento') carregarAndamento();
+	if (S.aba === 'fluxo') carregarAndamento();
 	carregarFluxo();
 }
 const urlSaida = (s) => (s && /\.(mp4|mov|webm)$/i.test(s) ? `/out/${enc(String(s).split(/[\\/]/).pop())}?t=${T}` : '');
@@ -990,7 +990,7 @@ function renderTarefas() {
 	// Só as tarefas desta sessão do painel (as que estão rodando sempre aparecem), e só as 3 últimas.
 	const lista = S.tarefas.filter((t) => ['fila', 'rodando'].includes(t.estado) || (t.inicio ?? t.fim ?? 0) >= SESSAO).slice(0, 3);
 	if (!lista.length) {
-		el.innerHTML = `<div class="vazio">${ic('layers')}<b>Nenhuma tarefa nesta sessão</b>Prévias, vídeos finais, downloads e importações aparecem aqui com cada etapa, a porcentagem e o tempo que falta (só as 3 últimas desta sessão).</div>`;
+		el.innerHTML = `<div class="vazio">${ic('layers')}<b>Nada rodando</b>Prévias, vídeos finais e downloads aparecem aqui com o progresso.</div>`;
 		assinaturas.clear();
 		return;
 	}
@@ -1033,7 +1033,7 @@ async function apagarVideo(nome) {
 		aviso('Vídeo "' + nome + '" apagado. Está em ' + r.lixeira, 'ok', {ms: 6000});
 		if (proj() === nome) { $('#projeto').value = ''; aoTrocarProjeto({historico: false}); }
 		await atualizarTudo();
-		if (S.aba === 'andamento') carregarAndamento();
+		if (S.aba === 'fluxo') carregarAndamento();
 	} catch (e) { avisoErro(e, 'Não apaguei'); }
 }
 
@@ -1041,21 +1041,16 @@ async function apagarVideo(nome) {
 S.perguntas = S.perguntas ?? {};
 const ICONE_ETAPA = {ok: 'check', andando: 'refresh', pendente: 'clock'};
 async function carregarAndamento() {
-	const el = $('#aba-andamento');
+	const el = $('#fluxoExtra');
 	const p = proj();
 	if (!el) return;
-	if (!p) { el.innerHTML = '<div class="vazio">Escolha um vídeo para ver o andamento.</div>'; return; }
-	let d;
-	try { d = await api('/api/andamento?projeto=' + enc(p)); } catch (e) { el.innerHTML = `<div class="vazio">${ic('alert')}<b>Não carreguei o andamento</b>${esc(e.message)}</div>`; return; }
-	const feitas = d.etapas.filter((e) => e.estado === 'ok').length;
-	const etapas = d.etapas.map((e) => `<li class="etapa ${e.estado}"><span class="etapa-ic">${ic(ICONE_ETAPA[e.estado] ?? 'clock')}</span><span class="n"><b>${esc(e.nome)}</b><small>${esc(e.detalhe)}</small></span></li>`).join('');
+	if (!p) { el.innerHTML = ''; return; }
 	const hist = (S.perguntas[p] ?? []).map((m) => `<div class="pergunta ${m.quem}">${esc(m.texto)}</div>`).join('');
 	const sug = ['O que falta para terminar?', 'O que mudou na última edição?', 'Quais mídias ainda não foram usadas?'].map((q) => `<button class="btn mini fantasma" data-q="${esc(q)}">${esc(q)}</button>`).join('');
-	el.innerHTML = `<div class="titulo-secao">${ic('list')}Etapas<small style="margin-left:auto">${feitas} de ${d.etapas.length}</small></div><ul class="etapas">${etapas}</ul>` +
-		`<div class="titulo-secao">${ic('chat')}Pergunte sobre o andamento</div><div class="sugestoes">${sug}</div>` +
+	el.innerHTML = `<div class="titulo-secao">${ic('chat')}Tirar uma dúvida sobre o vídeo</div><div class="sugestoes">${sug}</div>` +
 		`<div class="perguntas">${hist}</div>` +
 		`<form id="fAnd" class="and-form"><input type="text" id="qAnd" placeholder="Ex.: em que parte está a edição?" maxlength="300"><button class="btn primario" id="bAnd">${ic('send')}<span>Perguntar</span></button></form>` +
-		`<small class="ajuda" style="display:block;margin-top:6px;color:var(--mudo)">Responde com o modelo mais barato (Haiku), só lendo os arquivos. Não mexe na edição.</small>` +
+		`<small class="ajuda" style="display:block;margin-top:6px;color:var(--mudo)">Responde só lendo os arquivos, com o modelo mais barato. Não mexe na edição.</small>` +
 		`<div class="titulo-secao">${ic('trash')}Este vídeo</div><button class="btn perigo" id="bApagar">${ic('trash')}<span>Apagar este vídeo</span></button>`;
 	$('#bApagar').onclick = () => apagarVideo(p);
 	const perguntar = async (texto) => {
@@ -1063,13 +1058,13 @@ async function carregarAndamento() {
 		if (!texto) return;
 		(S.perguntas[p] ??= []).push({quem: 'eu', texto});
 		(S.perguntas[p]).push({quem: 'ia', texto: 'Verificando...'});
-		carregarAndamentoSemBuscar(p);
+		carregarAndamento();
 		try {
 			const r = await api('/api/perguntar', {projeto: p, pergunta: texto});
 			S.perguntas[p].pop();
 			S.perguntas[p].push({quem: 'ia', texto: r.resposta || '(sem resposta)', custo: r.custo});
 		} catch (e) { S.perguntas[p].pop(); S.perguntas[p].push({quem: 'ia', texto: 'Não consegui responder: ' + e.message}); }
-		carregarAndamentoSemBuscar(p);
+		carregarAndamento();
 	};
 	el.querySelectorAll('[data-q]').forEach((b) => (b.onclick = () => perguntar(b.dataset.q)));
 	$('#fAnd').onsubmit = (e) => { e.preventDefault(); const c = $('#qAnd'); const t = c.value; c.value = ''; perguntar(t); };
@@ -1109,7 +1104,7 @@ function mostrarAba(a) {
 	$$('.abas [data-aba]').forEach((b) => { b.classList.toggle('on', b.dataset.aba === a); b.setAttribute('aria-selected', b.dataset.aba === a); });
 	$$('.painel-aba').forEach((p) => (p.hidden = p.id !== 'aba-' + a));
 	if (a === 'previas') carregarPrevias();
-	if (a === 'andamento') carregarAndamento();
+	if (a === 'fluxo') carregarAndamento();
 }
 $('.abas').onclick = (e) => { const b = e.target.closest('[data-aba]'); if (b) mostrarAba(b.dataset.aba); };
 function renderRender() {
@@ -1119,9 +1114,9 @@ function renderRender() {
 	const pod = S.config?.pod;
 	const usando = usarPodAgora();
 	const podSub = !S.config ? 'Configure o pod em Preferências' : usando ? (pod?.host ? `Vai para ${pod.host}` : 'Pod sem endereço: abra Preferências › Pod') : 'Desligado: roda neste computador';
+	const podHtml = `<div class="pod-linha"><label class="interruptor"><input type="checkbox" id="usarPod" ${usando ? 'checked' : ''} ${!S.config ? 'disabled' : ''}><span class="trilho"></span><span class="txt">Renderizar no pod<small>${esc(podSub)}</small></span></label><button class="btn icone mini fantasma" id="cfgPod" title="Configurar o pod" aria-label="Configurar o pod">${ic('gear')}</button></div>`;
 	el.innerHTML =
-		`<div class="pod-linha"><label class="interruptor"><input type="checkbox" id="usarPod" ${usando ? 'checked' : ''} ${!S.config ? 'disabled' : ''}><span class="trilho"></span><span class="txt">Usar o pod (render, blocos e transcrição)<small>${esc(podSub)}</small></span></label><button class="btn icone mini fantasma" id="cfgPod" title="Configurar o pod" aria-label="Configurar o pod">${ic('gear')}</button></div>` +
-		(!p ? `<div class="vazio" style="margin-bottom:12px">${ic('film')}<b>Escolha um vídeo</b>Selecione um vídeo no topo (ou crie em “Novo vídeo”, no topo) para gerar a prévia ou o resultado final.</div>` :
+		(!p ? `<div class="vazio" style="margin-bottom:12px">${ic('film')}<b>Escolha um vídeo</b>Selecione um vídeo no topo ou crie um em “Novo vídeo”.</div>` :
 			`<div class="cartao"><div class="cartao-topo"><h4>${ic('play')}Prévia</h4><span class="selo">rápida</span></div><p class="legenda">Para conferir a edição antes do final.</p>` +
 			`<div class="campo"><span class="rotulo">Resolução</span><div class="segmentos">${[540, 720, 1080].map((r) => `<label><input type="radio" name="res" value="${r}" ${r === res ? 'checked' : ''}><span>${r}p</span></label>`).join('')}</div></div>` +
 			`<div class="campo"><span class="rotulo">Trecho <small>(opcional, em segundos ou min:seg)</small></span><div class="trecho"><input type="text" id="trDe" placeholder="de 0:00" inputmode="decimal" aria-label="Início do trecho"><input type="text" id="trAte" placeholder="até o fim" inputmode="decimal" aria-label="Fim do trecho"></div></div>` +
@@ -1129,9 +1124,10 @@ function renderRender() {
 			`<div class="cartao"><div class="cartao-topo"><h4>${ic('star')}Resultado final</h4><span class="selo cor">1080p</span></div><p class="legenda">Qualidade máxima, pronto para publicar. Faça depois de aprovar a prévia.</p>` +
 			`<button class="btn bloco grande" id="btFinal">${ic('download')}<span>Renderizar final</span></button></div>`) +
 		(p ? `<div id="proxBloco"></div>` : '') +
-		`<div class="titulo-secao">${ic('layers')}Fila de tarefas <small class="sub">só desta sessão · 3 últimas</small></div><div id="filaTarefas"></div>` +
-		(p ? `<div class="titulo-secao">${ic('film')}Vídeos prontos<button class="btn mini fantasma" data-pasta="saida">${ic('folder')}<span>Abrir pasta</span></button></div><div id="prontos" class="prontos"></div>` +
-			`<div class="linha" style="margin-top:12px"><button class="btn bloco" id="btStudioProj">${ic('monitor')}<span>Abrir este vídeo no Studio</span></button></div>` : '');
+		(p ? `<div class="titulo-secao">${ic('film')}Vídeo pronto<button class="btn mini fantasma" data-pasta="saida">${ic('folder')}<span>Abrir pasta</span></button></div><div id="prontos" class="prontos"></div>` : '') +
+		`<div class="titulo-secao">${ic('layers')}Tarefas em andamento</div><div id="filaTarefas"></div>` +
+		(p ? `<div class="linha" style="margin-top:12px"><button class="btn bloco" id="btStudioProj">${ic('monitor')}<span>Abrir este vídeo no Studio</span></button></div>` : '') +
+		podHtml;
 	assinaturas.clear();
 	renderTarefas();
 	renderBloco();
@@ -1187,7 +1183,7 @@ function renderProntos() {
 	if (!el) return;
 	const p = proj();
 	const vids = S.projetos.find((x) => x.nome === p)?.videos ?? [];
-	if (!vids.length) { el.innerHTML = `<div class="vazio">${ic('video')}<b>Nenhum vídeo pronto ainda</b>Gere a prévia acima para assistir aqui.</div>`; return; }
+	if (!vids.length) { el.innerHTML = `<div class="vazio">${ic('video')}<b>Nenhum vídeo pronto ainda</b>Gere a prévia para assistir aqui.</div>`; return; }
 	const i = Math.min(S.videoSel, vids.length - 1);
 	const v = vids[i];
 	const atual = el.querySelector('video');
@@ -1215,7 +1211,7 @@ $('#lado').addEventListener('click', async (e) => {
 // ---------- Aba Fluxo ----------
 const ROTULOS_ACAO = {previa: 'Gerar prévia', final: 'Renderizar final', transcrever: 'Transcrever', roteiro: 'Gerar roteiro', conferir: 'Conferir'};
 async function carregarFluxo() {
-	const el = $('#aba-fluxo');
+	const el = $('#fluxoPassos');
 	const p = proj();
 	if (!p) { el.innerHTML = `<div class="vazio">${ic('list')}<b>Escolha um vídeo</b>O passo a passo mostra o que já foi feito e o próximo passo de cada vídeo: mídia, transcrição, roteiro, cenas, conferência, prévia e final.</div>`; return; }
 	if (!S.fluxo) el.innerHTML = '<div class="carregando">Carregando o passo a passo...</div>';
@@ -1233,7 +1229,7 @@ function fluxoPadrao() {
 	return `<ol class="passos">${etapas.map((n, i) => `<li class="passo"><span class="bola">${i + 1}</span><div class="corpo"><div class="cab"><b>${n}</b></div></div></li>`).join('')}</ol>`;
 }
 function renderFluxo() {
-	const el = $('#aba-fluxo');
+	const el = $('#fluxoPassos');
 	const etapas = S.fluxo?.etapas ?? [];
 	if (!etapas.length) { el.innerHTML = `<div class="vazio">${ic('list')}<b>Sem etapas</b>Nada para mostrar neste vídeo.</div>`; return; }
 	const feitas = etapas.filter((x) => x.feito).length;
