@@ -281,6 +281,7 @@ export const renderNoPod = async ({t, raiz, estado, podCfg, projeto, tipo, res, 
 	if (de !== undefined) args.push('--de', String(de));
 	if (ate !== undefined) args.push('--ate', String(ate));
 	let saidaRemota = null, erroRemoto = null, glQueFuncionou = null;
+	const inicioPod = Number((await sshRodar(pod, 'date +%s').catch(() => ({saida: ''}))).saida.trim()) || 0;
 	const r = await sshRodar(pod, `cd ${q(pod.pasta)} && GL=${q(pod.gl)} CONC=$(nproc) ${hw ? '' : 'HW=0 '}exec node scripts/render-job.mjs ${args.join(' ')}`, {
 		aoProc: (p) => t.procs.add(p),
 		aoSaida: (l) => {
@@ -307,6 +308,19 @@ export const renderNoPod = async ({t, raiz, estado, podCfg, projeto, tipo, res, 
 		} catch {}
 	}
 	if (erroRemoto) throw new Error(erroRemoto);
+	// A conexão pode cair (ou o painel reiniciar) com o render ainda rodando ou já terminado no pod: sem a linha "fim", procura
+	// o vídeo esperado e aceita se foi gravado depois do início deste render.
+	if (!saidaRemota && inicioPod) {
+		const sufixo = tipo !== 'final' && (de || ate) ? `-${de ?? 0}s-${ate ?? 'fim'}s` : '';
+		const esperado = tipo === 'final' ? `out/${projeto}-final.mp4` : `out/${projeto}-preview${sufixo}.mp4`;
+		const m = await sshRodar(pod, `stat -c '%Y %s' ${q(`${pod.pasta}/${esperado}`)}`).catch(() => null);
+		const [mtime, tam] = (m?.saida ?? '').trim().split(' ').map(Number);
+		const ocupado = await sshRodar(pod, `pgrep -f 'scripts/render-job.mjs' >/dev/null && echo sim || echo nao`).catch(() => null);
+		if (mtime >= inicioPod && tam > 0 && /nao/.test(ocupado?.saida ?? 'nao')) {
+			atualizar({aviso: 'A conexão com o pod caiu, mas o vídeo já estava pronto: baixando.'});
+			saidaRemota = esperado;
+		}
+	}
 	if (r.codigo !== 0 || !saidaRemota) throw new Error(r.codigo === 255 ? erroSsh(r.codigo, r.erro) : r.erro.trim().slice(-500) || `Render no pod terminou com código ${r.codigo}`);
 	if (!/^out\/[\w.-]+\.mp4$/.test(saidaRemota)) throw new Error('Saída inesperada do render no pod');
 
