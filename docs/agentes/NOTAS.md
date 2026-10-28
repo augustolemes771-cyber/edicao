@@ -18,3 +18,8 @@
   modelo de execução sem testar no pod real é arriscado). Proposta: `nohup node scripts/render-job.mjs ... > out/.render-<id>.log &` e o painel
   faz `tail -n +1 -f` no log, reconectando pelo id.
 - Nova preferência `duracaoMax` (padrão 59, em `biblioteca/preferencias.json`): `scripts/qualidade.ts`/`conferir.ts` devem comparar `duracaoEditada` com ela (em vez do 60 s fixo).
+
+## Agente 4 (bugs) — riscos que ficaram
+- Agente 2 (pod): `painel/pod.mjs` renderNoPod — se a conexão cai com o render AINDA rodando no pod, hoje só falha ("ocupado" = sim). Seria melhor esperar (poll de `pgrep -f 'scripts/render-jo[b].mjs'` a cada ~10 s) e baixar ao terminar. Já corrigi: o pgrep casava com o próprio shell e o código 255 descartava o vídeo recuperado.
+- Agente 2 (render): `scripts/render-job.mjs:54` SIGTERM → `falhar()` → `process.exit` sem fechar o navegador do Remotion; não verifiquei se o chrome-headless-shell sobra. No Windows o taskkill /T cobre; no pod/Linux confira com `pgrep chrome-headless`.
+- Risco baixo: `painel/pendencias.mjs` lê-modifica-grava sem trava; o assistente (CLI) e o painel anotando ao mesmo tempo podem perder uma pendência.
