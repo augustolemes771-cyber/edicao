@@ -6,12 +6,16 @@ import {lerJson, matar} from './comum.mjs';
 
 const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-export const criarApagar = ({raiz, estado, dirTemas, projetoOk, tarefas, rodando, sessoes, gravarSessoes}) => (nome) => {
+export const criarApagar = ({raiz, estado, dirTemas, projetoOk, tarefas, rodando, sessoes, gravarSessoes, historico}) => (nome) => {
 	if (!projetoOk(nome)) throw Object.assign(new Error('Projeto inválido'), {codigo: 400});
 	if (tarefas.listar().some((t) => t.projeto === nome && ['fila', 'rodando'].includes(t.estado))) {
 		throw Object.assign(new Error('Tem uma tarefa rodando neste vídeo. Cancele na aba Render e tente de novo.'), {codigo: 400});
 	}
-	matar(rodando.get(nome));
+	// parado: o fim do processo não conta como erro nem volta a gravar o histórico do projeto apagado.
+	for (const pr of [rodando.get(nome), rodando.get(`${nome}~assist`)]) {
+		if (pr) pr.parado = true;
+		matar(pr);
+	}
 	const lixo = path.join(estado, 'lixeira', `${nome}-${new Date().toISOString().replace(/[:.]/g, '-')}`);
 	mkdirSync(lixo, {recursive: true});
 	const mover = (de, para) => {
@@ -26,6 +30,8 @@ export const criarApagar = ({raiz, estado, dirTemas, projetoOk, tarefas, rodando
 	const out = path.join(raiz, 'out');
 	if (existsSync(out)) for (const f of readdirSync(out)) if (f.startsWith(`${nome}-`) && f.endsWith('.mp4')) mover(path.join(out, f), `out/${f}`);
 	mover(path.join(estado, 'chats', `${nome}.json`), 'chat.json');
+	// Sem isso o histórico em memória voltava a ser gravado (e aparecia num projeto novo com o mesmo nome).
+	historico?.limpar(nome);
 
 	// index.ts: tira o import e a linha do registro.
 	const idx = path.join(raiz, 'src/projetos/index.ts');
@@ -49,6 +55,8 @@ export const criarApagar = ({raiz, estado, dirTemas, projetoOk, tarefas, rodando
 	}
 	delete sessoes[nome];
 	delete sessoes[`${nome}#n`];
+	delete sessoes[`${nome}~assist`];
+	delete sessoes[`${nome}~assist#n`];
 	gravarSessoes();
 	return {nome, lixeira: path.relative(raiz, lixo).split(path.sep).join('/')};
 };

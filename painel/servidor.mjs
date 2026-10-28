@@ -382,7 +382,7 @@ const processosPesados = () =>
 const arqPendente = path.join(estado, 'chat-pendente.json');
 const andamento = criarAndamento({raiz, estado, tarefas, historico, listarMidias, lerGrupos, midiasNaoUsadas, rodar, ehWin, atividade: async (proj) => ({chatRodando: rodando.has(proj || '_geral'), processos: await processosPesados()})});
 const rodando = new Map();
-const apagarProjeto = criarApagar({raiz, estado, dirTemas, projetoOk, tarefas, rodando, sessoes, gravarSessoes: () => writeFileSync(arqSessoes, JSON.stringify(sessoes))});
+const apagarProjeto = criarApagar({raiz, estado, dirTemas, projetoOk, tarefas, rodando, sessoes, historico, gravarSessoes: () => writeFileSync(arqSessoes, JSON.stringify(sessoes))});
 const arqFila = (chave) => path.join(estado, `fila-${chave}.json`);
 const enfileirar = async (req, res) => {
 	const {projeto, pedido} = await corpo(req);
@@ -910,7 +910,8 @@ createServer(async (req, res) => {
 		if (p === '/api/novo-chat' && req.method === 'POST') {
 			const {projeto} = await corpo(req);
 			if (!nomeValido(projeto)) return json(res, {erro: 'Projeto inválido'}, 400);
-			delete sessoes[projeto || '_geral'];
+			// Conversa nova vale para o editor e o assistente (o histórico na tela é o mesmo).
+			for (const k of ['', '#n', '~assist', '~assist#n']) delete sessoes[(projeto || '_geral') + k];
 			writeFileSync(arqSessoes, JSON.stringify(sessoes));
 			historico.limpar(projeto || '_geral');
 			return json(res, {ok: true});
