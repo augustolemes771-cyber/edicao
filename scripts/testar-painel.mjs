@@ -16,7 +16,7 @@ for (const dir of ['painel', 'scripts', 'painel/web']) {
 		ok(`sintaxe ${dir}/${f}`, r.status === 0, r.stderr.trim().split('\n')[0]);
 	}
 }
-const srv = spawn(process.execPath, ['painel/servidor.mjs'], {cwd: raiz, env: {...process.env, PORTA: '4999', SEM_NAVEGADOR: '1'}});
+const srv = spawn(process.execPath, ['painel/servidor.mjs'], {cwd: raiz, env: {...process.env, PORTA: '4999', SEM_NAVEGADOR: '1', SEM_SALVAR: '1'}});
 let saida = '';
 srv.stdout.on('data', (d) => (saida += d));
 srv.stderr.on('data', (d) => (saida += d));

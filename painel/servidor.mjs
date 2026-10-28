@@ -109,7 +109,8 @@ const salvarGit = (mensagem) => {
 };
 // Salvamento automático ao fechar o painel (preferência "Salvar na nuvem ao fechar o painel", ligada por padrão).
 const salvarAoFechar = (limiteMs) => {
-	if (!cfg.prefs().salvarAoFechar) return Promise.resolve();
+	// SEM_SALVAR=1: cópias de teste (testar-painel, agentes) não fazem commit/push do que estiver na pasta ao serem encerradas.
+	if (!cfg.prefs().salvarAoFechar || process.env.SEM_SALVAR) return Promise.resolve();
 	const salvar = salvarGit('Salvamento automático ao fechar o painel')
 		.then((s) => console.log(`Nuvem: ${String(s).trim().split('\n').at(-1) || 'ok'}`))
 		.catch((e) => console.log(`Nuvem: não consegui salvar (${String(e.stderr || e.message).trim().slice(-200)})`));
@@ -519,7 +520,7 @@ const chat = async (req, res) => {
 		}
 		if (c && !parado) enviar('erro', {texto: erro.trim().slice(-400) || (codigo === null ? `Interrompido (${sinal})` : `Terminou com código ${c}`)});
 		// Salvar sozinho: commit e push depois de cada pedido que terminou sem erro.
-		if (!c && !falhou && !parado && cfg.prefs().salvarSozinho) {
+		if (!c && !falhou && !parado && cfg.prefs().salvarSozinho && !process.env.SEM_SALVAR) {
 			try {
 				const saida = await salvarGit(`Painel${projeto ? ` (${projeto})` : ''}: ${pedido.trim().split('\n')[0].slice(0, 120)}`);
 				enviar('acao', {acao: `Salvo no git: ${saida.trim().split('\n').at(-1) || 'ok'}`});
