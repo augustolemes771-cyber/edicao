@@ -115,6 +115,9 @@ const Palavra: React.FC<{
 	if (estilo === 'mare') {
 		const chip = e === 'serif' || e === 'cor' || e === 'grande' || e === 'caixa';
 		const pop = interpolate(local, [0, 4, 8], [1, 1.08, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+		// A palavra que está sendo falada acende em violeta vivo; depois volta à tinta roxa.
+		const fimLocal = Math.round((p.fim - inicioPagina) * fps);
+		const falando = local >= 0 && local < fimLocal;
 		return (
 			<span
 				style={{
@@ -124,7 +127,7 @@ const Palavra: React.FC<{
 					fontStyle: chip ? 'italic' : 'normal',
 					fontWeight: 800,
 					fontSize: chip ? base * 1.08 : base,
-					color: chip ? (p.cor ?? visual.corEnfase) : visual.cor,
+					color: chip ? (p.cor ?? visual.corEnfase) : falando ? '#8a3dff' : visual.cor,
 					background: chip ? '#2b0f4c' : undefined,
 					borderRadius: chip ? base * 0.2 : undefined,
 					padding: chip ? `0 ${base * 0.22}px` : undefined,
