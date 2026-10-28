@@ -902,6 +902,27 @@ createServer(async (req, res) => {
 	.listen(porta, '127.0.0.1', () => {
 	const endereco = `http://localhost:${porta}/#${token}`;
 	console.log(`\nPainel de edição pronto: ${endereco}\n(não feche esta janela enquanto estiver editando)\n`);
+	// Ao abrir, nenhum render está rodando: apaga as sobras do Remotion no temporário do sistema (cópias de vídeo que enchiam o disco).
+	setTimeout(async () => {
+		const {readdir, rm, stat} = await import('node:fs/promises');
+		const {tmpdir} = await import('node:os');
+		const tamanho = async (f) => {
+			const s = await stat(f).catch(() => null);
+			if (!s) return 0;
+			if (!s.isDirectory()) return s.size;
+			let t = 0;
+			for (const n of await readdir(f).catch(() => [])) t += await tamanho(path.join(f, n));
+			return t;
+		};
+		let liberado = 0;
+		for (const nome of await readdir(tmpdir()).catch(() => [])) {
+			if (!/^(remotion-|react-motion-render)/.test(nome)) continue;
+			const f = path.join(tmpdir(), nome);
+			const b = await tamanho(f);
+			await rm(f, {recursive: true, force: true}).then(() => (liberado += b)).catch(() => {});
+		}
+		if (liberado > 50 * 1048576) console.log(`Espaço liberado: ${(liberado / 1073741824).toFixed(1)} GB de arquivos temporários de renders antigos.`);
+	}, 2000);
 	if (!process.env.SEM_NAVEGADOR) abrirNoNavegador(endereco);
 	// Se da última vez a janela fechou antes de terminar o envio, envia agora.
 	if (cfg.prefs().salvarAoFechar) gitAsync('rev-list', '--count', '@{u}..HEAD').then((n) => { if (Number(n.trim()) > 0) salvarAoFechar(); }).catch(() => {});
