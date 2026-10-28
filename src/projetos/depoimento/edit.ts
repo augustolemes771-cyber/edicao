@@ -44,12 +44,12 @@ export const depoimento: Edit = {
 		],
 	},
 	camera: (b) => {
-		// Modo frenético: um punch a cada ~0,45 s, alternando três níveis curtos (a fonte é 576 de largura).
+		// Modo frenético: um punch a cada ~0,4 s, alternando três níveis curtos (a fonte é 576 de largura).
 		// Nas emendas o zoom troca de nível no quadro exato do corte.
 		const niveis = [1.0, 1.08, 1.15];
 		const marcos: number[] = [];
 		for (const p of b.palavras) {
-			if (!marcos.length || p.inicio - marcos[marcos.length - 1] >= 0.45) marcos.push(p.inicio);
+			if (!marcos.length || p.inicio - marcos[marcos.length - 1] >= 0.4) marcos.push(p.inicio);
 		}
 		const ritmo = marcos
 			.filter((t) => b.emendas.every((e) => Math.abs(t - e) > 0.2))
