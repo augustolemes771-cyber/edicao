@@ -12,6 +12,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {bundle} from '@remotion/bundler';
 import {RenderInternals, renderMedia, selectComposition} from '@remotion/renderer';
+import {preferirGpuForte} from './gpu-forte.mjs';
 
 const raiz = path.resolve(import.meta.dirname, '..');
 process.chdir(raiz);
@@ -215,6 +216,12 @@ try {
 	const serveUrl = pastaBundle;
 	emitir({fase: 'empacotando', pct: base});
 	ligarPublico(path.join(serveUrl, 'public'));
+
+	// Windows com duas placas: Chrome do render na placa dedicada (RTX), não na integrada.
+	try {
+		const g = preferirGpuForte(raiz);
+		if (g.marcados?.length) emitir({aviso: 'Render marcado para usar a placa de vídeo dedicada (Alto desempenho no Windows).'});
+	} catch {}
 
 	// 3. Renderizar. Mesmas opções do remotion.config.ts e dos scripts preview.sh e finalizar.sh.
 	const browserExecutable = process.env.BROWSER || null;
