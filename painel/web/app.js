@@ -339,18 +339,21 @@ function renderBiblioteca() {
 		(semTema.length ? `<details class="sub" data-id="tema-sem" data-busca="sem tema" ${abertas['tema-sem'] ? 'open' : ''}><summary>${ic('chevron', 'seta')}<span>Sem tema</span><span class="cont">${semTema.length}</span></summary><div class="sub-corpo">` +
 			semTema.map((p) => item({nome: p.nome, sub: p.formato, icone: p.formato === 'vertical' ? 'vertical' : 'horizontal', pedido: `Coloca o projeto "${p.nome}" em um tema`, arq: `src/projetos/${p.nome}/edit.ts`, botoes: `<button class="btn icone mini fantasma" data-apagar-proj="${esc(p.nome)}" title="Apagar este vídeo" aria-label="Apagar este vídeo">${ic('trash')}</button>`})).join('') + '</div></details>' : '');
 
-	// Pack: agrupado por categoria, com prévia.
-	const pack = Array.isArray(b.pack) ? b.pack : [];
+	// Pack: só o que dá para ver ou usar aqui (vídeo, imagem e som que estão neste computador e não estão vazios).
+	// O resto continua no catálogo e no disco: só não aparece na lista.
+	const packTodo = Array.isArray(b.pack) ? b.pack : [];
+	const pack = packTodo.filter((x) => x.baixado && x.tamanho !== 0 && ['video', 'imagem', 'audio'].includes(x.tipo));
+	const ocultos = packTodo.length - pack.length;
 	const cats = {};
 	for (const x of pack) (cats[x.categoria || 'Outros'] ??= []).push(x);
 	const packHtml = `<button class="btn mini bloco" data-importar-pack style="margin-bottom:8px">${ic('download')}<span>Importar pack (link do Drive ou .zip)</span></button>` +
 		(pack.length ? Object.entries(cats).sort(([a], [z]) => a.localeCompare(z)).map(([cat, itens]) => `<div class="pack-cat" data-cat>${esc(cat)} · ${itens.length}</div>` + itens.map((x) => {
-			const url = x.baixado ? urlPack(x.arquivo) : '';
-			const mini = x.baixado && x.tipo === 'imagem' ? `<img loading="lazy" src="${esc(url)}" alt="">` : '';
-			const ver = x.baixado && ['video', 'imagem', 'audio'].includes(x.tipo) ? `<button class="btn icone mini fantasma" data-pack-ver="${esc(url)}" data-nome="${esc(x.arquivo)}" title="Prévia" aria-label="Prévia">${ic(x.tipo === 'audio' ? 'play' : 'eye')}</button>` : '';
-			const selo = x.baixado ? '' : '<span class="selo alerta" title="O arquivo não está neste computador. Importe o pack.">falta</span>';
-			return item({nome: x.nome, sub: `${x.tipo}${x.tamanho ? ' · ' + tam(x.tamanho) : ''}`, icone: icPack[x.tipo] ?? 'file', mini, botoes: selo + ver, pedido: `Usa o arquivo do pack "${x.nome}" (${x.arquivo})`, busca: cat + ' ' + x.tipo});
-		}).join('')).join('') : `<div class="vazio" style="padding:14px">${ic('layers')}<b>Nenhum pack ainda</b>${'pack' in b ? 'Importe um pack de efeitos, sons, LUTs e vídeos para usar nas edições.' : 'O pack chega na próxima atualização do painel.'}</div>`);
+			const url = urlPack(x.arquivo);
+			const mini = x.tipo === 'imagem' ? `<img loading="lazy" src="${esc(url)}" alt="">` : '';
+			const ver = `<button class="btn icone mini fantasma" data-pack-ver="${esc(url)}" data-nome="${esc(x.arquivo)}" title="Prévia" aria-label="Prévia">${ic(x.tipo === 'audio' ? 'play' : 'eye')}</button>`;
+			return item({nome: x.nome, sub: `${x.tipo}${x.tamanho ? ' · ' + tam(x.tamanho) : ''}`, icone: icPack[x.tipo] ?? 'file', mini, botoes: ver, pedido: `Usa o arquivo do pack "${x.nome}" (${x.arquivo})`, busca: cat + ' ' + x.tipo});
+		}).join('')).join('') : `<div class="vazio" style="padding:14px">${ic('layers')}<b>Nada para mostrar</b>${ocultos ? `Os ${ocultos} itens do catálogo ainda não estão neste computador ou não abrem no painel. Importe o pack para ver os vídeos, imagens e sons.` : 'Importe um pack de efeitos, sons e vídeos para usar nas edições.'}</div>`) +
+		(pack.length && ocultos ? `<small class="ajuda" style="display:block;margin-top:8px;color:var(--mudo)">${ocultos} itens do catálogo ficam escondidos (não estão neste computador ou não abrem aqui).</small>` : '');
 
 	$('#bibLista').innerHTML =
 		secao('temas', 'Templates por tema', 'grid', temas.length, temasHtml, true) +
