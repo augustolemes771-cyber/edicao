@@ -96,6 +96,12 @@ Leia `docs/estilo-do-usuario.md` (ritmo, paleta, receitas emoção→efeito, 3D,
 `src/pecas/efeitos/README.md`: `ImpactoDor` (tremida + glitch + aberração vermelha/ciano + vinheta pulsante), `ObjetoVoaAoCentro`
 (olho 3D do contador de espectadores), `Texto3DImpacto`. Dor = `frase` com `dor: true`; solidão = `live` com `drama`/`olho3d`.
 
+## Duração máxima (regra do usuário, 28/10/2026)
+
+Vídeo final com no máximo 59 s e dinâmico: corte as pausas (bordas no silêncio medido), tire enrolação e, só se faltar, acelere a fala de
+leve (até 1,08x). O motor ainda NÃO tem velocidade por trecho (`src/motor/plano.ts`, `VideoEditado.tsx`): enquanto não houver, resolva só com cortes
+e deixe o pedido em `docs/agentes/NOTAS.md`. Conferir `duracaoEditada <= 59` antes de qualquer prévia/render.
+
 ## Depois da entrega
 
 - Não renderizar de novo sem pedido. Ajuste depois da entrega vai para o código e para esta skill; render novo só

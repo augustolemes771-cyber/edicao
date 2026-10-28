@@ -12,6 +12,9 @@ Objetivo: uma edição que libere dopamina em quem assiste. Siga isto em todo v�
   um texto por vez, texto curto (≤ 4 palavras por cartão, ≥ 0,3 s por palavra), alto contraste (branco/ouro sobre fundo escurecido),
   fonte grande e pesada, movimento curto que termina em repouso legível. A legenda nunca repete o cartão na tela.
 - **Camadas de fundo vs. de leitura:** o que se move muito (partículas, luz, 3D) fica periférico ou atrás; o que se lê (legenda, chip) fica quieto perto do rosto.
+- **Duração e ritmo da fala:** o vídeo final tem NO MÁXIMO 59 s (meta 50–58 s; confira `duracaoEditada` antes de cada prévia). Corte todas as pausas
+  e respirações longas nas bordas medidas no silêncio (deixe ~0,1–0,2 s), tire repetições e enrolação, e só se ainda passar acelere a fala de leve
+  (até 1,08x, sem mudar o tom). Primeiro cortar, depois acelerar; cortar conteúdo fraco vale mais que acelerar.
 - Receitas de efeito por emoção e o que ele reprova: `docs/estilo-do-usuario.md`. Peças: `src/pecas/efeitos/README.md`.
 
 Conflito entre "mais coisas" e "fácil de ver": a legibilidade vence; aumente a densidade com camadas periféricas, não com mais texto.
