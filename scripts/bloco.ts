@@ -106,6 +106,14 @@ andar('render', 0, {}, true);
 // 2. Render só do trecho: no pod quando ele está ligado (Preferências › Pod ou o interruptor da aba Render), senão aqui.
 mkdirSync('out', {recursive: true});
 let saidaPod: string | null = null;
+// Parar o editor (ou o tempo do Bash acabar) manda SIGTERM só para este processo: repassa ao render e ao ssh do pod, que senão
+// ficavam rodando órfãos (com o Chrome do render).
+const filhos = new Set<{kill(s?: 'SIGTERM'): boolean}>();
+for (const sinal of ['SIGTERM', 'SIGINT'] as const)
+	process.on(sinal, () => {
+		for (const f of filhos) f.kill('SIGTERM');
+		process.exit(1);
+	});
 let podCfg: {ativo?: boolean; host?: string} | null = null;
 try {
 	podCfg = JSON.parse(readFileSync('.painel/config.json', 'utf8')).pod ?? null;
@@ -117,7 +125,7 @@ if (podCfg?.ativo && podCfg.host && !process.env.SEM_POD) {
 		const {renderNoPod} = await import(modPod);
 		console.log(`Renderizando o bloco no pod (${podCfg.host})...`);
 		saidaPod = await renderNoPod({
-			t: {cancelado: false, procs: new Set()},
+			t: {cancelado: false, procs: filhos},
 			raiz,
 			estado: path.join(raiz, '.painel'),
 			podCfg,
@@ -141,6 +149,7 @@ if (podCfg?.ativo && podCfg.host && !process.env.SEM_POD) {
 const renderLocal = () =>
 	new Promise<{status: number | null; stdout: string; stderr: string}>((ok) => {
 		const pr = spawn(process.execPath, ['scripts/render-job.mjs', '--projeto', nome!, '--tipo', 'previa', '--res', String(res), '--de', String(de), '--ate', String(ate)], {env: process.env});
+		filhos.add(pr);
 		let stdout = '', stderr = '', resto = '';
 		pr.stdout.on('data', (d) => {
 			stdout += d;
