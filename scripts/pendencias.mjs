@@ -18,7 +18,11 @@ if (acao === 'feito') {
 } else if (acao === 'add') {
 	const i = resto.indexOf('--t');
 	const t = i >= 0 ? Number(resto[i + 1]) : undefined;
-	const texto = resto.filter((_, k) => k !== i && k !== i + 1).join(' ');
+	const texto = (i >= 0 ? resto.filter((_, k) => k !== i && k !== i + 1) : resto).join(' ');
+	if (!texto.trim()) {
+		console.error('Escreva o que mudar: node scripts/pendencias.mjs <projeto> add "texto" [--t segundos]');
+		process.exit(1);
+	}
 	const item = pend.adicionar(projeto, {texto, t, origem: 'assistente'});
 	console.log(`Pendência ${item.id} anotada. O editor aplica antes do próximo render.`);
 } else {
