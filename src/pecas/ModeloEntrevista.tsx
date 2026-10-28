@@ -41,16 +41,36 @@ export const Siga: React.FC<{cena: De<'siga'>}> = ({cena}) => (
 	<FollowPills items={cena.itens.map((i) => ({text: i.texto, t: Math.max(0, rel(cena, i.em))}))} end={cena.ate - cena.de} y={cena.y ?? 1040} x="center" />
 );
 
+// drama: a live vazia ganha vinheta roxa que fecha, pulso de batimento e um anel dourado que bate no contador de espectadores.
+const LiveDrama: React.FC<{dur: number}> = ({dur}) => {
+	const frame = useCurrentFrame();
+	const {fps, width, height} = useVideoConfig();
+	const fim = Math.round(dur * fps);
+	const entra = interpolate(frame, [0, 10], [0, 1], lim) * interpolate(frame, [fim - 8, fim], [1, 0], lim);
+	const bate = (frame % 18) / 18;
+	const pulso = Math.exp(-bate * 5);
+	const anel = (frame % 24) / 24;
+	return (
+		<AbsoluteFill style={{pointerEvents: 'none', opacity: entra}}>
+			<AbsoluteFill style={{background: `radial-gradient(ellipse at 50% 55%, rgba(30,15,58,0) 30%, rgba(30,15,58,${0.55 + 0.15 * pulso}) 75%, rgba(12,4,28,0.9) 100%)`}} />
+			<div style={{position: 'absolute', left: width * 0.855 - 90, top: height * 0.046 - 90, width: 180, height: 180, borderRadius: '50%', border: `4px solid rgba(232,194,122,${0.9 * (1 - anel)})`, transform: `scale(${0.4 + anel * 1.4})`}} />
+		</AbsoluteFill>
+	);
+};
+
 export const Live: React.FC<{cena: De<'live'>}> = ({cena}) => (
-	<LiveTemplate
-		from={0}
-		to={cena.ate - cena.de}
-		espectadores={cena.espectadores}
-		comentarios={cena.comentarios?.map((c) => ({name: c.nome, text: c.texto}))}
-		coracoes={cena.coracoes}
-		host={cena.host}
-		curtidas={cena.curtidas}
-	/>
+	<AbsoluteFill>
+		{cena.drama ? <LiveDrama dur={cena.ate - cena.de} /> : null}
+		<LiveTemplate
+			from={0}
+			to={cena.ate - cena.de}
+			espectadores={cena.espectadores}
+			comentarios={cena.comentarios?.map((c) => ({name: c.nome, text: c.texto}))}
+			coracoes={cena.coracoes}
+			host={cena.host}
+			curtidas={cena.curtidas}
+		/>
+	</AbsoluteFill>
 );
 
 // Um item por vez, no mesmo lugar: cada chip sai quando o próximo entra.
@@ -149,7 +169,7 @@ export const Numero3D: React.FC<{cena: De<'numero3d'>}> = ({cena}) => {
 			</AbsoluteFill>
 			{cena.abaixo ? (
 				<div style={{position: 'absolute', top: yPx + 150, width: '100%', display: 'flex', justifyContent: 'center', opacity: rot * saida}}>
-					<div style={{...VIDRO, padding: '14px 32px', borderRadius: 999, fontFamily: poppins, fontWeight: 700, fontSize: 34, letterSpacing: '0.1em', color: '#fff', boxShadow: 'inset 0 0 0 1.5px rgba(232,194,122,0.5)', transform: `translateY(${(1 - rot) * 16}px)`}}>
+					<div style={cena.nomeOuro ? {fontFamily: playfair, fontStyle: 'italic', fontWeight: 800, fontSize: 92, lineHeight: 1.2, padding: '0 0.08em', background: OURO_TEXTO, WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent', filter: 'drop-shadow(0 6px 10px rgba(12,4,28,0.6))', transform: `translateY(${(1 - rot) * 16}px)`} : {...VIDRO, padding: '14px 32px', borderRadius: 999, fontFamily: poppins, fontWeight: 700, fontSize: 34, letterSpacing: '0.1em', color: '#fff', boxShadow: 'inset 0 0 0 1.5px rgba(232,194,122,0.5)', transform: `translateY(${(1 - rot) * 16}px)`}}>
 						{cena.abaixo}
 					</div>
 				</div>

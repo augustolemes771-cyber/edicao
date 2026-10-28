@@ -32,8 +32,11 @@ export const primeiro: Edit = {
 		const fala = (de: string, ate: string, folga = 0.12): Trecho => [o.say(de).inicio - 0.06, o.say(ate).fim + folga];
 		return [
 			fala('eu fiz 20 mil em GMV', 'eu fiz 20 mil em GMV'),
-			fala('Tô aqui com a Paola', 'há mais de um ano'),
+			fala('Tô aqui com a Paola', 'há quanto tempo que você faz live shop'),
+			fala('Faz mais de um ano', 'comecei a fazer'),
 			fala('primeira vez que eu fiz live shop', 'tinha sido a minha irmã'),
+			fala('E eu tinha muito na minha cabeça', 'entrar muita gente'),
+			fala('E que eu tinha que perder', 'poder vender'),
 			fala('Então isso me frustrava', 'nunca mais tentei abrir uma live'),
 			[o.say('E depois que você entrou').inicio - 0.06, o.at('método') + 1.0],
 			fala('como é foi a sua evolução', 'como é foi a sua evolução'),
@@ -61,8 +64,8 @@ export const primeiro: Edit = {
 			{palavra: 'chance', estilo: 'serif'},
 		],
 		falantes: (b) => [
-			{de: b.say('Tô aqui com a Paola').inicio - 0.2, ate: b.say('há mais de um ano').fim + 0.2, nome: 'DANILOW'},
-			{de: b.say('há mais de um ano').fim + 0.2, ate: b.say('E depois que você entrou').inicio - 0.1, nome: 'PAOLA'},
+			{de: b.say('Tô aqui com a Paola').inicio - 0.2, ate: b.say('você faz live shop').fim + 0.2, nome: 'DANILOW'},
+			{de: b.say('você faz live shop').fim + 0.2, ate: b.say('E depois que você entrou').inicio - 0.1, nome: 'PAOLA'},
 			{de: b.say('E depois que você entrou').inicio - 0.1, ate: b.say('a sua evolução').fim + 0.2, nome: 'PERGUNTA'},
 			{de: b.say('a sua evolução').fim + 0.2, ate: b.say('Se você tá travado').inicio - 0.1, nome: 'PAOLA'},
 			{de: b.say('Se você tá travado').inicio - 0.1, ate: 999, nome: 'DANILOW'},
@@ -76,7 +79,7 @@ export const primeiro: Edit = {
 		const apresenta = b.say('Tô aqui com a Paola').inicio;
 		// Troca de falante: chicote. Nas emendas do mesmo falante, o zoom muda de nível (aberto ↔ médio ↔ close) para o
 		// corte virar ritmo em vez de pulo. Zoom máximo 1,35: o vídeo é 1080 e mais que isso borra.
-		const trocas = [apresenta, b.say('primeira vez que eu fiz').inicio, pergunta, resposta, cta];
+		const trocas = [apresenta, b.say('Faz mais de um ano').inicio, pergunta, resposta, cta];
 		const niveis = [1.12, 1.26, 1.35];
 		const emendas = b.emendas
 			.filter((e) => trocas.every((t) => Math.abs(t - e) > 0.25))
@@ -88,12 +91,13 @@ export const primeiro: Edit = {
 			// Apresentação: plano aberto com os dois
 			{tipo: 'chicote', em: apresenta},
 			{tipo: 'zoom', em: apresenta, escala: 1, ...ABERTO},
-			{tipo: 'zoom', em: b.at('Paola'), escala: 1.12, ...ABERTO},
+			{tipo: 'zoom', em: b.at('TikTok') - 0.1, escala: 1.2, x: 0.3, y: -0.04},
+			{tipo: 'zoom', em: b.at('responde'), escala: 1.08, ...ABERTO},
 			// Dor
 			{tipo: 'chicote', em: trocas[1]},
 			{tipo: 'zoom', em: trocas[1], escala: 1.18, ...P},
 			{tipo: 'zoom', em: b.at('chorando'), escala: 1.35, ...P},
-			{tipo: 'zoom', em: b.at('única'), escala: 1.1, ...P},
+			{tipo: 'zoom', em: b.at('única') - 0.1, escala: 1.32, suave: 1.3, ...P},
 			{tipo: 'zoom', em: b.at('irmã'), escala: 1.3, ...P},
 			{tipo: 'zoom', em: b.at('frustrava'), escala: 1.15, ...P},
 			{tipo: 'zoom', em: b.at('nunca'), escala: 1.35, suave: 0.6, ...P},
@@ -148,12 +152,14 @@ export const primeiro: Edit = {
 				som: 'impacto',
 			},
 			// 2. Nome na tela
-			{tipo: 'pilula', de: b.at('Paola') + 0.05, ate: b.say('há mais de um ano').fim + 0.1, rotulo: '+1 ano de TikTok Shop', nome: 'Paola', y: 0.49, esconderLegenda: true, som: 'swish'},
+			// 1 ANO em ouro 3D com o nome dela na mesma cor
+			{tipo: 'numero3d', de: b.at('TikTok') - 0.15, ate: b.say('há mais de um ano').fim + 0.3, texto: '1 ANO', rotulo: 'TIKTOK SHOP', abaixo: 'Paola', nomeOuro: true, y: 380, em: b.at('Há') - 0.05, esconderLegenda: true, som: 'impacto'},
 			// 3. A live vazia: 1 espectador, só a irmã comentando
 			{
 				tipo: 'live',
 				de: b.at('única') - 0.05,
-				ate: b.at('única') + 1.5,
+				ate: b.at('única') + 2.1,
+				drama: true,
 				host: 'Paola',
 				curtidas: '3 curtidas',
 				espectadores: '1',

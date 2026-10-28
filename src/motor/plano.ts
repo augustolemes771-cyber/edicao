@@ -216,13 +216,13 @@ export type Cena =
 	// Pílulas SIGA <nome>, uma por vez na altura do peito.
 	| (Base & {tipo: 'siga'; itens: {texto: string; em: number}[]; y?: number})
 	// Interface de live sobre o vídeo; espectadores (ex.: '1') e comentários opcionais.
-	| (Base & {tipo: 'live'; espectadores?: string; comentarios?: {nome: string; texto: string}[]; coracoes?: boolean; host?: string; curtidas?: string})
+	| (Base & {tipo: 'live'; drama?: boolean; espectadores?: string; comentarios?: {nome: string; texto: string}[]; coracoes?: boolean; host?: string; curtidas?: string})
 	// Chips de vidro com ✓ (ou 1/2/3), um por vez no mesmo lugar.
 	| (Base & {tipo: 'chips'; itens: {texto: string; em: number}[]; y?: number; numerado?: boolean})
 	// Caixa de comentário digitada letra por letra.
 	| (Base & {tipo: 'comentario'; texto: string; y?: number})
 	// Número em ouro 3D acima da cabeça (y = centro em px), rótulo pequeno em cima e linha de vidro embaixo.
-	| (Base & {tipo: 'numero3d'; texto: string; rotulo?: string; abaixo?: string; em?: number; y?: number; largura?: number})
+	| (Base & {tipo: 'numero3d'; texto: string; rotulo?: string; abaixo?: string; nomeOuro?: boolean; em?: number; y?: number; largura?: number})
 	// Pílula dourada com batida e chip roxo opcional.
 	| (Base & {tipo: 'selo'; texto: string; chip?: string; emChip?: number; y?: number})
 	// Cartão final roxo com anel dourado e a marca.
