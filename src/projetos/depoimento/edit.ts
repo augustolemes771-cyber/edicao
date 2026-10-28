@@ -4,9 +4,9 @@ import silencios from './silencios.json';
 import transcricao from './transcricao.json';
 
 // Depoimento de aluna da mentoria (tema Depoimentos), gravado no celular, uma fala só (576x1024, 60 s).
-// Roteiro (falas reordenadas): gancho "arrisca, vai ser a melhor decisão" → dúvida (mais uma mentoria?) → dor (batendo
-// cabeça com produto) → virada (Felipe, Danilow e Matheus fizeram diferença) → o que aprendeu (escolher, analisar, testar)
-// → resultado (escolha bem feita, diferença até hoje na operação) → agradecimento → cartão final.
+// Roteiro (falas reordenadas): gancho "arrisca, vai ser a melhor decisão" → gratidão (Felipe, Danilow e Matheus fizeram
+// diferença; o usuário pediu esse trecho logo depois do gancho) → dúvida (mais uma mentoria?) → dor (batendo cabeça com
+// produto) → o que aprendeu (escolher, analisar, testar) → resultado (escolha bem feita, diferença até hoje na operação) → agradecimento → cartão final.
 // Rosto em x .55 y .45; céu livre no topo. Blusa azul: ouro tem contraste. Fonte 576 de largura: zoom curto (≤ 1,15).
 const P = {x: 0.55, y: 0.45};
 
@@ -26,9 +26,9 @@ export const depoimento: Edit = {
 	// o gancho termina exatamente onde a lição começa.
 	trechos: () => [
 		[32.06, 36.31], // arrisca, arrisca porque vai ser a melhor decisão que vocês vão tomar
+		[4.25, 16.86], // muito grata... Felipe, Danilo, o Matheus... na mentoria deles (pedido: logo depois do gancho)
 		[17.32, 22.75], // às vezes a gente fica pensando... mais uma mentoria, gente
 		[23.53, 29.6], // pra você que não entende sobre live... qualquer produto
-		[4.25, 16.86], // muito grata... Felipe, Danilo, o Matheus... na mentoria deles
 		[36.31, 54.8], // vocês vão entender mais sobre escolha de produto... muito obrigada pela ajuda
 	],
 	legenda: {
@@ -94,7 +94,8 @@ export const depoimento: Edit = {
 				tipo: 'frase',
 				dor: true,
 				de: b.at('batendo') - 0.08,
-				ate: b.say('qualquer produto').fim + 0.1,
+				// Duração ajustada pelo usuário no painel: termina em "com produto", antes de "qualquer produto".
+				ate: b.at('qualquer') - 0.12,
 				palavras: [
 					{texto: 'BATENDO', em: b.at('batendo')},
 					{texto: 'CABEÇA', em: b.at('cabeça'), destaque: true},
