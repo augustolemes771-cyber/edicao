@@ -32,7 +32,9 @@ const vazia = !existsSync(arqTranscricao) || readFileSync(arqTranscricao, 'utf8'
 const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 const rodar = (script) => {
 	const r = spawnSync(npm, ['run', script, '--', nome], {cwd: raiz, encoding: 'utf8', shell: process.platform === 'win32'});
-	const fim = `${r.stdout ?? ''}${r.stderr ?? ''}`.trim().split('\n').slice(-3).join('\n');
+	const tudo = `${r.stdout ?? ''}${r.stderr ?? ''}`.trim().split('\n');
+	const avisos = tudo.filter((l) => /"aviso"|transcrição pronta \(GPU/.test(l));
+	const fim = [...avisos, ...tudo.slice(-3)].join('\n');
 	console.log(`[${script}] ${r.status === 0 ? 'ok' : 'FALHOU'}\n${fim}`);
 	return r.status === 0;
 };

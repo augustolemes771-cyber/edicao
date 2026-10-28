@@ -1105,7 +1105,7 @@ function renderRender() {
 	const usando = usarPodAgora();
 	const podSub = !S.config ? 'Configure o pod em Preferências' : usando ? (pod?.host ? `Vai para ${pod.host}` : 'Pod sem endereço: abra Preferências › Pod') : 'Desligado: roda neste computador';
 	el.innerHTML =
-		`<div class="pod-linha"><label class="interruptor"><input type="checkbox" id="usarPod" ${usando ? 'checked' : ''} ${!S.config ? 'disabled' : ''}><span class="trilho"></span><span class="txt">Renderizar no pod<small>${esc(podSub)}</small></span></label><button class="btn icone mini fantasma" id="cfgPod" title="Configurar o pod" aria-label="Configurar o pod">${ic('gear')}</button></div>` +
+		`<div class="pod-linha"><label class="interruptor"><input type="checkbox" id="usarPod" ${usando ? 'checked' : ''} ${!S.config ? 'disabled' : ''}><span class="trilho"></span><span class="txt">Usar o pod (render, blocos e transcrição)<small>${esc(podSub)}</small></span></label><button class="btn icone mini fantasma" id="cfgPod" title="Configurar o pod" aria-label="Configurar o pod">${ic('gear')}</button></div>` +
 		(!p ? `<div class="vazio" style="margin-bottom:12px">${ic('film')}<b>Escolha um vídeo</b>Selecione um vídeo no topo (ou crie em “Novo vídeo”, no topo) para gerar a prévia ou o resultado final.</div>` :
 			`<div class="cartao"><div class="cartao-topo"><h4>${ic('play')}Prévia</h4><span class="selo">rápida</span></div><p class="legenda">Para conferir a edição antes do final.</p>` +
 			`<div class="campo"><span class="rotulo">Resolução</span><div class="segmentos">${[540, 720, 1080].map((r) => `<label><input type="radio" name="res" value="${r}" ${r === res ? 'checked' : ''}><span>${r}p</span></label>`).join('')}</div></div>` +
@@ -1121,6 +1121,8 @@ function renderRender() {
 	renderProntos();
 	$('#usarPod').onchange = (e) => {
 		S.usarPod = e.target.checked;
+		// Vale para tudo (render, blocos e transcrição) e fica salvo: os scripts leem a configuração salva.
+		api('/api/config', {config: {pod: {ativo: S.usarPod}}}).then(() => { if (S.config?.pod) S.config.pod.ativo = S.usarPod; }).catch((er) => avisoErro(er, 'Não salvei o pod'));
 		if (S.usarPod && !S.config?.pod?.host) aviso('O pod ainda não tem endereço. Configure em Preferências › Pod.', 'alerta');
 		renderRender();
 		atualizarPilulas();

@@ -71,9 +71,37 @@ if (q.status !== 0) {
 	process.exit(1);
 }
 
-// 2. Render só do trecho.
+// 2. Render só do trecho: no pod quando ele está ligado (Preferências › Pod ou o interruptor da aba Render), senão aqui.
 mkdirSync('out', {recursive: true});
-const r = spawnSync(process.execPath, ['scripts/render-job.mjs', '--projeto', nome!, '--tipo', 'previa', '--res', String(res), '--de', String(de), '--ate', String(ate)], {encoding: 'utf8', env: process.env});
+let saidaPod: string | null = null;
+let podCfg: {ativo?: boolean; host?: string} | null = null;
+try {
+	podCfg = JSON.parse(readFileSync('.painel/config.json', 'utf8')).pod ?? null;
+} catch {}
+if (podCfg?.ativo && podCfg.host && !process.env.SEM_POD) {
+	try {
+		// Caminho em variável: o painel é JavaScript sem tipos.
+		const modPod = '../painel/pod.mjs';
+		const {renderNoPod} = await import(modPod);
+		console.log(`Renderizando o bloco no pod (${podCfg.host})...`);
+		saidaPod = await renderNoPod({
+			t: {cancelado: false, procs: new Set()},
+			raiz,
+			estado: path.join(raiz, '.painel'),
+			podCfg,
+			projeto: nome!,
+			tipo: 'previa',
+			res,
+			de,
+			ate,
+			hw: true,
+			atualizar: () => {},
+		});
+	} catch (e) {
+		console.log(`⚠ Pod indisponível (${String((e as Error).message).slice(0, 200)}): renderizando neste PC.`);
+	}
+}
+const r = saidaPod ? {status: 0, stdout: JSON.stringify({fim: true, saida: saidaPod}), stderr: ''} : spawnSync(process.execPath, ['scripts/render-job.mjs', '--projeto', nome!, '--tipo', 'previa', '--res', String(res), '--de', String(de), '--ate', String(ate)], {encoding: 'utf8', env: process.env});
 const eventos = `${r.stdout ?? ''}`.split('\n').filter(Boolean).map((l) => {
 	try {
 		return JSON.parse(l);
