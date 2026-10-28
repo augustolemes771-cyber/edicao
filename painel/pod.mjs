@@ -108,10 +108,13 @@ const scpArgs = (pod, local, remoto) => [
 	...(pod.chave ? ['-i', pod.chave, '-o', 'IdentitiesOnly=yes'] : []),
 	'--', local, `${pod.usuario}@${pod.host}:${remoto}`,
 ];
-// Um arquivo local para um caminho remoto SEM espaços. Roda na pasta do arquivo e passa "./nome": no Windows, "C:\..." viraria host.
+// Um arquivo local para um caminho remoto SEM espaços. Caminho local absoluto: o scp do Windows entende "C:\..." como
+// arquivo local (um "./nome" relativo ele não achou). Fora do Windows, nome com ":" vai como "./nome" na pasta dele.
 export const scpPara = (t, pod, local, remoto) =>
 	new Promise((ok, falha) => {
-		const pr = iniciar(exe('scp'), scpArgs(pod, `./${path.basename(local)}`, remoto), {cwd: path.dirname(local), stdio: ['ignore', 'ignore', 'pipe']});
+		if (!existsSync(local)) return falha(new Error(`Arquivo para enviar ao pod não encontrado: ${local}`));
+		const relativo = !ehWin && path.basename(local).includes(':');
+		const pr = iniciar(exe('scp'), scpArgs(pod, relativo ? `./${path.basename(local)}` : local, remoto), {...(relativo ? {cwd: path.dirname(local)} : {}), stdio: ['ignore', 'ignore', 'pipe']});
 		t?.procs?.add(pr);
 		let erro = '';
 		pr.stderr.on('data', (d) => (erro += d));
@@ -172,7 +175,7 @@ export const enviarCodigo = async (t, pod, raiz, estado, itens, aoPct, exclui = 
 	const codTar = await executar(exe('tar'), ['-cf', arq, ...exclui.flatMap((x) => ['--exclude', x]), '--', ...itens], {cwd: raiz, env: {...process.env, COPYFILE_DISABLE: '1'}}).catch((e) => {
 		throw e.code === 'ENOENT' ? new Error('tar não encontrado neste computador') : e;
 	});
-	if (codTar !== 0) throw new Error('tar falhou ao empacotar o código');
+	if (codTar !== 0 || !existsSync(arq)) throw new Error(`tar falhou ao empacotar o código (código ${codTar})`);
 	aoPct(30);
 	const remoto = `${pod.pasta}/.envio/codigo.tar`;
 	const prep = await sshRodar(pod, `mkdir -p ${q(`${pod.pasta}/.envio`)}`, {aoProc: (p) => t.procs.add(p)});
