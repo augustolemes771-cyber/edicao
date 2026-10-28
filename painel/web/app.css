@@ -523,3 +523,5 @@ details[open]>summary .seta{transform:rotate(90deg)}
 .prox-bloco .barra{margin-top:10px}
 .prox-bloco .legenda{margin:10px 0 4px!important;position:static}
 .form-acoes:has(#destino:not([hidden])) .dica{display:none}
+.atualizado{font-size:11.5px;color:var(--mudo);white-space:nowrap;margin-right:4px}
+@media (max-width:1250px){.atualizado{display:none}}

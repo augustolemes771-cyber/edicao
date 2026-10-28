@@ -2024,5 +2024,18 @@ async function iniciar() {
 	verificarClaude();
 	pollTarefas();
 	pollBloco();
+	mostrarAtualizacao();
+}
+// Topo: data e hora da última atualização do painel (último commit neste PC).
+async function mostrarAtualizacao() {
+	try {
+		const v = await api('/api/versao');
+		if (!v?.data) return;
+		const d = new Date(v.data);
+		const el = $('#atualizado');
+		el.textContent = `Atualizado em ${d.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit', year: 'numeric'})} às ${d.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}`;
+		el.title = `Última atualização: ${v.assunto} (${v.commit})`;
+		el.hidden = false;
+	} catch {}
 }
 iniciar();

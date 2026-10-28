@@ -886,6 +886,13 @@ createServer(async (req, res) => {
 		}
 		if (p === '/api/chat' && req.method === 'POST') return chat(req, res);
 		if (p === '/api/chat/fila' && req.method === 'POST') return enfileirar(req, res);
+		// Data e hora do último commit deste PC (a última atualização do painel), para o topo.
+		if (p === '/api/versao') {
+			try {
+				const [data, commit, assunto] = execFileSync('git', ['log', '-1', '--format=%cI%n%h%n%s'], {cwd: raiz, encoding: 'utf8', windowsHide: true}).trim().split('\n');
+				return json(res, {data, commit, assunto});
+			} catch { return json(res, {data: null}); }
+		}
 		if (p === '/api/pendencias') {
 			const proj = url.searchParams.get('projeto') ?? '';
 			if (!projetoOk(proj)) return json(res, {lista: [], bloco: null});
