@@ -23,7 +23,8 @@
     "silencios": "node scripts/silencios.mjs",
     "preparar-video": "node scripts/preparar-video.mjs",
     "qualidade": "tsx scripts/qualidade.ts",
-    "bloco": "tsx scripts/bloco.ts"
+    "bloco": "tsx scripts/bloco.ts",
+    "auditar": "node scripts/auditar.mjs"
   },
   "dependencies": {
     "@react-three/fiber": "9.2.0",
