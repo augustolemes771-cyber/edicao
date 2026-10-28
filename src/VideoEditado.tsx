@@ -19,7 +19,7 @@ import {projetos} from './projetos';
 
 export type PropsVideo = {projeto: string; duracaoFonte: number};
 
-const VOLUME_SFX = dbParaGanho(-19);
+const VOLUME_SFX = dbParaGanho(-15);
 
 // Vídeo decupado, com os cortes das notas faladas aplicados.
 const Base: React.FC<{edit: Edit; montagem: Montagem; pessoa?: boolean}> = ({edit, montagem, pessoa}) => {
