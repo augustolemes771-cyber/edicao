@@ -45,11 +45,21 @@ else
 	passo 70 'Bibliotecas do Chrome já instaladas'
 fi
 
+# Gráficos da GPU (WebGL): muitos pods liberam a placa só para cálculo. Instala as bibliotecas EGL/GL da NVIDIA na versão do driver.
+if command -v nvidia-smi >/dev/null; then
+	DRV=$(nvidia-smi --query-gpu=driver_version --format=csv,noheader | head -1 | cut -d. -f1)
+	if [ -n "$DRV" ] && ! ls /usr/lib/x86_64-linux-gnu/libEGL_nvidia.so* >/dev/null 2>&1; then
+		passo 85 "Instalando gráficos da GPU (libnvidia-gl-$DRV)"
+		$SUDO apt-get install -y -qq --no-install-recommends "libnvidia-gl-$DRV" >/dev/null 2>&1 || echo "Aviso: não consegui instalar libnvidia-gl-$DRV (o render usa a CPU para os gráficos)"
+	fi
+fi
+
 passo 95 'Conferindo'
 echo "Node: $(node -v)"
 echo "ffmpeg: $(ffmpeg -version | head -1 | cut -d' ' -f3)"
 if command -v nvidia-smi >/dev/null; then
 	echo "GPU: $(nvidia-smi --query-gpu=name --format=csv,noheader | head -1)"
+	if ls /usr/lib/x86_64-linux-gnu/libEGL_nvidia.so* >/dev/null 2>&1; then echo 'Gráficos da GPU: liberados'; else echo 'Gráficos da GPU: NÃO liberados (WebGL pela CPU)'; fi
 else
 	echo 'GPU: nenhuma placa NVIDIA (o render vai pela CPU)'
 fi
