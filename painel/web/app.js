@@ -1731,7 +1731,7 @@ $('#f').onsubmit = async (e) => {
 	rolar();
 	const mesmo = () => proj() === projetoChat;
 	const add = (...a) => { if (!mesmo()) return null; const d = msg(...a); msgs.append(pensando); rolar(); return d; };
-	let ultimaIa = null, faltam = null, sobrou = null;
+	let ultimaIa = null, faltam = null, sobrou = null, ultimoErro = null, parouUsuario = false;
 	ctrl = new AbortController();
 	try {
 		const r = await fetch('/api/chat', {method: 'POST', headers: H, signal: ctrl.signal, body: JSON.stringify({projeto: projetoChat, pedido, tema: temaAtual()})});
@@ -1750,7 +1750,7 @@ $('#f').onsubmit = async (e) => {
 				if (ev.tipo === 'texto') { ultimoEvento = Date.now(); textoAgora = 'Escrevendo a resposta'; ultimaIa = add(ev.texto, 'ia'); if (/segundo plano|quando terminar|aviso quando/i.test(ev.texto)) S.esperandoRender = projetoChat; }
 				else if (ev.tipo === 'batida') processosAgora = ev.processos ?? [];
 				else if (ev.tipo === 'acao') { textoAgora = traduzirAcao(ev.acao); ultimoEvento = Date.now(); add(ev.acao, 'acao'); }
-				else if (ev.tipo === 'erro') add(ev.texto, 'erro');
+				else if (ev.tipo === 'erro') { add(ev.texto, 'erro'); ultimoErro = ev.texto; }
 				else if (ev.tipo === 'faltam') faltam = ev.arquivos;
 				else if (ev.tipo === 'sobrou') sobrou = ev.pedido;
 				else if (ev.tipo === 'fim' && ultimaIa && custoTxt(ev.custo)) ultimaIa.insertAdjacentHTML('beforeend', `<span class="custo">${esc(custoTxt(ev.custo))}</span>`);
@@ -1758,7 +1758,7 @@ $('#f').onsubmit = async (e) => {
 		}
 	} catch (err) {
 		if (err.name !== 'AbortError') add(err.message, 'erro');
-		else add('Parado.', 'acao');
+		else { parouUsuario = true; add('Parado.', 'acao'); }
 	}
 	clearInterval(relogio);
 	pensando.remove();
@@ -1791,7 +1791,16 @@ $('#f').onsubmit = async (e) => {
 			$('#pedido').value = `Conferência automática: o edit.ts não usa estes arquivos que eu defini como "usar todos": ${faltam.join(', ')}. Refaça a edição usando TODOS os arquivos do grupo (respeitando a ordem definida). Se algum realmente não couber, explique o motivo.`;
 			$('#f').requestSubmit();
 		} else aviso(`Ainda não usou: ${faltam.join(', ')}. Peça na conversa ou use o botão na aba Mídias.`, 'erro');
-	} else if (projetoChat && !faltam) delete (S.autoMidias ?? {})[projetoChat];
+	} else if (ultimoErro && !parouUsuario && mesmo()) {
+		// O editor caiu com erro: tenta de novo sozinho (até 2 vezes seguidas por projeto), mandando ele diagnosticar e contornar.
+		const tent = (S.autoErro ??= {});
+		if ((tent[projetoChat] ?? 0) < 2) {
+			tent[projetoChat] = (tent[projetoChat] ?? 0) + 1;
+			aviso('Deu erro: pedindo para o Claude diagnosticar e contornar sozinho.', 'alerta');
+			$('#pedido').value = `Deu este erro: ${String(ultimoErro).slice(0, 300)}. Descubra a causa, contorne por conta própria (outro comando, outro caminho, corrigir o script) e continue o pedido de onde parou, sem me perguntar.`;
+			$('#f').requestSubmit();
+		} else aviso('O erro continua depois de 2 tentativas automáticas. Veja a mensagem na conversa.', 'erro');
+	} else if (projetoChat && !faltam) { delete (S.autoMidias ?? {})[projetoChat]; if (!ultimoErro) delete (S.autoErro ?? {})[projetoChat]; }
 };
 
 // ---------- Assistente: atende em paralelo enquanto o editor trabalha ----------

@@ -97,6 +97,8 @@ export const textoPrefs = (p) => {
   tem e copie EXATAMENTE a linha [[bloco:...]] que o comando imprimiu; PARE e espere. (4) "Bloco N aprovado": faça só o bloco N+1, sem
   mexer nos aprovados. "Ajuste no bloco N": corrija só ele e rode o bloco N de novo. Depois do último: gere a prévia completa.
   Este comando é exigido pelo fluxo (vale mais que a regra de não gerar prévias).
+  SE ALGO FALHAR (comando, render, pod), NÃO PARE NEM PERGUNTE: leia o erro, descubra a causa, corrija ou contorne (outro comando, outro caminho,
+  ajustar o script) e tente de novo, até 3 tentativas diferentes. Só reporte ao usuário o que não conseguiu resolver, em 2 linhas.
   RODE O \`npm run bloco\` SEMPRE EM PRIMEIRO PLANO (Bash normal, timeout 1800000), NUNCA em segundo plano: quando sua resposta termina
   a sessão fecha e mata o render (o pod "cai"). Espere ele acabar na mesma resposta. Não use nohup, setsid, start nem & (no Windows não existem ou não funcionam). Nunca use SEM_POD por conta própria; se a saída
   disser "O RENDER NO POD FALHOU", copie o erro para o usuário em 1 linha.
