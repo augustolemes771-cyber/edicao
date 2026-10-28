@@ -300,6 +300,8 @@ export const renderNoPod = async ({t, raiz, estado, podCfg, projeto, tipo, res, 
 	if (dep.codigo !== 0) throw new Error(dep.codigo === 255 ? erroSsh(dep.codigo, dep.erro) : `npm ci falhou no pod:\n${dep.erro.trim().slice(-500)}`);
 	parar();
 
+	// Garante o limite de conexões do sshd do pod (pod novo ou reiniciado volta ao padrão de 10 e recusa conexões ao acaso).
+	await sshRodar(pod, `grep -qE '^MaxStartups[[:space:]]+100' /etc/ssh/sshd_config 2>/dev/null || { [ "$(id -u)" = 0 ] && echo 'MaxStartups 100:30:300' >> /etc/ssh/sshd_config && pkill -HUP -x sshd; }; true`).catch(() => null);
 	// 4. Render, lendo as mesmas linhas JSON do render local.
 	atualizar({fase: 'renderizando no pod', pct: 23});
 	const args = ['--projeto', q(projeto), '--tipo', tipo, '--res', String(res)];
