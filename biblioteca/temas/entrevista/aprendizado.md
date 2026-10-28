@@ -26,3 +26,4 @@ Regras aprendidas nos vídeos deste tema. O Claude lê isto antes de editar e ac
 - 2026-10-28: O usuário quer a mesma QUALIDADE e a mesma sensação do modelo (dopamina, cortes rápidos, início chamativo, legenda no meio), não os mesmos efeitos: adaptar os efeitos a cada vídeo.
 - 2026-10-28 (primeiro): Reprovou o som 'grave' nos números 3D (macabro, sem sentido, sem tom profissional e animado). Para números/gancho usar sons curtos e claros (pop, swish, tick); evitar grave, impacto e subida (drones longos).
 - 2026-10-28 (primeiro): Som grave/drone no gancho foi reprovado ("macabro, sem tom profissional e animado"): em número 3D usar pop/swish/whoosh leves, nunca grave. Na legenda maré a palavra falada precisa mudar de cor (violeta vivo) enquanto é dita.
+- 2026-10-28 (primeiro): gancho R$ 20 MIL em ouro 3D + 1 ANO 3D + legenda de pílula no bloco 1 foram aprovados.
