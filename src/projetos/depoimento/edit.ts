@@ -20,19 +20,17 @@ export const depoimento: Edit = {
 	extraFim: 2.6,
 	silencios: silencios as Trecho[],
 	transcricao,
-	trechos: (o) => {
-		// [início, fim] no tempo original, com folga; as bordas se encaixam nas pausas medidas (silencios.json).
-		const fala = (de: string, ate: string, folga = 0.12): Trecho => [o.say(de).inicio - 0.06, o.say(ate).fim + folga];
-		return [
-			fala('arrisca arrisca porque', 'vocês vão tomar'),
-			fala('Às vezes a gente', 'mais uma mentoria gente'),
-			fala('Pra você que não entende', 'qualquer produto'),
-			fala('sou muito grata', 'na mentoria deles'),
-			fala('vocês vão entender mais', 'aquele produto'),
-			fala('foi uma escolha', 'hoje na minha operação'),
-			fala('Então meninos', 'pela ajuda'),
-		];
-	},
+	// Bordas numéricas, cada uma no ponto mais baixo de energia medido perto da palavra (abaixo de -38 dB, salvo onde a
+	// fala é contínua): o vento deixa poucas pausas no silencios.json e o Whisper erra até 0,4 s aqui ("foi", "Então").
+	// A lição e o resultado são contínuos na gravação (35,99–52,08): o gancho termina exatamente onde a lição começa.
+	trechos: () => [
+		[32.06, 35.99], // arrisca, arrisca porque vai ser a melhor decisão que vocês vão tomar
+		[17.32, 22.75], // às vezes a gente fica pensando... mais uma mentoria, gente
+		[23.53, 29.6], // pra você que não entende sobre live... qualquer produto
+		[3.7, 16.86], // sou muito grata... Felipe, Danilo, o Matheus... na mentoria deles
+		[35.99, 52.08], // vocês vão entender mais sobre escolha de produto... até hoje na minha operação
+		[52.1, 54.8], // então, meninos, muito obrigada pela ajuda
+	],
 	legenda: {
 		estilo: 'mare',
 		altura: 0.656,
@@ -145,7 +143,7 @@ export const depoimento: Edit = {
 				som: 'tick',
 			},
 			// 6. Resultado: a operação de live dela hoje
-			{tipo: 'selo', de: b.at('bem') - 0.05, ate: b.at('feita') + 0.6, texto: 'BEM FEITA', y: 420, som: 'swish'},
+			{tipo: 'selo', de: b.at('bem') - 0.05, ate: b.at('feita') + 0.6, texto: 'BEM FEITA', y: 420, esconderLegenda: true, som: 'swish'},
 			{
 				tipo: 'live',
 				de: b.say('total diferença').inicio - 0.05,
