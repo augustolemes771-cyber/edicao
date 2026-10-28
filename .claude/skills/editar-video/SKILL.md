@@ -90,6 +90,12 @@ ler o `aprendizado.md` do tema e seguir. Ao terminar, ou quando o usuário aprov
 - Em todo bloco, pelo menos uma ideia visual nova tirada da fala daquele trecho, sem repetir o efeito principal do bloco anterior e sem
   poluir (um texto por vez, evento a cada ~2 s, legenda no meio).
 
+## Estilo do usuário (ler antes de editar)
+
+Leia `docs/estilo-do-usuario.md` (ritmo, paleta, receitas emoção→efeito, 3D, o que ele reprova). Efeitos prontos em
+`src/pecas/efeitos/README.md`: `ImpactoDor` (tremida + glitch + aberração vermelha/ciano + vinheta pulsante), `ObjetoVoaAoCentro`
+(olho 3D do contador de espectadores), `Texto3DImpacto`. Dor = `frase` com `dor: true`; solidão = `live` com `drama`/`olho3d`.
+
 ## Depois da entrega
 
 - Não renderizar de novo sem pedido. Ajuste depois da entrega vai para o código e para esta skill; render novo só

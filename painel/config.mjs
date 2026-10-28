@@ -106,7 +106,9 @@ export const textoPrefs = (p) => {
   de live com 1 espectador; número → número 3D; lista → chips um por vez; virada → frase grande; nome → pílula; pergunta → plano aberto).
   Não repita o efeito principal do bloco anterior. Se nenhuma peça servir, crie uma nova em src/pecas com acabamento de produção (mola,
   tipografia e paleta do tema, sombra suave; nada de clip-art, fonte gótica ou símbolo solto) e registre em biblioteca/itens.
-  Sem poluir: um texto por vez, um evento a cada ~2 s, todo efeito ligado a uma palavra ou ideia falada, legenda no meio.`
+  Sem poluir: um texto por vez, um evento a cada ~2 s, todo efeito ligado a uma palavra ou ideia falada, legenda no meio.
+- ESTILO DO USUÁRIO: antes de editar, leia docs/estilo-do-usuario.md (receitas emoção→efeito, o que ele reprova) e src/pecas/efeitos/README.md
+  (ImpactoDor, ObjetoVoaAoCentro, Texto3DImpacto). Dor/revolta = tremida + glitch + aberração vermelha/ciano + vinheta pulsante; 3D só com sentido.`
 		: '';
 	const participar = p.participar !== false
 		? `
