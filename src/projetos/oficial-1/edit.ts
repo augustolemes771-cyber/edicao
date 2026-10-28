@@ -117,10 +117,10 @@ export const oficial1: Edit = {
 				som: 'tick',
 			},
 			{
-				tipo: 'drama', tom: 'pb',
+				tipo: 'drama',
 				de: b.at('depois') - 0.05,
 				ate: b.say('abrir uma live').fim + 0.4,
-				pequeno: 'depois desse dia',
+				pequeno: 'LIVE',
 				grande: 'NUNCA MAIS',
 				em: nunca,
 				apaga: live,

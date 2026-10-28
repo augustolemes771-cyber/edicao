@@ -110,6 +110,33 @@ const PilulaLive: React.FC<{texto: string; tamanho: number; desligada?: number; 
 	);
 };
 
+// Palavra em bloco 3D branco com borda dourada (referência "NUNCA MAIS UMA"): frente branca, lateral ouro extrudada.
+const Branco3D: React.FC<{texto: string; tamanho: number}> = ({texto, tamanho}) => {
+	const passos = 14;
+	const d = tamanho * 0.07;
+	const lateral = Array.from({length: passos}, (_, i) => {
+		const k = (i + 1) / passos;
+		return `${(d * k * 0.35).toFixed(1)}px ${(d * k).toFixed(1)}px 0 rgb(${Math.round(215 - 60 * k)},${Math.round(165 - 60 * k)},${Math.round(80 - 40 * k)})`;
+	}).join(', ');
+	return (
+		<span
+			style={{
+				fontFamily: inter,
+				fontWeight: 900,
+				fontSize: tamanho,
+				lineHeight: 1,
+				letterSpacing: -tamanho * 0.02,
+				color: '#fffdf6',
+				textShadow: `${lateral}, 0 ${d * 2}px ${d * 3}px rgba(0,0,0,0.8)`,
+			}}
+		>
+			{texto}
+		</span>
+	);
+};
+
+// Drama da referência: tudo quase preto, um feixe diagonal de luz do topo cai no rosto; "NUNCA MAIS" em ouro chato
+// e a palavra do tema em branco 3D enorme sobre o corpo, que treme e despenca no fim.
 export const Drama: React.FC<{cena: De<'drama'>}> = ({cena}) => {
 	const frame = useCurrentFrame();
 	const {fps, width, height} = useVideoConfig();
@@ -120,151 +147,94 @@ export const Drama: React.FC<{cena: De<'drama'>}> = ({cena}) => {
 	const x = cena.x ?? 0.7;
 	const y = cena.y ?? 0.33;
 
-	// Luz: cai devagar, pisca na batida e fica no foco; volta no fim.
 	const fb = frame - Math.round(batida * fps);
-	const pisca = fb >= 0 && fb < 7 ? [0.25, 1, 0.4, 1, 0.65, 1, 0.9][fb] : 1;
-	const nivel = interpolate(t, [0, 0.5, batida - 0.05, batida + 0.25], [0, 0.55, 0.62, 0.92], lim);
-	const volta = interpolate(t, [dur - 0.3, dur], [1, 0], lim);
-	const escuro = nivel * volta * (fb >= 0 && fb < 7 ? pisca : 1);
-	const raio = interpolate(t, [batida, batida + 0.6], [1.15, 1], lim);
+	const pisca = fb >= 0 && fb < 7 ? [0.3, 1, 0.45, 1, 0.7, 1, 0.9][fb] : 1;
+	const escuro = interpolate(t, [0, 0.45], [0, 1], lim) * interpolate(t, [dur - 0.3, dur], [1, 0], lim);
+	const luz = escuro * pisca * interpolate(t, [0.2, 0.7], [0.4, 1], lim);
 
-	// Texto grande: bate de cima com desfoque e tremor.
-	const pb = spring({frame: fb, fps, config: {damping: 11, stiffness: 170, mass: 0.9}});
-	const tremor = fb >= 0 && fb < 10 ? Math.sin(fb * 2.9) * 12 * Math.exp(-fb / 3) : 0;
-	const tamGrande = width * 0.12;
-	const pPeq = spring({frame, fps, config: {damping: 18}});
+	const yL1 = height * 0.47;
+	const pb = spring({frame: fb, fps, config: {damping: 12, stiffness: 190}});
+	const tremor = fb >= 0 && fb < 10 ? Math.sin(fb * 2.9) * 10 * Math.exp(-fb / 3) : 0;
 
-	// Pílula LIVE: entra acesa, falha, perde a cor, é cortada e cai.
 	const fa = frame - Math.round(apaga * fps);
-	const falha = fa >= 0 && fa < 6 ? [0.2, 1, 0.1, 0.8, 0.2, 1][fa] : 1;
-	const desligada = interpolate(fa, [5, 9], [0, 1], lim);
-	const corte = interpolate(fa, [7, 12], [0, 1], lim);
-	const queda = Math.max(0, fa - 12);
+	const pa = spring({frame: fa, fps, config: {damping: 10, stiffness: 170}});
+	const trem2 = fa >= 0 && fa < 12 ? Math.sin(fa * 3.1) * 14 * Math.exp(-fa / 4) : 0;
+	const queda = Math.max(0, frame - Math.round((cena.ate - cena.de - 0.45) * fps));
 	const caiY = 0.5 * 2600 * (queda / fps) ** 2;
-	const entraLive = spring({frame: frame - 4, fps, config: {damping: 14}});
-	const pulso = 0.6 + 0.4 * Math.sin(frame * 0.5);
-	const encerrada = interpolate(fa, [14, 22], [0, 1], lim);
-	const tamLive = width * 0.06;
-	const yLive = height * 0.58;
+	const tam1 = width * 0.105;
+	const tam2 = width * 0.27;
+	const polig = `${(x - 0.02) * 100},0 ${(x + 0.32) * 100},0 ${(x + 0.26) * 100},70 ${(x - 0.4) * 100},70`;
 
 	return (
 		<AbsoluteFill style={{pointerEvents: 'none'}}>
-			{/* Vira frio e sem cor fora do foco */}
-			{cena.tom === 'pb' ? (
-				<AbsoluteFill style={{backdropFilter: `grayscale(${escuro}) contrast(${1 + 0.15 * escuro})`}} />
-			) : (
-				<AbsoluteFill
-					style={{background: cena.tom === 'roxo' ? '#4b1a80' : '#2a3a78', mixBlendMode: 'color', opacity: 0.5 * escuro}}
-				/>
-			)}
+			<svg width={width} height={height} viewBox="0 0 100 100" preserveAspectRatio="none" style={{position: 'absolute', inset: 0, opacity: escuro}}>
+				<defs>
+					<filter id="borraLuz" x="-30%" y="-30%" width="160%" height="160%">
+						<feGaussianBlur stdDeviation="2.4" />
+					</filter>
+					<mask id="furoLuz" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100">
+						<rect width="100" height="100" fill="#fff" />
+						<polygon points={polig} fill="#000" filter="url(#borraLuz)" opacity={0.92 * pisca} />
+					</mask>
+					<linearGradient id="feixe" x1="0" y1="0" x2="0" y2="1">
+						<stop offset="0" stopColor="#e6ecff" stopOpacity="0.5" />
+						<stop offset="0.6" stopColor="#cfd8f5" stopOpacity="0.16" />
+						<stop offset="1" stopColor="#cfd8f5" stopOpacity="0" />
+					</linearGradient>
+				</defs>
+				<rect width="100" height="100" fill="#04040a" opacity="0.96" mask="url(#furoLuz)" />
+				<polygon points={polig} fill="url(#feixe)" opacity={luz} filter="url(#borraLuz)" style={{mixBlendMode: 'screen'}} />
+			</svg>
+			{/* poeira no feixe */}
 			<AbsoluteFill
 				style={{
-					opacity: escuro,
-					background: `radial-gradient(ellipse ${30 * raio}% ${19 * raio}% at ${x * 100}% ${y * 100}%, rgba(6,3,18,0) 0%, rgba(6,3,18,0.35) 55%, rgba(4,2,12,0.97) 100%)`,
-				}}
-			/>
-			{/* Feixe de luz de cima até o rosto */}
-			<AbsoluteFill
-				style={{
-					opacity: 0.22 * escuro,
+					opacity: 0.35 * luz,
 					mixBlendMode: 'screen',
-					background: 'linear-gradient(180deg, rgba(210,225,255,0.9) 0%, rgba(210,225,255,0.15) 100%)',
-					clipPath: `polygon(${(x - 0.04) * 100}% 0%, ${(x + 0.04) * 100}% 0%, ${(x + 0.2) * 100}% ${(y + 0.06) * 100}%, ${(x - 0.2) * 100}% ${(y + 0.06) * 100}%)`,
-					filter: 'blur(18px)',
+					backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.9) 0 1px, transparent 1.6px)',
+					backgroundSize: '46px 61px',
+					backgroundPosition: `${frame * 0.4}px ${-frame * 0.6}px`,
+					clipPath: `polygon(${(x - 0.02) * 100}% 0, ${(x + 0.32) * 100}% 0, ${(x + 0.26) * 100}% 70%, ${(x - 0.4) * 100}% 70%)`,
 				}}
 			/>
-			{/* Pequeno: entra com a cena */}
-			{cena.pequeno && (
-				<div
-					style={{
-						position: 'absolute',
-						top: height * ((cena.yTexto ?? 0.165) - 0.06),
-						width: '100%',
-						textAlign: 'center',
-						fontFamily: inter,
-						fontWeight: 700,
-						fontSize: width * 0.032,
-						letterSpacing: width * 0.012,
-						color: 'rgba(235,238,255,0.9)',
-						textShadow: '0 2px 12px rgba(0,0,0,0.8)',
-						opacity: pPeq * volta,
-						transform: `translateY(${(1 - pPeq) * 20}px)`,
-					}}
-				>
-					{cena.pequeno.toUpperCase()}
-				</div>
-			)}
-			{/* Grande em ouro 3D */}
 			{fb >= 0 && (
 				<div
 					style={{
 						position: 'absolute',
-						top: height * (cena.yTexto ?? 0.165),
+						top: yL1,
+						width: '100%',
+						textAlign: 'center',
+						fontFamily: inter,
+						fontWeight: 900,
+						fontSize: tam1,
+						letterSpacing: tam1 * 0.04,
+						lineHeight: 1,
+						color: '#c8913a',
+						textShadow: '0 1px 0 #e5b35a, 0 3px 0 #8a5f1e, 0 5px 0 #6e4a14, 0 8px 12px rgba(0,0,0,0.8)',
+						opacity: Math.min(1, pb * 2),
+						transform: `translate(${tremor}px, ${caiY * 0.6 + (1 - pb) * -50}px) scale(${1 + (1 - pb) * 0.5})`,
+					}}
+				>
+					{cena.grande}
+				</div>
+			)}
+			{fa >= 0 && cena.pequeno && (
+				<div
+					style={{
+						position: 'absolute',
+						top: yL1 + tam1 * 0.95,
 						width: '100%',
 						display: 'flex',
 						justifyContent: 'center',
 						perspective: 900,
-						opacity: Math.min(1, pb * 2) * volta,
-						filter: pb < 0.6 ? `blur(${(0.6 - pb) * 20}px)` : undefined,
+						opacity: Math.min(1, pa * 2),
+						filter: pa < 0.6 ? `blur(${(0.6 - pa) * 18}px)` : undefined,
 					}}
 				>
-					<div
-						style={{
-							transform: `translate(${tremor}px, ${(1 - pb) * -120}px) scale(${1 + (1 - pb) * 1.2}) rotateX(16deg)`,
-						}}
-					>
-						<Ouro3D texto={cena.grande} tamanho={tamGrande} />
+					<div style={{transform: `translate(${trem2}px, ${caiY + (1 - pa) * -90}px) rotate(${queda * 1.2}deg) scale(${1 + (1 - pa) * 1.1}) rotateX(10deg)`}}>
+						<Branco3D texto={cena.pequeno} tamanho={tam2} />
 					</div>
 				</div>
 			)}
-			{/* LIVE que apaga, é cortada e cai */}
-			<div
-				style={{
-					position: 'absolute',
-					top: yLive,
-					left: 0,
-					width: '100%',
-					display: 'flex',
-					justifyContent: 'center',
-					opacity: Math.min(1, entraLive) * (fa >= 0 && fa < 6 ? falha : 1) * interpolate(queda, [0, 14], [1, 0], lim),
-					transform: `translateY(${caiY + (1 - entraLive) * 30}px) rotate(${queda * 1.4}deg) scale(${0.85 + 0.15 * entraLive})`,
-				}}
-			>
-				<div style={{position: 'relative'}}>
-					<PilulaLive texto="LIVE" tamanho={tamLive} desligada={desligada} pulso={pulso} />
-					<div
-						style={{
-							position: 'absolute',
-							left: '-12%',
-							right: '-12%',
-							top: '50%',
-							height: tamLive * 0.12,
-							background: 'linear-gradient(90deg, rgba(255,255,255,0), #fff 20%, #fff 80%, rgba(255,255,255,0))',
-							boxShadow: `0 0 ${tamLive * 0.5}px rgba(255,255,255,0.9)`,
-							transformOrigin: 'left center',
-							transform: `rotate(-11deg) scaleX(${corte})`,
-							opacity: corte > 0 ? 1 : 0,
-						}}
-					/>
-				</div>
-			</div>
-			<div
-				style={{
-					position: 'absolute',
-					top: yLive + tamLive * 0.3,
-					width: '100%',
-					textAlign: 'center',
-					fontFamily: inter,
-					fontWeight: 600,
-					fontSize: width * 0.03,
-					letterSpacing: width * 0.01,
-					color: 'rgba(200,205,225,0.85)',
-					opacity: encerrada * volta,
-					transform: `translateY(${(1 - encerrada) * 10}px)`,
-				}}
-			>
-				LIVE ENCERRADA
-			</div>
 		</AbsoluteFill>
 	);
 };

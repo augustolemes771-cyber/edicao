@@ -199,7 +199,7 @@ export type Cena =
 	| (Base & {tipo: 'rec'})
 	// Entrevista (src/pecas/Entrevista.tsx). drama: as luzes caem num foco frio sobre o rosto (x, y de 0 a 1),
 	// o texto grande bate em ouro 3D acima da cabeça (em: segundo da batida) e a pílula LIVE se apaga e cai (apaga: segundo).
-	| (Base & {tipo: 'drama'; grande: string; tom?: 'frio' | 'pb' | 'roxo'; pequeno?: string; em?: number; apaga?: number; x?: number; y?: number; yTexto?: number})
+	| (Base & {tipo: 'drama'; grande: string; pequeno?: string; em?: number; apaga?: number; x?: number; y?: number; yTexto?: number})
 	// Pílula LIVE que acende com clarão quente (a virada depois do drama). y de 0 a 1.
 	| (Base & {tipo: 'aovivo'; texto?: string; y?: number})
 	// Contador em ouro 3D acima da cabeça: rótulo pequeno (ex.: GMV), número que sobe até o valor e seta de alta.
