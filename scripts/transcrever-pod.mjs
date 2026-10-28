@@ -1,8 +1,7 @@
 // Transcrição no servidor de GPU (pod): só o áudio 16 kHz mono (~3 MB por 100 s) sobe; o Whisper large-v3-turbo roda na placa
 // (faster-whisper, float16) e a transcrição palavra por palavra volta em segundos. Usado por scripts/transcrever.mjs quando
 // o pod está ativo nas Preferências; se falhar, o chamador transcreve neste PC.
-import {readFileSync} from 'node:fs';
-import {validarPod, sshRodar} from '../painel/pod.mjs';
+import {scpPara, validarPod, sshRodar} from '../painel/pod.mjs';
 
 // Roda no pod. Lê o WAV, imprime o progresso em stderr e uma última linha JSON com as palavras em stdout.
 const PY = `
@@ -34,8 +33,10 @@ export const transcreverNoPod = async ({podCfg, projeto, wav, aoProgresso, model
 	const pod = validarPod(podCfg);
 	const remoto = `/tmp/edicao-${projeto}`;
 	aoProgresso?.('enviando o áudio para o servidor', 2);
-	const envio = await sshRodar(pod, `mkdir -p ${q(remoto)} && cat > ${q(`${remoto}/audio.wav`)} && cat > /dev/null`, {entrada: readFileSync(wav)});
-	if (envio.codigo !== 0) throw new Error(`não consegui enviar o áudio: ${envio.erro.trim().slice(-200)}`);
+	// O áudio vai por scp: pelo stdin do ssh do Windows ele sairia a poucos KB/s.
+	const pasta = await sshRodar(pod, `mkdir -p ${q(remoto)}`);
+	if (pasta.codigo !== 0) throw new Error(`não consegui preparar a pasta no servidor: ${pasta.erro.trim().slice(-200)}`);
+	await scpPara(null, pod, wav, `${remoto}/audio.wav`);
 	const envioPy = await sshRodar(pod, `cat > ${q(`${remoto}/transcrever.py`)}`, {entrada: PY});
 	if (envioPy.codigo !== 0) throw new Error(`não consegui enviar o script: ${envioPy.erro.trim().slice(-200)}`);
 	aoProgresso?.('transcrevendo na GPU do servidor', 5);

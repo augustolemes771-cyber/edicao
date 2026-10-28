@@ -15,7 +15,7 @@ export const GLS = ['angle', 'angle-egl', 'egl', 'swangle', 'swiftshader', 'vulk
 const exe = (nome) => {
 	if (ehWin) {
 		const sis = path.join(process.env.SystemRoot ?? 'C:\\Windows', 'System32');
-		const f = nome === 'ssh' ? path.join(sis, 'OpenSSH', 'ssh.exe') : path.join(sis, 'tar.exe');
+		const f = nome === 'tar' ? path.join(sis, 'tar.exe') : path.join(sis, 'OpenSSH', `${nome}.exe`);
 		if (existsSync(f)) return f;
 	}
 	return nome;
@@ -55,7 +55,7 @@ const sshArgs = (pod, comando) => [
 	`${pod.usuario}@${pod.host}`,
 	comando,
 ];
-const q = (s) => `'${s}'`;
+const q = (s) => `'${String(s).replace(/'/g, `'\\''`)}'`;
 
 // Explica os erros comuns do ssh em português.
 const erroSsh = (codigo, stderr) => {
@@ -98,53 +98,112 @@ export const testarPod = async (podCfg) => {
 	return {ok: true, texto: r.saida.replace(/ffmpeg: \n/, 'ffmpeg: não instalado (use Preparar pod)\n').trim()};
 };
 
-// Envia arquivos locais (caminhos relativos à raiz) por tar | ssh, contando os bytes para o progresso.
-const enviarTar = (t, pod, raiz, itens, total, aoPct, exclui = []) =>
+// Envio para o pod por scp (SFTP, vários pedidos em voo). NÃO mandar pelo stdin do ssh: no Windows o ssh.exe lê o stdin
+// em pedaços de poucos KB, um por ida e volta, e um upload de 400 Mbit/s virou 0,02 MB/s.
+const scpArgs = (pod, local, remoto) => [
+	'-P', String(pod.porta), '-q',
+	'-o', 'BatchMode=yes',
+	'-o', 'StrictHostKeyChecking=accept-new',
+	'-o', 'ConnectTimeout=15',
+	...(pod.chave ? ['-i', pod.chave, '-o', 'IdentitiesOnly=yes'] : []),
+	'--', local, `${pod.usuario}@${pod.host}:${remoto}`,
+];
+// Um arquivo local para um caminho remoto SEM espaços. Roda na pasta do arquivo e passa "./nome": no Windows, "C:\..." viraria host.
+export const scpPara = (t, pod, local, remoto) =>
 	new Promise((ok, falha) => {
-		const tar = iniciar(exe('tar'), ['-cf', '-', ...exclui.flatMap((x) => ['--exclude', x]), '--', ...itens], {cwd: raiz, env: {...process.env, COPYFILE_DISABLE: '1'}, stdio: ['ignore', 'pipe', 'pipe']});
-		const ssh = iniciar(exe('ssh'), sshArgs(pod, `mkdir -p ${q(pod.pasta)} && tar -xf - -C ${q(pod.pasta)} --warning=no-unknown-keyword`), {stdio: ['pipe', 'ignore', 'pipe']});
-		t.procs.add(tar);
-		t.procs.add(ssh);
-		let enviados = 0, erroTar = '', erroSshTxt = '', fechados = 0, codTar = 0, codSsh = 0;
-		tar.stdout.on('data', (c) => {
-			enviados += c.length;
-			aoPct(Math.min(100, (enviados / Math.max(1, total)) * 100));
-		});
-		tar.stdout.pipe(ssh.stdin);
-		ssh.stdin.on('error', () => {});
-		tar.stderr.on('data', (d) => (erroTar += d));
-		ssh.stderr.on('data', (d) => (erroSshTxt += d));
-		tar.on('error', (e) => falha(e.code === 'ENOENT' ? new Error('tar não encontrado neste computador') : e));
-		ssh.on('error', (e) => falha(semSsh(e)));
-		const fechou = () => {
-			if (++fechados < 2) return;
-			if (codSsh !== 0) return falha(new Error(erroSsh(codSsh, erroSshTxt)));
-			if (codTar !== 0) return falha(new Error(`tar falhou: ${erroTar.trim().slice(-300)}`));
-			ok();
-		};
-		tar.on('close', (c) => {
-			codTar = c ?? -1;
-			fechou();
-		});
-		ssh.on('close', (c) => {
-			codSsh = c ?? -1;
-			fechou();
-		});
+		const pr = iniciar(exe('scp'), scpArgs(pod, `./${path.basename(local)}`, remoto), {cwd: path.dirname(local), stdio: ['ignore', 'ignore', 'pipe']});
+		t?.procs?.add(pr);
+		let erro = '';
+		pr.stderr.on('data', (d) => (erro += d));
+		pr.on('error', (e) => falha(e.code === 'ENOENT' ? new Error('scp não encontrado neste computador (vem com o OpenSSH do Windows 10+)') : e));
+		pr.on('close', (c) => (c === 0 ? ok() : falha(new Error(t?.cancelado ? 'Cancelado' : `Envio para o pod falhou: ${erroSsh(c ?? -1, erro)}`))));
 	});
 
-const CODIGO = ['src', 'scripts', 'public/sfx', 'public/fontes', 'biblioteca', 'package.json', 'package-lock.json', 'remotion.config.ts', 'tsconfig.json'];
-// Mede a velocidade de envio do PC para o pod (4 MB), para decidir se vale enviar mídia grande. Devolve MB/s.
-const medirEnvio = (t, pod) =>
-	new Promise((ok) => {
-		const ssh = iniciar(exe('ssh'), sshArgs(pod, 'cat > /dev/null'), {stdio: ['pipe', 'ignore', 'ignore']});
-		t.procs.add(ssh);
-		const bytes = 4 * 1024 * 1024;
-		const ini = Date.now();
-		ssh.stdin.on('error', () => {});
-		ssh.stdin.end(Buffer.alloc(bytes, 7));
-		ssh.on('close', () => ok(bytes / 1048576 / Math.max(0.2, (Date.now() - ini) / 1000)));
-		ssh.on('error', () => ok(null));
+// Vários arquivos: [{local, rel (relativo à pasta do pod), tamanho}]. Cada um vai para .envio/<n> (nome sem espaço), até 3
+// ao mesmo tempo, e no fim um único ssh move tudo para o lugar.
+export const enviarArquivos = async (t, pod, lista, aoPct) => {
+	if (!lista.length) return;
+	const envio = `${pod.pasta}/.envio`;
+	const prep = await sshRodar(pod, `mkdir -p ${q(envio)}`, {aoProc: (p) => t.procs.add(p)});
+	if (prep.codigo !== 0) throw new Error(erroSsh(prep.codigo, prep.erro));
+	const total = lista.reduce((s, a) => s + (a.tamanho ?? 0), 0) || 1;
+	let feito = 0;
+	let proximo = 0;
+	const trabalhador = async () => {
+		while (proximo < lista.length) {
+			const i = proximo++;
+			if (t.cancelado) throw new Error('Cancelado');
+			await scpPara(t, pod, lista[i].local, `${envio}/${i}.part`);
+			feito += lista[i].tamanho ?? 0;
+			aoPct(Math.min(100, (feito / total) * 100));
+		}
+	};
+	// Barra contínua num arquivo grande: a cada 3 s, soma o que já chegou em .envio no pod.
+	let medindo = false;
+	const relogio = setInterval(async () => {
+		if (medindo) return;
+		medindo = true;
+		const r = await sshRodar(pod, `du -cb ${q(envio)}/*.part 2>/dev/null | tail -1 | cut -f1`).catch(() => null);
+		const chegou = Number(r?.saida?.trim());
+		if (chegou > feito) aoPct(Math.min(99, (chegou / total) * 100));
+		medindo = false;
+	}, 3000);
+	try {
+		await Promise.all(Array.from({length: Math.min(3, lista.length)}, trabalhador));
+	} finally {
+		clearInterval(relogio);
+	}
+	for (let i = 0; i < lista.length; i += 80) {
+		const cmd = lista
+			.slice(i, i + 80)
+			.map((a, k) => {
+				const destino = `${pod.pasta}/${a.rel}`;
+				return `mkdir -p ${q(path.posix.dirname(destino))} && mv -f ${q(`${envio}/${i + k}.part`)} ${q(destino)}`;
+			})
+			.join(' && ');
+		const mv = await sshRodar(pod, cmd, {aoProc: (p) => t.procs.add(p)});
+		if (mv.codigo !== 0) throw new Error(`Não consegui colocar os arquivos no lugar no pod: ${mv.erro.trim().slice(-300)}`);
+	}
+};
+
+// Código do projeto: um tar local (rápido) enviado por scp e aberto no pod.
+export const enviarCodigo = async (t, pod, raiz, estado, itens, aoPct, exclui = []) => {
+	const arq = path.join(estado, 'envio-codigo.tar');
+	const codTar = await executar(exe('tar'), ['-cf', arq, ...exclui.flatMap((x) => ['--exclude', x]), '--', ...itens], {cwd: raiz, env: {...process.env, COPYFILE_DISABLE: '1'}}).catch((e) => {
+		throw e.code === 'ENOENT' ? new Error('tar não encontrado neste computador') : e;
 	});
+	if (codTar !== 0) throw new Error('tar falhou ao empacotar o código');
+	aoPct(30);
+	const remoto = `${pod.pasta}/.envio/codigo.tar`;
+	const prep = await sshRodar(pod, `mkdir -p ${q(`${pod.pasta}/.envio`)}`, {aoProc: (p) => t.procs.add(p)});
+	if (prep.codigo !== 0) throw new Error(erroSsh(prep.codigo, prep.erro));
+	await scpPara(t, pod, arq, remoto);
+	aoPct(85);
+	const ab = await sshRodar(pod, `tar -xf ${q(remoto)} -C ${q(pod.pasta)} --warning=no-unknown-keyword && rm -f ${q(remoto)}`, {aoProc: (p) => t.procs.add(p)});
+	if (ab.codigo !== 0) throw new Error(`Não consegui abrir o código no pod: ${ab.erro.trim().slice(-300)}`);
+	rmSync(arq, {force: true});
+	aoPct(100);
+};
+
+const CODIGO = ['src', 'scripts', 'public/sfx', 'public/fontes', 'biblioteca', 'package.json', 'package-lock.json', 'remotion.config.ts', 'tsconfig.json'];
+// Mede a velocidade de envio do PC para o pod: scp de 8 MB, descontando o tempo de abrir a conexão. Devolve MB/s.
+export const medirEnvio = async (t, pod, estado) => {
+	try {
+		const arq = path.join(estado, 'teste-envio.bin');
+		writeFileSync(arq, Buffer.alloc(8 * 1048576, 7));
+		const t0 = Date.now();
+		await sshRodar(pod, 'true', {aoProc: (p) => t.procs.add(p)});
+		const conexao = (Date.now() - t0) / 1000;
+		const t1 = Date.now();
+		await scpPara(t, pod, arq, '/tmp/edicao-teste-envio.bin');
+		const segundos = Math.max(0.15, (Date.now() - t1) / 1000 - conexao);
+		rmSync(arq, {force: true});
+		void sshRodar(pod, 'rm -f /tmp/edicao-teste-envio.bin').catch(() => {});
+		return 8 / segundos;
+	} catch {
+		return null;
+	}
+};
 
 const FORA = ['biblioteca/pack/arquivos'];
 
@@ -159,8 +218,7 @@ export const renderNoPod = async ({t, raiz, estado, podCfg, projeto, tipo, res, 
 	// 1. Código.
 	atualizar({fase: 'enviando o código para o pod', pct: 0});
 	const itens = CODIGO.filter((f) => existsSync(path.join(raiz, f)));
-	const total = itens.reduce((s, f) => s + (statSync(path.join(raiz, f)).isDirectory() ? arquivosEm(path.join(raiz, f), (rel) => f === 'biblioteca' && rel.startsWith('pack/arquivos')).reduce((a, x) => a + x.tamanho, 0) : statSync(path.join(raiz, f)).size), 0);
-	await enviarTar(t, pod, raiz, itens, total, faixa(0, 4), FORA);
+	await enviarCodigo(t, pod, raiz, estado, itens, faixa(0, 4), FORA);
 	parar();
 
 	// 2. Mídias do projeto: só as que faltam no pod, têm outro tamanho lá ou mudaram aqui desde o último envio.
@@ -180,7 +238,7 @@ export const renderNoPod = async ({t, raiz, estado, podCfg, projeto, tipo, res, 
 		if (mudou.length && totalMidia > 30 * 1048576) {
 			// Upload de casa costuma ser lento: se enviar levaria mais que o limite, avisa para renderizar neste PC.
 			atualizar({fase: 'medindo a velocidade de envio', pct: 4});
-			const mbs = await medirEnvio(t, pod);
+			const mbs = await medirEnvio(t, pod, estado);
 			const minutos = mbs ? totalMidia / 1048576 / mbs / 60 : null;
 			const limite = tipo === 'final' ? 20 : 3;
 			if (minutos !== null && minutos > limite) {
@@ -189,16 +247,13 @@ export const renderNoPod = async ({t, raiz, estado, podCfg, projeto, tipo, res, 
 		}
 		if (mudou.length) {
 			atualizar({fase: `enviando ${mudou.length} mídia(s) para o pod`});
-			// Em lotes, para não estourar o limite da linha de comando do Windows.
-			let feitos = 0;
-			for (let i = 0; i < mudou.length; i += 100) {
-				const lote = mudou.slice(i, i + 100);
-				const tamLote = lote.reduce((s, m) => s + m.tamanho, 0);
-				const base = feitos;
-				await enviarTar(t, pod, raiz, lote.map((m) => `${relProj}/${m.rel}`), tamLote, (p) => faixa(4, 20)(((base + (p / 100) * tamLote) / Math.max(1, totalMidia)) * 100));
-				feitos += tamLote;
-				parar();
-			}
+			await enviarArquivos(
+				t,
+				pod,
+				mudou.map((m) => ({local: path.join(raiz, relProj, m.rel), rel: `${relProj}/${m.rel}`, tamanho: m.tamanho})),
+				faixa(4, 20),
+			);
+			parar();
 		}
 		manifestos[chave] = {...manifestos[chave], [projeto]: Object.fromEntries(locais.map((m) => [m.rel, `${m.tamanho}:${m.mtime}`]))};
 		writeFileSync(arqManifesto, JSON.stringify(manifestos));
