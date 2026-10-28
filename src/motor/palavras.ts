@@ -76,10 +76,13 @@ export const palavrasEditadas = (legendas: Caption[], mantidos: Trecho[]): Palav
 // de ela parar. Sem pausa perto (fala emendada), a borda fica onde está.
 export const encaixarNoSilencio = (trechos: Trecho[], silencios: Trecho[], janela = 0.3): Trecho[] => {
 	if (!silencios.length) return trechos;
-	const perto = (t: number) => {
+	// Começo só encaixa em pausa que termina até ~0,1 s depois dele, e fim em pausa que começa até ~0,1 s antes:
+	// senão uma pausa curta logo depois do começo (ou um "f"/"s" fraco medido como pausa) engolia a primeira palavra.
+	const perto = (t: number, lado: 'inicio' | 'fim') => {
 		let melhor: Trecho | null = null;
 		let dist = Infinity;
 		for (const s of silencios) {
+			if (lado === 'inicio' ? s[1] > t + 0.1 : s[0] < t - 0.1) continue;
 			const d = t < s[0] ? s[0] - t : t > s[1] ? t - s[1] : 0;
 			if (d <= janela && d < dist) {
 				dist = d;
@@ -89,8 +92,8 @@ export const encaixarNoSilencio = (trechos: Trecho[], silencios: Trecho[], janel
 		return melhor;
 	};
 	return trechos.map(([a, b]) => {
-		const sa = perto(a);
-		const sb = perto(b);
+		const sa = perto(a, 'inicio');
+		const sb = perto(b, 'fim');
 		const na = sa ? Math.max(sa[0], sa[1] - 0.06) : a;
 		const nb = sb ? Math.min(sb[1], sb[0] + 0.1) : b;
 		return nb - na > 0.2 ? [na, nb] : [a, b];
