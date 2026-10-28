@@ -5,6 +5,8 @@
  "legendaPadrao": "auto",
  "confirmarFinal": true,
  "amostras": true,
+ "blocos": true,
+ "segBloco": 10,
  "participar": true,
  "salvarSozinho": true,
  "salvarAoFechar": true,
