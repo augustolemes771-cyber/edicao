@@ -6,7 +6,8 @@
 // Variável GL: renderizador WebGL do Chrome (padrão 'angle'; no pod Linux com placa NVIDIA, 'angle-egl' ou 'egl').
 // Variável HW=0: não tenta o codificador da placa de vídeo.
 import {spawn, spawnSync} from 'node:child_process';
-import {existsSync, mkdirSync, readFileSync, renameSync, rmSync, statSync} from 'node:fs';
+import {copyFileSync, existsSync, linkSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, statSync} from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import {bundle} from '@remotion/bundler';
 import {renderMedia, selectComposition} from '@remotion/renderer';
@@ -36,9 +37,57 @@ const emitir = (o) => {
 	}
 	process.stdout.write(JSON.stringify(o) + '\n');
 };
+// Pasta temporária do empacotamento: apagada no fim, com sucesso, erro ou cancelamento (cada uma tinha GB de vídeo).
+let pastaBundle = null;
+const limparBundle = () => {
+	if (pastaBundle) rmSync(pastaBundle, {recursive: true, force: true});
+	pastaBundle = null;
+};
 const falhar = (msg) => {
 	emitir({erro: String(msg).slice(-700)});
+	limparBundle();
 	process.exit(1);
+};
+process.on('SIGTERM', () => falhar('Cancelado'));
+process.on('SIGINT', () => falhar('Cancelado'));
+
+// Sobras de renders antigos que caíram ou foram cancelados à força (pastas do Remotion no temporário do sistema).
+const limparTemporarios = (horas) => {
+	const limite = Date.now() - horas * 3600_000;
+	for (const nome of readdirSync(os.tmpdir())) {
+		if (!/^(remotion-|react-motion-render)/.test(nome)) continue;
+		const f = path.join(os.tmpdir(), nome);
+		try {
+			if (statSync(f).mtimeMs < limite) rmSync(f, {recursive: true, force: true});
+		} catch {}
+	}
+};
+
+// A pasta public do empacotamento: em vez de o Remotion copiar a public inteira (vídeos de todos os projetos, vários GB a
+// cada render), entram só sons, fontes e as mídias deste projeto, como links diretos (hard links: não ocupam espaço).
+// Disco diferente (link impossível): copia. PUBLICO_INTEIRO=1 volta a usar a public toda.
+const ligarPublico = (destino) => {
+	const origem = path.join(raiz, 'public');
+	const ligar = (rel) => {
+		const de = path.join(origem, rel);
+		if (!existsSync(de)) return;
+		if (statSync(de).isDirectory()) {
+			for (const nome of readdirSync(de)) {
+				if (nome === 'referencias' || nome.endsWith('.parte')) continue;
+				if (rel === 'projetos' && !process.env.PUBLICO_INTEIRO && nome !== projeto) continue;
+				ligar(path.join(rel, nome));
+			}
+			return;
+		}
+		const para = path.join(destino, rel);
+		mkdirSync(path.dirname(para), {recursive: true});
+		try {
+			linkSync(de, para);
+		} catch {
+			copyFileSync(de, para);
+		}
+	};
+	for (const nome of readdirSync(origem)) ligar(nome);
 };
 // Erro solto (ex.: EPIPE do ffmpeg interno) também vira a linha {"erro"} que o painel entende.
 process.on('uncaughtException', (e) => falhar(e?.message ?? e));
@@ -71,10 +120,17 @@ try {
 	// 2. Empacotar o projeto (webpack).
 	emitir({fase: 'empacotando', pct: 1});
 	const base = tipo === 'final' ? 8 : 12;
+	limparTemporarios(6);
+	const vazia = path.join(raiz, '.painel', 'publico-vazio');
+	mkdirSync(vazia, {recursive: true});
 	const serveUrl = await bundle({
 		entryPoint: path.join(raiz, 'src/index.ts'),
+		publicDir: vazia,
+		onDirectoryCreated: (d) => (pastaBundle = d),
 		onProgress: (p) => emitir({fase: 'empacotando', pct: 1 + (p / 100) * (base - 1)}),
 	});
+	pastaBundle = serveUrl;
+	ligarPublico(path.join(serveUrl, 'public'));
 
 	// 3. Renderizar. Mesmas opções do remotion.config.ts e dos scripts preview.sh e finalizar.sh.
 	const browserExecutable = process.env.BROWSER || null;
@@ -158,6 +214,7 @@ try {
 	} else {
 		emitir({fim: true, saida: brutoRel});
 	}
+	limparBundle();
 	process.exit(0);
 } catch (e) {
 	falhar(e?.message ?? e);
