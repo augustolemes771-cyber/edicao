@@ -770,6 +770,25 @@ createServer(async (req, res) => {
 			return json(res, limpos);
 		}
 		if (p === '/api/prompts') return json(res, lerJson(arqPrompts, []));
+		// Abre o Claude Code numa janela de terminal, na pasta do painel, já com o contexto do vídeo escolhido.
+		if (p === '/api/abrir-code' && req.method === 'POST') {
+			const {projeto} = await corpo(req);
+			if (!nomeValido(projeto)) return json(res, {erro: 'Projeto inválido'}, 400);
+			// Só texto fixo e o nome do projeto ([a-z0-9-]): nada do usuário vai para a linha de comando.
+			const inicio = projeto
+				? `Vamos editar o video ${projeto}. Rode node scripts/contexto.mjs ${projeto}, leia o que ele imprime e espere o meu pedido (responda so: pronto).`
+				: 'Rode node scripts/contexto.mjs, leia e espere o meu pedido (responda so: pronto).';
+			try {
+				if (ehWin) {
+					spawn('cmd.exe', [`/c start "Claude Code" /d "${raiz}" cmd /k claude "${inicio}"`], {windowsVerbatimArguments: true, detached: true, stdio: 'ignore', windowsHide: false}).unref();
+				} else if (process.platform === 'darwin') {
+					spawn('osascript', ['-e', `tell application "Terminal" to do script "cd '${raiz.replace(/'/g, '')}' && claude '${inicio}'"`, '-e', 'tell application "Terminal" to activate'], {detached: true, stdio: 'ignore'}).unref();
+				} else {
+					spawn('x-terminal-emulator', ['-e', 'bash', '-lc', `cd '${raiz.replace(/'/g, '')}' && claude '${inicio}'`], {detached: true, stdio: 'ignore'}).on('error', () => {}).unref();
+				}
+				return json(res, {ok: true});
+			} catch (e) { return json(res, {erro: e.message}, 500); }
+		}
 		if (p === '/api/abrir-pasta' && req.method === 'POST') {
 			const {projeto, onde} = await corpo(req);
 			if (onde !== 'saida' && !projetoOk(projeto)) return json(res, {erro: 'Projeto inválido'}, 400);

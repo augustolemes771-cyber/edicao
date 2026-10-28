@@ -38,6 +38,7 @@
 	</div>
 
 	<div class="acoes-topo">
+		<button class="btn primario" id="abrirCode" data-ic="claude" title="Abrir o Claude Code para fazer os pedidos de edição deste vídeo">Pedir ao Claude</button>
 		<button class="btn" id="studio" data-ic="monitor" title="Abrir o Remotion Studio (editor visual) com a placa de vídeo">Studio</button>
 		<button class="btn" id="salvar" data-ic="cloud-up" title="Envia para o GitHub templates, peças e edições novas">Salvar na nuvem</button>
 		<button class="btn icone" id="atualizar" data-ic="refresh" title="Atualizar e reabrir: baixa a versão mais recente do GitHub e reabre o painel" aria-label="Atualizar e reabrir"></button>
@@ -80,7 +81,7 @@
 					<div id="chips" class="chips"></div>
 					<button class="btn fantasma mini" id="gerAtalhos" data-ic="edit" title="Adicionar ou remover atalhos de pedido">Atalhos</button>
 				</div>
-				<div class="aviso-so-ver">Os pedidos são feitos no <b>Claude Code</b> (arquivo “Claude Code - Editar.bat”). Aqui você assiste e deixa observações; elas vão para o Claude Code como pendências.</div>
+				<div class="aviso-so-ver">Os pedidos são feitos no <b>Claude Code</b>: botão “Pedir ao Claude”, no topo. Aqui você assiste e deixa observações; elas vão para o Claude Code como pendências.</div>
 				<form id="f">
 					<textarea id="pedido" rows="3"></textarea>
 					<div class="form-acoes">

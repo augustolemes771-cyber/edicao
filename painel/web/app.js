@@ -451,6 +451,12 @@ async function studio(rota = '') {
 	if (!r?.ok) aviso('O Studio não abriu. Tente de novo.', 'erro');
 }
 $('#studio').onclick = () => studio();
+$('#abrirCode').onclick = async () => {
+	try {
+		await api('/api/abrir-code', {projeto: proj()});
+		aviso(`Claude Code aberto numa janela nova${proj() ? `, já no vídeo “${proj()}”` : ''}. Faça os pedidos por lá; o player atualiza sozinho.`, 'ok', {ms: 5000});
+	} catch (e) { avisoErro(e, 'Não abri o Claude Code'); }
+};
 $('#salvar').onclick = async () => {
 	const b = $('#salvar');
 	b.disabled = true;
@@ -1632,7 +1638,7 @@ function boasVindas() {
 	const p = proj();
 	msgs.innerHTML = `<div class="boas-vindas"><div class="logo-g"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg></div>` +
 		`<h3>${p ? `Vamos editar “${esc(p)}”` : 'O que vamos criar hoje?'}</h3>` +
-		`<p>${p ? 'Peça as alterações no Claude Code (arquivo “Claude Code - Editar.bat”). Aqui você vê o resultado, abre no Studio e deixa observações nas imagens da aba Prévias.' : 'Escolha um vídeo no topo. Os pedidos de edição são feitos no Claude Code (arquivo “Claude Code - Editar.bat”); aqui você vê e anota.'}</p>` +
+		`<p>${p ? 'Peça as alterações no Claude Code (botão “Pedir ao Claude”, no topo). Aqui você vê o resultado, abre no Studio e deixa observações nas imagens da aba Prévias.' : 'Escolha um vídeo no topo. Os pedidos de edição são feitos no Claude Code (botão “Pedir ao Claude”, no topo); aqui você vê e anota.'}</p>` +
 		`<div class="ideias">` +
 		(p ? `<button data-ideia="previa">${ic('play')}<span><b>Gerar a prévia</b><br><small>Ver como está agora</small></span></button>` +
 			`<button data-ideia="refs">${ic('copy')}<span><b>Copiar um estilo</b><br><small>Cole o link de um vídeo de referência</small></span></button>` +
