@@ -366,7 +366,7 @@ const pendencias = criarPendencias(estado);
 
 const LIMITE_TURNOS = 12;
 // Processos pesados rodando agora (para mostrar "ffmpeg rodando" em vez de silêncio durante comandos longos).
-const PESADOS = ['ffmpeg', 'ffprobe', 'main', 'whisper-cli', 'whisper', 'whisper-cli', 'blender', 'chrome-headless-shell', 'yt-dlp'];
+const PESADOS = ['ffmpeg', 'ffprobe', 'main', 'whisper', 'whisper-cli', 'blender', 'chrome-headless-shell', 'yt-dlp'];
 let cachePesados = {em: 0, nomes: []};
 const processosPesados = () =>
 	new Promise((ok) => {
