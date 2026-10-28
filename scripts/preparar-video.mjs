@@ -32,7 +32,10 @@ const infos = entradas.map(sonda);
 const L = Math.max(...infos.map((i) => i.largura)) & ~1;
 const A = Math.max(...infos.map((i) => i.altura)) & ~1;
 const temZscale = (spawnSync('ffmpeg', ['-hide_banner', '-filters'], {encoding: 'utf8'}).stdout ?? '').includes(' zscale ');
-const hdrParaSdr = temZscale
+const gpu = process.env.SEM_GPU !== '1' && (spawnSync('ffmpeg', ['-hide_banner', '-encoders'], {encoding: 'utf8'}).stdout ?? '').includes('h264_nvenc');
+const hdrParaSdr = gpu
+	? 'libplacebo=tonemapping=bt.2390:colorspace=bt709:color_primaries=bt709:color_trc=bt709:range=tv:format=yuv420p,'
+	: temZscale
 	? 'zscale=t=linear:npl=203,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,'
 	: 'colorspace=all=bt709:iall=bt2020:fast=1,';
 if (infos.some((i) => i.hdr) && !temZscale) console.warn('Aviso: este ffmpeg não tem zscale; a conversão de HDR fica aproximada (cor pode sair menos fiel).');
