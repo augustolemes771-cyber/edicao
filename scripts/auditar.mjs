@@ -54,14 +54,15 @@ R.config = {
 };
 linha('jpegQuality (config/job)', `${R.config.jpegQuality}/${R.config.jobJpegQuality}`, 'prévia a 80-85 rende ~15-25% mais rápido');
 linha('concorrência', R.config.concurrencia);
+linha('cache do bundle por hash', /bundle-cache/.test(job) ? 'sim' : 'NÃO', 'webpack só roda se o código mudou');
 linha('offthreadVideo cache/threads', R.config.offthreadCache ? 'sim (só no pod)' : 'não');
-const ffLoud = /loudnorm[^\n]*print_format=json/.test(job) && !/-vn[^\n]*loudnorm/.test(job.split('mixando')[1] ?? '');
+const ffLoud = !/'-vn'/.test(job);
 R.loudnormSemVn = ffLoud;
 linha('loudnorm 1ª passada com -vn', ffLoud ? 'NÃO (decodifica o vídeo 4K)' : 'sim');
 
 // 2. O que vai para o pod a cada bloco ---------------------------------------------------------------------------------------
 titulo('2. Envio ao pod a cada bloco (painel/pod.mjs: CODIGO, FORA)');
-const pod = ler('painel/pod.mjs');
+const pod = ler('painel/pod.mjs'), srvTxt0 = ler('painel/servidor.mjs');
 const itens = (/const CODIGO = \[([^\]]+)\]/.exec(pod)?.[1] ?? '').split(',').map((s) => s.trim().replace(/'/g, '')).filter(Boolean);
 let tCod = 0, nCod = 0;
 for (const i of itens) {
@@ -71,7 +72,8 @@ for (const i of itens) {
 	tCod += t.bytes; nCod += t.arquivos;
 }
 R.codigoPod = {bytes: tCod, arquivos: nCod};
-linha('código enviado (sem tar/gzip)', mb(tCod), `${nCod} arquivos; reenvia tudo em todo bloco`);
+const pulaIgual = /codigo\.hash/.test(pod);
+linha('código enviado (sem tar/gzip)', mb(tCod), `${nCod} arquivos; ${pulaIgual ? 'pula o envio se o hash é igual' : 'reenvia tudo em todo bloco'}`);
 const maiores = [];
 for (const d of ['biblioteca', 'public/sfx', 'public/fontes', 'src']) tamanhoDir(d, (f) => { maiores.push([statSync(f).size, f]); return true; });
 maiores.sort((a, b) => b[0] - a[0]);
@@ -79,6 +81,8 @@ R.maioresArquivos = maiores.slice(0, 5).map(([b, f]) => ({f, mb: +(b / 2 ** 20).
 for (const [b, f] of maiores.slice(0, 3)) linha('  maior', mb(b), f);
 const ssh = (pod.match(/sshRodar\(/g) ?? []).length;
 linha('chamadas ssh no fluxo do pod', ssh, 'cada uma abre conexão nova (sem ControlMaster)');
+linha('resumo de tempos por etapa', /tempos/.test(job) && /tempos/.test(pod + job) ? 'sim' : 'não', 'linha "Tempos:" do render-job/pod');
+linha('claude: cache em /api/claude', /cacheClaude|claudeCache/.test(srvTxt0) ? 'sim' : 'NÃO', 'cada chamada roda 2 processos');
 linha('ControlMaster/ControlPersist', /ControlMaster|ControlPersist/.test(pod) ? 'sim' : 'NÃO', 'não existe no Windows; ver nota do documento');
 
 // 3. Composições: o que pesa por quadro --------------------------------------------------------------------------------------

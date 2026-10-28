@@ -1,6 +1,6 @@
 # Otimização — achados do Agente 5
 
-Atualizado em 2026-10-28 · commit `cb0691a` · medido na nuvem (4 vCPU, 15 GB, sem GPU, WebGL por CPU `swangle`).
+Atualizado em 2026-10-28 · commit `8cdd10b` (auditoria 2) · medido na nuvem (4 vCPU, 15 GB, sem GPU, WebGL por CPU `swangle`).
 Reexecutar: `npm run auditar` (completo, ~7 min aqui) ou `npm run auditar -- --rapido` (sem render). Saída em `out/auditoria.json`.
 **Números daqui só servem para comparar antes/depois. Nada do pod foi medido**; o que depende do pod está marcado *(estimado)* ou *(testar no pod)*.
 
@@ -24,7 +24,7 @@ Reexecutar: `npm run auditar` (completo, ~7 min aqui) ou `npm run auditar -- --r
 Dono sugerido entre parênteses; eu não edito áreas dos outros agentes.
 
 ### A. Alto ganho, baixo esforço
-1. **Métrica de q/s errada** (Agente 2 · `scripts/render-job.mjs`, aviso "Render: WebGL ...").
+1. ✅ **FEITO (Agente 2, `nQuadros`)** — Métrica de q/s errada (`scripts/render-job.mjs`, aviso "Render: WebGL ...").
    Evidência: render de 4,01 s (120 quadros) reportou "495 quadros ... 2.5 q/s" porque divide `composition.durationInFrames` (vídeo inteiro) em vez dos quadros do `frameRange`. Em bloco de 10 s o pod mostraria q/s inflado e atrapalha qualquer ajuste de CONC.
    Diff: `const n = frameRange ? frameRange[1] - frameRange[0] + 1 : composition.durationInFrames;` e usar `n` nas duas contas do aviso.
 2. **`-vn` nas passadas de áudio** (Agente 2 · `render-job.mjs` passo 4 "medir"; `scripts/bloco.ts` passo 4 `silencedetect`).
@@ -37,7 +37,7 @@ Dono sugerido entre parênteses; eu não edito áreas dos outros agentes.
 ### B. Alto ganho, esforço médio
 5. **Vídeo-fonte proxy para prévias** (Agente 2 · `preparar-video.mjs` + `render-job.mjs`/`pod.mjs`).
    `preparar-video` mantém o 4K "quase sem perda"; a prévia (≤1080p) decodifica esse 4K a cada quadro (`OffthreadVideo` no corpo todo) e o envio pelo upload doméstico é o gargalo que o `pod.mjs` já tenta contornar (limite de 3 min para prévia). Gerar `video-prev.mp4` (1920 de largura, H.264 crf 18–20, `-g 15`) uma vez, usar na prévia (`edit.video` → proxy quando `tipo !== 'final'`) e enviar só o proxy ao pod; o final usa o original. *(estimado: envio 4–10× menor, decodificação por quadro 3–4× mais barata; não medido: não há vídeo real no repositório.)* Cuidado: o zoom da edição tem margem no 4K; no proxy 1080p, prévia a 1080p fica levemente mais mole com zoom alto — manter 720p/540p como padrão.
-6. **Menos idas e voltas SSH e não reenviar código igual** (Agente 2 · `painel/pod.mjs` `renderNoPod`).
+6. **Menos idas e voltas SSH** — a parte (a) *não reenviar código igual* já foi feita (hash em `.envio/codigo.hash`, commit 2994386) e há resumo de tempos por etapa; falta (b) (Agente 2 · `painel/pod.mjs` `renderNoPod`).
    Cada bloco faz tar → scp → untar de 6,6 MB e ~10 chamadas `ssh` novas (cada uma com handshake e a regra de repetir até 4× por causa do MaxStartups). Ideias: (a) hash do conteúdo de `CODIGO` guardado em `.painel/pod-manifesto.json`; se igual ao do pod, pular o envio; (b) juntar `mkdir .envio`, listar mídias, `cmp package-lock`, MaxStartups, `date` num único `ssh` de "preflight" que devolve linhas; (c) ControlMaster não existe no OpenSSH do Windows, então (b) é o caminho. *(estimado 5–20 s por bloco; medir no pod com timestamps por fase.)*
 7. **Varrer `CONC` no pod** (Agente 2). Hoje `CONC=$(nproc)` (16). Com Chrome + NVENC + ffmpeg de OffthreadVideo competindo, 16 abas pode ser pior que 10–12. Rodar no pod: `npm run auditar -- --varrer-conc 6,8,12,16` e fixar o melhor (guardar em `config.json › pod.conc`). *(testar no pod)*
 
@@ -58,5 +58,11 @@ Dono sugerido entre parênteses; eu não edito áreas dos outros agentes.
 ## Pendente de medir no pod
 Tempo por fase de um bloco real (código → mídias → deps → bundle → render → download), q/s com GPU (`egl` × `angle-egl`), CONC ideal, A/B de jpegQuality e de qualidade 3D na prévia, efeito do proxy de vídeo. O `auditar` já imprime q/s reais e aceita `--varrer-conc`; rode-o no pod (`cd /workspace/edicao && npm run auditar`).
 
+## O que mudou desde a auditoria anterior
+- Feito pelos outros agentes: q/s correto (item 1), cache do bundle por hash do código em `.painel/bundle-cache` (o que eu media como 24 s → 3,4 s agora também vale entre processos e no pod), pulo do envio de código igual (6a), linha `Tempos: código, mídias, dependências, render, download`, teste rápido do NVENC.
+- Ainda aberto: 2 (`-vn`), 3 (cache `/api/claude`), 4 (3D leve na prévia), 5 (proxy), 6b (preflight único de ssh), 7 (CONC), 8 (jpegQuality).
+- Dica para os donos: as linhas `Tempos:` do pod, coladas aqui no próximo ciclo, substituem as estimativas *(estimado)* acima.
+
 ## Histórico
+- 2026-10-28 · `8cdd10b` · segunda leitura após novos commits; itens 1 e 6a já resolvidos.
 - 2026-10-28 · `cb0691a` · primeira auditoria (este documento).
