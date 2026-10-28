@@ -212,11 +212,11 @@ export type Cena =
 	| (Base & {tipo: 'pilula'; rotulo: string; nome: string; y?: number})
 	// Modelo de entrevista aprovado (src/pecas/ModeloEntrevista.tsx; posições em px de um quadro 1080x1920).
 	// frase: palavras entram no seu tempo (em), destaque em Playfair dourado, vídeo escurecido; legenda some.
-	| (Base & {tipo: 'frase'; palavras: {texto: string; em: number; destaque?: boolean}[]; topo?: number; base?: number})
+	| (Base & {tipo: 'frase'; dor?: boolean; palavras: {texto: string; em: number; destaque?: boolean}[]; topo?: number; base?: number})
 	// Pílulas SIGA <nome>, uma por vez na altura do peito.
 	| (Base & {tipo: 'siga'; itens: {texto: string; em: number}[]; y?: number})
 	// Interface de live sobre o vídeo; espectadores (ex.: '1') e comentários opcionais.
-	| (Base & {tipo: 'live'; drama?: boolean; espectadores?: string; comentarios?: {nome: string; texto: string}[]; coracoes?: boolean; host?: string; curtidas?: string})
+	| (Base & {tipo: 'live'; drama?: boolean; olho3d?: number; espectadores?: string; comentarios?: {nome: string; texto: string}[]; coracoes?: boolean; host?: string; curtidas?: string})
 	// Chips de vidro com ✓ (ou 1/2/3), um por vez no mesmo lugar.
 	| (Base & {tipo: 'chips'; itens: {texto: string; em: number}[]; y?: number; numerado?: boolean})
 	// Caixa de comentário digitada letra por letra.

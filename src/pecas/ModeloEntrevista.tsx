@@ -5,7 +5,7 @@
 // mesmo lugar. comentario: caixa de comentário digitada. numero3d: número em ouro 3D acima da cabeça (gancho, resultado).
 // selo: pílula dourada com chip roxo. final: cartão final roxo com anel dourado e a marca.
 import React from 'react';
-import {AbsoluteFill, interpolate, random, useCurrentFrame, useVideoConfig} from 'remotion';
+import {AbsoluteFill, interpolate, random, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {ThreeCanvas} from '@remotion/three';
 import * as THREE from 'three';
 import type {CenaNoPlano} from '../motor/plano';
@@ -27,15 +27,77 @@ const VIDRO: React.CSSProperties = {
 };
 const rel = (cena: {de: number}, t: number) => t - cena.de;
 
-export const Frase: React.FC<{cena: De<'frase'>}> = ({cena}) => (
-	<FullPhrase
-		t0={0}
-		end={cena.ate - cena.de}
-		words={cena.palavras.map((p) => ({text: p.texto, t: Math.max(0, rel(cena, p.em)), accent: p.destaque}))}
-		top={cena.topo ?? 760}
-		bottom={cena.base ?? 1100}
-	/>
-);
+// dor: a frase treme, ganha vinheta vermelha que pulsa, aberração cromática e cortes de glitch (sofrimento e revolta).
+const FraseDor: React.FC<{dur: number; children: React.ReactNode}> = ({dur, children}) => {
+	const frame = useCurrentFrame();
+	const {fps} = useVideoConfig();
+	const fim = Math.round(dur * fps);
+	const entra = interpolate(frame, [0, 6], [0, 1], lim) * interpolate(frame, [fim - 6, fim], [1, 0], lim);
+	const tremor = (random(`dx${frame}`) - 0.5) * 14 * entra;
+	const tremorY = (random(`dy${frame}`) - 0.5) * 10 * entra;
+	const pulso = Math.exp(-((frame % 20) / 20) * 5);
+	const glitch = random(`g${Math.floor(frame / 3)}`) > 0.82 ? (random(`gx${frame}`) - 0.5) * 40 : 0;
+	return (
+		<AbsoluteFill>
+			<AbsoluteFill style={{transform: `translate(${tremor + glitch}px, ${tremorY}px) scale(${1 + 0.03 * pulso})`, filter: `drop-shadow(${4 * entra}px 0 0 rgba(255,30,60,0.8)) drop-shadow(${-4 * entra}px 0 0 rgba(0,200,255,0.55))`}}>{children}</AbsoluteFill>
+			<AbsoluteFill style={{opacity: entra, pointerEvents: 'none', background: `radial-gradient(ellipse at 50% 50%, rgba(120,0,20,0) 25%, rgba(140,0,25,${0.5 + 0.3 * pulso}) 80%, rgba(40,0,8,0.95) 100%)`, mixBlendMode: 'multiply'}} />
+		</AbsoluteFill>
+	);
+};
+
+export const Frase: React.FC<{cena: De<'frase'>}> = ({cena}) => {
+	const fp = (
+		<FullPhrase
+			t0={0}
+			end={cena.ate - cena.de}
+			words={cena.palavras.map((p) => ({text: p.texto, t: Math.max(0, rel(cena, p.em)), accent: p.destaque}))}
+			top={cena.topo ?? 760}
+			bottom={cena.base ?? 1100}
+		/>
+	);
+	return cena.dor ? <FraseDor dur={cena.ate - cena.de}>{fp}</FraseDor> : fp;
+};
+
+// Olho 3D: sai do contador de espectadores (canto superior direito), cresce e voa ao centro, com a legenda 3D embaixo.
+const Olho3D: React.FC<{inicio: number; dur: number; legenda: string}> = ({inicio, dur, legenda}) => {
+	const frame = useCurrentFrame();
+	const {fps, width, height} = useVideoConfig();
+	const local = frame - Math.round(inicio * fps);
+	if (local < 0) return null;
+	const meia = 14.5 * Math.tan((35 / 2) * (Math.PI / 180));
+	const meiaL = meia * (width / height);
+	const p = spring({frame: local, fps, config: {damping: 13, stiffness: 90, mass: 0.9}});
+	const x0 = (0.855 - 0.5) * 2 * meiaL;
+	const y0 = (0.5 - 0.057) * 2 * meia;
+	const x = x0 * (1 - p);
+	const y = y0 + (0.9 - y0) * p;
+	const esc = 0.22 + 1.1 * p;
+	const fim = Math.round(dur * fps);
+	const saida = interpolate(frame, [fim - 7, fim], [1, 0], lim);
+	const olhar = Math.sin(local / fps * 2.2) * 0.25;
+	return (
+		<AbsoluteFill style={{pointerEvents: 'none', opacity: saida, filter: 'drop-shadow(0 22px 30px rgba(12,4,28,0.6))'}}>
+			<ThreeCanvas width={width} height={height} gl={{alpha: true, antialias: true, preserveDrawingBuffer: true}} camera={{fov: 35, position: [0, 0, 14.5], near: 0.1, far: 60}} style={{position: 'absolute', inset: 0}}>
+				<Luzes quadro={frame} batidas={[Math.round(inicio * fps)]} />
+				<group position={[x, y, 0]} scale={esc} rotation={[0, olhar * (1 - p * 0.6) + (1 - p) * 1.2, 0]}>
+					<mesh scale={[1.5, 1.5, 1.5]}>
+						<sphereGeometry args={[1, 48, 48]} />
+						<meshStandardMaterial color="#f7f3ea" roughness={0.25} metalness={0.05} />
+					</mesh>
+					<mesh position={[0, 0, 1.38]} scale={[1, 1, 0.45]}>
+						<sphereGeometry args={[0.72, 40, 40]} />
+						<meshStandardMaterial color="#E8C27A" roughness={0.2} metalness={0.9} />
+					</mesh>
+					<mesh position={[0, 0, 1.62]} scale={[1, 1, 0.4]}>
+						<sphereGeometry args={[0.33, 32, 32]} />
+						<meshStandardMaterial color="#120826" roughness={0.1} />
+					</mesh>
+				</group>
+				<Linha3D texto={legenda} metal="branco" largura={4.6} y={-2.1} quadro={frame} batida={Math.round(inicio * fps) + 14} profundidade={0.22} />
+			</ThreeCanvas>
+		</AbsoluteFill>
+	);
+};
 
 export const Siga: React.FC<{cena: De<'siga'>}> = ({cena}) => (
 	<FollowPills items={cena.itens.map((i) => ({text: i.texto, t: Math.max(0, rel(cena, i.em))}))} end={cena.ate - cena.de} y={cena.y ?? 1040} x="center" />
@@ -61,6 +123,7 @@ const LiveDrama: React.FC<{dur: number}> = ({dur}) => {
 export const Live: React.FC<{cena: De<'live'>}> = ({cena}) => (
 	<AbsoluteFill>
 		{cena.drama ? <LiveDrama dur={cena.ate - cena.de} /> : null}
+		{cena.olho3d !== undefined ? <Olho3D inicio={Math.max(0, rel(cena, cena.olho3d))} dur={cena.ate - cena.de} legenda="SÓ 1 ESPECTADOR" /> : null}
 		<LiveTemplate
 			from={0}
 			to={cena.ate - cena.de}

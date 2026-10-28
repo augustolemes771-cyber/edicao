@@ -160,6 +160,7 @@ export const primeiro: Edit = {
 				de: b.at('única') - 0.05,
 				ate: b.at('única') + 2.1,
 				drama: true,
+				olho3d: b.at('única'),
 				host: 'Paola',
 				curtidas: '3 curtidas',
 				espectadores: '1',
@@ -170,6 +171,7 @@ export const primeiro: Edit = {
 			// 4. NUNCA MAIS
 			{
 				tipo: 'frase',
+				dor: true,
 				de: b.at('nunca') - 0.08,
 				ate: b.say('tentei abrir uma live').fim + 0.15,
 				palavras: [
