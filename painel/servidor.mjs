@@ -539,7 +539,9 @@ const chat = async (req, res) => {
 			try {
 				const m = lerJson(path.join(raiz, 'out/previas', projeto, 'manifest.json'), null);
 				const edit = path.join(raiz, 'src/projetos', projeto, 'edit.ts');
-				if (existsSync(edit) && (!m || statSync(edit).mtimeMs > m.geradoEm)) {
+				// Só projeto já registrado em src/projetos/index.ts (antes disso o previas falha com "Uso: npm run previas").
+				const registrado = readFileSync(path.join(raiz, 'src/projetos/index.ts'), 'utf8').includes(`'${projeto}'`);
+				if (registrado && existsSync(edit) && (!m || statSync(edit).mtimeMs > m.geradoEm)) {
 					tarefas.criar('previas', projeto, {});
 					enviar('acao', {acao: 'Gerando imagens da edição na aba Prévias'});
 				}

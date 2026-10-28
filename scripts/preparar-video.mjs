@@ -44,19 +44,25 @@ const juntar = infos.map((_, i) => `[v${i}][a${i}]`).join('') + `concat=n=${info
 const saida = path.join(pasta, 'video.mp4');
 const temp = path.join(pasta, '.video-preparando.mp4');
 console.log(`Preparando ${infos.length} clipe(s) em ${L}x${A}, 30 qps${infos.some((i) => i.hdr) ? ', HDR → SDR' : ''}...`);
-const r = spawnSync(
-	'ffmpeg',
-	[
-		'-hide_banner', '-loglevel', 'error', '-stats', '-y',
-		...entradas.flatMap((e) => ['-i', e]),
-		'-filter_complex', `${filtros};${juntar}`,
-		'-map', '[v]', '-map', '[a]',
-		'-c:v', 'libx264', '-preset', 'slow', '-crf', '14',
-		'-color_primaries', 'bt709', '-color_trc', 'bt709', '-colorspace', 'bt709',
-		'-c:a', 'aac', '-b:a', '320k', '-movflags', '+faststart', temp,
-	],
-	{stdio: 'inherit'},
-);
+// Codificação na placa NVIDIA (NVENC) quando houver: tira o peso do processador. Qualidade alta (cq 16, preset p6).
+// Se a placa não abrir o codificador, refaz na CPU (x264 slow, crf 14), como antes.
+const ffArgs = (codec) => [
+	'-hide_banner', '-loglevel', 'error', '-stats', '-y',
+	...entradas.flatMap((e) => ['-i', e]),
+	'-filter_complex', `${filtros};${juntar}`,
+	'-map', '[v]', '-map', '[a]',
+	...codec,
+	'-color_primaries', 'bt709', '-color_trc', 'bt709', '-colorspace', 'bt709',
+	'-c:a', 'aac', '-b:a', '320k', '-movflags', '+faststart', temp,
+];
+const temNvenc = !process.env.SEM_GPU && spawnSync('nvidia-smi', ['-L'], {windowsHide: true}).status === 0 && (spawnSync('ffmpeg', ['-hide_banner', '-encoders'], {encoding: 'utf8'}).stdout ?? '').includes('h264_nvenc');
+let r = {status: 1};
+if (temNvenc) {
+	console.log('Codificando na placa de vídeo NVIDIA (NVENC)...');
+	r = spawnSync('ffmpeg', ffArgs(['-c:v', 'h264_nvenc', '-preset', 'p6', '-tune', 'hq', '-rc', 'vbr', '-cq', '16', '-b:v', '0', '-profile:v', 'high']), {stdio: 'inherit'});
+	if (r.status !== 0) console.log('A placa não abriu o codificador: fazendo na CPU.');
+}
+if (r.status !== 0) r = spawnSync('ffmpeg', ffArgs(['-c:v', 'libx264', '-preset', 'slow', '-crf', '14']), {stdio: 'inherit'});
 if (r.status !== 0) {
 	console.error('O ffmpeg falhou ao preparar o vídeo.');
 	process.exit(1);
