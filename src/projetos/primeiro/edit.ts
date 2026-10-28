@@ -24,7 +24,7 @@ export const primeiro: Edit = {
 	formato: 'vertical',
 	verificarCurva: false,
 	regraCamera: false,
-	extraFim: 2.4,
+	extraFim: 2.0,
 	silencios: silencios as Trecho[],
 	transcricao,
 	trechos: (o) => {
@@ -39,7 +39,7 @@ export const primeiro: Edit = {
 			fala('Então isso me frustrava', 'nunca mais tentei abrir uma live'),
 			[o.say('E depois que você entrou').inicio - 0.06, o.say('Lucrando com Live').fim + 0.1],
 			fala('como é foi a sua evolução', 'como é foi a sua evolução'),
-			fala('Faz menos de um mês que eu entrei', 'Faz menos de um mês que eu entrei'),
+			fala('Faz menos de um mês que eu entrei', 'na primeira mentoria'),
 			fala('aí na primeira live que eu fiz', 'ajuda do meu namorado', 0.02),
 			fala('é muito frustrante', 'você consegue vender'),
 			fala('E se não fosse o Danilow', 'não seria possível'),
