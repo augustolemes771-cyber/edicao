@@ -600,3 +600,17 @@ dl.props dt{color:var(--mudo)}dl.props dd{margin:0;word-break:break-word}
 #bib .abas button,#lado .abas button{padding-left:8px;padding-right:8px;font-size:12.5px;gap:5px}
 #bib .abas,#lado .abas{overflow-x:auto;scrollbar-width:none}
 #bib .abas button .i{display:none}
+/* Início de um vídeo: projeto → mídias → começar */
+.passos-inicio{list-style:none;display:flex;gap:6px;margin:0 0 14px;padding:0}
+.passos-inicio li{flex:1;display:flex;align-items:center;gap:7px;font-size:12px;color:var(--mudo);background:var(--card);border:1px solid var(--linha);border-radius:999px;padding:5px 9px}
+.passos-inicio i{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--card-3);font-style:normal;font-weight:600;font-size:11px;flex:none}
+.passos-inicio i .i{width:12px;height:12px}
+.passos-inicio li.agora{color:var(--txt);border-color:var(--cor2)}.passos-inicio li.agora i{background:var(--cor2);color:#021}
+.passos-inicio li.ok i{background:var(--ok);color:#021}
+.cartao.comecar h4{display:flex;align-items:center;gap:8px;margin:0 0 6px}
+.proj-linha{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--linha);border-radius:var(--r-3);padding:8px 10px;margin-bottom:6px}
+.proj-linha span{flex:1;display:flex;flex-direction:column;min-width:0}.proj-linha small{color:var(--mudo);font-size:11.5px}
+.comecar-rodape{position:sticky;bottom:-16px;margin:16px -16px -16px;padding:12px 16px 16px;background:linear-gradient(180deg,transparent,var(--bg-2) 30%);display:flex;flex-direction:column;gap:6px}
+.comecar-rodape small{color:var(--mudo);font-size:11.5px;text-align:center}
+.chk{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--linha);cursor:pointer}
+.chk input{margin-top:3px;accent-color:var(--cor)}.chk span{display:flex;flex-direction:column}.chk small{color:var(--mudo);font-size:12px}

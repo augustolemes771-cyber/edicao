@@ -619,10 +619,11 @@ function abrirNovoVideo({tema = temaAtual(), base = ''} = {}) {
 			$('#tema').value = temaN;
 			aoTrocarProjeto();
 			renderBiblioteca();
-			aviso(`Vídeo "${nome}" criado. Agora envie o vídeo bruto na aba Mídias.`, 'ok');
+			// O que foi escrito aqui vai junto quando clicar em "Começar o vídeo" (aba Mídias).
+			gravarLocal('inicio:' + nome, {base: baseN, desc});
+			aviso(`Vídeo "${nome}" criado. Agora adicione as mídias e clique em “Começar o vídeo”.`, 'ok', {ms: 5000});
 			mostrarAba('midias');
-			if (celular()) verSecao('lado');
-			if (copiar || sobre) usarPedido(`Prepara a edição do projeto "${nome}"${copiar || ' seguindo as regras do aprendizado do tema.'}${sobre}`, {enviar: true});
+			if (celular()) verSecao('biblioteca');
 		} catch (e) {
 			if (!e.emBreve) { $('#nvSim').disabled = false; return avisoErro(e, 'Não criei o vídeo'); }
 			// Servidor sem a rota nova: pede ao Claude, como antes.
@@ -1279,7 +1280,8 @@ async function carregarMidias() {
 	const p = proj();
 	const vazio = (txt) => `<div class="vazio">${ic('folder')}<b>Escolha um vídeo</b>${txt}</div>`;
 	if (!p) {
-		$('#aba-midias').innerHTML = vazio('As mídias (vídeo bruto, imagens, áudios) ficam guardadas por vídeo.');
+		S.midias = null;
+		renderMidias();
 		$('#aba-refs').innerHTML = vazio('Referências são vídeos, prints e links do estilo que você quer copiar.');
 		return;
 	}
@@ -1360,14 +1362,27 @@ function ligarGrupos() {
 }
 function renderMidias() {
 	const d = S.midias ?? {midias: [], referencias: [], notas: ''};
-	$('#aba-midias').innerHTML =
+	const p = proj();
+	if (!p) {
+		$('#aba-midias').innerHTML = passosInicio(1) +
+			`<div class="cartao comecar"><h4>${ic('plus')}Criar um projeto</h4><p class="legenda">Dê um nome, escolha o tema e o formato. Depois você adiciona as mídias aqui e clica em “Começar o vídeo”.</p>` +
+			`<button class="btn primario bloco grande" id="mdCriar">${ic('plus')}<span>Criar projeto</span></button></div>`;
+		$('#mdCriar').onclick = () => abrirNovoVideo({tema: temaAtual()});
+		return;
+	}
+	$('#aba-midias').innerHTML = passosInicio(d.midias.length ? 3 : 2) +
+		`<div class="proj-linha"><span><b>${esc(p)}</b><small>tema ${esc($('#tema').selectedOptions[0]?.textContent ?? '')} · ${formatoDe(p) === 'vertical' ? 'vertical' : 'horizontal'}</small></span><button class="btn mini fantasma" id="mdNovo">${ic('plus')}<span>Outro projeto</span></button></div>` +
 		`<div class="titulo-secao">${ic('film')}Arquivos do vídeo<button class="btn mini fantasma" data-pasta="midias">${ic('folder')}<span>Abrir pasta</span></button></div>` +
 		zona('midias', 'Solte aqui o vídeo bruto', 'imagens, áudios... ou clique para escolher') +
 		(d.midias.length ? listaArquivos('midias', d.midias) : `<p style="color:var(--mudo);font-size:12px;margin:10px 2px 0">Nenhuma mídia ainda. Comece pelo vídeo gravado.</p>`) +
 		htmlGrupos() +
 		`<div class="titulo-secao">${ic('link')}Baixar de um link</div>` +
 		colarLink('midias', 'Cole o link do vídeo (YouTube, Drive, Instagram...)') +
-		`<p style="color:var(--mudo);font-size:12px;margin:8px 2px 0">O arquivo baixado entra nas mídias deste vídeo.</p>`;
+		`<p style="color:var(--mudo);font-size:12px;margin:8px 2px 0">O arquivo baixado entra nas mídias deste vídeo.</p>` +
+		`<div class="comecar-rodape"><button class="btn primario bloco grande" id="mdComecar" ${d.midias.length ? '' : 'disabled'}>${ic('play')}<span>Começar o vídeo</span></button>` +
+		`<small>${d.midias.length ? 'Confirma as preferências e abre o Claude Code, que já começa a edição.' : 'Adicione pelo menos uma mídia para começar.'}</small></div>`;
+	$('#mdNovo').onclick = () => abrirNovoVideo({tema: temaAtual()});
+	$('#mdComecar').onclick = () => comecarVideo();
 	$('#aba-refs').innerHTML =
 		`<div class="cartao"><div class="cartao-topo"><h4>${ic('copy')}Copiar a edição de um vídeo da internet</h4></div><p class="legenda">Cole o link de um vídeo do YouTube, Instagram, TikTok... O painel baixa e guarda como referência.</p>` +
 		colarLink('referencias', 'https://www.instagram.com/reel/...') + '</div>' +
@@ -1391,6 +1406,52 @@ function renderMidias() {
 		if (!temRef()) return aviso('Adicione um arquivo ou link de referência primeiro.', 'alerta');
 		const p = proj();
 		usarPedido(`Recrie a edição do projeto "${p}" usando as referências (public/projetos/${p}/referencias/ e as notas) como estilo: copie o jeito de editar (ritmo, cortes, câmera, tipografia, legenda, efeitos, transições e sons) aplicado às mídias e à fala deste vídeo, sem copiar o conteúdo das referências. Se faltar algo na biblioteca, crie e salve para reutilizar. Depois gere a prévia.`, {enviar: true});
+	};
+}
+// Passos do início de um vídeo: 1 projeto, 2 mídias, 3 começar.
+const passosInicio = (atual) => `<ol class="passos-inicio">${['Projeto', 'Mídias', 'Começar'].map((n, i) => `<li class="${i + 1 < atual ? 'ok' : i + 1 === atual ? 'agora' : ''}"><i>${i + 1 < atual ? ic('check') : i + 1}</i><span>${n}</span></li>`).join('')}</ol>`;
+// Começar o vídeo: confirma as preferências (salvas para os próximos) e abre o Claude Code, que já começa a edição.
+function comecarVideo() {
+	const p = proj();
+	if (!p) return;
+	const pr = S.prefs ?? {}, c = S.config ?? {};
+	const ini = lerLocal('inicio:' + p, {}) ?? {};
+	const todos = [...S.temas.temas.flatMap((t) => t.projetos), ...S.temas.semTema].filter((x) => x.nome !== p);
+	const sel = (id, v, ops) => `<select id="${id}">${ops.map(([k, r]) => `<option value="${esc(k)}" ${String(k) === String(v) ? 'selected' : ''}>${esc(r)}</option>`).join('')}</select>`;
+	const modo = pr.modoStudio ? 'studio' : pr.blocos !== false ? 'blocos' : 'direto';
+	const chk = (id, v, t, a) => `<label class="chk"><input type="checkbox" id="${id}" ${v ? 'checked' : ''}><span><b>${esc(t)}</b><small>${esc(a)}</small></span></label>`;
+	abrirModal({
+		titulo: `Começar “${p}”`,
+		corpo: `<p class="legenda">Confira as preferências deste vídeo. Elas ficam salvas para os próximos.</p>` +
+			`<div class="grade-2">` +
+			`<div class="campo"><label class="rotulo" for="cvInt">Intensidade da edição</label>${sel('cvInt', pr.intensidade ?? 'normal', [['auto', 'A IA decide'], ['calma', 'Calma'], ['normal', 'Normal'], ['frenetica', 'Frenética']])}</div>` +
+			`<div class="campo"><label class="rotulo" for="cvLeg">Legenda</label>${sel('cvLeg', pr.legendaPadrao ?? 'palavra', [['auto', 'A IA decide'], ['palavra', 'Palavra por palavra'], ['ouro', 'Ouro'], ['impacto', 'Impacto'], ['neon', 'Neon']])}</div>` +
+			`<div class="campo"><label class="rotulo" for="cvDur">Duração máxima</label>${sel('cvDur', pr.duracaoMax ?? 59, [[30, '30 s'], [45, '45 s'], [59, '59 s (Reels/Shorts)'], [90, '90 s'], [180, '3 min'], [600, '10 min'], [3600, 'Sem limite']])}</div>` +
+			`<div class="campo"><label class="rotulo" for="cvModo">Como trabalhar</label>${sel('cvModo', modo, [['studio', 'Modo Studio: sem render até o final (mais rápido)'], ['blocos', 'Por blocos: aprovo cada trecho renderizado'], ['direto', 'Direto até a prévia']])}</div>` +
+			`</div>` +
+			`<div class="campo"><label class="rotulo" for="cvBase">Copiar o estilo de <small>(opcional)</small></label>${sel('cvBase', ini.base ?? '', [['', 'Do zero (segue o aprendizado do tema)'], ...todos.map((x) => [x.nome, `${x.nome} · ${x.formato}`])])}</div>` +
+			`<div class="campo"><label class="rotulo" for="cvDesc">Sobre o vídeo <small>(opcional)</small></label><textarea id="cvDesc" rows="3" placeholder="Ex.: entrevista com a Paola; gancho no número de vendas; CTA para seguir o Danilow">${esc(ini.desc ?? '')}</textarea></div>` +
+			chk('cvPart', pr.participar !== false, 'Mostrar o plano antes de editar', 'O Claude manda o plano (gancho, cenas, efeitos) e espera você aprovar.') +
+			chk('cvAmo', !!pr.amostras, 'Amostras nas escolhas de estilo', 'Mostra 2 ou 3 opções em imagem para você escolher.') +
+			chk('cvPod', !!c.pod?.ativo, 'Usar o pod (transcrição e render)', c.pod?.host ? `Pod: ${c.pod.host}` : 'Configure o endereço em Preferências › Pod.'),
+		rodape: `<button class="btn fantasma" id="cvNao">Cancelar</button><button class="btn primario" id="cvSim">${ic('play')}<span>Começar no Claude Code</span></button>`,
+	});
+	$('#cvNao').onclick = fecharModal;
+	$('#cvSim').onclick = async () => {
+		const m = $('#cvModo').value;
+		const prefs = {intensidade: $('#cvInt').value, legendaPadrao: $('#cvLeg').value, duracaoMax: Number($('#cvDur').value), modoStudio: m === 'studio', blocos: m === 'blocos', participar: $('#cvPart').checked, amostras: $('#cvAmo').checked};
+		$('#cvSim').disabled = true;
+		try {
+			const r = await api('/api/config', {prefs, config: {pod: {ativo: $('#cvPod').checked}}});
+			S.prefs = r.prefs ?? S.prefs; S.config = r.config ?? S.config;
+		} catch (e) { $('#cvSim').disabled = false; return avisoErro(e, 'Não salvei as preferências'); }
+		const base = $('#cvBase').value, desc = $('#cvDesc').value.trim();
+		gravarLocal('inicio:' + p, {base, desc});
+		fecharModal();
+		usarPedido(`Comece o vídeo "${p}" (formato ${formatoDe(p) === 'vertical' ? 'vertical' : 'horizontal'}, tema "${$('#tema').selectedOptions[0]?.textContent ?? temaAtual()}"). As mídias estão em public/projetos/${p}/` +
+			`${(S.midias?.midias ?? []).length ? ` (${S.midias.midias.map((x) => x.nome).join(', ')})` : ''}. Prepare (npm run preparar -- ${p}), escreva o roteiro e a edição seguindo a skill, o aprendizado do tema e as preferências que o contexto mostrou.` +
+			(base ? ` Copie o estilo de edição do projeto "${base}": mesma estrutura de cenas, efeitos de câmera, legenda, ritmo e sons de src/projetos/${base}/edit.ts; troque só o conteúdo.` : '') +
+			(desc ? ` Sobre o vídeo: ${desc}` : ''), {enviar: true});
 	};
 }
 function enviarArquivo(p, tipo, arq, barra) {
