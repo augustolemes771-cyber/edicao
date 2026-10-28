@@ -3,8 +3,8 @@
 // mede o áudio (pausa morta, estouro).
 // Uso: npm run bloco -- <projeto> <n> [--seg 10] [--res 720]
 // Saídas: out/<projeto>-bloco-<n>.mp4, out/<projeto>-bloco-<n>-folha.jpg e o resumo no terminal (com a linha do painel).
-import {execFileSync, spawnSync} from 'node:child_process';
-import {existsSync, mkdirSync, readFileSync, renameSync, statSync} from 'node:fs';
+import {execFileSync, spawn, spawnSync} from 'node:child_process';
+import {existsSync, mkdirSync, readFileSync, renameSync, statSync, writeFileSync} from 'node:fs';
 import path from 'node:path';
 import {montar} from '../src/motor/plano';
 import {projetos} from '../src/projetos';
@@ -51,6 +51,39 @@ if (n > blocos) {
 	console.log(`O vídeo tem ${blocos} bloco(s) de ~${seg} s; o bloco ${n} não existe. Todos aprovados: gere a prévia completa.`);
 	process.exit(0);
 }
+// Andamento do bloco para o painel (fila de tarefas e "% do próximo bloco"): etapas com a porcentagem de cada uma.
+const modPend = '../painel/pendencias.mjs';
+const {criarPendencias, textoPendencias} = await import(modPend);
+const pend = criarPendencias(path.join(raiz, '.painel'));
+const ETAPAS = [['qualidade', 'Análise de qualidade'], ['render', 'Render do trecho'], ['quadros', 'Folha de quadros'], ['audio', 'Conferência do áudio']] as const;
+const PESO: Record<string, [number, number]> = {qualidade: [10, 15], render: [15, 85], quadros: [85, 92], audio: [92, 95]};
+const estadoEtapas: Record<string, {estado: string; pct: number | null}> = Object.fromEntries(ETAPAS.map(([k]) => [k, {estado: 'fila', pct: null}]));
+let ultimaGravacao = 0;
+const andar = (etapa: string, pct: number | null, extra: Record<string, unknown> = {}, forcar = false) => {
+	for (const [k] of ETAPAS) {
+		if (k === etapa) estadoEtapas[k] = {estado: pct !== null && pct >= 100 ? 'ok' : 'rodando', pct};
+		else if (ETAPAS.findIndex(([x]) => x === k) < ETAPAS.findIndex(([x]) => x === etapa)) estadoEtapas[k] = {estado: 'ok', pct: 100};
+	}
+	if (!forcar && Date.now() - ultimaGravacao < 700) return;
+	ultimaGravacao = Date.now();
+	const [a, b] = PESO[etapa] ?? [95, 95];
+	pend.gravarBloco(nome!, {n, total: blocos, de: fronteiras[n - 1], ate: fronteiras[n], etapa, pct: Math.round(a + ((b - a) * (pct ?? 0)) / 100), etapas: ETAPAS.map(([k, rot]) => ({nome: rot, ...estadoEtapas[k]})), ...extra});
+};
+const falhar = (msg: string) => {
+	pend.gravarBloco(nome!, {n, total: blocos, etapa: 'erro', pct: 0, erro: msg.slice(0, 300), etapas: ETAPAS.map(([k, rot]) => ({nome: rot, ...estadoEtapas[k]}))});
+	console.log(msg);
+	process.exit(1);
+};
+
+// Pendências do usuário (notas nas imagens da prévia, pedidos pelo assistente): aplicar antes de renderizar.
+const abertas = pend.abertas(nome!);
+if (abertas.length && !args.includes('--sem-pendencias')) {
+	console.log(`PARE: há ${abertas.length} pendência(s) do usuário para aplicar ANTES de renderizar este bloco:\n${textoPendencias(abertas)}`);
+	console.log(`Aplique no edit.ts (as que caem em blocos já aprovados também valem: o usuário pediu), marque com\n  node scripts/pendencias.mjs ${nome} feito <id> ...\ne rode o bloco de novo. Diga ao usuário, em 1 linha, o que aplicou.`);
+	pend.gravarBloco(nome!, {n, total: blocos, etapa: 'pendencias', pct: 8, etapas: [{nome: `Aplicando ${abertas.length} pendência(s)`, estado: 'rodando', pct: null}, ...ETAPAS.map(([, rot]) => ({nome: rot, estado: 'fila', pct: null}))]});
+	process.exit(2);
+}
+
 const de = Number(fronteiras[n - 1].toFixed(2));
 const ate = Number(fronteiras[n].toFixed(2));
 const fmt = (t: number) => `${Math.floor(t / 60)}:${(t % 60).toFixed(1).padStart(4, '0')}`;
@@ -63,13 +96,12 @@ if (arqVideo && existsSync(arqVideo) && existsSync(arqSil) && (readFileSync(arqS
 }
 
 // 1. Qualidade do plano no trecho (processo novo: lê o silencios.json recém-medido).
+andar('qualidade', 0, {}, true);
 const q = spawnSync(process.execPath, ['--import', 'tsx', 'scripts/qualidade.ts', nome!, '--de', String(de), '--ate', String(ate)], {encoding: 'utf8'});
 const linhasQ = `${q.stdout ?? ''}`.trim().split('\n').slice(1);
 console.log(linhasQ.join('\n'));
-if (q.status !== 0) {
-	console.log('Corrija os erros (✗) antes de renderizar o bloco.');
-	process.exit(1);
-}
+if (q.status !== 0) falhar('Corrija os erros (✗) antes de renderizar o bloco.');
+andar('render', 0, {}, true);
 
 // 2. Render só do trecho: no pod quando ele está ligado (Preferências › Pod ou o interruptor da aba Render), senão aqui.
 mkdirSync('out', {recursive: true});
@@ -101,7 +133,27 @@ if (podCfg?.ativo && podCfg.host && !process.env.SEM_POD) {
 		console.log(`⚠ Pod indisponível (${String((e as Error).message).slice(0, 200)}): renderizando neste PC.`);
 	}
 }
-const r = saidaPod ? {status: 0, stdout: JSON.stringify({fim: true, saida: saidaPod}), stderr: ''} : spawnSync(process.execPath, ['scripts/render-job.mjs', '--projeto', nome!, '--tipo', 'previa', '--res', String(res), '--de', String(de), '--ate', String(ate)], {encoding: 'utf8', env: process.env});
+// Render neste PC lendo o progresso (linhas JSON do render-job) para a barra do painel.
+const renderLocal = () =>
+	new Promise<{status: number | null; stdout: string; stderr: string}>((ok) => {
+		const pr = spawn(process.execPath, ['scripts/render-job.mjs', '--projeto', nome!, '--tipo', 'previa', '--res', String(res), '--de', String(de), '--ate', String(ate)], {env: process.env});
+		let stdout = '', stderr = '', resto = '';
+		pr.stdout.on('data', (d) => {
+			stdout += d;
+			resto += d;
+			const ls = resto.split('\n');
+			resto = ls.pop() ?? '';
+			for (const l of ls) {
+				try {
+					const ev = JSON.parse(l);
+					if (ev.fase) andar('render', typeof ev.pct === 'number' ? ev.pct : null, {fase: ev.fase});
+				} catch {}
+			}
+		});
+		pr.stderr.on('data', (d) => (stderr += d));
+		pr.on('close', (status) => ok({status, stdout, stderr}));
+	});
+const r = saidaPod ? {status: 0, stdout: JSON.stringify({fim: true, saida: saidaPod}), stderr: ''} : await renderLocal();
 const eventos = `${r.stdout ?? ''}`.split('\n').filter(Boolean).map((l) => {
 	try {
 		return JSON.parse(l);
@@ -111,20 +163,21 @@ const eventos = `${r.stdout ?? ''}`.split('\n').filter(Boolean).map((l) => {
 });
 const erroRender = eventos.find((e) => e.erro)?.erro;
 const saidaRender = eventos.find((e) => e.fim)?.saida;
-if (r.status !== 0 || !saidaRender) {
-	console.log(`Render do bloco falhou: ${String(erroRender ?? r.stderr ?? '').slice(-400)}`);
-	process.exit(1);
-}
+if (r.status !== 0 || !saidaRender) falhar(`Render do bloco falhou: ${String(erroRender ?? r.stderr ?? '').slice(-400)}`);
 const video = `out/${nome}-bloco-${n}.mp4`;
-renameSync(saidaRender, video);
+renameSync(saidaRender!, video);
 
 // 3. Folha de quadros para a revisão visual (2 por segundo, 6 por linha).
+andar('quadros', 0, {}, true);
 const folha = `out/${nome}-bloco-${n}-folha.jpg`;
 const quadros = Math.ceil((ate - de) * 2);
+// Mapa da folha para o painel: clicar num quadro anota uma pendência naquele segundo.
+writeFileSync(`out/${nome}-bloco-${n}.json`, JSON.stringify({projeto: nome, n, total: blocos, de, ate, fps: 2, colunas: 6, linhas: Math.ceil(quadros / 6), quadros}));
 spawnSync('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-y', '-i', video, '-vf', `fps=2,scale=240:-2,drawtext=text='%{pts\\:hms}':x=6:y=6:fontsize=16:fontcolor=white:box=1:boxcolor=black@0.5,tile=6x${Math.ceil(quadros / 6)}`, '-frames:v', '1', '-q:v', '4', folha]);
 if (!existsSync(folha)) spawnSync('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-y', '-i', video, '-vf', `fps=2,scale=240:-2,tile=6x${Math.ceil(quadros / 6)}`, '-frames:v', '1', '-q:v', '4', folha]);
 
 // 4. Áudio: pausa morta (> 0,6 s em silêncio) e estouro.
+andar('audio', 0, {}, true);
 const a = spawnSync('ffmpeg', ['-hide_banner', '-nostats', '-i', video, '-af', 'silencedetect=noise=-38dB:d=0.6,volumedetect', '-f', 'null', '-'], {encoding: 'utf8'}).stderr ?? '';
 const pausas = [...a.matchAll(/silence_start: ([\d.]+)[\s\S]*?silence_duration: ([\d.]+)/g)].map((x) => [Number(x[1]), Number(x[2])]);
 // Cartão final sem fala não é pausa morta.
@@ -133,6 +186,7 @@ pausas.filter(([t]) => de + t < finalDe - 0.3).forEach(([t, d]) => console.log(`
 const pico = Number(/max_volume: (-?[\d.]+) dB/.exec(a)?.[1] ?? -99);
 if (pico > -0.5) console.log(`⚠ Áudio estourando (pico ${pico} dB)`);
 
+andar('audio', 100, {etapa: 'revisao', video, folha}, true);
 const efeitos = m.cenas.filter((c) => c.ate > de && c.de < ate).map((c) => c.tipo);
 console.log(`Vídeo: ${video}\nFolha de quadros (olhe antes de mostrar): ${folha}`);
 console.log(`Linha para o painel: [[bloco:${n}/${blocos}|${video}|${efeitos.join(', ') || 'só câmera e legenda'}|${linhasQ.at(-1)?.replace('Resumo: ', '') ?? ''}]]`);

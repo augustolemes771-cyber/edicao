@@ -19,6 +19,7 @@ import {criarAndamento} from './andamento.mjs';
 import {criarApagar} from './apagar.mjs';
 import {testarPod} from './pod.mjs';
 import {criarTarefas} from './tarefas.mjs';
+import {criarPendencias, textoPendencias} from './pendencias.mjs';
 
 const raiz = path.resolve(import.meta.dirname, '..');
 const porta = Number(process.env.PORTA ?? 4000);
@@ -327,8 +328,9 @@ const puxarDrive = () => {
 };
 
 // ---------- Chat com o Claude Code ----------
-const instrucao = (projeto, tema, primeira) => {
+const instrucao = (projeto, tema, primeira, assistente = false) => {
 	const t = tema || 'aleatorios';
+	if (assistente) return instrucaoAssistente(projeto, t);
 	return `PAINEL DE EDIÇÃO do canal Mateus Dias. O usuário pede em texto e você edita. Projeto: "${projeto || 'nenhum (npm run novo se for vídeo novo)'}". Tema: "${t}".${primeira ? resumoMidias(projeto) : projetoOk(projeto) && textoGrupos(projeto) ? `\nGrupos de mídia (cada grupo é UM vídeo montado com aqueles arquivos):\n${textoGrupos(projeto)}` : ''}
 ECONOMIA DE LIMITE (prioridade máxima, sem baixar a qualidade da edição):
 - Responda em português, em no máximo 3 linhas; nada de narrar o que vai fazer nem repetir o que já disse. Sem código para o usuário: diga o que mudou e como ver (prévia ou Studio).
@@ -340,8 +342,26 @@ ${ehWin ? '- Python: este PC já TEM Python, e o comando é python (NUNCA python
 ${primeira ? `- Primeiro pedido desta conversa: leia .claude/skills/editar-video/SKILL.md, CLAUDE.md e biblioteca/temas/${t}/aprendizado.md (regras já aprendidas; siga-as). Só se for criar um vídeo novo ou refazer o estilo, leia também biblioteca/temas/${t}/modelos/*.md e use os projetos de tema.json como base; em ajuste pontual, NÃO leia os modelos. Projeto novo entra em "projetos" do tema.json. Tema inexistente: crie a pasta com tema.json e aprendizado.md.` : '- Esta conversa já tem as regras da skill e do tema carregadas; não releia.'}
 - Quando o usuário aprovar, reprovar ou corrigir algo, acrescente em biblioteca/temas/${t}/aprendizado.md uma linha "- AAAA-MM-DD (projeto): lição" (só o que vale para os próximos vídeos do tema; o que vale para todos vai na skill).
 - Não faça render final sem o usuário aprovar; prévia pode. O painel tem botões de prévia e render final com barra de progresso (PC ou pod): ao terminar uma edição, sugira gerar a prévia por ele.
+${textoPendenciasEditor(projeto)}
 ${textoPrefs(cfg.prefs())}`;
 };
+// Pendências: pedidos que o usuário deixou (assistente ou nota numa imagem da prévia) enquanto você trabalhava.
+const textoPendenciasEditor = (projeto) => {
+	if (!projetoOk(projeto)) return '';
+	const abertas = pendencias.abertas(projeto);
+	return `- PENDÊNCIAS DO USUÁRIO: antes de QUALQUER render (bloco, prévia ou final) rode \`node scripts/pendencias.mjs ${projeto}\`, aplique cada uma no edit.ts e marque com \`node scripts/pendencias.mjs ${projeto} feito <id> ...\` (o npm run bloco sai com código 2 e lista as que faltam). Diga em 1 linha o que aplicou.${abertas.length ? `\n  Abertas agora:\n${textoPendencias(abertas)}` : ''}`;
+};
+// Assistente: roda ao mesmo tempo que o editor, sem parar a etapa dele. Responde e faz o que não mexe no vídeo em andamento;
+// alteração no vídeo em andamento vira pendência, que o editor aplica antes do próximo render.
+const instrucaoAssistente = (projeto, t) => `ASSISTENTE DO PAINEL de edição do canal Mateus Dias. Outro agente (o EDITOR) está trabalhando agora${projeto ? ` no vídeo "${projeto}"` : ''} (escrevendo cenas, renderizando blocos). Você atende o usuário em paralelo, SEM atrapalhar o editor.
+- Responda em português, em no máximo 3 linhas, sem código para o usuário.
+- NUNCA edite ${projeto ? `src/projetos/${projeto}/ (edit.ts, transcrição) ` : 'o projeto em andamento '}nem rode render, bloco, prévia, preparar ou transcrever: isso é do editor e quebraria a etapa dele.
+${projeto ? `- Pedido de mudança NESTE vídeo (cena, texto, efeito, corte, legenda, ritmo): anote como pendência, uma por assunto, com o segundo se o usuário disser:
+  node scripts/pendencias.mjs ${projeto} add "o que mudar, claro e completo" [--t segundos]
+  e diga "Anotado: o editor aplica antes do próximo render". Abertas agora: ${pendencias.abertas(projeto).length}.` : ''}
+- O resto você pode fazer direto: tirar dúvidas (leia arquivos à vontade), criar ou ajustar peças NOVAS em src/pecas (arquivo novo; não mude peça que o vídeo em andamento usa), itens em biblioteca/itens, aprendizado em biblioteca/temas/${t}/aprendizado.md, preferências, outros projetos.
+- Se o pedido exigir parar o editor (ex.: "refaça o roteiro todo agora"), não faça: diga que vai como pendência ou que ele pode usar "Intervir".`;
+const pendencias = criarPendencias(estado);
 
 const LIMITE_TURNOS = 12;
 // Processos pesados rodando agora (para mostrar "ffmpeg rodando" em vez de silêncio durante comandos longos).
@@ -373,30 +393,42 @@ const enfileirar = async (req, res) => {
 	return json(res, {ok: true});
 };
 const chat = async (req, res) => {
-	const {projeto, pedido, tema} = await corpo(req);
+	const {projeto, pedido, tema, papel} = await corpo(req);
 	if (!nomeValido(projeto) || !nomeValido(tema) || typeof pedido !== 'string' || !pedido.trim()) return json(res, {erro: 'Pedido inválido'}, 400);
+	const assistente = papel === 'assistente';
 	res.writeHead(200, {'content-type': 'text/event-stream; charset=utf-8', 'cache-control': 'no-cache', connection: 'keep-alive'});
 	let falhou = false;
+	let teveBloco = false;
 	const enviar = (tipo, dados) => {
-		if (tipo === 'texto') historico.anotar(chave, 'ia', dados.texto);
-		if (tipo === 'acao') historico.anotar(chave, 'acao', dados.acao);
+		if (tipo === 'texto' && dados.texto.includes('[[bloco:')) teveBloco = true;
+		if (tipo === 'texto') historico.anotar(chaveHist, 'ia', assistente ? `Assistente: ${dados.texto}` : dados.texto);
+		if (tipo === 'acao') historico.anotar(chaveHist, 'acao', assistente ? `Assistente · ${dados.acao}` : dados.acao);
 		if (tipo === 'erro') {
 			falhou = true;
-			historico.anotar(chave, 'erro', dados.texto);
+			historico.anotar(chaveHist, 'erro', dados.texto);
 		}
 		if (tipo === 'fim') {
 			if (dados.erro) falhou = true;
-			historico.custo(chave, dados.custo);
+			historico.custo(chaveHist, dados.custo);
 		}
 		if (!res.writableEnded) res.write(`data: ${JSON.stringify({tipo, ...dados})}\n\n`);
 	};
-	const chave = projeto || '_geral';
+	// O assistente tem processo e conversa próprios (chave ~assist): não para o editor; o histórico na tela é o mesmo.
+	const chaveHist = projeto || '_geral';
+	const chave = chaveHist + (assistente ? '~assist' : '');
 	matar(rodando.get(chave));
-	historico.anotar(chave, 'eu', pedido);
-	writeFileSync(arqPendente, JSON.stringify({chave, projeto, tema, pedido, em: Date.now()}));
-	const arqInstrucao = path.join(estado, 'instrucao.txt');
+	historico.anotar(chaveHist, 'eu', pedido);
+	if (!assistente) writeFileSync(arqPendente, JSON.stringify({chave, projeto, tema, pedido, em: Date.now()}));
+	// Próximo bloco para aprovar: o editor começou a escrever (o npm run bloco atualiza daí em diante).
+	const aprovado = !assistente && projetoOk(projeto) && /Bloco (\d+) aprovado|Ajuste no bloco (\d+)/i.exec(pedido);
+	if (aprovado) {
+		const b = pendencias.bloco(projeto);
+		const n = aprovado[1] ? Number(aprovado[1]) + 1 : Number(aprovado[2]);
+		if (!b?.total || n <= b.total) pendencias.gravarBloco(projeto, {n, total: b?.total ?? null, etapa: 'escrevendo', pct: 5, etapas: [{nome: aprovado[1] ? 'Montando as cenas do bloco' : 'Aplicando o ajuste', estado: 'rodando', pct: null}, ...['Análise de qualidade', 'Render do trecho', 'Folha de quadros', 'Conferência do áudio'].map((nome) => ({nome, estado: 'fila', pct: null}))]});
+	}
+	const arqInstrucao = path.join(estado, assistente ? 'instrucao-assistente.txt' : 'instrucao.txt');
 	const primeira = !sessoes[chave] || (sessoes[chave + '#n'] ?? 0) >= LIMITE_TURNOS;
-	writeFileSync(arqInstrucao, instrucao(projeto, tema, primeira));
+	writeFileSync(arqInstrucao, instrucao(projeto, tema, primeira, assistente));
 	// Só as ferramentas necessárias, sem MCP, sem plugins/skills da conta e sem seções dinâmicas: menos tokens por pedido.
 	const args = ['-p', '--output-format', 'stream-json', '--verbose', '--permission-mode', 'acceptEdits', '--tools', 'Bash,Read,Write,Edit,Glob,Grep', '--allowedTools', 'Bash,Read,Write,Edit,Glob,Grep', '--strict-mcp-config', '--disable-slash-commands', '--setting-sources', 'project,local', '--exclude-dynamic-system-prompt-sections', '--append-system-prompt-file', `"${arqInstrucao}"`];
 	// Conversa muito longa custa mais a cada pedido: depois de LIMITE_TURNOS recomeça limpa (o estado está nos arquivos do projeto).
@@ -408,8 +440,10 @@ const chat = async (req, res) => {
 	let esforco = c.esforco;
 	if (modelo === 'auto') {
 		// Automático: modelo e esforço pelo tipo do pedido, e subagentes liberados para dividir as etapas.
-		const e = escolherModelo(pedido, {projetoNovo: !projeto});
+		const e = escolherModelo(pedido, {projetoNovo: !projeto && !assistente});
 		({modelo, esforco} = e);
+		// Assistente: rápido; anotar pendência e tirar dúvida não precisam do modelo mais caro.
+		if (assistente && modelo === 'opus') ({modelo, esforco} = {modelo: 'sonnet', esforco: 'low'});
 		enviar('acao', {acao: `Modelo automático: ${modelo} · esforço ${{low: 'baixo', medium: 'médio', high: 'alto'}[esforco]} (${e.motivo})`});
 	}
 	if (modelo && /^[a-z0-9][\w.-]{0,60}$/i.test(modelo)) args.push('--model', modelo);
@@ -461,7 +495,13 @@ const chat = async (req, res) => {
 	});
 	proc.on('close', async (c) => {
 		if (rodando.get(chave) === proc) rodando.delete(chave);
-		try { rmSync(arqPendente, {force: true}); } catch {}
+		if (!assistente) try { rmSync(arqPendente, {force: true}); } catch {}
+		// Bloco mostrado ao usuário: o próximo para aprovar está pronto.
+		if (!assistente && projetoOk(projeto)) {
+			const b = pendencias.bloco(projeto);
+			if (b && teveBloco) pendencias.gravarBloco(projeto, {...b, etapa: 'pronto', pct: 100, etapas: (b.etapas ?? []).map((e) => ({...e, estado: 'ok', pct: 100}))});
+			else if (b && !['pronto', 'erro'].includes(b.etapa)) pendencias.gravarBloco(projeto, {...b, etapa: c || parado ? 'parado' : 'esperando'});
+		}
 		if (!c && !parado) {
 			const sobra = lerJson(arqFila(chave), []);
 			try { rmSync(arqFila(chave), {force: true}); } catch {}
@@ -829,6 +869,21 @@ createServer(async (req, res) => {
 		}
 		if (p === '/api/chat' && req.method === 'POST') return chat(req, res);
 		if (p === '/api/chat/fila' && req.method === 'POST') return enfileirar(req, res);
+		if (p === '/api/pendencias') {
+			const proj = url.searchParams.get('projeto') ?? '';
+			if (!projetoOk(proj)) return json(res, {lista: [], bloco: null});
+			return json(res, {lista: pendencias.listar(proj), bloco: pendencias.bloco(proj), editor: rodando.has(proj), assistente: rodando.has(proj + '~assist')});
+		}
+		if (p.startsWith('/api/pendencias/') && req.method === 'POST') {
+			const b = await corpo(req);
+			if (!projetoOk(b.projeto)) return json(res, {erro: 'Projeto inválido'}, 400);
+			try {
+				if (p === '/api/pendencias/nova') return json(res, pendencias.adicionar(b.projeto, {texto: b.texto, t: b.t, cena: b.cena, imagem: b.imagem, origem: 'nota'}));
+				if (p === '/api/pendencias/apagar') return json(res, {ok: pendencias.apagar(b.projeto, String(b.id ?? '')) ?? true});
+				if (p === '/api/pendencias/feito') return json(res, {n: pendencias.marcar(b.projeto, [String(b.id ?? '')], b.feito !== false)});
+			} catch (e) { return json(res, {erro: e.message}, 400); }
+			return json(res, {erro: 'Rota desconhecida'}, 404);
+		}
 		if (p === '/api/parar' && req.method === 'POST') {
 			const {projeto} = await corpo(req);
 			matar(rodando.get(projeto || '_geral'));

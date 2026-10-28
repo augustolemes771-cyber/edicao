@@ -39,6 +39,7 @@ async function api(p, corpo) {
 // ---------- Ícones (SVG inline) ----------
 const P = {
 	plus: '<path d="M12 5v14M5 12h14"/>',
+	users: '<circle cx="9" cy="8" r="3.2"/><path d="M3 19c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><path d="M16 4.8a3.2 3.2 0 0 1 0 6.4M18 13.8c2 .7 3 2.6 3 5.2"/>',
 	monitor: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',
 	'cloud-up': '<path d="M7 18a5 5 0 1 1 .9-9.9A6 6 0 0 1 19 10a4 4 0 0 1-1 7.9"/><path d="M12 12v8M9 15l3-3 3 3"/>',
 	refresh: '<path d="M21 12a9 9 0 1 1-2.6-6.4L21 8"/><path d="M21 3v5h-5"/>',
@@ -129,6 +130,8 @@ const lerTempo = (v) => {
 };
 
 // ---------- Estado ----------
+// Início desta sessão do painel (sobrevive a recarregar a página): a fila de tarefas mostra só o que foi feito desde então.
+const SESSAO = (() => { try { const v = Number(sessionStorage.getItem('painel-sessao')); if (v) return v; const n = Date.now(); sessionStorage.setItem('painel-sessao', String(n)); return n; } catch { return Date.now(); } })();
 const S = {
 	analisarAoBaixar: new Map(),
 	temaAberto: null,
@@ -275,6 +278,8 @@ async function atualizarTudo() {
 function aoTrocarProjeto({historico = true} = {}) {
 	const p = proj();
 	gravarLocal('projeto', p);
+	S.bloco = null;
+	carregarPendencias();
 	const t = S.temas.temas.find((t) => t.projetos.some((x) => x.nome === p));
 	if (t) $('#tema').value = t.id;
 	gravarLocal('tema', temaAtual());
@@ -943,7 +948,7 @@ function cartaoTarefa(t) {
 	const url = t.estado === 'ok' && ['previa', 'final'].includes(t.tipo) ? urlSaida(t.saida) : '';
 	return `<div class="tarefa ${t.estado}" data-id="${esc(t.id)}">` +
 		`<div class="t-topo"><b>${esc(NOMES_TAREFA[t.tipo] ?? t.tipo)}</b><span class="proj">${esc(t.projeto || '')}</span><span class="selo ${cls}">${esc(rot)}</span></div>` +
-		(ativa ? `<div class="t-fase"><span>${esc(t.fase || (t.estado === 'fila' ? 'Esperando a vez' : 'Começando...'))}</span>${t.estado === 'rodando' && pct !== null ? `<span class="pct">${Math.round(pct)}%</span>` : ''}</div>` : '') +
+		(ativa ? `<div class="t-fase"><span>Etapa: ${esc(t.fase || (t.estado === 'fila' ? 'esperando a vez' : 'começando...'))}</span>${t.estado === 'rodando' && pct !== null ? `<span class="pct">${Math.round(pct)}%</span>` : ''}</div>` : '') +
 		barra +
 		`<div class="t-meta"><span>${ic(t.onde === 'pod' ? 'server' : 'monitor')}${t.onde === 'pod' ? 'No pod' : 'Neste PC'}</span>` +
 		(t.estado === 'rodando' && typeof t.eta === 'number' ? `<span>${ic('clock')}faltam ${duracao(t.eta)}</span>` : '') +
@@ -970,9 +975,10 @@ function renderTarefas() {
 		assinaturas.clear();
 		return;
 	}
-	const lista = S.tarefas.slice(0, 15);
+	// Só as tarefas desta sessão do painel (as que estão rodando sempre aparecem), e só as 3 últimas.
+	const lista = S.tarefas.filter((t) => ['fila', 'rodando'].includes(t.estado) || (t.inicio ?? t.fim ?? 0) >= SESSAO).slice(0, 3);
 	if (!lista.length) {
-		el.innerHTML = `<div class="vazio">${ic('layers')}<b>Nenhuma tarefa ainda</b>Prévias, vídeos finais, downloads e importações aparecem aqui com a porcentagem e o tempo que falta.</div>`;
+		el.innerHTML = `<div class="vazio">${ic('layers')}<b>Nenhuma tarefa nesta sessão</b>Prévias, vídeos finais, downloads e importações aparecem aqui com cada etapa, a porcentagem e o tempo que falta (só as 3 últimas desta sessão).</div>`;
 		assinaturas.clear();
 		return;
 	}
@@ -1073,15 +1079,12 @@ async function carregarPrevias() {
 	const grade = (d.itens ?? []).map((i) => {
 		const url = `/previas/${enc(p)}/${enc(i.arquivo)}?t=${T}&v=${d.geradoEm}`;
 		const min = Math.floor(i.t / 60), seg = String(Math.floor(i.t % 60)).padStart(2, '0');
-		return `<figure class="previa"><img loading="lazy" src="${esc(url)}" alt="${esc(i.tipo)}" data-ver-midia="${esc(url)}" data-nome="${esc(i.tipo)} ${min}:${seg}"><figcaption><b>${min}:${seg} · ${esc(i.tipo)}</b>${i.texto ? `<small>${esc(i.texto)}</small>` : ''}<button class="btn mini fantasma" data-mudar="${min}:${seg}|${esc(i.tipo)}|${esc(i.texto)}">${ic('edit')}<span>Mudar isto</span></button></figcaption></figure>`;
+		return `<figure class="previa"><img loading="lazy" src="${esc(url)}" alt="${esc(i.tipo)}" data-ver-midia="${esc(url)}" data-nome="${esc(i.tipo)} ${min}:${seg}"><figcaption><b>${min}:${seg} · ${esc(i.tipo)}</b>${i.texto ? `<small>${esc(i.texto)}</small>` : ''}<button class="btn mini fantasma" data-mudar="${i.t}|${esc(i.tipo)}|${esc(i.texto)}|${esc(i.arquivo)}">${ic('edit')}<span>Deixar observação</span></button></figcaption></figure>`;
 	}).join('');
 	el.innerHTML = topo + (grade ? `<div class="previas-grade">${grade}</div>` : '');
 	el.querySelectorAll('[data-mudar]').forEach((bt) => (bt.onclick = () => {
-		const [tempo, tipo, texto] = bt.dataset.mudar.split('|');
-		const c = $('#pedido');
-		c.value = `Na prévia em ${tempo} (cena "${tipo}"${texto ? `, texto "${texto}"` : ''}): `;
-		c.focus();
-		ajustarCaixa();
+		const [t, tipo, texto, arquivo] = bt.dataset.mudar.split('|');
+		notaPendencia({t: Number(t), cena: `${tipo}${texto ? `: ${texto}` : ''}`, imagem: `out/previas/${p}/${arquivo}`, img: `/previas/${enc(p)}/${enc(arquivo)}?t=${T}&v=${d.geradoEm}`});
 	}));
 	const b = $('#prGerar');
 	if (b) b.onclick = async () => { b.disabled = true; if (await criarTarefa('previas', {}, {projeto: p, silencioso: true})) aviso('Gerando as imagens da edição...', 'info', {ms: 2500}); carregarPrevias(); };
@@ -1113,11 +1116,13 @@ function renderRender() {
 			`<button class="btn primario bloco grande" id="btPrevia">${ic('play')}<span>Gerar prévia</span></button></div>` +
 			`<div class="cartao"><div class="cartao-topo"><h4>${ic('star')}Resultado final</h4><span class="selo cor">1080p</span></div><p class="legenda">Qualidade máxima, pronto para publicar. Faça depois de aprovar a prévia.</p>` +
 			`<button class="btn bloco grande" id="btFinal">${ic('download')}<span>Renderizar final</span></button></div>`) +
-		`<div class="titulo-secao">${ic('layers')}Fila de tarefas</div><div id="filaTarefas"></div>` +
+		(p ? `<div id="proxBloco"></div>` : '') +
+		`<div class="titulo-secao">${ic('layers')}Fila de tarefas <small class="sub">só desta sessão · 3 últimas</small></div><div id="filaTarefas"></div>` +
 		(p ? `<div class="titulo-secao">${ic('film')}Vídeos prontos<button class="btn mini fantasma" data-pasta="saida">${ic('folder')}<span>Abrir pasta</span></button></div><div id="prontos" class="prontos"></div>` +
 			`<div class="linha" style="margin-top:12px"><button class="btn bloco" id="btStudioProj">${ic('monitor')}<span>Abrir este vídeo no Studio</span></button></div>` : '');
 	assinaturas.clear();
 	renderTarefas();
+	renderBloco();
 	renderProntos();
 	$('#usarPod').onchange = (e) => {
 		S.usarPod = e.target.checked;
@@ -1570,7 +1575,7 @@ function msg(texto, quem = 'ia', {custo, t} = {}) {
 				`<div class="bloco-efeitos">${efeitos.split(',').map((e) => e.trim()).filter(Boolean).map((e) => `<span class="chip">${esc(e)}</span>`).join('')}</div>` +
 				`<div class="acoes"><button class="btn primario" data-aprovar="${esc(n)}/${esc(total)}">${ic('check')}<span>${n === total ? 'Aprovar e gerar a prévia completa' : 'Aprovar e seguir'}</span></button>` +
 				`<button class="btn" data-ajuste="${esc(n)}">${ic('edit')}<span>Pedir ajuste</span></button>` +
-				`<button class="btn fantasma" data-ver-midia="/out/${enc(folha)}?t=${T}&v=${v}" data-nome="${esc(folha)}">${ic('grid')}<span>Quadros</span></button></div></div>`;
+				`<button class="btn fantasma" data-quadros="${esc(arq.replace(/\.mp4$/i, ''))}" data-v="${v}">${ic('grid')}<span>Quadros e observações</span></button></div></div>`;
 			ultimo = m.index + m[0].length;
 		}
 		const resto = texto.slice(ultimo).trim();
@@ -1622,6 +1627,8 @@ msgs.addEventListener('click', (e) => {
 	}
 	const aj = e.target.closest('[data-ajuste]');
 	if (aj) return usarPedido(`Ajuste no bloco ${aj.dataset.ajuste}: `);
+	const qd = e.target.closest('[data-quadros]');
+	if (qd) return abrirQuadros(qd.dataset.quadros, qd.dataset.v);
 	const esc_ = e.target.closest('[data-escolher]');
 	if (esc_) return usarPedido(`Escolho a opção ${esc_.dataset.escolher}. Aplique e siga.`, {enviar: true});
 	const b = e.target.closest('[data-ideia]');
@@ -1670,7 +1677,13 @@ $('#f').onsubmit = async (e) => {
 	e.preventDefault();
 	let pedido = $('#pedido').value.trim();
 	if (!pedido) return;
-	// Claude trabalhando: a mensagem vai para a fila e ele a lê no próximo passo, sem parar.
+	// Editor trabalhando: a mensagem vai para o assistente (roda em paralelo, sem parar a etapa) ou, se escolhido, para a fila
+	// do editor (ele lê no próximo passo).
+	if (S.chatAtivo && S.destino !== 'editor') {
+		$('#pedido').value = '';
+		ajustarCaixa();
+		return enviarAssistente(pedido);
+	}
 	if (S.chatAtivo) {
 		try { await api('/api/chat/fila', {projeto: proj(), pedido}); } catch (err) { return avisoErro(err); }
 		$('#pedido').value = '';
@@ -1691,6 +1704,8 @@ $('#f').onsubmit = async (e) => {
 	S.chatAtivo = true;
 	atualizarPilulas();
 	$('#parar').hidden = false;
+	mostrarDestino();
+	pollBloco();
 	const pensando = document.createElement('div');
 	pensando.className = 'digitando';
 	pensando.innerHTML = '<i></i><i></i><i></i><span class="agora">Começando...</span>';
@@ -1735,6 +1750,8 @@ $('#f').onsubmit = async (e) => {
 	S.chatAtivo = false;
 	$('#enviar').disabled = false;
 	$('#parar').hidden = true;
+	mostrarDestino();
+	pollBloco();
 	atualizarPilulas();
 	if (!mesmo()) aviso(`O Claude terminou o pedido em "${projetoChat || 'conversa geral'}".`, 'ok');
 	// O Claude pode ter criado projetos, peças, temas e tarefas.
@@ -1760,6 +1777,164 @@ $('#f').onsubmit = async (e) => {
 		} else aviso(`Ainda não usou: ${faltam.join(', ')}. Peça na conversa ou use o botão na aba Mídias.`, 'erro');
 	} else if (projetoChat && !faltam) delete (S.autoMidias ?? {})[projetoChat];
 };
+
+// ---------- Assistente: atende em paralelo enquanto o editor trabalha ----------
+// Responde dúvidas e faz o que não mexe no vídeo em andamento; mudança no vídeo vira pendência, que o editor aplica antes do
+// próximo render. Assim dá para ir pedindo as próximas alterações sem parar a etapa atual.
+S.destino = lerLocal('destino', 'assistente') === 'editor' ? 'editor' : 'assistente';
+function mostrarDestino() {
+	const b = $('#destino');
+	b.hidden = !S.chatAtivo;
+	b.querySelector('span').textContent = S.destino === 'editor' ? 'Para: editor (próximo passo)' : 'Para: assistente';
+	b.classList.toggle('on', S.destino === 'assistente');
+	$('#pedido').placeholder = !S.chatAtivo ? 'Ex.: usa o template do depoimento e coloca a moeda 3D girando quando eu falar "investimento"'
+		: S.destino === 'editor' ? 'O editor lê no próximo passo, sem parar (pode mudar o que ele está fazendo agora).'
+		: 'O editor continua trabalhando. Peça as próximas alterações: o assistente anota como pendência ou faz na hora.';
+}
+$('#destino').onclick = () => { S.destino = S.destino === 'editor' ? 'assistente' : 'editor'; gravarLocal('destino', S.destino); mostrarDestino(); $('#pedido').focus(); };
+async function enviarAssistente(pedido) {
+	const projetoChat = proj();
+	const mesmo = () => proj() === projetoChat;
+	const fimDaLista = () => { const p = msgs.querySelector('.digitando'); if (p) msgs.append(p); rolar(); };
+	msg(pedido, 'eu', {t: Date.now()});
+	const ind = msg('Assistente: lendo o pedido (o editor continua trabalhando)...', 'acao');
+	ind?.classList.add('assist');
+	fimDaLista();
+	try {
+		const r = await fetch('/api/chat', {method: 'POST', headers: H, body: JSON.stringify({projeto: projetoChat, pedido, tema: temaAtual(), papel: 'assistente'})});
+		if (!r.ok) { let m = `Erro ${r.status}`; try { m = (await r.json()).erro || m; } catch {} throw new Error(m); }
+		const rd = r.body.getReader(), dec = new TextDecoder();
+		let buf = '';
+		for (;;) {
+			const {done, value} = await rd.read();
+			if (done) break;
+			buf += dec.decode(value, {stream: true});
+			const partes = buf.split('\n\n');
+			buf = partes.pop();
+			for (const parte of partes) {
+				let ev;
+				try { ev = JSON.parse(parte.replace(/^data: /, '')); } catch { continue; }
+				if (!mesmo()) continue;
+				if (ev.tipo === 'texto') { const d = msg('Assistente: ' + ev.texto, 'ia'); d?.classList.add('assist'); fimDaLista(); }
+				else if (ev.tipo === 'acao' && ind) ind.querySelector('span').textContent = 'Assistente · ' + traduzirAcao(ev.acao);
+				else if (ev.tipo === 'erro') { msg('Assistente: ' + ev.texto, 'erro'); fimDaLista(); }
+			}
+		}
+	} catch (err) { if (mesmo()) msg('Assistente: ' + err.message, 'erro'); }
+	ind?.remove();
+	carregarPendencias();
+}
+
+// ---------- Pendências: o que o editor aplica antes do próximo render ----------
+async function carregarPendencias() {
+	const el = $('#pend');
+	const p = proj();
+	if (!p) { el.hidden = true; return; }
+	let d;
+	try { d = await api('/api/pendencias?projeto=' + enc(p)); } catch { return; }
+	if (p !== proj()) return;
+	S.bloco = d.bloco;
+	renderBloco();
+	const abertas = (d.lista ?? []).filter((x) => !x.feito);
+	const feitas = (d.lista ?? []).filter((x) => x.feito && Date.now() - x.feito < 30 * 60e3).slice(-3);
+	el.hidden = !abertas.length && !feitas.length;
+	const tempo = (t) => (typeof t === 'number' ? `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')} · ` : '');
+	const aberto = el.querySelector('details')?.open ?? true;
+	el.innerHTML = `<details ${aberto ? 'open' : ''}><summary>${ic('list')}<b>Pendências para o editor</b><span class="selo ${abertas.length ? 'alerta' : 'ok'}">${abertas.length ? `${abertas.length} na fila` : 'tudo aplicado'}</span><small>${S.chatAtivo ? 'aplicadas antes do próximo render' : abertas.length ? 'vão junto no próximo pedido ao editor' : ''}</small></summary>` +
+		abertas.map((x) => `<div class="pend-item">${x.imagem && /^out\/previas\//.test(x.imagem) ? `<img src="/previas/${x.imagem.split('/').slice(2).map(enc).join('/')}?t=${T}" alt="">` : ''}<span><small>${esc(tempo(x.t))}${esc(x.cena || (x.origem === 'assistente' ? 'pelo assistente' : 'nota'))}</small>${esc(x.texto)}</span><button class="btn icone mini fantasma" data-pend-apagar="${esc(x.id)}" title="Tirar da fila" aria-label="Tirar da fila">${ic('x')}</button></div>`).join('') +
+		feitas.map((x) => `<div class="pend-item feito"><span><small>${esc(tempo(x.t))}aplicada</small>${esc(x.texto)}</span></div>`).join('') + '</details>';
+	el.querySelectorAll('[data-pend-apagar]').forEach((b) => (b.onclick = async () => {
+		try { await api('/api/pendencias/apagar', {projeto: p, id: b.dataset.pendApagar}); } catch (e) { return avisoErro(e); }
+		carregarPendencias();
+	}));
+}
+// Observação numa imagem (prévia ou quadro de um bloco): entra na fila de pendências.
+function notaPendencia({t, cena, imagem, img}) {
+	const p = proj();
+	if (!p) return;
+	const tempo = Number.isFinite(t) ? `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}` : '';
+	abrirModal({
+		titulo: `Observação${tempo ? ' em ' + tempo : ''}`,
+		corpo: `${img ? `<img class="nota-img" src="${esc(img)}" alt="">` : ''}<p class="legenda">${esc(cena || '')}</p>` +
+			`<textarea id="notaTxt" rows="3" placeholder="O que mudar nesta cena? Ex.: texto em cima do rosto, sobe para o topo; troca por um número 3D"></textarea>` +
+			`<p class="legenda">Fica na fila de pendências: o editor aplica antes de animar e renderizar o próximo trecho, sem parar o que está fazendo.</p>`,
+		rodape: `<button class="btn fantasma" id="notaNao">Cancelar</button><button class="btn primario" id="notaSim">${ic('check')}<span>Pôr na fila</span></button>`,
+	});
+	$('#notaTxt').focus();
+	$('#notaNao').onclick = fecharModal;
+	const salvar = async () => {
+		const texto = $('#notaTxt').value.trim();
+		if (!texto) return $('#notaTxt').focus();
+		try { await api('/api/pendencias/nova', {projeto: p, texto, t: Number.isFinite(t) ? t : undefined, cena, imagem}); } catch (e) { return avisoErro(e); }
+		fecharModal();
+		aviso(S.chatAtivo ? 'Na fila: o editor aplica antes do próximo render.' : 'Na fila: vai junto no próximo pedido ao editor.', 'ok', {ms: 2500});
+		carregarPendencias();
+	};
+	$('#notaSim').onclick = salvar;
+	$('#notaTxt').onkeydown = (e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) salvar(); };
+}
+// Folha de quadros de um bloco: clique num quadro para deixar a observação naquele segundo.
+async function abrirQuadros(base, v) {
+	const urlFolha = `/out/${enc(base)}-folha.jpg?t=${T}&v=${v}`;
+	let mapa = null;
+	try { const r = await fetch(`/out/${enc(base)}.json?t=${T}&v=${v}`, {headers: H}); if (r.ok) mapa = await r.json(); } catch {}
+	if (!mapa) return verMidia(urlFolha, base + '-folha.jpg');
+	abrirModal({titulo: `Bloco ${mapa.n} de ${mapa.total}: clique num quadro para deixar uma observação`, corpo: `<div class="folha"><img id="folhaImg" src="${esc(urlFolha)}" alt="Quadros do bloco"><i id="folhaMira" hidden></i></div>`, larga: true});
+	const img = $('#folhaImg'), mira = $('#folhaMira');
+	const quadro = (e) => {
+		const r = img.getBoundingClientRect();
+		const col = Math.min(mapa.colunas - 1, Math.floor(((e.clientX - r.left) / r.width) * mapa.colunas));
+		const lin = Math.min(mapa.linhas - 1, Math.floor(((e.clientY - r.top) / r.height) * mapa.linhas));
+		const i = lin * mapa.colunas + col;
+		return i < mapa.quadros ? {i, col, lin} : null;
+	};
+	img.onmousemove = (e) => {
+		const q = quadro(e);
+		mira.hidden = !q;
+		if (q) Object.assign(mira.style, {left: (q.col / mapa.colunas) * 100 + '%', top: (q.lin / mapa.linhas) * 100 + '%', width: 100 / mapa.colunas + '%', height: 100 / mapa.linhas + '%'});
+	};
+	img.onclick = (e) => {
+		const q = quadro(e);
+		if (!q) return;
+		// Recorte do quadro clicado, para a imagem da observação.
+		const c = document.createElement('canvas');
+		const w = img.naturalWidth / mapa.colunas, h = img.naturalHeight / mapa.linhas;
+		c.width = w; c.height = h;
+		c.getContext('2d').drawImage(img, q.col * w, q.lin * h, w, h, 0, 0, w, h);
+		const t = Number((mapa.de + q.i / mapa.fps).toFixed(2));
+		notaPendencia({t, cena: `bloco ${mapa.n}, quadro ${q.i + 1}`, imagem: `out/${base}-folha.jpg`, img: c.toDataURL('image/jpeg', 0.85)});
+	};
+}
+
+// ---------- Próximo bloco para aprovar: etapas e % (escrito pelo npm run bloco) ----------
+const ETAPA_BLOCO = {escrevendo: 'O editor está montando as cenas', pendencias: 'Aplicando as suas pendências', qualidade: 'Análise de qualidade', render: 'Renderizando o trecho', quadros: 'Folha de quadros', audio: 'Conferindo o áudio', revisao: 'O editor está revisando os quadros', pronto: 'Pronto para você aprovar', erro: 'Deu erro', esperando: 'Parado: o editor terminou sem mostrar o bloco', parado: 'Parado'};
+function renderBloco() {
+	const b = S.bloco;
+	const ativo = b && !['pronto', 'erro', 'esperando', 'parado'].includes(b.etapa) && S.chatAtivo;
+	const pp = $('#stBloco');
+	pp.hidden = !(ativo || b?.etapa === 'pronto') || Date.now() - (b?.em ?? 0) > 3 * 3600e3;
+	if (b) {
+		pp.querySelector('span').textContent = b.etapa === 'pronto' ? `Bloco ${b.n} pronto` : `Bloco ${b.n}${b.total ? '/' + b.total : ''}: ${Math.round(b.pct ?? 0)}%`;
+		pp.querySelector('.ponto').className = 'ponto ' + (b.etapa === 'pronto' ? 'ok' : 'ativo');
+		pp.querySelector('.mini-barra').hidden = b.etapa === 'pronto';
+		pp.querySelector('.mini-barra i').style.width = (b.pct ?? 0) + '%';
+	}
+	const el = $('#proxBloco');
+	if (!el) return;
+	if (!b || (!ativo && b.etapa !== 'pronto' && b.etapa !== 'erro')) { el.innerHTML = ''; return; }
+	const pct = Math.round(b.pct ?? 0);
+	el.innerHTML = `<div class="cartao prox-bloco"><div class="cartao-topo"><h4>${ic('clock')}Próximo para aprovar: bloco ${esc(b.n)}${b.total ? ` de ${esc(b.total)}` : ''}</h4><span class="selo ${b.etapa === 'pronto' ? 'ok' : b.etapa === 'erro' ? 'erro' : 'cor'}">${b.etapa === 'pronto' ? 'pronto' : pct + '%'}</span></div>` +
+		`<div class="barra ${b.etapa === 'pronto' ? 'ok' : ''}"><i style="width:${pct}%"></i></div>` +
+		`<p class="legenda">${esc(ETAPA_BLOCO[b.etapa] ?? b.etapa)}${b.fase ? ' · ' + esc(b.fase) : ''}${b.erro ? ': ' + esc(b.erro) : ''}</p>` +
+		`<ol class="etapas-bloco">${(b.etapas ?? []).map((e) => `<li class="${esc(e.estado)}"><i></i><span>${esc(e.nome)}</span>${e.estado === 'rodando' && typeof e.pct === 'number' ? `<b>${Math.round(e.pct)}%</b>` : e.estado === 'ok' ? `<b>${ic('check')}</b>` : ''}</li>`).join('')}</ol></div>`;
+}
+let tBloco = null;
+async function pollBloco() {
+	clearTimeout(tBloco);
+	await carregarPendencias();
+	tBloco = setTimeout(pollBloco, S.chatAtivo ? 1500 : 10000);
+}
+$('#stBloco').onclick = () => { mostrarAba('render'); if (celular()) verSecao('lado'); };
 
 // Pedido que estava em andamento quando o painel fechou: oferece continuar de onde parou (não gasta limite sem você pedir).
 async function verificarPendente() {
@@ -1817,5 +1992,6 @@ async function iniciar() {
 	carregarAtalhos();
 	verificarClaude();
 	pollTarefas();
+	pollBloco();
 }
 iniciar();

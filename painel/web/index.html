@@ -32,6 +32,7 @@
 	<div class="status" id="status">
 		<button class="pilula" id="stClaude" title="Claude Code neste computador"><i class="ponto"></i><span>Claude</span></button>
 		<button class="pilula" id="stPod" title="Pod (computador na nuvem para renderizar)"><i class="ponto"></i><span>Pod</span></button>
+		<button class="pilula" id="stBloco" hidden title="Quanto falta para o próximo bloco ficar pronto para você aprovar"><i class="ponto ativo"></i><span>Próximo bloco</span><em class="mini-barra"><i></i></em></button>
 		<button class="pilula" id="stTarefas" title="Tarefas rodando"><i class="ponto"></i><span>Sem tarefas</span><em class="mini-barra" hidden><i></i></em></button>
 	</div>
 
@@ -70,11 +71,13 @@
 				<div id="chips" class="chips"></div>
 				<button class="btn fantasma mini" id="gerAtalhos" data-ic="edit" title="Adicionar ou remover atalhos de pedido">Atalhos</button>
 			</div>
+			<div id="pend" class="pend" hidden></div>
 			<form id="f">
 				<textarea id="pedido" rows="3" placeholder="Ex.: usa o template do depoimento e coloca a moeda 3D girando quando eu falar 'investimento'"></textarea>
 				<div class="form-acoes">
 					<small class="dica"><kbd>Enter</kbd> envia · <kbd>Shift</kbd>+<kbd>Enter</kbd> nova linha</small>
 					<button type="button" class="btn perigo" id="parar" data-ic="stop" hidden title="Para o Claude agora. Escreva o que mudar e envie: ele continua de onde parou com o seu ajuste.">Intervir</button>
+					<button type="button" class="btn fantasma" id="destino" data-ic="users" hidden title="Enquanto o editor trabalha, para quem vai a sua mensagem">Para: assistente</button>
 					<button type="button" class="btn fantasma" id="soPerguntar" data-ic="chat" title="Só tira uma dúvida, sem parar nem mudar nada do trabalho em andamento">Só perguntar</button>
 					<button class="btn primario" id="enviar" data-ic="send">Enviar</button>
 				</div>
