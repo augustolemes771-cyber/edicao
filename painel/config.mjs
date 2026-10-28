@@ -97,6 +97,9 @@ export const textoPrefs = (p) => {
   tem e copie EXATAMENTE a linha [[bloco:...]] que o comando imprimiu; PARE e espere. (4) "Bloco N aprovado": faça só o bloco N+1, sem
   mexer nos aprovados. "Ajuste no bloco N": corrija só ele e rode o bloco N de novo. Depois do último: gere a prévia completa.
   Este comando é exigido pelo fluxo (vale mais que a regra de não gerar prévias).
+  RODE O \`npm run bloco\` SEMPRE EM PRIMEIRO PLANO (Bash normal, timeout 1800000), NUNCA em segundo plano: quando sua resposta termina
+  a sessão fecha e mata o render (o pod "cai"). Espere ele acabar na mesma resposta. Nunca use SEM_POD por conta própria; se a saída
+  disser "O RENDER NO POD FALHOU", copie o erro para o usuário em 1 linha.
 - CRIATIVIDADE COM SENTIDO (em todo bloco): pelo menos UMA ideia visual nova tirada do que é dito naquele trecho (live vazia → interface
   de live com 1 espectador; número → número 3D; lista → chips um por vez; virada → frase grande; nome → pílula; pergunta → plano aberto).
   Não repita o efeito principal do bloco anterior. Se nenhuma peça servir, crie uma nova em src/pecas com acabamento de produção (mola,
