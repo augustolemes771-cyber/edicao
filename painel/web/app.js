@@ -1948,6 +1948,12 @@ let tBloco = null;
 async function pollBloco() {
 	clearTimeout(tBloco);
 	await carregarPendencias();
+	// Render do bloco em segundo plano terminou (etapa "revisao") com o assistente esperando: retoma sozinho e mostra o bloco.
+	const b = S.bloco;
+	if (b?.etapa === 'revisao' && b.video && S.esperandoRender && S.esperandoRender === proj() && !S.chatAtivo) {
+		S.esperandoRender = null;
+		usarPedido(`O bloco ${b.n} terminou de renderizar (${b.video}). Continue de onde parou: confira a folha de quadros e mostre o bloco com a linha [[bloco:...]].`, {enviar: true});
+	}
 	tBloco = setTimeout(pollBloco, S.chatAtivo ? 1500 : 10000);
 }
 $('#stBloco').onclick = () => { mostrarAba('render'); if (celular()) verSecao('lado'); };
