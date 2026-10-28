@@ -6,11 +6,12 @@
 // Variável GL: renderizador WebGL do Chrome (padrão 'angle'; no pod Linux com placa NVIDIA, 'angle-egl' ou 'egl').
 // Variável HW=0: não tenta o codificador da placa de vídeo.
 import {spawn, spawnSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
 import {copyFileSync, existsSync, linkSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, statSync} from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import {bundle} from '@remotion/bundler';
-import {renderMedia, selectComposition} from '@remotion/renderer';
+import {RenderInternals, renderMedia, selectComposition} from '@remotion/renderer';
 
 const raiz = path.resolve(import.meta.dirname, '..');
 process.chdir(raiz);
@@ -26,6 +27,8 @@ const res = Number(arg('res', '720'));
 const de = arg('de');
 const ate = arg('ate');
 const FPS = 30;
+// Quadro JPEG preto 256x256 para testar o codificador da placa.
+const QUADRO_TESTE = '/9j/4AAQSkZJRgABAgAAAQABAAD//gAQTGF2YzYwLjMxLjEwMgD/2wBDAAg+Pkk+SVVVVVVVVWRdZGhoaGRkZGRoaGhwcHCDg4NwcHBoaHBwfHyDg4+Tj4eHg4eTk5ubm7q6srLZ2eD/////xABLAAEBAAAAAAAAAAAAAAAAAAAACAEBAAAAAAAAAAAAAAAAAAAAABABAAAAAAAAAAAAAAAAAAAAABEBAAAAAAAAAAAAAAAAAAAAAP/AABEIAQABAAMBIgACEQADEQD/2gAMAwEAAhEDEQA/AJ/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB//9k=';
 const ehWin = process.platform === 'win32';
 // Uma linha por mudança de 1%, para o painel e para quem lê o terminal.
 let ultimo = {fase: '', pct: -1};
@@ -98,11 +101,68 @@ mkdirSync('out', {recursive: true});
 
 const temFfmpeg = spawnSync('ffmpeg', ['-version'], {shell: ehWin}).status === 0;
 const inicio = Date.now();
+// Tempo de cada etapa, para a linha de resumo no fim ({"tempos": {...}} e um aviso legível).
+const tempos = {};
+let etapaAtual = null, inicioEtapa = Date.now();
+const etapa = (nome) => {
+	if (etapaAtual) tempos[etapaAtual] = (tempos[etapaAtual] ?? 0) + (Date.now() - inicioEtapa) / 1000;
+	etapaAtual = nome;
+	inicioEtapa = Date.now();
+};
+const resumoTempos = () => {
+	etapa(null);
+	const t = Object.fromEntries(Object.entries(tempos).map(([k, v]) => [k, Number(v.toFixed(1))]));
+	emitir({tempos: t, aviso: `Tempos: ${Object.entries(t).map(([k, v]) => `${k} ${v}s`).join(', ')}, total ${((Date.now() - inicio) / 1000).toFixed(1)}s.`});
+};
+
+// Cache do empacotamento: o webpack só roda de novo quando o código (src, dependências, tsconfig) muda. Cada render usa
+// uma cópia por hard links do bundle guardado (instantânea; renders ao mesmo tempo não se atrapalham). SEM_CACHE=1 desliga.
+const pastaCache = path.join(raiz, '.painel', 'bundle-cache');
+const hashCodigo = () => {
+	const h = createHash('sha1');
+	const add = (rel) => {
+		const f = path.join(raiz, rel);
+		if (!existsSync(f)) return;
+		if (statSync(f).isDirectory()) {
+			for (const nome of readdirSync(f).sort()) add(path.join(rel, nome));
+			return;
+		}
+		h.update(rel.replace(/\\/g, '/') + '\0').update(readFileSync(f)).update('\0');
+	};
+	['src', 'package-lock.json', 'tsconfig.json', 'scripts/render-job.mjs'].forEach(add);
+	return h.digest('hex').slice(0, 16);
+};
+const clonarPorLinks = (de, para) => {
+	mkdirSync(para, {recursive: true});
+	for (const nome of readdirSync(de)) {
+		const a = path.join(de, nome), b = path.join(para, nome);
+		if (statSync(a).isDirectory()) clonarPorLinks(a, b);
+		else {
+			try {
+				linkSync(a, b);
+			} catch {
+				copyFileSync(a, b);
+			}
+		}
+	}
+};
+const limparCache = () => {
+	try {
+		// Bundles guardados: fica só o mais novo de cada um dos 3 últimos códigos. Cópias de uso de renders que caíram: 6 h.
+		const guardados = readdirSync(pastaCache).filter((n) => /^[0-9a-f]{16}$/.test(n)).map((n) => ({n, t: statSync(path.join(pastaCache, n)).mtimeMs})).sort((a, b) => b.t - a.t);
+		for (const {n} of guardados.slice(3)) rmSync(path.join(pastaCache, n), {recursive: true, force: true});
+		for (const n of readdirSync(pastaCache).filter((x) => x.startsWith('uso-') || x.startsWith('novo-'))) {
+			const f = path.join(pastaCache, n);
+			if (statSync(f).mtimeMs < Date.now() - 6 * 3600_000) rmSync(f, {recursive: true, force: true});
+		}
+	} catch {}
+};
 const eta = (pct) => (pct > 3 ? Math.round(((Date.now() - inicio) / 1000) * ((100 - pct) / pct)) : null);
 
 try {
 	// 1. Conferir o plano (só no final: erros de âncora e curva barram o render).
 	if (tipo === 'final') {
+		etapa('conferir');
 		emitir({fase: 'conferindo', pct: 0});
 		const r = spawnSync('npx', ['tsx', 'scripts/conferir.ts', projeto], {shell: ehWin, encoding: 'utf8'});
 		if (r.status !== 0) falhar('O conferir achou erros. Corrija antes do render final:\n' + (r.stdout || r.stderr || '').slice(-400));
@@ -112,24 +172,48 @@ try {
 	const arqSil = path.join(raiz, 'src/projetos', projeto, 'silencios.json');
 	const arqVideo = path.join(raiz, 'public/projetos', projeto, 'video.mp4');
 	if (temFfmpeg && existsSync(arqSil) && existsSync(arqVideo) && (readFileSync(arqSil, 'utf8').trim().length < 5 || statSync(arqSil).mtimeMs < statSync(arqVideo).mtimeMs)) {
+		etapa('pausas');
 		emitir({fase: 'medindo as pausas do áudio', pct: 0});
 		const r = spawnSync(process.execPath, [path.join(raiz, 'scripts/silencios.mjs'), projeto], {encoding: 'utf8'});
 		if (r.status !== 0) emitir({aviso: 'Não consegui medir as pausas do áudio: os cortes ficam pelo tempo das palavras.'});
 	}
 
-	// 2. Empacotar o projeto (webpack).
+	// 2. Empacotar o projeto (webpack), ou reaproveitar o bundle guardado do mesmo código.
+	etapa('empacotar');
 	emitir({fase: 'empacotando', pct: 1});
 	const base = tipo === 'final' ? 8 : 12;
 	limparTemporarios(6);
 	const vazia = path.join(raiz, '.painel', 'publico-vazio');
 	mkdirSync(vazia, {recursive: true});
-	const serveUrl = await bundle({
-		entryPoint: path.join(raiz, 'src/index.ts'),
-		publicDir: vazia,
-		onDirectoryCreated: (d) => (pastaBundle = d),
-		onProgress: (p) => emitir({fase: 'empacotando', pct: 1 + (p / 100) * (base - 1)}),
-	});
-	pastaBundle = serveUrl;
+	mkdirSync(pastaCache, {recursive: true});
+	limparCache();
+	const hash = process.env.SEM_CACHE ? null : hashCodigo();
+	const guardado = hash && path.join(pastaCache, hash);
+	if (!guardado || !existsSync(path.join(guardado, 'index.html'))) {
+		const novo = path.join(pastaCache, `novo-${process.pid}-${Date.now()}`);
+		pastaBundle = novo;
+		await bundle({
+			entryPoint: path.join(raiz, 'src/index.ts'),
+			publicDir: vazia,
+			outDir: novo,
+			onProgress: (p) => emitir({fase: 'empacotando', pct: 1 + (p / 100) * (base - 1)}),
+		});
+		if (guardado) {
+			// Outro render pode ter guardado o mesmo código enquanto este empacotava: fica o que chegou primeiro.
+			try {
+				renameSync(novo, guardado);
+			} catch {
+				rmSync(novo, {recursive: true, force: true});
+			}
+		}
+	} else emitir({aviso: 'Empacotamento reaproveitado (código igual ao do último render).'});
+	if (guardado) {
+		pastaBundle = path.join(pastaCache, `uso-${process.pid}-${Date.now()}`);
+		rmSync(path.join(guardado, 'public'), {recursive: true, force: true});
+		clonarPorLinks(guardado, pastaBundle);
+	}
+	const serveUrl = pastaBundle;
+	emitir({fase: 'empacotando', pct: base});
 	ligarPublico(path.join(serveUrl, 'public'));
 
 	// 3. Renderizar. Mesmas opções do remotion.config.ts e dos scripts preview.sh e finalizar.sh.
@@ -137,6 +221,7 @@ try {
 	const gl = ['angle', 'angle-egl', 'egl', 'swangle', 'swiftshader', 'vulkan'].includes(process.env.GL) ? process.env.GL : 'angle';
 	const chromiumOptions = {gl};
 	const inputProps = {projeto, duracaoFonte: 0};
+	etapa('abrir');
 	const composition = await selectComposition({serveUrl, id: projeto, inputProps, browserExecutable, chromiumOptions});
 	let frameRange = null;
 	let sufixo = '';
@@ -147,6 +232,7 @@ try {
 		frameRange = [ini, fim];
 		sufixo = `-${de ?? 0}s-${ate ?? 'fim'}s`;
 	}
+	const nQuadros = frameRange ? frameRange[1] - frameRange[0] + 1 : composition.durationInFrames;
 	const brutoRel = tipo === 'final' ? `out/${projeto}-bruto.mp4` : `out/${projeto}-preview${sufixo}.mp4`;
 	const opcoes = {
 		serveUrl,
@@ -168,13 +254,34 @@ try {
 		chromiumOptions,
 		onProgress: ({progress, renderedFrames, encodedFrames}) => {
 			const pct = base + progress * ((tipo === 'final' ? 90 : 100) - base);
-			emitir({fase: 'renderizando', pct, quadros: renderedFrames, codificados: encodedFrames, total: composition.durationInFrames, eta: eta(pct)});
+			emitir({fase: 'renderizando', pct, quadros: renderedFrames, codificados: encodedFrames, total: nQuadros, eta: eta(pct)});
 		},
 	};
 	// Tenta o codificador da placa (NVENC, VideoToolbox...). O Remotion não volta sozinho para a CPU se ele listar o codificador
 	// mas não conseguir abri-lo, então repetimos com a CPU. HW=0 desliga a tentativa.
+	// O ffmpeg do Remotion lista o NVENC mesmo sem placa e só falha DEPOIS de renderizar todos os quadros (o render inteiro era
+	// refeito na CPU: 2x o tempo). Antes, codifica 1 quadro com o NVENC no ffmpeg do Remotion (meio segundo): falhou, vai direto na CPU.
+	const nvencAbre = () => {
+		if (process.platform === 'darwin') return true;
+		try {
+			const exe = RenderInternals.getExecutablePath({type: 'ffmpeg', indent: false, logLevel: 'error', binariesDirectory: null});
+			RenderInternals.makeFileExecutableIfItIsNot(exe);
+			const pasta = path.dirname(exe);
+			const r = spawnSync(exe, ['-hide_banner', '-loglevel', 'error', '-f', 'image2pipe', '-c:v', 'mjpeg', '-i', '-', '-frames:v', '1', '-pix_fmt', 'yuv420p', '-c:v', 'h264_nvenc', '-f', 'null', '-'], {
+				input: Buffer.from(QUADRO_TESTE, 'base64'),
+				cwd: pasta,
+				env: {...process.env, LD_LIBRARY_PATH: [pasta, process.env.LD_LIBRARY_PATH].filter(Boolean).join(':')},
+				timeout: 20000,
+			});
+			return r.status === 0;
+		} catch {
+			return true;
+		}
+	};
+	const hwDesligado = process.env.HW === '0' || !nvencAbre();
+	if (process.env.HW !== '0' && hwDesligado) emitir({aviso: 'Codificador da placa (NVENC) não abre neste computador: codificando na CPU.'});
 	const renderizar = async (o) => {
-		if (process.env.HW === '0') return renderMedia({...o, hardwareAcceleration: 'disable'});
+		if (hwDesligado) return renderMedia({...o, hardwareAcceleration: 'disable'});
 		try {
 			await renderMedia({...o, hardwareAcceleration: 'if-possible'});
 		} catch (e) {
@@ -185,12 +292,13 @@ try {
 	};
 	// WebGL (cenas 3D): se o modo escolhido não abre neste computador (comum em pod com a placa liberada só para cálculo),
 	// tenta os outros e por último o swangle (sem placa: sempre funciona, só o 3D fica mais lento). Avisa qual funcionou.
+	etapa('render');
 	const t0 = Date.now();
 	const modosGl = [...new Set([gl, 'egl', 'angle-egl', 'angle', 'swangle'])];
 	for (const [i, modo] of modosGl.entries()) {
 		try {
 			await renderizar({...opcoes, chromiumOptions: {...chromiumOptions, gl: modo}});
-			emitir({aviso: `Render: WebGL "${modo}", ${opcoes.concurrency ?? 'padrão'} threads, ${composition.durationInFrames} quadros em ${((Date.now() - t0) / 1000).toFixed(0)}s (${(composition.durationInFrames / Math.max(1, (Date.now() - t0) / 1000)).toFixed(1)} q/s).`});
+			emitir({aviso: `Render: WebGL "${modo}", ${opcoes.concurrency ?? 'padrão'} threads, ${nQuadros} quadros em ${((Date.now() - t0) / 1000).toFixed(0)}s (${(nQuadros / Math.max(1, (Date.now() - t0) / 1000)).toFixed(1)} q/s).`});
 			if (modo !== gl) emitir({aviso: `WebGL "${gl}" não abriu aqui: renderizou com "${modo}".`, gl: modo});
 			break;
 		} catch (e) {
@@ -206,6 +314,7 @@ try {
 			renameSync(brutoRel, finalRel);
 			emitir({aviso: 'ffmpeg não encontrado: o áudio ficou sem a normalização de -14 LUFS.'});
 		} else {
+			etapa('mixar');
 			emitir({fase: 'mixando', pct: 91});
 			const medir = spawnSync('ffmpeg', ['-hide_banner', '-nostats', '-i', brutoRel, '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11:print_format=json', '-f', 'null', '-'], {shell: false, encoding: 'utf8'});
 			const json = /\{[\s\S]*\}/.exec(medir.stderr ?? '')?.[0];
@@ -223,11 +332,14 @@ try {
 		}
 		// Com o Drive vinculado (scripts/drive.mjs config), o vídeo final também vai para a pasta do Drive.
 		if (existsSync(path.join(raiz, '.painel/drive.json'))) {
+			etapa('drive');
 			const d = spawnSync('node', ['scripts/drive.mjs', 'salvar', finalRel], {cwd: raiz, shell: false, encoding: 'utf8'});
 			if (d.status !== 0) emitir({aviso: 'Não consegui copiar o vídeo para o Drive (o Drive para computador está aberto?).'});
 		}
+		resumoTempos();
 		emitir({fim: true, saida: finalRel});
 	} else {
+		resumoTempos();
 		emitir({fim: true, saida: brutoRel});
 	}
 	limparBundle();
