@@ -46,7 +46,7 @@ else
 fi
 
 # Gráficos da GPU (WebGL): muitos pods liberam a placa só para cálculo. Instala as bibliotecas EGL/GL da NVIDIA na versão exata do driver.
-tem_egl() { ls /usr/lib/x86_64-linux-gnu/libEGL_nvidia.so* /usr/lib64/libEGL_nvidia.so* >/dev/null 2>&1; }
+tem_egl() { ls /usr/lib/x86_64-linux-gnu/libEGL_nvidia.so* >/dev/null 2>&1 || ls /usr/lib64/libEGL_nvidia.so* >/dev/null 2>&1; }
 if command -v nvidia-smi >/dev/null && ! tem_egl; then
 	VER=$(nvidia-smi --query-gpu=driver_version --format=csv,noheader | head -1)
 	MAIOR=${VER%%.*}
