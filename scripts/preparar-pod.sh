@@ -45,13 +45,24 @@ else
 	passo 70 'Bibliotecas do Chrome já instaladas'
 fi
 
-# Gráficos da GPU (WebGL): muitos pods liberam a placa só para cálculo. Instala as bibliotecas EGL/GL da NVIDIA na versão do driver.
-if command -v nvidia-smi >/dev/null; then
-	DRV=$(nvidia-smi --query-gpu=driver_version --format=csv,noheader | head -1 | cut -d. -f1)
-	if [ -n "$DRV" ] && ! ls /usr/lib/x86_64-linux-gnu/libEGL_nvidia.so* >/dev/null 2>&1; then
-		passo 85 "Instalando gráficos da GPU (libnvidia-gl-$DRV)"
-		$SUDO apt-get install -y -qq --no-install-recommends "libnvidia-gl-$DRV" >/dev/null 2>&1 || echo "Aviso: não consegui instalar libnvidia-gl-$DRV (o render usa a CPU para os gráficos)"
+# Gráficos da GPU (WebGL): muitos pods liberam a placa só para cálculo. Instala as bibliotecas EGL/GL da NVIDIA na versão exata do driver.
+tem_egl() { ls /usr/lib/x86_64-linux-gnu/libEGL_nvidia.so* /usr/lib64/libEGL_nvidia.so* >/dev/null 2>&1; }
+if command -v nvidia-smi >/dev/null && ! tem_egl; then
+	VER=$(nvidia-smi --query-gpu=driver_version --format=csv,noheader | head -1)
+	MAIOR=${VER%%.*}
+	passo 85 "Instalando gráficos da GPU (driver $VER)"
+	$SUDO apt-get install -y -qq --no-install-recommends "libnvidia-gl-$MAIOR" >/dev/null 2>&1 || true
+	if ! tem_egl; then
+		# Sem pacote no apt (driver novo, ex.: RTX 5090): baixa o instalador da NVIDIA e instala só as bibliotecas, sem o módulo do kernel.
+		RUN="/tmp/NVIDIA-$VER.run"
+		curl -fsSL -o "$RUN" "https://download.nvidia.com/XFree86/Linux-x86_64/$VER/NVIDIA-Linux-x86_64-$VER.run" \
+			|| curl -fsSL -o "$RUN" "https://us.download.nvidia.com/tesla/$VER/NVIDIA-Linux-x86_64-$VER.run" || true
+		if [ -s "$RUN" ]; then
+			$SUDO sh "$RUN" --silent --no-kernel-module --no-nvidia-modprobe --no-questions --no-systemd --no-x-check --no-nouveau-check --no-backup --no-install-compat32-libs >/tmp/nvidia-run.log 2>&1 || tail -5 /tmp/nvidia-run.log
+			rm -f "$RUN"
+		fi
 	fi
+	tem_egl || echo "Aviso: não consegui instalar os gráficos da GPU (o render usa a CPU para o WebGL)"
 fi
 
 passo 95 'Conferindo'
@@ -59,7 +70,7 @@ echo "Node: $(node -v)"
 echo "ffmpeg: $(ffmpeg -version | head -1 | cut -d' ' -f3)"
 if command -v nvidia-smi >/dev/null; then
 	echo "GPU: $(nvidia-smi --query-gpu=name --format=csv,noheader | head -1)"
-	if ls /usr/lib/x86_64-linux-gnu/libEGL_nvidia.so* >/dev/null 2>&1; then echo 'Gráficos da GPU: liberados'; else echo 'Gráficos da GPU: NÃO liberados (WebGL pela CPU)'; fi
+	if tem_egl; then echo 'Gráficos da GPU: liberados'; else echo 'Gráficos da GPU: NÃO liberados (WebGL pela CPU)'; fi
 else
 	echo 'GPU: nenhuma placa NVIDIA (o render vai pela CPU)'
 fi
