@@ -4,7 +4,7 @@
 // Com ELEVENLABS_API_KEY no ambiente usa o ElevenLabs Scribe (o mesmo da skill original).
 // Sem a chave, usa o whisper.cpp local: grátis, roda no seu computador, baixa o modelo uma vez.
 import {execFileSync} from 'node:child_process';
-import {existsSync, mkdirSync, readFileSync, writeFileSync} from 'node:fs';
+import {existsSync, mkdirSync, readFileSync, rmSync, writeFileSync} from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
@@ -28,6 +28,23 @@ if (!existsSync(arquivo)) {
 const cache = path.join(os.homedir(), '.cache', 'edicao');
 mkdirSync(cache, {recursive: true});
 const saida = path.join(pastaProjeto, 'transcricao.json');
+
+// Trava: duas transcrições do mesmo projeto ao mesmo tempo se atrapalham (cada uma fica ~2x mais lenta).
+const trava = path.join(cache, `${projeto}.transcrevendo`);
+if (existsSync(trava)) {
+	const pid = Number(readFileSync(trava, 'utf8'));
+	let viva = false;
+	try { process.kill(pid, 0); viva = pid !== process.pid; } catch {}
+	if (viva) {
+		console.error(`Já existe uma transcrição de "${projeto}" rodando (processo ${pid}). Espere ela terminar em vez de iniciar outra.`);
+		process.exit(1);
+	}
+}
+writeFileSync(trava, String(process.pid));
+const soltarTrava = () => { try { rmSync(trava, {force: true}); } catch {} };
+process.on('exit', soltarTrava);
+process.on('SIGINT', () => process.exit(1));
+process.on('SIGTERM', () => process.exit(1));
 
 if (process.env.ELEVENLABS_API_KEY) {
 	const audio = path.join(cache, `${projeto}.mp3`);
@@ -63,6 +80,30 @@ if (process.env.ELEVENLABS_API_KEY) {
 	}
 	writeFileSync(saida, JSON.stringify(await resposta.json(), null, 1));
 } else {
+	// 1º tenta o servidor de GPU (pod ativo nas Preferências): ~segundos em vez de minutos. Se falhar, transcreve neste PC.
+	let feito = false;
+	let podCfg = null;
+	try { podCfg = JSON.parse(readFileSync(path.join(raiz, '.painel/config.json'), 'utf8')).pod; } catch {}
+	if (podCfg?.ativo && podCfg.host && !process.env.SEM_POD) {
+		try {
+			const wavPod = path.join(cache, `${projeto}.wav`);
+			execFileSync('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-y', '-i', arquivo, '-vn', '-ar', '16000', '-ac', '1', wavPod]);
+			const {transcreverNoPod} = await import('./transcrever-pod.mjs');
+			const captions = await transcreverNoPod({
+				podCfg,
+				projeto,
+				wav: wavPod,
+				aoProgresso: (fase, pct) => console.log(JSON.stringify({fase, pct})),
+			});
+			if (!captions.length) throw new Error('transcrição vazia');
+			writeFileSync(saida, JSON.stringify(captions, null, 1));
+			console.log(JSON.stringify({fase: 'transcrição pronta (GPU do servidor)', pct: 100}));
+			feito = true;
+		} catch (e) {
+			console.log(JSON.stringify({aviso: `Servidor de GPU indisponível (${String(e.message).slice(0, 200)}). Transcrevendo neste PC.`}));
+		}
+	}
+	if (!feito) {
 	const {downloadWhisperModel, installWhisperCpp, toCaptions, transcribe} =
 		await import('@remotion/install-whisper-cpp');
 	const versao = '1.5.5';
@@ -92,10 +133,14 @@ if (process.env.ELEVENLABS_API_KEY) {
 		whisperCppVersion: versao,
 		model: modelo,
 		tokenLevelTimestamps: false,
+		// O whisper.cpp usa 4 núcleos se ninguém disser o contrário: usa quase todos (deixa 2 livres para o Windows).
+		additionalArgs: ['-t', String(Math.max(4, os.cpus().length - 2))],
+		onProgress: (p) => console.log(JSON.stringify({fase: 'transcrevendo', pct: Math.round(p * 100)})),
 		language: 'pt',
 		splitOnWord: true,
 	});
 	const {captions} = toCaptions({whisperCppOutput: resultado});
 	writeFileSync(saida, JSON.stringify(captions, null, 1));
+	}
 }
 console.log(`Transcrição salva em ${path.relative(raiz, saida)}. Próximo passo: npm run roteiro -- ${projeto}`);

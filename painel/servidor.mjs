@@ -12,9 +12,11 @@ import {createReadStream, createWriteStream, existsSync, mkdirSync, readFileSync
 import {pipeline} from 'node:stream/promises';
 import path from 'node:path';
 import {criarConfig, escolherModelo, textoPrefs} from './config.mjs';
-import {dentro, lerJson} from './comum.mjs';
+import {dentro, lerJson, matar} from './comum.mjs';
 import {fluxo} from './fluxo.mjs';
 import {criarHistorico} from './historico.mjs';
+import {criarAndamento} from './andamento.mjs';
+import {criarApagar} from './apagar.mjs';
 import {testarPod} from './pod.mjs';
 import {criarTarefas} from './tarefas.mjs';
 
@@ -73,6 +75,9 @@ const gitAsync = (...args) =>
 let salvando = null;
 const salvarGit = (mensagem) => {
 	salvando ??= (async () => {
+		// Sem identidade do git neste PC o commit falha ("Please tell me who you are"): define uma só neste repositório.
+		if (!(await gitAsync('config', 'user.email').catch(() => '')).trim()) await gitAsync('config', 'user.email', 'painel@edicao.local');
+		if (!(await gitAsync('config', 'user.name').catch(() => '')).trim()) await gitAsync('config', 'user.name', 'Painel de Edição');
 		await gitAsync('add', '-A');
 		if ((await gitAsync('status', '--porcelain')).trim()) await gitAsync('commit', '-m', String(mensagem || 'Edição pelo painel').slice(0, 200));
 		else {
@@ -322,8 +327,24 @@ ${textoPrefs(cfg.prefs())}`;
 };
 
 const LIMITE_TURNOS = 12;
+// Processos pesados rodando agora (para mostrar "ffmpeg rodando" em vez de silêncio durante comandos longos).
+const PESADOS = ['ffmpeg', 'ffprobe', 'main', 'whisper', 'blender', 'chrome-headless-shell', 'yt-dlp'];
+let cachePesados = {em: 0, nomes: []};
+const processosPesados = () =>
+	new Promise((ok) => {
+		if (Date.now() - cachePesados.em < 8000) return ok(cachePesados.nomes);
+		const fim = (txt) => {
+			const nomes = [...new Set(txt.split(/\r?\n/).map((l) => l.replace(/^"?([^",]+?)(\.exe)?"?[ ,].*$/, '$1').trim().toLowerCase()).filter((n) => PESADOS.includes(n)))];
+			cachePesados = {em: Date.now(), nomes: nomes.map((n) => (n === 'main' ? 'whisper (transcrição)' : n))};
+			ok(cachePesados.nomes);
+		};
+		const [cmd, a] = ehWin ? ['tasklist', ['/FO', 'CSV', '/NH']] : ['ps', ['-A', '-o', 'comm=']];
+		execFile(cmd, a, {encoding: 'utf8', windowsHide: true, timeout: 5000}, (e, saida) => (e ? ok([]) : fim(saida)));
+	});
 const arqPendente = path.join(estado, 'chat-pendente.json');
+const andamento = criarAndamento({raiz, estado, tarefas, historico, listarMidias, lerGrupos, midiasNaoUsadas, rodar, ehWin, atividade: async (proj) => ({chatRodando: rodando.has(proj || '_geral'), processos: await processosPesados()})});
 const rodando = new Map();
+const apagarProjeto = criarApagar({raiz, estado, dirTemas, projetoOk, tarefas, rodando, sessoes, gravarSessoes: () => writeFileSync(arqSessoes, JSON.stringify(sessoes))});
 const chat = async (req, res) => {
 	const {projeto, pedido, tema} = await corpo(req);
 	if (!nomeValido(projeto) || !nomeValido(tema) || typeof pedido !== 'string' || !pedido.trim()) return json(res, {erro: 'Pedido inválido'}, 400);
@@ -343,7 +364,7 @@ const chat = async (req, res) => {
 		if (!res.writableEnded) res.write(`data: ${JSON.stringify({tipo, ...dados})}\n\n`);
 	};
 	const chave = projeto || '_geral';
-	rodando.get(chave)?.kill();
+	matar(rodando.get(chave));
 	historico.anotar(chave, 'eu', pedido);
 	writeFileSync(arqPendente, JSON.stringify({chave, projeto, tema, pedido, em: Date.now()}));
 	const arqInstrucao = path.join(estado, 'instrucao.txt');
@@ -370,6 +391,11 @@ const chat = async (req, res) => {
 	proc.stdin.on('error', () => {});
 	proc.stdin.end(pedido);
 	rodando.set(chave, proc);
+	const batida = setInterval(async () => {
+		if (res.writableEnded) return;
+		enviar('batida', {processos: await processosPesados()});
+	}, 10000);
+	proc.on('close', () => clearInterval(batida));
 	let resto = '';
 	proc.stdout.on('data', (d) => {
 		resto += d;
@@ -436,7 +462,7 @@ const chat = async (req, res) => {
 	res.on('close', () => {
 		if (proc.exitCode === null) {
 			parado = true;
-			proc.kill();
+			matar(proc);
 		}
 	});
 };
@@ -450,7 +476,7 @@ const iniciarStudio = () => {
 };
 process.on('exit', () => {
 	studio?.kill();
-	for (const pr of rodando.values()) pr.kill();
+	for (const pr of rodando.values()) matar(pr);
 	tarefas.encerrarTudo();
 	historico.gravarTudo();
 });
@@ -557,6 +583,10 @@ createServer(async (req, res) => {
 		ultimoPedido = Date.now();
 
 		if (p === '/api/biblioteca') return json(res, biblioteca());
+		if (p === '/api/projetos/apagar' && req.method === 'POST') {
+			const {nome} = await corpo(req);
+			try { return json(res, apagarProjeto(String(nome ?? ''))); } catch (e) { return json(res, {erro: e.message}, e.codigo ?? 500); }
+		}
 		if (p === '/api/projetos' && req.method === 'POST') return json(res, criarProjeto(await corpo(req)));
 		if (p === '/api/projetos') return json(res, projetos());
 		if (p === '/api/config' && req.method === 'POST') {
@@ -671,6 +701,16 @@ createServer(async (req, res) => {
 			if (req.method === 'POST') { try { rmSync(arqPendente, {force: true}); } catch {} return json(res, {ok: true}); }
 			return json(res, lerJson(arqPendente, null));
 		}
+		if (p === '/api/andamento') {
+			const proj = url.searchParams.get('projeto');
+			if (!projetoOk(proj)) return json(res, {etapas: [], tarefas: [], recentes: [], gasto: 0});
+			return json(res, andamento.calcular(proj));
+		}
+		if (p === '/api/perguntar' && req.method === 'POST') {
+			const {projeto, pergunta} = await corpo(req);
+			if (!projetoOk(projeto) || typeof pergunta !== 'string' || !pergunta.trim()) return json(res, {erro: 'Escolha um vídeo e escreva a pergunta'}, 400);
+			try { return json(res, await andamento.perguntar(projeto, pergunta.trim().slice(0, 1500))); } catch (e) { return json(res, {erro: e.message}, 500); }
+		}
 		if (p === '/api/midia' && req.method === 'POST') {
 			// Corpo = o arquivo cru, gravado direto no disco (vídeos grandes não passam pela memória).
 			const proj = url.searchParams.get('projeto'), tipo = url.searchParams.get('tipo'), nome = nomeArquivo(url.searchParams.get('nome'));
@@ -753,7 +793,7 @@ createServer(async (req, res) => {
 		if (p === '/api/chat' && req.method === 'POST') return chat(req, res);
 		if (p === '/api/parar' && req.method === 'POST') {
 			const {projeto} = await corpo(req);
-			rodando.get(projeto || '_geral')?.kill();
+			matar(rodando.get(projeto || '_geral'));
 			return json(res, {ok: true});
 		}
 		if (p === '/api/novo-chat' && req.method === 'POST') {

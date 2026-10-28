@@ -135,7 +135,7 @@ export const criarTarefas = ({raiz, estado, cfg, projetoOk, pastaMidia, temaOk, 
 	const script = async (t) => {
 		atualizador(t)({fase: {transcrever: 'transcrevendo', roteiro: 'gerando o roteiro', conferir: 'conferindo', previas: 'gerando imagens da edição'}[t.tipo], pct: null});
 		const args = t.tipo === 'transcrever' ? [path.join(raiz, 'scripts/transcrever.mjs'), t.projeto] : ['--import', 'tsx', path.join(raiz, `scripts/${t.tipo}.ts`), t.projeto];
-		await rodarProc(t, process.execPath, args);
+		await rodarProc(t, process.execPath, args, t.tipo === 'transcrever' ? {aoSaida: linhaJson(t, atualizador(t))} : {});
 		if (t.tipo === 'roteiro') t.saida = `docs/${t.projeto}/transcript-lines.txt`;
 		if (t.tipo === 'previas') t.saida = `out/previas/${t.projeto}/manifest.json`;
 		if (t.tipo === 'transcrever') t.saida = `src/projetos/${t.projeto}/transcricao.json`;
@@ -338,7 +338,7 @@ export const criarTarefas = ({raiz, estado, cfg, projetoOk, pastaMidia, temaOk, 
 			opcoes: o,
 			estado: 'fila',
 			fase: 'na fila',
-			pct: tipo === 'transcrever' || tipo === 'roteiro' || tipo === 'conferir' || tipo === 'previas' ? null : 0,
+			pct: tipo === 'roteiro' || tipo === 'conferir' || tipo === 'previas' ? null : 0,
 			eta: null,
 			onde: tipo === 'preparar-pod' || (RENDERS.includes(tipo) && (opcoes.pod ?? cfg.config().pod.ativo)) ? 'pod' : 'pc',
 			saida: null,

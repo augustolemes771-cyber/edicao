@@ -466,3 +466,21 @@ details[open]>summary .seta{transform:rotate(90deg)}
 .grupo-alerta,.pendente{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;padding:8px 10px;border:1px solid #e0a43a;background:rgba(224,164,58,.1);border-radius:var(--r-2);font-size:12px}
 .grupo-alerta span,.pendente span{flex:1;min-width:140px}
 .pendente{margin:0 0 8px}
+
+.etapas{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.etapa{display:flex;gap:10px;align-items:flex-start;background:var(--card);border:1px solid var(--linha);border-radius:var(--r-2);padding:8px 10px;font-size:12px}
+.etapa .n{display:flex;flex-direction:column;gap:2px;min-width:0}
+.etapa .n small{opacity:.7}
+.etapa-ic{flex:none;width:18px;height:18px;margin-top:1px}
+.etapa.ok .etapa-ic{color:#3ecf8e}
+.etapa.andando .etapa-ic{color:var(--cor,#12d4cd)}
+.etapa.pendente{opacity:.7}
+.sugestoes{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.perguntas{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+.pergunta{padding:8px 10px;border-radius:var(--r-2);font-size:12px;white-space:pre-wrap}
+.pergunta.eu{background:var(--card);border:1px solid var(--linha);align-self:flex-end;max-width:90%}
+.pergunta.ia{background:rgba(18,212,205,.08);border:1px solid rgba(18,212,205,.3)}
+.and-form{display:flex;gap:6px}
+.and-form input{flex:1;min-width:0}
+
+.digitando .agora{font-size:12px;opacity:.85;margin-left:6px;align-self:center}

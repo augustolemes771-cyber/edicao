@@ -4,7 +4,8 @@
  "intensidade": "normal",
  "legendaPadrao": "auto",
  "confirmarFinal": true,
- "amostras": false,
+ "amostras": true,
+ "participar": true,
  "salvarSozinho": true,
  "salvarAoFechar": true,
  "sempre": ""

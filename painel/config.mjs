@@ -11,6 +11,7 @@ export const PREFS_PADRAO = {
 	legendaPadrao: 'palavra',
 	confirmarFinal: true,
 	amostras: false,
+	participar: true,
 	salvarSozinho: false,
 	salvarAoFechar: true,
 	sempre: '',
@@ -81,12 +82,16 @@ export const textoPrefs = (p) => {
   gere 2 ou 3 opções como imagens estáticas do mesmo momento (ex.: npx remotion still <projeto> out/amostra-<projeto>-a.jpg --frame=<quadro> --scale=0.5,
   uma variação por vez no edit.ts) e mostre cada uma numa linha própria exatamente assim: [[amostra:A|out/amostra-<projeto>-a.jpg|descrição curta da opção]].
   Depois PARE e espere o usuário escolher. Volte o edit.ts para a opção escolhida.`
-		: '- Amostras desligadas: decida sozinho e siga até a prévia, sem parar para perguntar o que dá para decidir.';
+		: '- Amostras desligadas: decida sozinho e siga até a prévia, sem parar para perguntar o que dá para decidir (a não ser o plano do modo participativo, se estiver ligado).';
+	const participar = p.participar !== false
+		? `
+- MODO PARTICIPATIVO (o usuário quer acompanhar e decidir junto; vale mais que o limite de 3 linhas): (1) ANTES de editar um vídeo, mande o PLANO em até 8 linhas (gancho, estrutura, 3 a 6 cenas e efeitos principais, 3D se houver, o que descartou) e PARE esperando a aprovação ou as mudanças; não escreva o edit.ts antes. (2) Depois de aprovado, escreva UMA linha de status ao fim de cada etapa (ex.: "Transcrição pronta: 106 s, 378 palavras"). (3) Ao terminar, resuma em 3 linhas o que fez, diga onde ver (aba Prévias) e pergunte o que quer mudar. Em ajuste pequeno que o usuário pediu, pule o plano e aplique direto.`
+		: '';
 	return `Preferências do usuário (valem para todo vídeo, salvo pedido contrário):
 - Formato de vídeo novo: ${formato}. Prévia em ${p.resPrevia}p (npm run preview -- <projeto> --res ${p.resPrevia}).
 - Intensidade da edição: ${intensidade}.
 - Legenda: ${legenda}.
-${amostras}
+${amostras}${participar}
 - ${p.confirmarFinal ? 'Nunca rode o render final sem o usuário pedir.' : 'Pode rodar o render final quando a prévia for aprovada.'}${p.sempre ? `\n- Sempre: ${p.sempre}` : ''}`;
 };
 

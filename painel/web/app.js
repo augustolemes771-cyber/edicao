@@ -114,7 +114,8 @@ const quando = (t) => {
 	const hoje = new Date().toDateString() === d.toDateString();
 	return hoje ? d.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'}) : d.toLocaleString('pt-BR', {day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'});
 };
-const custoTxt = (c) => (typeof c === 'number' && c > 0 ? 'US$ ' + c.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 4}) : '');
+// O valor em dólar não aparece mais: o uso é por limite do plano, não por preço.
+const custoTxt = () => '';
 const eImg = (n) => /\.(png|jpe?g|webp|gif|svg)$/i.test(n);
 const eVideo = (n) => /\.(mp4|mov|m4v|webm|mkv)$/i.test(n);
 const eAudio = (n) => /\.(mp3|wav|m4a|aac|ogg)$/i.test(n);
@@ -286,6 +287,7 @@ function aoTrocarProjeto({historico = true} = {}) {
 	renderRender();
 	carregarMidias();
 	if (S.aba === 'previas') carregarPrevias();
+	if (S.aba === 'andamento') carregarAndamento();
 	carregarFluxo();
 }
 $('#projeto').onchange = () => aoTrocarProjeto();
@@ -327,10 +329,10 @@ function renderBiblioteca() {
 		`<p class="desc">${esc(t.descricao)}${t.descricao ? ' · ' : ''}${plural(t.regras, 'regra aprendida', 'regras aprendidas')}</p>` +
 		item({nome: 'Ver vídeos e opções', sub: 'assistir, criar novo ou copiar um estilo', icone: 'grid', classe: 'destaque', attrs: `data-tema="${esc(t.id)}"`}) +
 		item({nome: 'Aprendizado deste tema', sub: plural(t.regras, 'regra: cresce a cada vídeo', 'regras: cresce a cada vídeo'), icone: 'sparkles', pedido: `Mostre o aprendizado do tema ${t.nome}`, arq: `biblioteca/temas/${t.id}/aprendizado.md`}) +
-		t.projetos.map((p) => item({nome: p.nome, sub: p.formato, icone: p.formato === 'vertical' ? 'vertical' : 'horizontal', pedido: `Cria um vídeo novo no tema "${t.id}" usando o projeto "${p.nome}" como base`, arq: `src/projetos/${p.nome}/edit.ts`, botoes: `<button class="btn icone mini fantasma" data-studio="${esc(p.nome)}" title="Abrir no Studio" aria-label="Abrir no Studio">${ic('play')}</button>`})).join('') +
+		t.projetos.map((p) => item({nome: p.nome, sub: p.formato, icone: p.formato === 'vertical' ? 'vertical' : 'horizontal', pedido: `Cria um vídeo novo no tema "${t.id}" usando o projeto "${p.nome}" como base`, arq: `src/projetos/${p.nome}/edit.ts`, botoes: `<button class="btn icone mini fantasma" data-studio="${esc(p.nome)}" title="Abrir no Studio" aria-label="Abrir no Studio">${ic('play')}</button><button class="btn icone mini fantasma" data-apagar-proj="${esc(p.nome)}" title="Apagar este vídeo" aria-label="Apagar este vídeo">${ic('trash')}</button>`})).join('') +
 		'</div></details>').join('') +
 		(semTema.length ? `<details class="sub" data-id="tema-sem" data-busca="sem tema" ${abertas['tema-sem'] ? 'open' : ''}><summary>${ic('chevron', 'seta')}<span>Sem tema</span><span class="cont">${semTema.length}</span></summary><div class="sub-corpo">` +
-			semTema.map((p) => item({nome: p.nome, sub: p.formato, icone: p.formato === 'vertical' ? 'vertical' : 'horizontal', pedido: `Coloca o projeto "${p.nome}" em um tema`, arq: `src/projetos/${p.nome}/edit.ts`})).join('') + '</div></details>' : '');
+			semTema.map((p) => item({nome: p.nome, sub: p.formato, icone: p.formato === 'vertical' ? 'vertical' : 'horizontal', pedido: `Coloca o projeto "${p.nome}" em um tema`, arq: `src/projetos/${p.nome}/edit.ts`, botoes: `<button class="btn icone mini fantasma" data-apagar-proj="${esc(p.nome)}" title="Apagar este vídeo" aria-label="Apagar este vídeo">${ic('trash')}</button>`})).join('') + '</div></details>' : '');
 
 	// Pack: agrupado por categoria, com prévia.
 	const pack = Array.isArray(b.pack) ? b.pack : [];
@@ -399,6 +401,7 @@ $('#bibLista').onclick = async (e) => {
 	if (e.target.closest('audio')) return;
 	const b = e.target.closest('button');
 	if (b?.dataset.studio) return studio(b.dataset.studio);
+	if (b?.dataset.apagarProj) return apagarVideo(b.dataset.apagarProj);
 	if (b?.dataset.arq) return verArquivo(b.dataset.arq);
 	if (b?.dataset.packVer !== undefined) return verMidia(b.dataset.packVer, b.dataset.nome);
 	if (b?.hasAttribute('data-importar-pack')) return importarPack();
@@ -711,6 +714,7 @@ async function abrirPreferencias(inicial = 'edicao') {
 			campo('Intensidade da edição', sel('prefs.intensidade', p.intensidade ?? 'normal', [['auto', 'Deixar a IA decidir'], ['calma', 'Calma'], ['normal', 'Normal'], ['frenetica', 'Frenética']])) +
 			campo('Legenda padrão', sel('prefs.legendaPadrao', p.legendaPadrao ?? 'palavra', [['auto', 'Deixar a IA decidir'], ['palavra', 'Palavra por palavra'], ['ouro', 'Ouro'], ['impacto', 'Impacto'], ['neon', 'Neon']])) + '</div>' +
 			chave('prefs.amostras', p.amostras ?? false, 'Receber amostras durante a edição para eu decidir', 'Ligado: nas escolhas de estilo, o Claude mostra 2 ou 3 opções em imagem e espera você escolher. Desligado: ele decide sozinho e segue até a prévia.') +
+			chave('prefs.participar', p.participar ?? true, 'Modo participativo', 'O Claude mostra o plano e espera sua aprovação antes de editar, avisa a cada etapa e pergunta o que mudar no final. Desligue para ele seguir sozinho até a prévia.') +
 			chave('prefs.confirmarFinal', p.confirmarFinal ?? true, 'Pedir confirmação antes do vídeo final', 'Evita gastar tempo renderizando sem querer.') +
 			chave('prefs.salvarSozinho', p.salvarSozinho ?? false, 'Salvar na nuvem sozinho', 'Envia para o GitHub ao terminar cada edição.') +
 			chave('prefs.salvarAoFechar', p.salvarAoFechar ?? true, 'Salvar na nuvem ao fechar o painel', 'Envia tudo para o GitHub quando você fecha a aba do painel ou a janela preta.') +
@@ -923,6 +927,7 @@ function aoTerminarTarefa(t) {
 	}
 	if (t.tipo === 'pack') carregarBiblioteca();
 	if (t.tipo === 'previas') carregarPrevias();
+	if (S.aba === 'andamento') carregarAndamento();
 	carregarFluxo();
 }
 const urlSaida = (s) => (s && /\.(mp4|mov|webm)$/i.test(s) ? `/out/${enc(String(s).split(/[\\/]/).pop())}?t=${T}` : '');
@@ -999,6 +1004,58 @@ async function abrirPasta(onde, projeto = proj()) {
 	catch (e) { avisoErro(e, 'Não abri a pasta'); }
 }
 
+// Apagar vídeo: vai para a lixeira do painel (.painel/lixeira), dá para recuperar. Pede confirmação.
+async function apagarVideo(nome) {
+	const ok = await confirmar('Apagar o vídeo "' + nome + '"?', 'Vídeo, mídias, transcrição, imagens, prévias e conversa deste projeto saem do painel e vão para a lixeira (pasta .painel/lixeira, no seu PC), de onde dá para recuperar. Se houver uma tarefa rodando nele, cancele antes.', {ok: 'Apagar', perigo: true});
+	if (!ok) return;
+	try {
+		const r = await api('/api/projetos/apagar', {nome});
+		aviso('Vídeo "' + nome + '" apagado. Está em ' + r.lixeira, 'ok', {ms: 6000});
+		if (proj() === nome) { $('#projeto').value = ''; aoTrocarProjeto({historico: false}); }
+		await atualizarTudo();
+		if (S.aba === 'andamento') carregarAndamento();
+	} catch (e) { avisoErro(e, 'Não apaguei'); }
+}
+
+// ---------- Aba Andamento: etapas do projeto (calculadas sem Claude) e perguntas baratas (Haiku, só leitura) ----------
+S.perguntas = S.perguntas ?? {};
+const ICONE_ETAPA = {ok: 'check', andando: 'refresh', pendente: 'clock'};
+async function carregarAndamento() {
+	const el = $('#aba-andamento');
+	const p = proj();
+	if (!el) return;
+	if (!p) { el.innerHTML = '<div class="vazio">Escolha um vídeo para ver o andamento.</div>'; return; }
+	let d;
+	try { d = await api('/api/andamento?projeto=' + enc(p)); } catch (e) { el.innerHTML = `<div class="vazio">${ic('alert')}<b>Não carreguei o andamento</b>${esc(e.message)}</div>`; return; }
+	const feitas = d.etapas.filter((e) => e.estado === 'ok').length;
+	const etapas = d.etapas.map((e) => `<li class="etapa ${e.estado}"><span class="etapa-ic">${ic(ICONE_ETAPA[e.estado] ?? 'clock')}</span><span class="n"><b>${esc(e.nome)}</b><small>${esc(e.detalhe)}</small></span></li>`).join('');
+	const hist = (S.perguntas[p] ?? []).map((m) => `<div class="pergunta ${m.quem}">${esc(m.texto)}</div>`).join('');
+	const sug = ['O que falta para terminar?', 'O que mudou na última edição?', 'Quais mídias ainda não foram usadas?'].map((q) => `<button class="btn mini fantasma" data-q="${esc(q)}">${esc(q)}</button>`).join('');
+	el.innerHTML = `<div class="titulo-secao">${ic('list')}Etapas<small style="margin-left:auto">${feitas} de ${d.etapas.length}</small></div><ul class="etapas">${etapas}</ul>` +
+		`<div class="titulo-secao">${ic('chat')}Pergunte sobre o andamento</div><div class="sugestoes">${sug}</div>` +
+		`<div class="perguntas">${hist}</div>` +
+		`<form id="fAnd" class="and-form"><input type="text" id="qAnd" placeholder="Ex.: em que parte está a edição?" maxlength="300"><button class="btn primario" id="bAnd">${ic('send')}<span>Perguntar</span></button></form>` +
+		`<small class="ajuda" style="display:block;margin-top:6px;color:var(--mudo)">Responde com o modelo mais barato (Haiku), só lendo os arquivos. Não mexe na edição.</small>` +
+		`<div class="titulo-secao">${ic('trash')}Este vídeo</div><button class="btn perigo" id="bApagar">${ic('trash')}<span>Apagar este vídeo</span></button>`;
+	$('#bApagar').onclick = () => apagarVideo(p);
+	const perguntar = async (texto) => {
+		texto = texto.trim();
+		if (!texto) return;
+		(S.perguntas[p] ??= []).push({quem: 'eu', texto});
+		(S.perguntas[p]).push({quem: 'ia', texto: 'Verificando...'});
+		carregarAndamentoSemBuscar(p);
+		try {
+			const r = await api('/api/perguntar', {projeto: p, pergunta: texto});
+			S.perguntas[p].pop();
+			S.perguntas[p].push({quem: 'ia', texto: r.resposta || '(sem resposta)', custo: r.custo});
+		} catch (e) { S.perguntas[p].pop(); S.perguntas[p].push({quem: 'ia', texto: 'Não consegui responder: ' + e.message}); }
+		carregarAndamentoSemBuscar(p);
+	};
+	el.querySelectorAll('[data-q]').forEach((b) => (b.onclick = () => perguntar(b.dataset.q)));
+	$('#fAnd').onsubmit = (e) => { e.preventDefault(); const c = $('#qAnd'); const t = c.value; c.value = ''; perguntar(t); };
+}
+const carregarAndamentoSemBuscar = () => carregarAndamento();
+
 // ---------- Aba Prévias: imagens de como a edição está ficando (geradas sem gastar limite do Claude) ----------
 async function carregarPrevias() {
 	const el = $('#aba-previas');
@@ -1035,6 +1092,7 @@ function mostrarAba(a) {
 	$$('.abas [data-aba]').forEach((b) => { b.classList.toggle('on', b.dataset.aba === a); b.setAttribute('aria-selected', b.dataset.aba === a); });
 	$$('.painel-aba').forEach((p) => (p.hidden = p.id !== 'aba-' + a));
 	if (a === 'previas') carregarPrevias();
+	if (a === 'andamento') carregarAndamento();
 }
 $('.abas').onclick = (e) => { const b = e.target.closest('[data-aba]'); if (b) mostrarAba(b.dataset.aba); };
 function renderRender() {
@@ -1448,7 +1506,34 @@ function gerenciarAtalhos() {
 // ---------- Conversa ----------
 const msgs = $('#msgs');
 const rolar = () => { msgs.scrollTop = msgs.scrollHeight; };
+// Traduz as ações técnicas do Claude (Bash: npm run ..., Read: arquivo) para frases que dizem o que está acontecendo.
+function traduzirAcao(acao) {
+	const t = String(acao);
+	const b = t.toLowerCase();
+	const tem = (...xs) => xs.some((x) => b.includes(x));
+	const arquivo = t.includes(':') ? t.slice(t.indexOf(':') + 1).trim().split('/').pop() : '';
+	if (b.startsWith('modelo automático')) return 'Escolhendo o modelo: ' + t.slice(t.indexOf(':') + 1).trim();
+	if (tem('npm run preparar')) return 'Preparando o projeto (mídia, transcrição e roteiro)';
+	if (tem('transcrever')) return 'Transcrevendo o áudio do vídeo';
+	if (tem('npm run roteiro')) return 'Gerando o roteiro a partir da transcrição';
+	if (tem('npm run conferir')) return 'Conferindo a edição (âncoras, cortes e regras)';
+	if (tem('npm run previas')) return 'Gerando as imagens de como a edição está ficando';
+	if (tem('npm run preview')) return 'Gerando a prévia em vídeo';
+	if (tem('npm run render')) return 'Renderizando o vídeo final';
+	if (tem('ffprobe', 'ffmpeg')) return 'Analisando o vídeo';
+	if (b.startsWith('write') || b.startsWith('edit')) {
+		if (tem('edit.ts')) return 'Escrevendo a edição (edit.ts)';
+		if (tem('aprendizado')) return 'Anotando o aprendizado do tema';
+		return 'Salvando ' + arquivo;
+	}
+	if (b.startsWith('read')) return tem('skill.md', 'claude.md') ? 'Lendo as regras do painel' : 'Lendo ' + arquivo;
+	if (b.startsWith('glob') || b.startsWith('grep')) return 'Procurando na biblioteca';
+	if (b.startsWith('bash')) return 'Conferindo arquivos do projeto';
+	return t;
+}
+
 function msg(texto, quem = 'ia', {custo, t} = {}) {
+	if (quem === 'acao') texto = traduzirAcao(texto);
 	msgs.querySelector('.boas-vindas')?.remove();
 	if (quem === 'acao') {
 		const d = document.createElement('div');
@@ -1552,7 +1637,6 @@ $('#f').onsubmit = async (e) => {
 	if (S.intervencao) {
 		S.intervencao = false;
 		$('#pedido').placeholder = 'Ex.: usa o template do depoimento e coloca a moeda 3D girando quando eu falar "investimento"';
-		pedido = 'Interrompi seu trabalho para pedir um ajuste. Aplique o ajuste abaixo e CONTINUE o que estava fazendo (sem recomeçar do zero): ' + pedido;
 	}
 	if (!T) return aviso('Abra o endereço completo que apareceu no terminal (termina com #código).', 'erro');
 	const projetoChat = proj();
@@ -1565,7 +1649,9 @@ $('#f').onsubmit = async (e) => {
 	$('#parar').hidden = false;
 	const pensando = document.createElement('div');
 	pensando.className = 'digitando';
-	pensando.innerHTML = '<i></i><i></i><i></i>';
+	pensando.innerHTML = '<i></i><i></i><i></i><span class="agora">Começando...</span>';
+	let ultimoEvento = Date.now(), textoAgora = 'Começando', processosAgora = [];
+	const relogio = setInterval(() => { const el = pensando.querySelector('.agora'); if (!el) return; const s = Math.round((Date.now() - ultimoEvento) / 1000); el.textContent = textoAgora + ' · há ' + (s >= 90 ? Math.floor(s / 60) + ' min' : s + ' s') + (processosAgora.length ? ' · rodando: ' + processosAgora.join(', ') : s > 45 ? ' · sem novidades (pensando ou esperando)' : ''); }, 1000);
 	msgs.append(pensando);
 	rolar();
 	const mesmo = () => proj() === projetoChat;
@@ -1586,8 +1672,9 @@ $('#f').onsubmit = async (e) => {
 			for (const parte of partes) {
 				let ev;
 				try { ev = JSON.parse(parte.replace(/^data: /, '')); } catch { continue; }
-				if (ev.tipo === 'texto') ultimaIa = add(ev.texto, 'ia');
-				else if (ev.tipo === 'acao') add(ev.acao, 'acao');
+				if (ev.tipo === 'texto') { ultimoEvento = Date.now(); textoAgora = 'Escrevendo a resposta'; ultimaIa = add(ev.texto, 'ia'); }
+				else if (ev.tipo === 'batida') processosAgora = ev.processos ?? [];
+				else if (ev.tipo === 'acao') { textoAgora = traduzirAcao(ev.acao); ultimoEvento = Date.now(); add(ev.acao, 'acao'); }
 				else if (ev.tipo === 'erro') add(ev.texto, 'erro');
 				else if (ev.tipo === 'faltam') faltam = ev.arquivos;
 				else if (ev.tipo === 'fim' && ultimaIa && custoTxt(ev.custo)) ultimaIa.insertAdjacentHTML('beforeend', `<span class="custo">${esc(custoTxt(ev.custo))}</span>`);
@@ -1597,6 +1684,7 @@ $('#f').onsubmit = async (e) => {
 		if (err.name !== 'AbortError') add(err.message, 'erro');
 		else add('Parado.', 'acao');
 	}
+	clearInterval(relogio);
 	pensando.remove();
 	ctrl = null;
 	S.chatAtivo = false;
@@ -1643,6 +1731,24 @@ async function verificarPendente() {
 		};
 	} catch {}
 }
+
+// "Só perguntar": responde com o modelo barato (Haiku), só leitura, sem parar nem alterar o trabalho em andamento.
+$('#soPerguntar').onclick = async () => {
+	const c = $('#pedido');
+	const texto = c.value.trim();
+	const p = proj();
+	if (!texto) return aviso('Escreva a pergunta na caixa.', 'alerta', {ms: 2500});
+	if (!p) return aviso('Escolha um vídeo para perguntar sobre ele.', 'alerta', {ms: 2500});
+	c.value = '';
+	ajustarCaixa();
+	msg(texto, 'eu', {t: Date.now()});
+	const espera = msg('Respondendo (sem mexer no trabalho)...', 'acao');
+	try {
+		const r = await api('/api/perguntar', {projeto: p, pergunta: texto});
+		espera?.remove();
+		msg(r.resposta || '(sem resposta)', 'ia');
+	} catch (e) { espera?.remove(); msg('Não consegui responder: ' + e.message, 'erro'); }
+};
 
 // ---------- Início ----------
 async function iniciar() {
