@@ -24,7 +24,7 @@ export const primeiro: Edit = {
 	formato: 'vertical',
 	verificarCurva: false,
 	regraCamera: false,
-	extraFim: 2.6,
+	extraFim: 2.4,
 	silencios: silencios as Trecho[],
 	transcricao,
 	trechos: (o) => {
@@ -33,7 +33,10 @@ export const primeiro: Edit = {
 		const lista: Trecho[] = [
 			fala('eu fiz 20 mil em GMV', 'eu fiz 20 mil em GMV'),
 			fala('Tô aqui com a Paola', 'há quanto tempo que você faz live shop'),
+			fala('Faz mais de um ano', 'comecei a fazer'),
 			fala('primeira vez que eu fiz live shop', 'tinha sido a minha irmã'),
+			fala('E eu tinha muito na minha cabeça', 'entrar muita gente'),
+			fala('E que eu tinha que perder', 'poder vender'),
 			fala('Então isso me frustrava', 'nunca mais tentei abrir uma live'),
 			[o.say('E depois que você entrou').inicio - 0.06, o.at('método') + 1.0],
 			fala('como é foi a sua evolução', 'como é foi a sua evolução'),
@@ -41,6 +44,7 @@ export const primeiro: Edit = {
 			fala('aí na primeira live que eu fiz', 'ajuda do meu namorado', 0.02),
 			fala('é muito frustrante', 'você consegue vender'),
 			fala('E se não fosse o Danilow', 'não seria possível'),
+			fala('segue o Danilow ele é o cara', 'segue o Danilow ele é o cara'),
 			fala('Se você tá travado', 'vamos pra cima'),
 		];
 		// Trechos vizinhos que se sobrepõem no original repetem quadros e palavras: divide a sobreposição ao meio.
@@ -84,10 +88,11 @@ export const primeiro: Edit = {
 		const apresenta = b.say('Tô aqui com a Paola').inicio;
 		// Troca de falante: chicote. Nas emendas do mesmo falante, o zoom muda de nível (aberto ↔ médio ↔ close) para o
 		// corte virar ritmo em vez de pulo. Zoom máximo 1,35: o vídeo é 1080 e mais que isso borra.
-		const trocas = [apresenta, b.say('primeira vez que eu fiz live shop').inicio, pergunta, resposta, cta];
+		const trocas = [apresenta, b.say('Faz mais de um ano').inicio, pergunta, resposta, cta];
 		const niveis = [1.12, 1.26, 1.35];
 		const emendas = b.emendas
 			.filter((e) => trocas.every((t) => Math.abs(t - e) > 0.25))
+				.filter((e, i, l) => i === 0 || e - l.slice(0, i).filter((x) => e - x >= 0).pop()! >= 1.6)
 			.map((e, i) => ({tipo: 'zoom' as const, em: e, escala: niveis[i % niveis.length], ...P}));
 		return [
 			// Gancho: abre já em close, câmera alta para o número 3D, clarão na batida
@@ -132,7 +137,7 @@ export const primeiro: Edit = {
 			// Crédito
 			{tipo: 'zoom', em: b.at('Danilow'), escala: 1.2, ...P},
 			{tipo: 'zoom', em: b.at('Felipe'), escala: 1.3, ...P},
-			{tipo: 'zoom', em: b.at('Matheus'), escala: 1.15, ...P},
+			{tipo: 'zoom', em: b.at('Danilow', 2), escala: 1.15, ...P},
 			// CTA em plano aberto
 			{tipo: 'chicote', em: cta},
 			{tipo: 'zoom', em: cta, escala: 1, ...ABERTO},
@@ -260,6 +265,7 @@ export const primeiro: Edit = {
 				som: 'tick',
 			},
 			// 11. Siga
+			{tipo: 'siga', de: b.at('segue'), ate: b.say('ele é o cara').fim + 0.15, itens: [{texto: 'DANILOW', em: b.at('segue')}], y: 1040, esconderLegenda: true, som: 'swish'},
 			// 12. CTA
 			{
 				tipo: 'frase',
