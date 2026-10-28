@@ -55,7 +55,23 @@ export const primeiro: Edit = {
 				lista[i] = [meio, lista[i][1]];
 			}
 		}
-		return lista;
+		// Cortes entre as pausas: tira os respiros entre palavras (vão > 0,12 s) sem remover fala; sobra ~0,07 s de ar.
+		// Bordas externas do trecho ficam; sub-trecho com menos de 0,25 s é juntado ao vizinho.
+		const cortado: Trecho[] = [];
+		for (const [a, z] of lista) {
+			const ps = o.palavras.filter((p) => p.inicio >= a && p.fim <= z);
+			let ini = a;
+			for (let i = 0; i < ps.length - 1; i++) {
+				if (ps[i + 1].inicio - ps[i].fim <= 0.12) continue;
+				const fimSub = ps[i].fim + 0.04;
+				const proxIni = ps[i + 1].inicio - 0.03;
+				if (fimSub - ini < 0.25 || z - proxIni < 0.25) continue;
+				cortado.push([ini, fimSub]);
+				ini = proxIni;
+			}
+			cortado.push([ini, z]);
+		}
+		return cortado;
 	},
 	legenda: {
 		estilo: 'mare',
