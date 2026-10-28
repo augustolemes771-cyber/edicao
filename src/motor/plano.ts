@@ -21,6 +21,9 @@ export type Som =
 	| 'rise'
 	| 'boom'
 	| 'glitch'
+	| 'impacto'
+	| 'grave'
+	| 'subida'
 	// "punch" nunca toca: antes de t2 vira swish, depois some.
 	| 'punch';
 

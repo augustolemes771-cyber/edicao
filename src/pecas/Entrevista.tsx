@@ -3,7 +3,10 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import type {CenaNoPlano} from '../motor/plano';
+import {ThreeCanvas} from '@remotion/three';
+import * as THREE from 'three';
 import {gloock, inter, playfair} from '../motor/tema';
+import {CameraTremor, Faiscas, Linha3D, Luzes, Onda} from './tres/Texto3D';
 
 type De<T extends CenaNoPlano['tipo']> = Extract<CenaNoPlano, {tipo: T}>;
 const lim = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
@@ -110,60 +113,37 @@ const PilulaLive: React.FC<{texto: string; tamanho: number; desligada?: number; 
 	);
 };
 
-// Palavra em bloco 3D branco com borda dourada (referência "NUNCA MAIS UMA"): frente branca, lateral ouro extrudada.
-const Branco3D: React.FC<{texto: string; tamanho: number}> = ({texto, tamanho}) => {
-	const passos = 14;
-	const d = tamanho * 0.07;
-	const lateral = Array.from({length: passos}, (_, i) => {
-		const k = (i + 1) / passos;
-		return `${(d * k * 0.35).toFixed(1)}px ${(d * k).toFixed(1)}px 0 rgb(${Math.round(215 - 60 * k)},${Math.round(165 - 60 * k)},${Math.round(80 - 40 * k)})`;
-	}).join(', ');
-	return (
-		<span
-			style={{
-				fontFamily: inter,
-				fontWeight: 900,
-				fontSize: tamanho,
-				lineHeight: 1,
-				letterSpacing: -tamanho * 0.02,
-				color: '#fffdf6',
-				textShadow: `${lateral}, 0 ${d * 2}px ${d * 3}px rgba(0,0,0,0.8)`,
-			}}
-		>
-			{texto}
-		</span>
-	);
-};
-
-// Drama da referência: tudo quase preto, um feixe diagonal de luz do topo cai no rosto; "NUNCA MAIS" em ouro chato
-// e a palavra do tema em branco 3D enorme sobre o corpo, que treme e despenca no fim.
+// Drama da referência: tudo quase preto, um feixe diagonal de luz do topo cai no rosto (acende com falha de lâmpada);
+// "NUNCA MAIS" em ouro 3D e a palavra do tema em branco 3D com borda dourada, letra por letra, com onda de choque,
+// faíscas, clarão e tremor. No fim a palavra do tema despenca em pedaços.
 export const Drama: React.FC<{cena: De<'drama'>}> = ({cena}) => {
 	const frame = useCurrentFrame();
 	const {fps, width, height} = useVideoConfig();
-	const t = frame / fps;
 	const dur = cena.ate - cena.de;
-	const batida = (cena.em ?? cena.de + dur * 0.35) - cena.de;
-	const apaga = (cena.apaga ?? cena.de + dur * 0.75) - cena.de;
+	const batida = Math.round(((cena.em ?? cena.de + dur * 0.35) - cena.de) * fps);
+	const apaga = Math.round(((cena.apaga ?? cena.de + dur * 0.75) - cena.de) * fps);
+	const fim = Math.round(dur * fps);
+	const queda = fim - Math.round(0.5 * fps);
 	const x = cena.x ?? 0.7;
-	const y = cena.y ?? 0.33;
 
-	const fb = frame - Math.round(batida * fps);
-	const pisca = fb >= 0 && fb < 7 ? [0.3, 1, 0.45, 1, 0.7, 1, 0.9][fb] : 1;
-	const escuro = interpolate(t, [0, 0.45], [0, 1], lim) * interpolate(t, [dur - 0.3, dur], [1, 0], lim);
-	const luz = escuro * pisca * interpolate(t, [0.2, 0.7], [0.4, 1], lim);
+	// Lâmpada: acende falhando, pisca em cada batida, apaga junto com a cena.
+	const falha = [0, 0.9, 0.1, 0.8, 0.2, 1, 0.5, 1, 1];
+	const acende = frame < 9 ? falha[frame] : 1;
+	const sobe = interpolate(frame, [0, 14], [0, 1], lim);
+	const pulsa = (b: number) => (frame >= b && frame < b + 6 ? [0.3, 1, 0.5, 1, 0.75, 1][frame - b] : 1);
+	const saida = interpolate(frame, [fim - 9, fim], [1, 0], lim);
+	const luz = sobe * acende * pulsa(batida) * pulsa(apaga) * saida;
+	const escuro = sobe * saida;
+	// Feixe: abre de um ponto no topo e varre um pouco ao acender
+	const giro = interpolate(frame, [0, 16], [0.16, 0], lim);
+	const polig = `${(x + 0.02 + giro) * 100},0 ${(x + 0.32 + giro) * 100},0 ${(x + 0.26) * 100},70 ${(x - 0.4) * 100},70`;
 
-	const yL1 = height * 0.47;
-	const pb = spring({frame: fb, fps, config: {damping: 12, stiffness: 190}});
-	const tremor = fb >= 0 && fb < 10 ? Math.sin(fb * 2.9) * 10 * Math.exp(-fb / 3) : 0;
-
-	const fa = frame - Math.round(apaga * fps);
-	const pa = spring({frame: fa, fps, config: {damping: 10, stiffness: 170}});
-	const trem2 = fa >= 0 && fa < 12 ? Math.sin(fa * 3.1) * 14 * Math.exp(-fa / 4) : 0;
-	const queda = Math.max(0, frame - Math.round((cena.ate - cena.de - 0.45) * fps));
-	const caiY = 0.5 * 2600 * (queda / fps) ** 2;
-	const tam1 = width * 0.105;
-	const tam2 = width * 0.27;
-	const polig = `${(x - 0.02) * 100},0 ${(x + 0.32) * 100},0 ${(x + 0.26) * 100},70 ${(x - 0.4) * 100},70`;
+	const flash = Math.max(
+		interpolate(frame - batida, [0, 7], [0.42, 0], lim) * (frame >= batida ? 1 : 0),
+		interpolate(frame - apaga, [0, 8], [0.55, 0], lim) * (frame >= apaga ? 1 : 0),
+	);
+	const larg2 = 3.7;
+	const sombra = 'drop-shadow(0 28px 34px rgba(0,0,0,0.7)) drop-shadow(0 4px 6px rgba(0,0,0,0.55))';
 
 	return (
 		<AbsoluteFill style={{pointerEvents: 'none'}}>
@@ -174,10 +154,10 @@ export const Drama: React.FC<{cena: De<'drama'>}> = ({cena}) => {
 					</filter>
 					<mask id="furoLuz" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100">
 						<rect width="100" height="100" fill="#fff" />
-						<polygon points={polig} fill="#000" filter="url(#borraLuz)" opacity={0.92 * pisca} />
+						<polygon points={polig} fill="#000" filter="url(#borraLuz)" opacity={acende * pulsa(batida)} />
 					</mask>
 					<linearGradient id="feixe" x1="0" y1="0" x2="0" y2="1">
-						<stop offset="0" stopColor="#e6ecff" stopOpacity="0.5" />
+						<stop offset="0" stopColor="#eef2ff" stopOpacity="0.55" />
 						<stop offset="0.6" stopColor="#cfd8f5" stopOpacity="0.16" />
 						<stop offset="1" stopColor="#cfd8f5" stopOpacity="0" />
 					</linearGradient>
@@ -185,56 +165,41 @@ export const Drama: React.FC<{cena: De<'drama'>}> = ({cena}) => {
 				<rect width="100" height="100" fill="#04040a" opacity="0.96" mask="url(#furoLuz)" />
 				<polygon points={polig} fill="url(#feixe)" opacity={luz} filter="url(#borraLuz)" style={{mixBlendMode: 'screen'}} />
 			</svg>
-			{/* poeira no feixe */}
+			{/* poeira que flutua no feixe */}
 			<AbsoluteFill
 				style={{
-					opacity: 0.35 * luz,
+					opacity: 0.4 * luz,
 					mixBlendMode: 'screen',
-					backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.9) 0 1px, transparent 1.6px)',
-					backgroundSize: '46px 61px',
-					backgroundPosition: `${frame * 0.4}px ${-frame * 0.6}px`,
-					clipPath: `polygon(${(x - 0.02) * 100}% 0, ${(x + 0.32) * 100}% 0, ${(x + 0.26) * 100}% 70%, ${(x - 0.4) * 100}% 70%)`,
+					backgroundImage:
+						'radial-gradient(circle, rgba(255,255,255,0.95) 0 1.2px, transparent 2px), radial-gradient(circle, rgba(255,255,255,0.6) 0 0.8px, transparent 1.5px)',
+					backgroundSize: '58px 77px, 31px 43px',
+					backgroundPosition: `${frame * 0.5}px ${-frame * 0.8}px, ${-frame * 0.3}px ${-frame * 0.5}px`,
+					clipPath: `polygon(${(x + 0.02 + giro) * 100}% 0, ${(x + 0.32 + giro) * 100}% 0, ${(x + 0.26) * 100}% 70%, ${(x - 0.4) * 100}% 70%)`,
 				}}
 			/>
-			{fb >= 0 && (
-				<div
-					style={{
-						position: 'absolute',
-						top: yL1,
-						width: '100%',
-						textAlign: 'center',
-						fontFamily: inter,
-						fontWeight: 900,
-						fontSize: tam1,
-						letterSpacing: tam1 * 0.04,
-						lineHeight: 1,
-						color: '#c8913a',
-						textShadow: '0 1px 0 #e5b35a, 0 3px 0 #8a5f1e, 0 5px 0 #6e4a14, 0 8px 12px rgba(0,0,0,0.8)',
-						opacity: Math.min(1, pb * 2),
-						transform: `translate(${tremor}px, ${caiY * 0.6 + (1 - pb) * -50}px) scale(${1 + (1 - pb) * 0.5})`,
-					}}
+			<AbsoluteFill style={{filter: sombra}}>
+				<ThreeCanvas
+					width={width}
+					height={height}
+					gl={{alpha: true, antialias: true, preserveDrawingBuffer: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.05}}
+					camera={{fov: 35, position: [0, 0, 14.5], near: 0.1, far: 60}}
+					style={{position: 'absolute', inset: 0}}
 				>
-					{cena.grande}
-				</div>
-			)}
-			{fa >= 0 && cena.pequeno && (
-				<div
-					style={{
-						position: 'absolute',
-						top: yL1 + tam1 * 0.95,
-						width: '100%',
-						display: 'flex',
-						justifyContent: 'center',
-						perspective: 900,
-						opacity: Math.min(1, pa * 2),
-						filter: pa < 0.6 ? `blur(${(0.6 - pa) * 18}px)` : undefined,
-					}}
-				>
-					<div style={{transform: `translate(${trem2}px, ${caiY + (1 - pa) * -90}px) rotate(${queda * 1.2}deg) scale(${1 + (1 - pa) * 1.1}) rotateX(10deg)`}}>
-						<Branco3D texto={cena.pequeno} tamanho={tam2} />
-					</div>
-				</div>
-			)}
+					<Luzes quadro={frame} batidas={[batida, apaga]} />
+					<CameraTremor quadro={frame} batidas={[batida, apaga]} duracao={fim} />
+					<group scale={interpolate(frame, [fim - 8, fim], [1, 0.85], lim)}>
+						<Linha3D texto={cena.grande} metal="ouro" largura={4.55} y={0.3} quadro={frame} batida={batida} profundidade={0.22} />
+						{cena.pequeno && (
+							<Linha3D texto={cena.pequeno} metal="branco" largura={larg2} y={-0.95} quadro={frame} batida={apaga} queda={queda} profundidade={0.4} distancia={9} />
+						)}
+					</group>
+					<Onda quadro={frame} inicio={batida} y={0.3} cor="#ffd27a" tamanho={5.5} />
+					<Faiscas quadro={frame} inicio={batida} y={0.3} cor="#ffd27a" largura={4} />
+					<Onda quadro={frame} inicio={apaga} y={-0.95} cor="#ffffff" tamanho={6} />
+					<Faiscas quadro={frame} inicio={apaga} y={-0.95} cor="#ffffff" n={40} largura={3.5} />
+				</ThreeCanvas>
+			</AbsoluteFill>
+			<AbsoluteFill style={{background: '#fff3d6', mixBlendMode: 'screen', opacity: flash}} />
 		</AbsoluteFill>
 	);
 };

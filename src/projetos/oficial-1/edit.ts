@@ -125,11 +125,12 @@ export const oficial1: Edit = {
 				em: nunca,
 				apaga: live,
 				...P,
-				som: 'rise',
+				som: 'subida',
 				sons: [
-					{em: nunca, som: 'boom', ganho: 1},
-					{em: live, som: 'glitch', ganho: 0.5},
-					{em: live + 0.45, som: 'whoosh', ganho: 0.35},
+					{em: nunca, som: 'impacto', ganho: 1},
+					{em: nunca, som: 'grave', ganho: 0.8},
+					{em: live, som: 'impacto', ganho: 0.9},
+					{em: live + 0.05, som: 'glitch', ganho: 0.45},
 				],
 			},
 			{
