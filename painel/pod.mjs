@@ -342,13 +342,14 @@ export const renderNoPod = async ({t, raiz, estado, podCfg, projeto, tipo, res, 
 		const esperado = tipo === 'final' ? `out/${projeto}-final.mp4` : `out/${projeto}-preview${sufixo}.mp4`;
 		const m = await sshRodar(pod, `stat -c '%Y %s' ${q(`${pod.pasta}/${esperado}`)}`).catch(() => null);
 		const [mtime, tam] = (m?.saida ?? '').trim().split(' ').map(Number);
-		const ocupado = await sshRodar(pod, `pgrep -f 'scripts/render-job.mjs' >/dev/null && echo sim || echo nao`).catch(() => null);
+		const ocupado = await sshRodar(pod, `pgrep -f 'scripts/render-jo[b].mjs' >/dev/null && echo sim || echo nao`).catch(() => null);
 		if (mtime >= inicioPod && tam > 0 && /nao/.test(ocupado?.saida ?? 'nao')) {
 			atualizar({aviso: 'A conexão com o pod caiu, mas o vídeo já estava pronto: baixando.'});
 			saidaRemota = esperado;
 		}
 	}
-	if (r.codigo !== 0 || !saidaRemota) throw new Error(r.codigo === 255 ? erroSsh(r.codigo, r.erro) : r.erro.trim().slice(-500) || `Render no pod terminou com código ${r.codigo}`);
+	// Com a conexão caída o ssh sai com 255 mesmo quando o vídeo foi recuperado acima: o que vale é ter a saída.
+	if (!saidaRemota) throw new Error(r.codigo === 255 ? erroSsh(r.codigo, r.erro) : r.erro.trim().slice(-500) || `Render no pod terminou com código ${r.codigo}`);
 	if (!/^out\/[\w.-]+\.mp4$/.test(saidaRemota)) throw new Error('Saída inesperada do render no pod');
 
 	// 5. Baixar o vídeo para out/.
