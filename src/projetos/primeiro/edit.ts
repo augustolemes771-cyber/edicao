@@ -29,7 +29,7 @@ export const primeiro: Edit = {
 	transcricao,
 	trechos: (o) => {
 		// [início, fim] no tempo original, com folga; as bordas se encaixam nas pausas medidas (silencios.json).
-		const fala = (de: string, ate: string, folga = 0.12): Trecho => [o.say(de).inicio - 0.06, o.say(ate).fim + folga];
+		const fala = (de: string, ate: string, folga = 0.07): Trecho => [o.say(de).inicio - 0.06, o.say(ate).fim + folga];
 		const lista: Trecho[] = [
 			fala('eu fiz 20 mil em GMV', 'eu fiz 20 mil em GMV'),
 			fala('Tô aqui com a Paola', 'há quanto tempo que você faz live shop'),
