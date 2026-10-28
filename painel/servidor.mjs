@@ -915,7 +915,7 @@ createServer(async (req, res) => {
 			setTimeout(() => process.exit(0), 700);
 			return;
 		}
-		if (p === '/api/reiniciar' && req.method === 'POST') {
+		if (p === '/api/reiniciar-rapido' && req.method === 'POST') {
 			// Só funciona sob o supervisor (scripts/supervisor.mjs), que religa o painel com a saída 75.
 			if (!process.env.SUPERVISOR) return json(res, {erro: 'Abra o painel pelo "Painel - Instalar e Abrir.bat" (com supervisor) para reiniciar por aqui.'}, 400);
 			json(res, {ok: true});
