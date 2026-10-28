@@ -291,9 +291,10 @@ function aoTrocarProjeto({historico = true} = {}) {
 	if (historico) carregarHistorico();
 	renderRender();
 	carregarMidias();
-	if (S.aba === 'previas') carregarPrevias();
+	if (S.abaEsq === 'previas') carregarPrevias();
 	if (S.aba === 'fluxo') carregarAndamento();
 	carregarFluxo();
+	carregarPlayer();
 }
 $('#projeto').onchange = () => aoTrocarProjeto();
 $('#tema').onchange = () => { gravarLocal('tema', temaAtual()); if (proj()) $('#convSub').textContent = $('#convSub').textContent.replace(/tema .*$/, 'tema ' + ($('#tema').selectedOptions[0]?.textContent ?? '')); };
@@ -1100,15 +1101,19 @@ async function carregarPrevias() {
 }
 
 // ---------- Aba Render ----------
+// Duas colunas com abas próprias (esquerda e direita): trocar a aba de uma não mexe na outra.
 function mostrarAba(a) {
-	S.aba = a;
-	gravarLocal('aba', a);
-	$$('.abas [data-aba]').forEach((b) => { b.classList.toggle('on', b.dataset.aba === a); b.setAttribute('aria-selected', b.dataset.aba === a); });
-	$$('.painel-aba').forEach((p) => (p.hidden = p.id !== 'aba-' + a));
+	const bt = $(`.abas [data-aba="${a}"]`);
+	if (!bt) return;
+	const col = bt.closest('.coluna');
+	if (col.id === 'lado') { S.aba = a; gravarLocal('aba', a); } else { S.abaEsq = a; gravarLocal('abaEsq', a); }
+	$$('.abas [data-aba]', col).forEach((b) => { b.classList.toggle('on', b.dataset.aba === a); b.setAttribute('aria-selected', b.dataset.aba === a); });
+	$$('.painel-aba', col).forEach((p) => (p.hidden = p.id !== 'aba-' + a));
 	if (a === 'previas') carregarPrevias();
 	if (a === 'fluxo') carregarAndamento();
+	if (a === 'props') renderDetalhes();
 }
-$('.abas').onclick = (e) => { const b = e.target.closest('[data-aba]'); if (b) mostrarAba(b.dataset.aba); };
+$$('.abas').forEach((n) => (n.onclick = (e) => { const b = e.target.closest('[data-aba]'); if (b) mostrarAba(b.dataset.aba); }));
 function renderRender() {
 	const el = $('#aba-render');
 	const p = proj();
@@ -1194,7 +1199,7 @@ function renderProntos() {
 	if (atual && atual.getAttribute('src') === src) { el.querySelector('.lista-prontos').innerHTML = lista; return; }
 	el.innerHTML = `<video controls preload="metadata" src="${esc(src)}"></video><div class="lista-prontos">${lista}</div>`;
 }
-$('#lado').addEventListener('click', async (e) => {
+$('#app').addEventListener('click', async (e) => {
 	const vi = e.target.closest('[data-vid]');
 	if (vi) { S.videoSel = Number(vi.dataset.vid); return renderProntos(); }
 	const ca = e.target.closest('[data-cancelar]');
@@ -1977,6 +1982,237 @@ async function pollBloco() {
 }
 $('#stBloco').onclick = () => { mostrarAba('render'); if (celular()) verSecao('lado'); };
 
+// ---------- Player embutido + linha do tempo (layout tipo CapCut) ----------
+// O player é a mesma composição do Studio, compilada pelo painel e recarregada sozinha quando a edição muda (mantendo o quadro).
+// Ele manda a montagem (trechos, cenas, legenda, câmera, sons) e o quadro atual; a linha do tempo desenha isso.
+const PL = {meta: null, quadro: 0, tocando: false, versao: 0, projeto: null, mudo: false, sel: null, px: 40};
+const plEl = () => $('#player');
+const paraPlayer = (d) => plEl()?.contentWindow?.postMessage({paraPlayer: true, ...d}, location.origin);
+const fmtT = (s, comQuadro = false) => {
+	s = Math.max(0, s || 0);
+	const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), x = Math.floor(s % 60);
+	const base = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(x).padStart(2, '0')}`;
+	return comQuadro && PL.meta ? `${base}:${String(Math.floor((s % 1) * PL.meta.fps)).padStart(2, '0')}` : base;
+};
+function carregarPlayer({manterQuadro = false} = {}) {
+	const p = proj();
+	const f = plEl();
+	$('#plTitulo').textContent = p || 'Player';
+	$('#plSub').textContent = p ? (formatoDe(p) === 'vertical' ? 'Vertical 9:16' : 'Horizontal 16:9') : '';
+	$('#palco').classList.toggle('vertical', formatoDe(p) === 'vertical');
+	if (!p) {
+		f.hidden = true; f.removeAttribute('src');
+		PL.meta = null; renderLinha(); renderDetalhes();
+		$('#palcoVazio').hidden = false;
+		$('#palcoVazio').innerHTML = `${ic('film')}<b>Escolha um vídeo no topo</b>O vídeo toca aqui, com a linha do tempo embaixo. Os pedidos de edição vão pelo Claude Code; o player atualiza sozinho a cada mudança.`;
+		return;
+	}
+	if (PL.projeto !== p) { PL.meta = null; PL.quadro = 0; PL.sel = null; manterQuadro = false; }
+	PL.projeto = p;
+	$('#palcoVazio').hidden = true;
+	f.hidden = false;
+	f.src = `/player.html?projeto=${enc(p)}&v=${PL.versao}#quadro=${manterQuadro ? PL.quadro : 0}`;
+	renderLinha();
+	renderDetalhes();
+}
+addEventListener('message', (e) => {
+	if (e.origin !== location.origin || !e.data?.dePlayer || e.source !== plEl()?.contentWindow) return;
+	const d = e.data;
+	if (d.tipo === 'meta') {
+		const novo = !PL.meta;
+		PL.meta = d;
+		if (novo) ajustarZoom();
+		renderLinha();
+		renderDetalhes();
+		if (PL.mudo) paraPlayer({cmd: 'mudo', mudo: true});
+	} else if (d.tipo === 'quadro') {
+		PL.quadro = d.quadro;
+		moverCursor();
+	} else if (d.tipo === 'tocando') {
+		PL.tocando = d.tocando;
+		$('#plTocar').innerHTML = d.tocando ? '<svg class="i" viewBox="0 0 24 24"><path d="M8 5h3v14H8zM13 5h3v14h-3z" fill="currentColor"/></svg>' : '<svg class="i" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg>';
+	} else if (d.tipo === 'tecla') teclaPlayer(d);
+});
+// Recompilou (o Claude Code mudou a edição): recarrega o player no mesmo quadro. Erro de compilação aparece sobre o vídeo.
+async function vigiarPlayer() {
+	try {
+		const r = await api('/api/player');
+		$('#palcoErro').hidden = !r.erro;
+		if (r.erro) $('#palcoErro').innerHTML = `<b>A edição tem um erro e o player mostra a última versão boa:</b><pre>${esc(r.erro)}</pre>`;
+		if (r.versao && r.versao !== PL.versao) {
+			const primeira = !PL.versao;
+			PL.versao = r.versao;
+			if (!primeira && proj()) { carregarPlayer({manterQuadro: true}); aviso('A edição mudou: player atualizado.', 'info', {ms: 1800}); }
+		}
+	} catch {}
+	setTimeout(vigiarPlayer, 1500);
+}
+const irPara = (q) => { PL.quadro = Math.max(0, Math.min((PL.meta?.quadros ?? 1) - 1, Math.round(q))); paraPlayer({cmd: 'ir', quadro: PL.quadro}); moverCursor(); };
+const passo = (n) => { paraPlayer({cmd: 'pause'}); irPara(PL.quadro + n); };
+function teclaPlayer(e) {
+	const fps = PL.meta?.fps ?? 30;
+	if (e.key === ' ') paraPlayer({cmd: 'alternar'});
+	else if (e.key === 'ArrowLeft') passo(e.shift ? -fps : -1);
+	else if (e.key === 'ArrowRight') passo(e.shift ? fps : 1);
+	else if (e.key === 'Home') irPara(0);
+	else if (e.key === 'End') irPara(Infinity);
+	else return false;
+	return true;
+}
+document.addEventListener('keydown', (e) => {
+	if (e.target.closest('input,textarea,select,[contenteditable]') || !$('#modal').hidden || !PL.meta) return;
+	if (teclaPlayer({key: e.key, shift: e.shiftKey})) e.preventDefault();
+});
+$('#plTocar').onclick = () => paraPlayer({cmd: 'alternar'});
+$('#plVoltar').onclick = () => passo(-1);
+$('#plAvancar').onclick = () => passo(1);
+$('#plMudo').onclick = () => { PL.mudo = !PL.mudo; paraPlayer({cmd: 'mudo', mudo: PL.mudo}); $('#plMudo').classList.toggle('desligado', PL.mudo); };
+$('#plTela').onclick = () => plEl()?.requestFullscreen?.();
+$('#plStudio').onclick = () => studio(proj());
+const cenaNoTempo = (t) => PL.meta?.cenas.find((c) => t >= c.de && t < c.ate);
+$('#plNota').onclick = () => {
+	if (!PL.meta) return aviso('Abra um vídeo primeiro.', 'alerta', {ms: 2000});
+	paraPlayer({cmd: 'pause'});
+	const t = PL.quadro / PL.meta.fps;
+	const c = cenaNoTempo(t);
+	notaPendencia({t, cena: c ? `${c.tipo}${c.texto ? `: ${c.texto}` : ''}` : 'vídeo e legenda'});
+};
+
+// Linha do tempo: faixas Texto (legenda), Efeitos (cenas), Câmera, Vídeo (trechos da gravação) e Áudio.
+const FAIXAS = [['legenda', 'Texto', 'type'], ['cenas', 'Efeitos', 'sparkles'], ['camera', 'Câmera', 'video'], ['trechos', 'Vídeo', 'film'], ['audio', 'Áudio', 'music']];
+const CORES_CENA = {numero3d: '#7c5cff', live: '#ff4d6d', frase: '#f5b544', selo: '#3ddc84', chips: '#4cc9f0', siga: '#ff7ab6', comentario: '#a0e426', final: '#b388ff', pilula: '#12d4cd'};
+function ajustarZoom() {
+	if (!PL.meta) return;
+	const larg = $('#tlRolo').clientWidth - 24;
+	PL.px = Math.max(4, Math.min(400, larg / Math.max(1, PL.meta.duracao)));
+	$('#tlZoom').value = Math.round(Math.log(PL.px / 4) / Math.log(100) * 100);
+}
+$('#tlZoom').oninput = () => { PL.px = 4 * Math.pow(100, $('#tlZoom').value / 100); renderLinha(true); };
+$('#tlMais').onclick = () => { $('#tlZoom').value = Math.min(100, Number($('#tlZoom').value) + 10); $('#tlZoom').oninput(); };
+$('#tlMenos').onclick = () => { $('#tlZoom').value = Math.max(0, Number($('#tlZoom').value) - 10); $('#tlZoom').oninput(); };
+$('#tlAjustar').onclick = () => { ajustarZoom(); renderLinha(); };
+$('#tlRolo').addEventListener('wheel', (e) => {
+	if (!e.ctrlKey && !e.metaKey) return;
+	e.preventDefault();
+	$('#tlZoom').value = Math.max(0, Math.min(100, Number($('#tlZoom').value) - Math.sign(e.deltaY) * 6));
+	$('#tlZoom').oninput();
+}, {passive: false});
+function passoRegua(px) {
+	for (const s of [0.5, 1, 2, 5, 10, 15, 30, 60, 120, 300]) if (s * px >= 70) return s;
+	return 600;
+}
+function renderLinha(manterCentro = false) {
+	const el = $('#tl'), nomes = $('#tlNomes'), rolo = $('#tlRolo');
+	nomes.innerHTML = '<div class="tl-regua-nome"></div>' + FAIXAS.map(([, n, i]) => `<div class="tl-nome">${ic(i)}<span>${n}</span></div>`).join('');
+	const m = PL.meta;
+	if (!m) { el.style.width = '100%'; el.innerHTML = `<div class="tl-vazia">${proj() ? 'Carregando a linha do tempo...' : 'Escolha um vídeo para ver a linha do tempo.'}</div>`; return; }
+	const centro = manterCentro ? (rolo.scrollLeft + rolo.clientWidth / 2) / (parseFloat(el.style.width) || 1) : null;
+	const px = PL.px, larg = Math.ceil(m.duracao * px) + 40;
+	const x = (t) => (t * px).toFixed(1);
+	const w = (a, b) => Math.max(2, (b - a) * px).toFixed(1);
+	const passoR = passoRegua(px);
+	// Nome do marcador só quando há espaço até o próximo (senão fica só o losango/bolinha, com o nome no balão).
+	const rotuloCabe = (ts, i) => ts[i + 1] === undefined || (ts[i + 1] - ts[i]) * px > 64;
+	let regua = '';
+	for (let t = 0; t <= m.duracao + 0.001; t += passoR) regua += `<span class="tick" style="left:${x(t)}px"><i></i>${t >= 60 ? `${Math.floor(t / 60)}:${String(Math.round(t % 60)).padStart(2, '0')}` : `${t}s`}</span>`;
+	for (const pr of m.problemas ?? []) if (typeof pr.tempo === 'number') regua += `<span class="tl-prob ${esc(pr.gravidade)}" style="left:${x(pr.tempo)}px" title="${esc(pr.texto)}"></span>`;
+	const clip = (faixa, i, de, ate, rot, extra = '', cls = '') => `<div class="clip ${cls} ${PL.sel?.faixa === faixa && PL.sel?.i === i ? 'sel' : ''}" data-faixa="${faixa}" data-i="${i}" style="left:${x(de)}px;width:${w(de, ate)}px;${extra}" title="${esc(rot)}"><span>${esc(rot)}</span></div>`;
+	const linhas = {
+		legenda: m.legenda.map((p, i) => clip('legenda', i, p.de, p.ate, p.texto, '', 'texto')).join(''),
+		cenas: m.cenas.map((c, i) => clip('cenas', i, c.de, c.ate, `${c.tipo}${c.texto ? ' · ' + c.texto : ''}`, `--c:${CORES_CENA[c.tipo] ?? '#5b8def'}`, 'efeito')).join(''),
+		camera: m.camera.map((c, i) => `<div class="marca-cam ${rotuloCabe(m.camera.map((k) => k.em), i) ? '' : 'sem-rotulo'} ${PL.sel?.faixa === 'camera' && PL.sel?.i === i ? 'sel' : ''}" data-faixa="camera" data-i="${i}" style="left:${x(c.em)}px" title="${esc(c.tipo)} em ${fmtT(c.em, true)}"><i></i><span>${esc(c.tipo)}</span></div>`).join(''),
+		trechos: m.trechos.map((t, i) => clip('trechos', i, t.de, t.ate, `gravação ${fmtT(t.fonteDe)}–${fmtT(t.fonteAte)}`, '', 'video')).join(''),
+		audio: (m.musica ? `<div class="clip musica" style="left:0;width:${w(0, m.duracao)}px" title="Música: ${esc(m.musica)}"><span>♪ ${esc(m.musica)}</span></div>` : '') +
+			m.sons.map((s, i) => `<div class="marca-som ${rotuloCabe(m.sons.map((k) => k.t), i) ? '' : 'sem-rotulo'} ${PL.sel?.faixa === 'audio' && PL.sel?.i === i ? 'sel' : ''}" data-faixa="audio" data-i="${i}" style="left:${x(s.t)}px" title="${esc(s.som)} em ${fmtT(s.t, true)}"><i></i><span>${esc(s.som)}</span></div>`).join(''),
+	};
+	el.style.width = larg + 'px';
+	el.innerHTML = `<div class="tl-regua" id="tlRegua">${regua}</div>` + FAIXAS.map(([k]) => `<div class="tl-faixa" data-faixa-linha="${k}">${linhas[k]}</div>`).join('') + '<div class="tl-cursor" id="tlCursor"><i></i></div>';
+	if (centro !== null) rolo.scrollLeft = centro * larg - rolo.clientWidth / 2;
+	moverCursor(false);
+}
+function moverCursor(seguir = true) {
+	const c = $('#tlCursor');
+	const m = PL.meta;
+	const t = m ? PL.quadro / m.fps : 0;
+	$('#plTempo').innerHTML = `<b>${fmtT(t, true)}</b> / ${fmtT(m?.duracao ?? 0)}`;
+	if (!c || !m) return;
+	const xx = t * PL.px;
+	c.style.transform = `translateX(${xx}px)`;
+	const rolo = $('#tlRolo');
+	if (seguir && PL.tocando && (xx > rolo.scrollLeft + rolo.clientWidth - 40 || xx < rolo.scrollLeft)) rolo.scrollLeft = xx - 60;
+}
+// Clicar/arrastar na régua ou no fundo move o cursor; clicar num item seleciona e mostra os detalhes.
+(() => {
+	const rolo = $('#tlRolo');
+	let arrastando = false;
+	const tempoDe = (e) => (e.clientX - $('#tl').getBoundingClientRect().left) / PL.px;
+	rolo.addEventListener('pointerdown', (e) => {
+		if (!PL.meta || e.button !== 0) return;
+		const item = e.target.closest('[data-faixa]');
+		if (item) {
+			PL.sel = {faixa: item.dataset.faixa, i: Number(item.dataset.i)};
+			const d = itemSel();
+			if (d) irPara(d.de * PL.meta.fps + 1);
+			renderLinha();
+			mostrarAba('props');
+			renderDetalhes();
+			return;
+		}
+		arrastando = true;
+		rolo.setPointerCapture(e.pointerId);
+		paraPlayer({cmd: 'pause'});
+		irPara(tempoDe(e) * PL.meta.fps);
+	});
+	rolo.addEventListener('pointermove', (e) => { if (arrastando) irPara(tempoDe(e) * PL.meta.fps); });
+	rolo.addEventListener('pointerup', () => (arrastando = false));
+	// Altura da linha do tempo (arrastar a borda de cima).
+	const alca = $('#tlAlca');
+	alca.addEventListener('pointerdown', (e) => {
+		alca.setPointerCapture(e.pointerId);
+		const y0 = e.clientY, h0 = $('#linha').offsetHeight;
+		const mover = (ev) => { const h = Math.max(150, Math.min(innerHeight * 0.6, h0 - (ev.clientY - y0))); document.documentElement.style.setProperty('--alt-linha', h + 'px'); };
+		alca.onpointermove = mover;
+		alca.onpointerup = () => { alca.onpointermove = null; gravarLocal('altLinha', $('#linha').offsetHeight); };
+	});
+	const h = lerLocal('altLinha', 0);
+	if (h) document.documentElement.style.setProperty('--alt-linha', h + 'px');
+})();
+function itemSel() {
+	const m = PL.meta, s = PL.sel;
+	if (!m || !s) return null;
+	if (s.faixa === 'legenda') { const p = m.legenda[s.i]; return p && {tipo: 'Legenda', de: p.de, ate: p.ate, linhas: [['Texto', p.texto]]}; }
+	if (s.faixa === 'cenas') { const c = m.cenas[s.i]; return c && {tipo: `Efeito: ${c.tipo}`, de: c.de, ate: c.ate, linhas: [['Tipo', c.tipo], ['Texto', c.texto || '—'], ['Como aparece', {cheia: 'tela cheia', sobre: 'sobre o vídeo', atras: 'atrás da pessoa'}[c.modo] ?? c.modo]]}; }
+	if (s.faixa === 'trechos') { const t = m.trechos[s.i]; return t && {tipo: 'Trecho do vídeo', de: t.de, ate: t.ate, linhas: [['Da gravação', `${fmtT(t.fonteDe, true)} até ${fmtT(t.fonteAte, true)}`]]}; }
+	if (s.faixa === 'camera') { const c = m.camera[s.i]; return c && {tipo: `Câmera: ${c.tipo}`, de: c.em, ate: c.em + 0.5, linhas: [['Efeito', c.tipo]]}; }
+	if (s.faixa === 'audio') { const a = m.sons[s.i]; return a && {tipo: `Som: ${a.som}`, de: a.t, ate: a.t + 0.5, linhas: [['Som', a.som]]}; }
+	return null;
+}
+function renderDetalhes() {
+	const el = $('#aba-props');
+	if (!el) return;
+	const m = PL.meta;
+	if (!proj()) { el.innerHTML = `<div class="vazio">${ic('sliders')}<b>Nada selecionado</b>Escolha um vídeo e clique num item da linha do tempo para ver os detalhes.</div>`; return; }
+	if (!m) { el.innerHTML = '<div class="carregando">Abrindo o vídeo...</div>'; return; }
+	const d = itemSel();
+	const tabela = (linhas) => `<dl class="props">${linhas.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>`;
+	if (d) {
+		el.innerHTML = `<div class="cartao"><div class="cartao-topo"><h4>${esc(d.tipo)}</h4><button class="btn icone mini fantasma" id="dtFechar" title="Tirar a seleção" aria-label="Tirar a seleção">${ic('x')}</button></div>` +
+			tabela([['Começa', fmtT(d.de, true)], ['Termina', fmtT(d.ate, true)], ['Duração', `${(d.ate - d.de).toFixed(2)} s`], ...d.linhas]) +
+			`<div class="linha" style="gap:8px;margin-top:12px;flex-wrap:wrap"><button class="btn mini" id="dtTocar">${ic('play')}<span>Tocar este trecho</span></button><button class="btn mini primario" id="dtNota">${ic('edit')}<span>Pedir mudança aqui</span></button></div>` +
+			`<p class="legenda" style="margin-top:10px">A mudança vira pendência: o Claude Code aplica antes do próximo render. Para pedir agora, diga a ele: “aplique as pendências”.</p></div>`;
+		$('#dtFechar').onclick = () => { PL.sel = null; renderLinha(); renderDetalhes(); };
+		$('#dtTocar').onclick = () => { irPara(d.de * m.fps); paraPlayer({cmd: 'play'}); };
+		$('#dtNota').onclick = () => notaPendencia({t: d.de, cena: `${d.tipo} (${fmtT(d.de)}–${fmtT(d.ate)})${d.linhas[1] ? ': ' + d.linhas[1][1] : ''}`});
+		return;
+	}
+	const probs = (m.problemas ?? []).slice(0, 30);
+	el.innerHTML = `<div class="cartao"><div class="cartao-topo"><h4>${ic('film')}${esc(proj())}</h4></div>` +
+		tabela([['Duração', fmtT(m.duracao, true)], ['Formato', `${m.largura}×${m.altura}`], ['Trechos da gravação', m.trechos.length], ['Efeitos', m.cenas.length], ['Telas de legenda', m.legenda.length], ['Sons', m.sons.length], ['Música', m.musica || '—']]) +
+		`<p class="legenda" style="margin-top:10px">Clique num item da linha do tempo para ver os detalhes e pedir uma mudança naquele ponto.</p></div>` +
+		(probs.length ? `<div class="titulo-secao">${ic('alert')}Conferência automática</div>` + probs.map((p) => `<button class="prob ${esc(p.gravidade)}" ${typeof p.tempo === 'number' ? `data-t="${p.tempo}"` : ''}><b>${typeof p.tempo === 'number' ? fmtT(p.tempo) : '—'}</b><span>${esc(p.texto)}</span></button>`).join('') : '');
+	el.querySelectorAll('.prob[data-t]').forEach((b) => (b.onclick = () => irPara(Number(b.dataset.t) * m.fps)));
+}
+
 // Pedido que estava em andamento quando o painel fechou: oferece continuar de onde parou (não gasta limite sem você pedir).
 async function verificarPendente() {
 	try {
@@ -2019,7 +2255,8 @@ $('#soPerguntar').onclick = async () => {
 async function iniciar() {
 	decorar();
 	carregarFontes();
-	mostrarAba(['render', 'fluxo', 'midias', 'refs'].includes(S.aba) ? S.aba : 'render');
+	mostrarAba(['props', 'render', 'fluxo', 'refs'].includes(S.aba) ? S.aba : 'props');
+	mostrarAba(['midias', 'biblioteca', 'previas', 'conversa'].includes(lerLocal('abaEsq', '')) ? lerLocal('abaEsq', '') : 'midias');
 	if (!T) {
 		msgs.innerHTML = `<div class="boas-vindas"><h3>Endereço incompleto</h3><p>Abra o endereço completo que apareceu no terminal (termina com #código).</p></div>`;
 		return;
@@ -2035,6 +2272,7 @@ async function iniciar() {
 	pollTarefas();
 	pollBloco();
 	mostrarAtualizacao();
+	vigiarPlayer();
 }
 // Topo: data e hora da última atualização do painel (último commit neste PC).
 async function mostrarAtualizacao() {

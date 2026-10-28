@@ -20,6 +20,7 @@ import {criarApagar} from './apagar.mjs';
 import {testarPod} from './pod.mjs';
 import {criarTarefas} from './tarefas.mjs';
 import {criarPendencias, textoPendencias} from './pendencias.mjs';
+import {criarPlayer} from './player.mjs';
 
 const raiz = path.resolve(import.meta.dirname, '..');
 const porta = Number(process.env.PORTA ?? 4000);
@@ -567,6 +568,7 @@ const iniciarStudio = () => {
 	studio.on('close', () => (studio = null));
 };
 process.on('exit', () => {
+	player.parar();
 	studio?.kill();
 	for (const pr of rodando.values()) matar(pr);
 	tarefas.encerrarTudo();
@@ -643,6 +645,13 @@ const arquivo = (req, res, f) => {
 	createReadStream(f).pipe(res);
 };
 
+// Player embutido (mesma composição do Studio), recompilado sozinho quando a edição muda.
+const player = await criarPlayer({raiz, estado});
+const paginaPlayer = (v) => `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Player</title>
+<style>html,body,#raiz{margin:0;height:100%;background:#000;overflow:hidden}.msg{color:#9aa4a6;font:14px system-ui,sans-serif;display:flex;align-items:center;justify-content:center;height:100%;text-align:center;padding:16px}</style></head>
+<body><div id="raiz"></div><script src="/player/player.js?v=${v}"></script></body></html>`;
+const cookieOk = (req) => tokenOk(/(?:^|;\s*)painel-t=([a-f0-9]+)/.exec(req.headers.cookie ?? '')?.[1]);
+
 let ultimoPedido = 0;
 const hostsOk = new Set([`localhost:${porta}`, `127.0.0.1:${porta}`]);
 const tokenOk = (t) => {
@@ -660,6 +669,20 @@ createServer(async (req, res) => {
 	const url = new URL(req.url, 'http://x');
 	const p = url.pathname;
 	try {
+		// Player e arquivos públicos (vídeos, sons, fontes) que ele usa: o iframe e as tags de vídeo não mandam o cabeçalho
+		// do token, então valem pelo cookie que o painel recebe na primeira chamada à API.
+		if (p === '/player.html' || p.startsWith('/player/') || p.startsWith('/public/')) {
+			if (!cookieOk(req)) { res.writeHead(401, {'content-type': 'text/plain; charset=utf-8'}); return res.end('Abra o painel pelo endereço com o código.'); }
+			if (p === '/player.html') {
+				res.writeHead(200, {'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store'});
+				return res.end(paginaPlayer(player.estado().versao));
+			}
+			let rel = '';
+			try { rel = decodeURIComponent(p.slice(8)); } catch { res.writeHead(400); return res.end(); }
+			const f = dentro(p.startsWith('/player/') ? player.pasta : path.join(raiz, 'public'), rel);
+			if (!f) { res.writeHead(403); return res.end(); }
+			return arquivo(req, res, f);
+		}
 		if (!['/api/', '/out/', '/previas/', '/sfx/', '/fontes/', '/midia/', '/pack/', '/tema-modelo/'].some((x) => p.startsWith(x))) {
 			const rel = p === '/' ? 'index.html' : p.slice(1);
 			const base = path.join(import.meta.dirname, 'web');
@@ -669,6 +692,8 @@ createServer(async (req, res) => {
 		}
 		const t = req.headers['x-painel-token'] ?? url.searchParams.get('t');
 		if (!tokenOk(t)) return json(res, {erro: 'Token inválido. Abra o endereço impresso no terminal.'}, 401);
+		if (!cookieOk(req)) res.setHeader('set-cookie', `painel-t=${token}; Path=/; SameSite=Strict; HttpOnly`);
+		if (p === '/api/player') return json(res, player.estado());
 		if (p === '/api/fechou' && req.method === 'POST') {
 			// A aba do painel fechou. Espera um pouco: se a página voltar (recarregar, outra aba aberta), não salva.
 			const quando = Date.now();

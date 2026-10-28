@@ -46,67 +46,119 @@
 </header>
 
 <main id="app">
+	<!-- Esquerda (como o CapCut): mídias, biblioteca, imagens da edição e a conversa salva -->
 	<aside id="bib" class="coluna">
-		<div class="coluna-topo">
-			<h2>Biblioteca</h2>
-			<div class="busca">
-				<span data-ic="search"></span>
-				<input id="busca" type="search" placeholder="Buscar peças, sons, fontes, pack..." autocomplete="off">
+		<nav class="abas" role="tablist">
+			<button role="tab" data-aba="midias" class="on" data-ic="film">Mídias</button>
+			<button role="tab" data-aba="biblioteca" data-ic="book">Biblioteca</button>
+			<button role="tab" data-aba="previas" data-ic="eye">Prévias</button>
+			<button role="tab" data-aba="conversa" data-ic="chat">Conversa</button>
+		</nav>
+		<div class="rolavel painel-aba" id="aba-midias"></div>
+		<div class="painel-aba coluna-aba" id="aba-biblioteca" hidden>
+			<div class="coluna-topo">
+				<div class="busca">
+					<span data-ic="search"></span>
+					<input id="busca" type="search" placeholder="Buscar peças, sons, fontes, pack..." autocomplete="off">
+				</div>
+			</div>
+			<div id="bibLista" class="rolavel"><div class="carregando">Carregando a biblioteca...</div></div>
+		</div>
+		<div class="rolavel painel-aba" id="aba-previas" hidden></div>
+		<div class="painel-aba coluna-aba" id="aba-conversa" hidden>
+			<div id="claude" class="faixa" hidden></div>
+			<div class="conversa-topo">
+				<div>
+					<h2 id="convTitulo">Conversa</h2>
+					<small id="convSub">Escolha um vídeo e diga o que editar.</small>
+				</div>
+				<button class="btn fantasma" id="zerar" data-ic="chat-plus" title="Começar conversa nova neste vídeo">Conversa nova</button>
+			</div>
+			<div id="msgs" class="rolavel" aria-live="polite"></div>
+			<div class="compositor">
+				<div class="atalhos">
+					<div id="chips" class="chips"></div>
+					<button class="btn fantasma mini" id="gerAtalhos" data-ic="edit" title="Adicionar ou remover atalhos de pedido">Atalhos</button>
+				</div>
+				<div class="aviso-so-ver">Os pedidos são feitos no <b>Claude Code</b> (arquivo “Claude Code - Editar.bat”). Aqui você assiste e deixa observações; elas vão para o Claude Code como pendências.</div>
+				<form id="f">
+					<textarea id="pedido" rows="3"></textarea>
+					<div class="form-acoes">
+						<small class="dica"></small>
+						<button type="button" class="btn perigo" id="parar" data-ic="stop" hidden>Intervir</button>
+						<button type="button" class="btn fantasma" id="destino" data-ic="users" hidden>Para: assistente</button>
+						<button type="button" class="btn fantasma" id="soPerguntar" data-ic="chat">Só perguntar</button>
+						<button class="btn primario" id="enviar" data-ic="send">Enviar</button>
+					</div>
+				</form>
 			</div>
 		</div>
-		<div id="bibLista" class="rolavel"><div class="carregando">Carregando a biblioteca...</div></div>
 	</aside>
 
+	<!-- Centro: o player (mesma composição do Studio, atualiza sozinho quando a edição muda) -->
 	<section id="centro" class="coluna">
-		<div id="claude" class="faixa" hidden></div>
-		<div class="conversa-topo">
-			<div>
-				<h2 id="convTitulo">Conversa</h2>
-				<small id="convSub">Escolha um vídeo e diga o que editar.</small>
-			</div>
-			<button class="btn fantasma" id="zerar" data-ic="chat-plus" title="Começar conversa nova neste vídeo">Conversa nova</button>
+		<div class="player-topo">
+			<b id="plTitulo">Player</b><small id="plSub"></small>
+			<span class="esp"></span>
+			<button class="btn mini fantasma" id="plStudio" data-ic="monitor" title="Abrir este vídeo no Remotion Studio (editor completo)">Studio</button>
 		</div>
-		<div id="msgs" class="rolavel" aria-live="polite"></div>
-		<div class="compositor">
-			<div class="atalhos">
-				<div id="chips" class="chips"></div>
-				<button class="btn fantasma mini" id="gerAtalhos" data-ic="edit" title="Adicionar ou remover atalhos de pedido">Atalhos</button>
+		<div id="palco">
+			<iframe id="player" title="Player do vídeo" allow="autoplay; fullscreen" hidden></iframe>
+			<div id="palcoVazio" class="vazio"></div>
+			<div id="palcoErro" hidden></div>
+		</div>
+		<div class="player-controles">
+			<span id="plTempo" class="tempo"><b>00:00:00</b> / 00:00:00</span>
+			<div class="pl-meio">
+				<button class="btn icone fantasma" id="plVoltar" title="Voltar 1 quadro (←; Shift+← volta 1 s)" aria-label="Voltar 1 quadro"><svg class="i" viewBox="0 0 24 24"><path d="M11 7l-5 5 5 5M18 7l-5 5 5 5"/></svg></button>
+				<button class="btn icone" id="plTocar" title="Tocar / pausar (espaço)" aria-label="Tocar"><svg class="i" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></button>
+				<button class="btn icone fantasma" id="plAvancar" title="Avançar 1 quadro (→; Shift+→ avança 1 s)" aria-label="Avançar 1 quadro"><svg class="i" viewBox="0 0 24 24"><path d="M13 7l5 5-5 5M6 7l5 5-5 5"/></svg></button>
 			</div>
-			<div class="aviso-so-ver">Os pedidos são feitos no <b>Claude Code</b> (arquivo “Claude Code - Editar.bat”). Aqui você assiste, abre o Studio e deixa observações nas imagens; elas vão para o Claude Code como pendências.</div>
-			<div id="pend" class="pend" hidden></div>
-			<form id="f">
-				<textarea id="pedido" rows="3" placeholder="Ex.: usa o template do depoimento e coloca a moeda 3D girando quando eu falar 'investimento'"></textarea>
-				<div class="form-acoes">
-					<small class="dica"><kbd>Enter</kbd> envia · <kbd>Shift</kbd>+<kbd>Enter</kbd> nova linha</small>
-					<button type="button" class="btn perigo" id="parar" data-ic="stop" hidden title="Para o Claude agora. Escreva o que mudar e envie: ele continua de onde parou com o seu ajuste.">Intervir</button>
-					<button type="button" class="btn fantasma" id="destino" data-ic="users" hidden title="Enquanto o editor trabalha, para quem vai a sua mensagem">Para: assistente</button>
-					<button type="button" class="btn fantasma" id="soPerguntar" data-ic="chat" title="Só tira uma dúvida, sem parar nem mudar nada do trabalho em andamento">Só perguntar</button>
-					<button class="btn primario" id="enviar" data-ic="send">Enviar</button>
-				</div>
-			</form>
+			<div class="pl-dir">
+				<button class="btn mini" id="plNota" data-ic="edit" title="Deixar uma observação neste momento do vídeo (vira pendência para o Claude Code)">Observação aqui</button>
+				<button class="btn icone fantasma" id="plMudo" title="Som" aria-label="Som"><svg class="i" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg></button>
+				<button class="btn icone fantasma" id="plTela" title="Tela cheia" aria-label="Tela cheia"><svg class="i" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+			</div>
 		</div>
 	</section>
 
+	<!-- Direita: propriedades do que está selecionado na linha do tempo, exportar, passos e estilo -->
 	<aside id="lado" class="coluna">
 		<nav class="abas" role="tablist">
-			<button role="tab" data-aba="render" class="on" data-ic="play">Gerar</button>
+			<button role="tab" data-aba="props" class="on" data-ic="sliders">Detalhes</button>
+			<button role="tab" data-aba="render" data-ic="download">Exportar</button>
 			<button role="tab" data-aba="fluxo" data-ic="list">Passos</button>
-			<button role="tab" data-aba="previas" data-ic="eye">Prévias</button>
-			<button role="tab" data-aba="midias" data-ic="film">Mídias</button>
 			<button role="tab" data-aba="refs" data-ic="star">Estilo</button>
 		</nav>
-		<div class="rolavel painel-aba" id="aba-render"></div>
+		<div class="rolavel painel-aba" id="aba-props"></div>
+		<div class="rolavel painel-aba" id="aba-render" hidden></div>
 		<div class="rolavel painel-aba" id="aba-fluxo" hidden><div id="fluxoPassos"></div><div id="fluxoExtra"></div></div>
-		<div class="rolavel painel-aba" id="aba-previas" hidden></div>
-		<div class="rolavel painel-aba" id="aba-midias" hidden></div>
 		<div class="rolavel painel-aba" id="aba-refs" hidden></div>
 	</aside>
+
+	<!-- Embaixo: linha do tempo -->
+	<section id="linha">
+		<div class="tl-alca" id="tlAlca" title="Arraste para mudar a altura"></div>
+		<div class="tl-barra">
+			<span class="tl-titulo">Linha do tempo</span>
+			<div id="pend" class="pend" hidden></div>
+			<span class="esp"></span>
+			<button class="btn icone mini fantasma" id="tlMenos" title="Diminuir o zoom (Ctrl + roda)" aria-label="Diminuir o zoom"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M8 11h6M20 20l-4.5-4.5"/></svg></button>
+			<input type="range" id="tlZoom" min="0" max="100" value="30" aria-label="Zoom da linha do tempo">
+			<button class="btn icone mini fantasma" id="tlMais" title="Aumentar o zoom (Ctrl + roda)" aria-label="Aumentar o zoom"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M8 11h6M11 8v6M20 20l-4.5-4.5"/></svg></button>
+			<button class="btn mini fantasma" id="tlAjustar" title="Mostrar o vídeo inteiro">Ajustar</button>
+		</div>
+		<div class="tl-corpo">
+			<div class="tl-nomes" id="tlNomes"></div>
+			<div class="tl-rolo" id="tlRolo"><div class="tl-conteudo" id="tl"></div></div>
+		</div>
+	</section>
 </main>
 
 <nav id="navCel" aria-label="Seções">
-	<button data-ver="biblioteca" data-ic="book">Biblioteca</button>
-	<button data-ver="conversa" class="on" data-ic="chat">Conversa</button>
-	<button data-ver="lado" data-ic="sliders">Vídeo</button>
+	<button data-ver="biblioteca" data-ic="film">Mídias</button>
+	<button data-ver="conversa" class="on" data-ic="play">Vídeo</button>
+	<button data-ver="lado" data-ic="sliders">Detalhes</button>
 </nav>
 
 <!-- Tela do tema -->
