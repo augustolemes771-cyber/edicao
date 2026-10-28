@@ -63,7 +63,7 @@ Em `docs/referencias/regras-extras.md`: **horizontal/YouTube** (identidade, curv
 ## Temas (painel)
 
 Todo vídeo pertence a um tema (`biblioteca/temas/<tema>/`: `tema.json` com a lista de projetos e `aprendizado.md`). Antes de editar,
-ler o `aprendizado.md` do tema e seguir. Ao terminar, ou quando o usuário aprovar, reprovar ou corrigir algo, acrescentar uma linha
+ler o `prompt-base.md` do tema (objetivo e densidade do estilo, se existir) e o `aprendizado.md`, e seguir. Ao terminar, ou quando o usuário aprovar, reprovar ou corrigir algo, acrescentar uma linha
 `- AAAA-MM-DD (projeto): lição` nele. Regra que vale para todos os temas fica nesta skill. Projeto novo entra em `projetos` do `tema.json`.
 
 ## Qualidade de entrevistas e depoimentos (28/10/2026, oficial-1 refeito)
