@@ -6,6 +6,11 @@ const P = {x: 0.72, y: 0.33};
 // Câmera alta: o rosto desce para abrir espaço ao contador no topo.
 const BAIXO = {x: 0.72, y: 0.05};
 
+// Grupo "usar todos" (ordem decidida pela IA, pela sequência da fala): IMG_5212 (1).MOV (0:00–1:13) e depois
+// IMG_5213 (1).MOV (1:13–1:47, continuação: "E se não fosse o Danilo…" e o CTA). Os dois estão unidos, em HDR→SDR 1080x1920,
+// em video.mp4; os cortes abaixo usam o tempo dessa união e mantêm trechos dos dois clipes.
+export const FONTES = ['IMG_5212 (1).MOV', 'IMG_5213 (1).MOV'] as const;
+
 export const oficial1: Edit = {
 	pasta: 'projetos/oficial-1',
 	video: 'video.mp4',
