@@ -127,10 +127,14 @@ if (podCfg?.ativo && podCfg.host && !process.env.SEM_POD) {
 			de,
 			ate,
 			hw: true,
-			atualizar: () => {},
+			// Progresso do pod na barra do painel e avisos (WebGL usado, q/s) na saída do assistente.
+			atualizar: (u: {fase?: string; pct?: number; aviso?: string; log?: string}) => {
+				if (u.aviso) console.log(`Pod: ${u.aviso}`);
+				if (u.fase || typeof u.pct === 'number') andar('render', typeof u.pct === 'number' ? u.pct : null, {fase: u.fase ?? 'renderizando no pod'});
+			},
 		});
 	} catch (e) {
-		console.log(`⚠ Pod indisponível (${String((e as Error).message).slice(0, 200)}): renderizando neste PC.`);
+		console.log(`⚠ O RENDER NO POD FALHOU: ${String((e as Error).message).slice(0, 600)}\nRenderizando neste PC (mais lento). Avise o usuário desse erro.`);
 	}
 }
 // Render neste PC lendo o progresso (linhas JSON do render-job) para a barra do painel.
