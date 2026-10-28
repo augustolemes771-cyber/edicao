@@ -24,7 +24,9 @@ for (const e of entradas) {
 const sonda = (arq) => {
 	const r = spawnSync('ffprobe', ['-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=width,height,color_transfer:stream_side_data=rotation', '-of', 'json', arq], {encoding: 'utf8'});
 	const s = JSON.parse(r.stdout || '{}').streams?.[0] ?? {};
-	const girado = Math.abs(Number(s.side_data_list?.[0]?.rotation ?? 0)) % 180 === 90;
+	// O iPhone grava vários side_data (Dolby Vision etc.); a rotação nem sempre é o primeiro.
+	const rotacao = (s.side_data_list ?? []).find((d) => d.rotation !== undefined)?.rotation ?? 0;
+	const girado = Math.abs(Number(rotacao)) % 180 === 90;
 	return {largura: girado ? s.height : s.width, altura: girado ? s.width : s.height, hdr: ['arib-std-b67', 'smpte2084'].includes(s.color_transfer)};
 };
 const infos = entradas.map(sonda);
