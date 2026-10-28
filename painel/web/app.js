@@ -919,6 +919,15 @@ function aoTerminarTarefa(t) {
 	if (t.estado === 'ok') {
 		aviso(`${nome}${de} terminou.`, 'ok', {titulo: 'Pronto!'});
 		if (['previa', 'final'].includes(t.tipo)) notificar(`${nome} pronta${de}`, 'Clique para assistir no painel.');
+		if (['previa', 'final'].includes(t.tipo) && t.saida && /\.(mp4|mov|webm)$/i.test(t.saida) && (!t.projeto || t.projeto === proj())) {
+			msg(`[[video:${t.saida}|${nome} pronta${de}]]`, 'ia', {t: Date.now()});
+			rolar();
+			// O assistente deixou o render rodando e disse que avisaria: retoma sozinho assim que o vídeo chega.
+			if (S.esperandoRender && S.esperandoRender === (t.projeto || proj()) && !S.chatAtivo) {
+				S.esperandoRender = null;
+				usarPedido(`${nome} terminou: ${t.saida}. Continue de onde parou.`, {enviar: true});
+			}
+		}
 	} else if (t.estado === 'erro') {
 		aviso(t.erro || 'Algo deu errado.', 'erro', {titulo: `${nome}${de} falhou`});
 		if (['previa', 'final'].includes(t.tipo)) notificar(`${nome} falhou${de}`, String(t.erro || '').slice(0, 120));
@@ -1581,6 +1590,13 @@ function msg(texto, quem = 'ia', {custo, t} = {}) {
 		const resto = texto.slice(ultimo).trim();
 		if (resto) html += esc(resto);
 		d.innerHTML = html;
+	} else if (quem === 'ia' && texto.includes('[[video:')) {
+		// [[video:out/arquivo.mp4|legenda]]: o vídeo pronto aparece direto no chat.
+		const v = Date.now();
+		d.innerHTML = esc(texto).replace(/\[\[video:([^|\]]+)\|([^\]]*)\]\]/g, (_, c, leg) => {
+			const arq = c.trim().split(/[\\/]/).pop();
+			return `</span><div class="bloco-ia"><div class="bloco-topo"><b>${leg || arq}</b></div><video controls playsinline preload="metadata" src="/out/${enc(arq)}?t=${T}&v=${v}"></video><small class="arqv">${arq}</small></div><span>`;
+		}).replace(/^/, '<span>') + '</span>';
 	} else if (quem === 'ia' && texto.includes('[[amostra:')) {
 		const v = Date.now();
 		let html = '', ultimo = 0, cards = '';
@@ -1731,7 +1747,7 @@ $('#f').onsubmit = async (e) => {
 			for (const parte of partes) {
 				let ev;
 				try { ev = JSON.parse(parte.replace(/^data: /, '')); } catch { continue; }
-				if (ev.tipo === 'texto') { ultimoEvento = Date.now(); textoAgora = 'Escrevendo a resposta'; ultimaIa = add(ev.texto, 'ia'); }
+				if (ev.tipo === 'texto') { ultimoEvento = Date.now(); textoAgora = 'Escrevendo a resposta'; ultimaIa = add(ev.texto, 'ia'); if (/segundo plano|quando terminar|aviso quando/i.test(ev.texto)) S.esperandoRender = projetoChat; }
 				else if (ev.tipo === 'batida') processosAgora = ev.processos ?? [];
 				else if (ev.tipo === 'acao') { textoAgora = traduzirAcao(ev.acao); ultimoEvento = Date.now(); add(ev.acao, 'acao'); }
 				else if (ev.tipo === 'erro') add(ev.texto, 'erro');
