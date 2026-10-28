@@ -307,6 +307,7 @@ const Sons: React.FC<{cenas: CenaNoPlano[]}> = ({cenas}) => {
 	for (const c of cenas) {
 		if (c.somFinal) eventos.push({quadro: Math.round(c.de * fps), som: c.somFinal});
 		if (c.impactoAtivo) eventos.push({quadro: Math.round(c.de * fps), som: 'boom', ganho: 0.8});
+		for (const x of c.sons ?? []) eventos.push({quadro: Math.round(x.em * fps), som: x.som, ganho: x.ganho});
 		if (c.tipo === 'lista') {
 			for (const item of c.itens) eventos.push({quadro: Math.round(item.em * fps), som: 'tick'});
 		}

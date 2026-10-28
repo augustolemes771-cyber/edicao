@@ -38,6 +38,10 @@ type Base = {
 	som?: Som | null;
 	// Ele pediu efeito em voz alta: pode passar da faixa da curva.
 	pedidoFalado?: boolean;
+	// Sons extras dentro da cena (em: segundo do vídeo editado; ganho 1 = volume padrão dos sons).
+	sons?: {em: number; som: Som; ganho?: number}[];
+	// Esconde a legenda durante a cena mesmo que o tipo não esconda (ex.: pílula que repete a fala).
+	esconderLegenda?: boolean;
 };
 
 export type Cena =
@@ -193,6 +197,15 @@ export type Cena =
 	  })
 	// Visor de câmera: cantos, "● REC" piscando (desmontagem-2, ref. 2).
 	| (Base & {tipo: 'rec'})
+	// Entrevista (src/pecas/Entrevista.tsx). drama: as luzes caem num foco frio sobre o rosto (x, y de 0 a 1),
+	// o texto grande bate em ouro 3D acima da cabeça (em: segundo da batida) e a pílula LIVE se apaga e cai (apaga: segundo).
+	| (Base & {tipo: 'drama'; grande: string; tom?: 'frio' | 'pb' | 'roxo'; pequeno?: string; em?: number; apaga?: number; x?: number; y?: number; yTexto?: number})
+	// Pílula LIVE que acende com clarão quente (a virada depois do drama). y de 0 a 1.
+	| (Base & {tipo: 'aovivo'; texto?: string; y?: number})
+	// Contador em ouro 3D acima da cabeça: rótulo pequeno (ex.: GMV), número que sobe até o valor e seta de alta.
+	| (Base & {tipo: 'contador'; rotulo: string; valor: number; prefixo?: string; sufixo?: string; em?: number; yTexto?: number})
+	// Pílula de vidro escuro: rótulo pequeno em caixa alta e nome em serifa itálica dourada (nome na tela, SIGA <nome>).
+	| (Base & {tipo: 'pilula'; rotulo: string; nome: string; y?: number})
 	// Pílulas vermelhas de vidro com ícone, texto palavra por palavra (desmontagem-2, ref. 2, "what to say?").
 	// variante escura: vidro quase preto e texto branco inteiro (contraste sobre roupa vermelha, 23/10/2026).
 	| (Base & {
@@ -241,7 +254,7 @@ export type EfeitoCamera =
 	// Listras verticais de glitch com estouro de luz, 3 a 4 quadros (desmontagem-2, ref. 2).
 	| {tipo: 'listras'; em: number};
 
-export type EstiloLegenda = 'palavra' | 'ouro' | 'impacto' | 'neon';
+export type EstiloLegenda = 'palavra' | 'ouro' | 'impacto' | 'neon' | 'mare';
 export type EstiloEnfase = 'serif' | 'cor' | 'caixa' | 'circulo' | 'grande' | 'riscar';
 
 export type Legenda = {
@@ -357,6 +370,10 @@ const MODO_PADRAO: Record<TipoCena, Modo> = {
 	estrela: 'sobre',
 	painel: 'sobre',
 	despedida: 'sobre',
+	drama: 'sobre',
+	aovivo: 'sobre',
+	contador: 'sobre',
+	pilula: 'sobre',
 };
 
 const SOM_PADRAO: Record<TipoCena, Som | null> = {
@@ -388,6 +405,10 @@ const SOM_PADRAO: Record<TipoCena, Som | null> = {
 	estrela: 'shimmer',
 	painel: 'swish',
 	despedida: null,
+	drama: null,
+	aovivo: null,
+	contador: null,
+	pilula: null,
 };
 
 // Mesmo fps da composição: as emendas caem em quadro inteiro.
@@ -554,6 +575,8 @@ const TEXTO_PROPRIO: TipoCena[] = [
 	'topicos',
 	'vitrine',
 	'xadrez',
+	'drama',
+	'contador',
 ];
 const normalizar = (s: string) =>
 	s
@@ -574,7 +597,7 @@ const paginar = (
 	const esconder = new Set(cfg.esconderEm ?? TEXTO_PROPRIO);
 	// Cena atrás da pessoa só esconde a legenda quando é a palavra gigante (o cenário de fundo não).
 	const esconde = (c: CenaNoPlano) =>
-		esconder.has(c.tipo) &&
+		(esconder.has(c.tipo) || c.esconderLegenda) &&
 		(c.modo !== 'atras' || c.tipo === 'gigante') &&
 		!(c.tipo === 'retrato' && c.variante === 'lado');
 	const escondida = (t: number) => cenas.some((c) => esconde(c) && t >= c.de && t < c.ate);

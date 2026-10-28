@@ -20,6 +20,7 @@ import {Logo3D} from './Logo3D';
 import {Passo} from './Passo';
 import {Titulo} from './Titulo';
 import {Cenario} from './Cenario';
+import {AoVivo, Contador, Drama, Pilula} from './Entrevista';
 import {
 	Alertas,
 	Anel,
@@ -307,6 +308,14 @@ const Conteudo: React.FC<Props> = ({cena, pasta}) => {
 			return <Cenario cena={cena} />;
 		case 'anel':
 			return <Anel cena={cena} />;
+		case 'drama':
+			return <Drama cena={cena} />;
+		case 'aovivo':
+			return <AoVivo cena={cena} />;
+		case 'contador':
+			return <Contador cena={cena} />;
+		case 'pilula':
+			return <Pilula cena={cena} />;
 		case 'rec':
 			return <Rec />;
 		case 'alertas':

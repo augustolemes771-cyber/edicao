@@ -68,6 +68,19 @@ const VISUAL: Record<EstiloLegenda, Visual> = {
 		entrelinha: 0.9,
 		largura: 0.86,
 	},
+	// Tema Entrevista ("Maré"): placa de vidro clara com tinta roxa; a palavra falada acende e as próximas ficam a 30%;
+	// a ênfase vira chip roxo com serifa itálica dourada.
+	mare: {
+		fonte: inter,
+		peso: 800,
+		tamanho: 0.052,
+		cor: '#2b0f4c',
+		sombra: 'none',
+		corEnfase: '#f4c95d',
+		sombraEnfase: 'none',
+		entrelinha: 1.12,
+		largura: 0.8,
+	},
 };
 
 const Palavra: React.FC<{
@@ -98,6 +111,33 @@ const Palavra: React.FC<{
 	const cor =
 		e === 'cor' || grande || (estilo !== 'palavra' && serif) ? corEnf : e === 'caixa' ? '#ffffff' : visual.cor;
 	const sombra = cor === corEnf && estilo !== 'palavra' ? visual.sombraEnfase : visual.sombra;
+
+	if (estilo === 'mare') {
+		const chip = e === 'serif' || e === 'cor' || e === 'grande' || e === 'caixa';
+		const pop = interpolate(local, [0, 4, 8], [1, 1.08, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+		return (
+			<span
+				style={{
+					position: 'relative',
+					display: 'inline-block',
+					fontFamily: chip ? playfair : visual.fonte,
+					fontStyle: chip ? 'italic' : 'normal',
+					fontWeight: 800,
+					fontSize: chip ? base * 1.08 : base,
+					color: chip ? (p.cor ?? visual.corEnfase) : visual.cor,
+					background: chip ? '#2b0f4c' : undefined,
+					borderRadius: chip ? base * 0.2 : undefined,
+					padding: chip ? `0 ${base * 0.22}px` : undefined,
+					opacity: local < 0 ? 0.3 : 1,
+					transform: local >= 0 ? `scale(${pop})` : undefined,
+				}}
+			>
+				{p.texto}
+				{e === 'riscar' && <Risco local={local} cor={p.cor ?? '#c0283a'} />}
+				{e === 'circulo' && <Circulo local={local} cor={p.cor ?? '#c99a2e'} />}
+			</span>
+		);
+	}
 
 	const conteudo = (
 		<span
@@ -203,6 +243,40 @@ const Pagina: React.FC<{pagina: PaginaLegenda; cfg: ConfigLegenda}> = ({pagina, 
 		extrapolateRight: 'clamp',
 	});
 	const altura = cfg.altura ?? (width < height ? 0.6 : 0.8);
+	if (cfg.estilo === 'mare') {
+		const ent = interpolate(frame, [0, 5], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+		return (
+			<AbsoluteFill style={{alignItems: 'center'}}>
+				<div
+					style={{
+						position: 'absolute',
+						top: `${altura * 100}%`,
+						transform: `translateY(-50%) scale(${0.96 + 0.04 * ent})`,
+						maxWidth: width * visual.largura,
+						display: 'flex',
+						flexWrap: 'wrap',
+						justifyContent: 'center',
+						alignItems: 'baseline',
+						columnGap: base * 0.24,
+						rowGap: base * 0.08,
+						lineHeight: visual.entrelinha,
+						textAlign: 'center',
+						padding: `${base * 0.26}px ${base * 0.5}px`,
+						borderRadius: base * 0.42,
+						background: 'rgba(246,238,224,0.88)',
+						border: '1.5px solid rgba(255,255,255,0.7)',
+						boxShadow: '0 12px 32px rgba(20,6,40,0.35)',
+						opacity: ent * (1 - saida),
+						filter: saida > 0 ? `blur(${saida * 8}px)` : undefined,
+					}}
+				>
+					{pagina.palavras.map((p) => (
+						<Palavra key={p.indice} p={p} inicioPagina={pagina.de} visual={visual} estilo={cfg.estilo} base={base} />
+					))}
+				</div>
+			</AbsoluteFill>
+		);
+	}
 	return (
 		<AbsoluteFill style={{alignItems: 'center'}}>
 			<div
