@@ -4,6 +4,7 @@ import {elevenLabsTranscriptToCaptions} from '@remotion/elevenlabs';
 import {CURVA_PADRAO, type Curva} from './curva';
 import {
 	criarBusca,
+	encaixarNoSilencio,
 	palavrasEditadas,
 	trechosMantidos,
 	type Busca,
@@ -209,6 +210,23 @@ export type Cena =
 	| (Base & {tipo: 'contador'; rotulo: string; valor: number; prefixo?: string; sufixo?: string; em?: number; yTexto?: number})
 	// Pílula de vidro escuro: rótulo pequeno em caixa alta e nome em serifa itálica dourada (nome na tela, SIGA <nome>).
 	| (Base & {tipo: 'pilula'; rotulo: string; nome: string; y?: number})
+	// Modelo de entrevista aprovado (src/pecas/ModeloEntrevista.tsx; posições em px de um quadro 1080x1920).
+	// frase: palavras entram no seu tempo (em), destaque em Playfair dourado, vídeo escurecido; legenda some.
+	| (Base & {tipo: 'frase'; palavras: {texto: string; em: number; destaque?: boolean}[]; topo?: number; base?: number})
+	// Pílulas SIGA <nome>, uma por vez na altura do peito.
+	| (Base & {tipo: 'siga'; itens: {texto: string; em: number}[]; y?: number})
+	// Interface de live sobre o vídeo; espectadores (ex.: '1') e comentários opcionais.
+	| (Base & {tipo: 'live'; espectadores?: string; comentarios?: {nome: string; texto: string}[]; coracoes?: boolean; host?: string; curtidas?: string})
+	// Chips de vidro com ✓ (ou 1/2/3), um por vez no mesmo lugar.
+	| (Base & {tipo: 'chips'; itens: {texto: string; em: number}[]; y?: number; numerado?: boolean})
+	// Caixa de comentário digitada letra por letra.
+	| (Base & {tipo: 'comentario'; texto: string; y?: number})
+	// Número em ouro 3D acima da cabeça (y = centro em px), rótulo pequeno em cima e linha de vidro embaixo.
+	| (Base & {tipo: 'numero3d'; texto: string; rotulo?: string; abaixo?: string; em?: number; y?: number; largura?: number})
+	// Pílula dourada com batida e chip roxo opcional.
+	| (Base & {tipo: 'selo'; texto: string; chip?: string; emChip?: number; y?: number})
+	// Cartão final roxo com anel dourado e a marca.
+	| (Base & {tipo: 'final'; marca: string; sub?: string})
 	// Pílulas vermelhas de vidro com ícone, texto palavra por palavra (desmontagem-2, ref. 2, "what to say?").
 	// variante escura: vidro quase preto e texto branco inteiro (contraste sobre roupa vermelha, 23/10/2026).
 	| (Base & {
@@ -272,6 +290,8 @@ export type Legenda = {
 	enfase?: {palavra: string; estilo: EstiloEnfase; ocorrencia?: number; cor?: string}[];
 	// Tipos de cena que escondem a legenda (padrão: as que têm texto próprio).
 	esconderEm?: TipoCena[];
+	// Etiqueta de quem fala acima da legenda (estilo mare), no tempo editado. Ex.: [{de: 0, ate: 3, nome: 'PERGUNTA'}].
+	falantes?: {de: number; ate: number; nome: string}[] | ((b: Busca) => {de: number; ate: number; nome: string}[]);
 };
 
 export type TipoCena = Cena['tipo'];
@@ -293,6 +313,12 @@ export type Edit = {
 	// Notas faladas e pedidos para a IA, no tempo do vídeo ORIGINAL.
 	// Pode ser uma função: a busca aqui procura na fala original, antes dos cortes.
 	cortes?: Trecho[] | ((original: Busca) => Trecho[]);
+	// Alternativa a cortes: os trechos que ficam, NA ORDEM em que entram no vídeo (tempo original). Permite reordenar
+	// a fala (ex.: gancho com o resultado antes da apresentação). Tem prioridade sobre cortes.
+	trechos?: (original: Busca) => Trecho[];
+	// Pausas medidas no áudio do vídeo (npm run silencios -- <projeto> gera silencios.json): as bordas dos trechos
+	// mantidos se encaixam nelas.
+	silencios?: Trecho[];
 	musica?: {arquivo: string; volumeDb?: number};
 	curva?: Curva;
 	// false desliga a checagem de cobertura do npm run conferir (Reels, Shorts).
@@ -333,6 +359,7 @@ export type PaginaLegenda = {
 
 export type Montagem = {
 	legenda: PaginaLegenda[];
+	falantes: {de: number; ate: number; nome: string}[];
 	camera: EfeitoCamera[];
 	cortes: Trecho[];
 	mantidos: Trecho[];
@@ -377,6 +404,14 @@ const MODO_PADRAO: Record<TipoCena, Modo> = {
 	aovivo: 'sobre',
 	contador: 'sobre',
 	pilula: 'sobre',
+	frase: 'sobre',
+	siga: 'sobre',
+	live: 'sobre',
+	chips: 'sobre',
+	comentario: 'sobre',
+	numero3d: 'sobre',
+	selo: 'sobre',
+	final: 'cheia',
 };
 
 const SOM_PADRAO: Record<TipoCena, Som | null> = {
@@ -412,6 +447,14 @@ const SOM_PADRAO: Record<TipoCena, Som | null> = {
 	aovivo: null,
 	contador: null,
 	pilula: null,
+	frase: 'whoosh',
+	siga: 'swish',
+	live: 'whoosh',
+	chips: 'tick',
+	comentario: 'tick',
+	numero3d: 'rise',
+	selo: 'tick',
+	final: 'whoosh',
 };
 
 // Mesmo fps da composição: as emendas caem em quadro inteiro.
@@ -461,7 +504,19 @@ export const montar = (edit: Edit, duracaoFonte: number): Montagem => {
 	} else if (edit.cortes) {
 		cortes = edit.cortes;
 	}
-	const mantidos = trechosMantidos(cortes, duracaoFonte);
+	let mantidos: Trecho[];
+	if (edit.trechos) {
+		const original = criarBusca(palavrasEditadas(legendas, [[0, Infinity]]));
+		mantidos = edit
+			.trechos(original)
+			.filter(([a, b]) => Number.isFinite(a) && Number.isFinite(b) && b > a)
+			.map(([a, b]) => [Math.max(0, a), duracaoFonte > 0 ? Math.min(b, duracaoFonte) : b] as Trecho);
+		original.erros.forEach((e) => problemas.push({gravidade: 'erro', texto: `trecho ${e.busca}: ${e.motivo}`}));
+		cortes = [];
+	} else {
+		mantidos = trechosMantidos(cortes, duracaoFonte);
+	}
+	if (edit.silencios?.length) mantidos = encaixarNoSilencio(mantidos, edit.silencios);
 	const duracaoEditada = mantidos.reduce((s, [a, b]) => s + (b - a), 0) + (edit.extraFim ?? 0);
 	const palavras = palavrasEditadas(legendas, mantidos);
 	const busca = criarBusca(palavras);
@@ -557,10 +612,15 @@ export const montar = (edit: Edit, duracaoFonte: number): Montagem => {
 
 	const legenda = edit.legenda ? paginar(palavras, edit.legenda, validas, telaFinal, busca.emendas) : [];
 
-	return {legenda, camera, cortes, mantidos, duracaoEditada, palavras, cenas: validas, problemas, curva, telaFinal};
+	const falantes = typeof edit.legenda?.falantes === 'function' ? edit.legenda.falantes(busca) : (edit.legenda?.falantes ?? []);
+	return {legenda, falantes, camera, cortes, mantidos, duracaoEditada, palavras, cenas: validas, problemas, curva, telaFinal};
 };
 
 const TEXTO_PROPRIO: TipoCena[] = [
+	'frase',
+	'live',
+	'numero3d',
+	'final',
 	'titulo',
 	'numero',
 	'lista',

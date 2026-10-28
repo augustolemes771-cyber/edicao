@@ -245,8 +245,29 @@ const Pagina: React.FC<{pagina: PaginaLegenda; cfg: ConfigLegenda}> = ({pagina, 
 	const altura = cfg.altura ?? (width < height ? 0.6 : 0.8);
 	if (cfg.estilo === 'mare') {
 		const ent = interpolate(frame, [0, 5], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+		const meio = (pagina.de + pagina.ate) / 2;
+		const falante = (Array.isArray(cfg.falantes) ? cfg.falantes : []).find((f) => meio >= f.de && meio < f.ate)?.nome;
 		return (
 			<AbsoluteFill style={{alignItems: 'center'}}>
+				{falante ? (
+					<div
+						style={{
+							position: 'absolute',
+							top: `calc(${altura * 100}% - ${base * 1.25}px)`,
+							transform: 'translateY(-100%)',
+							fontFamily: visual.fonte,
+							fontWeight: 700,
+							fontSize: base * 0.5,
+							letterSpacing: '0.2em',
+							marginRight: '-0.2em',
+							color: '#fff',
+							textShadow: '0 2px 10px rgba(20,6,40,0.7)',
+							opacity: ent * (1 - saida),
+						}}
+					>
+						{falante}
+					</div>
+				) : null}
 				<div
 					style={{
 						position: 'absolute',

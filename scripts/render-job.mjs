@@ -6,7 +6,7 @@
 // Variável GL: renderizador WebGL do Chrome (padrão 'angle'; no pod Linux com placa NVIDIA, 'angle-egl' ou 'egl').
 // Variável HW=0: não tenta o codificador da placa de vídeo.
 import {spawn, spawnSync} from 'node:child_process';
-import {existsSync, mkdirSync, renameSync, rmSync} from 'node:fs';
+import {existsSync, mkdirSync, readFileSync, renameSync, rmSync, statSync} from 'node:fs';
 import path from 'node:path';
 import {bundle} from '@remotion/bundler';
 import {renderMedia, selectComposition} from '@remotion/renderer';
@@ -57,6 +57,15 @@ try {
 		emitir({fase: 'conferindo', pct: 0});
 		const r = spawnSync('npx', ['tsx', 'scripts/conferir.ts', projeto], {shell: ehWin, encoding: 'utf8'});
 		if (r.status !== 0) falhar('O conferir achou erros. Corrija antes do render final:\n' + (r.stdout || r.stderr || '').slice(-400));
+	}
+
+	// Projeto que usa silencios.json: mede as pausas do áudio se o arquivo está vazio ou é mais velho que o vídeo.
+	const arqSil = path.join(raiz, 'src/projetos', projeto, 'silencios.json');
+	const arqVideo = path.join(raiz, 'public/projetos', projeto, 'video.mp4');
+	if (temFfmpeg && existsSync(arqSil) && existsSync(arqVideo) && (readFileSync(arqSil, 'utf8').trim().length < 5 || statSync(arqSil).mtimeMs < statSync(arqVideo).mtimeMs)) {
+		emitir({fase: 'medindo as pausas do áudio', pct: 0});
+		const r = spawnSync(process.execPath, [path.join(raiz, 'scripts/silencios.mjs'), projeto], {encoding: 'utf8'});
+		if (r.status !== 0) emitir({aviso: 'Não consegui medir as pausas do áudio: os cortes ficam pelo tempo das palavras.'});
 	}
 
 	// 2. Empacotar o projeto (webpack).

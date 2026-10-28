@@ -66,6 +66,22 @@ Todo vídeo pertence a um tema (`biblioteca/temas/<tema>/`: `tema.json` com a li
 ler o `aprendizado.md` do tema e seguir. Ao terminar, ou quando o usuário aprovar, reprovar ou corrigir algo, acrescentar uma linha
 `- AAAA-MM-DD (projeto): lição` nele. Regra que vale para todos os temas fica nesta skill. Projeto novo entra em `projetos` do `tema.json`.
 
+## Qualidade de entrevistas e depoimentos (28/10/2026, oficial-1 refeito)
+
+- Vídeo do celular: `npm run preparar-video -- <projeto> <arquivos na ordem>`. Mantém a resolução original (4K continua 4K),
+  converte HDR do iPhone com zscale + tonemap e grava quase sem perda. Nunca reduzir para 1080 nem improvisar a conversão:
+  a versão reprovada tinha zoom de 1,64x sobre 1080 (borrado). Com fonte 1080, zoom no máximo 1,35.
+- Roteiro em ordem de história, não de gravação: `trechos` (lista ordenada) no lugar de `cortes`. Gancho com o resultado
+  (número), depois apresentação, dor, pergunta, virada, lição, crédito, CTA e cartão final. Trecho pode se repetir (o gancho
+  reaproveita o resultado).
+- Bordas no silêncio medido: `silencios: silencios as Trecho[]` com `silencios.json` (o render mede sozinho no PC; ou
+  `npm run silencios -- <projeto>`).
+- Peças com a qualidade do modelo aprovado (src/pecas/ModeloEntrevista.tsx): `numero3d`, `live` (com host, espectadores e
+  comentários da história), `frase`, `selo`, `chips` (um por vez), `siga`, `final`. Legenda `mare` com `falantes`.
+  Os efeitos podem mudar de vídeo para vídeo; o que não muda é a qualidade e a sensação: início chamativo, cortes rápidos
+  (zoom em cada emenda, chicote só na troca de falante), um evento a cada ~2 s, legenda no meio e um texto por vez.
+- Nada de fonte gótica, celular 3D genérico ou símbolos soltos: o usuário reprovou.
+
 ## Depois da entrega
 
 - Não renderizar de novo sem pedido. Ajuste depois da entrega vai para o código e para esta skill; render novo só

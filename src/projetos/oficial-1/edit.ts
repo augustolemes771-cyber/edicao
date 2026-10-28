@@ -1,14 +1,19 @@
 import type {Edit} from '../../motor/plano';
+import type {Trecho} from '../../motor/palavras';
+import silencios from './silencios.json';
 import transcricao from './transcricao.json';
 
-// Entrevista Paola (2 clipes unidos em video.mp4, 107 s → ~50 s). Rosto da Paola em x .72 y .33; entrevistador à esquerda.
+// Depoimento da Paola (entrevista, tema Entrevista). Refeito em 28/10/2026 depois de o usuário reprovar a primeira versão
+// (efeitos ruins, 3D e motion fracos, roteiro sem sentido, fora de tempo, legenda mal feita).
+// Roteiro (falas reordenadas): gancho com o resultado → apresentação → dor (primeira live chorando, só a irmã, nunca mais)
+// → pergunta → virada (menos de 1 mês, 20 mil na primeira live) → lição (tentar, tentar, tentar / é outra coisa) →
+// crédito (Danilow e o time) → CTA → cartão final. Visual do modelo aprovado: roxo + ouro + vidro, legenda maré no centro.
+// Rosto da Paola em x .72 y .33; o entrevistador fica à esquerda (x .3) e fala nas partes "PERGUNTA".
 const P = {x: 0.72, y: 0.33};
-// Câmera alta: o rosto desce para abrir espaço ao contador no topo.
-const BAIXO = {x: 0.72, y: 0.05};
+const ABERTO = {x: 0.5, y: 0.33};
+// Câmera alta: o rosto desce para abrir espaço para o número no topo.
+const BAIXO = {x: 0.72, y: 0.12};
 
-// Grupo "usar todos" (ordem decidida pela IA, pela sequência da fala): IMG_5212 (1).MOV (0:00–1:13) e depois
-// IMG_5213 (1).MOV (1:13–1:47, continuação: "E se não fosse o Danilo…" e o CTA). Os dois estão unidos, em HDR→SDR 1080x1920,
-// em video.mp4; os cortes abaixo usam o tempo dessa união e mantêm trechos dos dois clipes.
 export const FONTES = ['IMG_5212 (1).MOV', 'IMG_5213 (1).MOV'] as const;
 
 export const oficial1: Edit = {
@@ -17,186 +22,238 @@ export const oficial1: Edit = {
 	formato: 'vertical',
 	verificarCurva: false,
 	regraCamera: false,
-	extraFim: 3,
+	extraFim: 2.6,
+	silencios: silencios as Trecho[],
+	transcricao,
+	trechos: (o) => {
+		// [início, fim] no tempo original, com folga; as bordas se encaixam nas pausas medidas (silencios.json).
+		const fala = (de: string, ate: string, folga = 0.12): Trecho => [o.say(de).inicio - 0.06, o.say(ate).fim + folga];
+		return [
+			fala('eu fiz 20 mil em GMV', 'eu fiz 20 mil em GMV'),
+			fala('Tô aqui com a Paola', 'há mais de um ano'),
+			fala('primeira vez que eu fiz live shop', 'tinha sido a minha irmã'),
+			fala('Então isso me frustrava', 'nunca mais tentei abrir uma live'),
+			[o.say('E depois que você entrou').inicio - 0.06, o.at('método') + 1.0],
+			fala('como é foi a sua evolução', 'como é foi a sua evolução'),
+			fala('Faz menos de um mês que eu entrei', 'Faz menos de um mês que eu entrei'),
+			fala('aí na primeira live que eu fiz', 'ajuda do meu namorado', 0.02),
+			fala('é muito frustrante', 'você consegue vender'),
+			fala('E se não fosse o Danilow', 'não seria possível'),
+			fala('segue o Danilow ele é o cara', 'segue o Danilow ele é o cara'),
+			fala('Se você tá travado', 'vamos pra cima'),
+		];
+	},
 	legenda: {
 		estilo: 'mare',
 		altura: 0.656,
 		palavrasPorTela: 4,
 		enfase: [
-			{palavra: 'TikTok', estilo: 'serif'},
 			{palavra: 'chorando', estilo: 'serif'},
 			{palavra: 'irmã', estilo: 'serif'},
 			{palavra: 'frustrava', estilo: 'serif'},
 			{palavra: 'evolução', estilo: 'serif'},
-			{palavra: 'mês', estilo: 'serif'},
-			{palavra: 'Danilo', estilo: 'serif'},
+			{palavra: 'frustrante', estilo: 'serif'},
 			{palavra: 'erro', estilo: 'riscar'},
 			{palavra: 'vender', estilo: 'serif'},
+			{palavra: 'Danilow', estilo: 'serif'},
+			{palavra: 'chance', estilo: 'serif'},
+		],
+		falantes: (b) => [
+			{de: b.say('Tô aqui com a Paola').inicio - 0.2, ate: b.say('há mais de um ano').fim + 0.2, nome: 'DANILOW'},
+			{de: b.say('há mais de um ano').fim + 0.2, ate: b.say('E depois que você entrou').inicio - 0.1, nome: 'PAOLA'},
+			{de: b.say('E depois que você entrou').inicio - 0.1, ate: b.say('a sua evolução').fim + 0.2, nome: 'PERGUNTA'},
+			{de: b.say('a sua evolução').fim + 0.2, ate: b.say('Se você tá travado').inicio - 0.1, nome: 'PAOLA'},
+			{de: b.say('Se você tá travado').inicio - 0.1, ate: 999, nome: 'DANILOW'},
 		],
 	},
-	transcricao,
-	// Tempo original. Fica: apresentação, primeira live chorando, "nunca mais", pergunta, menos de 1 mês,
-	// 20 mil em GMV, "segue o Danilo", síntese e CTA. Sai: repetições, agradecimentos e o erro de gravação.
-	cortes: (o) => [
-		[o.say('há mais de um ano').fim + 0.12, o.at('primeira') - 0.1],
-		[o.say('a minha irmã').fim + 0.15, o.say('então isso me frustrava').inicio - 0.1],
-		[o.say('entrou no método').fim + 0.08, o.say('como é foi').inicio - 0.08],
-		[o.say('sua evolução').fim + 0.12, o.say('faz menos de um mês').inicio - 0.1],
-		[o.say('um mês que eu entrei').fim + 0.1, o.say('e aí na primeira live').inicio - 0.1],
-		[o.say('do meu namorado').fim + 0.12, o.at('segue') - 0.1],
-		[o.say('ele é o cara').fim + 0.1, o.say('porque de verdade').inicio - 0.1],
-		[o.say('consegue vender').fim + 0.15, o.say('se você tá travado').inicio - 0.1],
-	],
 	camera: (b) => {
 		const tentar = b.tempos('tentar tentar tentar');
+		const pergunta = b.say('E depois que você entrou').inicio;
+		const resposta = b.say('Faz menos de um mês').inicio;
+		const cta = b.say('Se você tá travado').inicio;
+		const apresenta = b.say('Tô aqui com a Paola').inicio;
+		// Troca de falante: chicote. Nas emendas do mesmo falante, o zoom muda de nível (aberto ↔ médio ↔ close) para o
+		// corte virar ritmo em vez de pulo. Zoom máximo 1,35: o vídeo é 1080 e mais que isso borra.
+		const trocas = [apresenta, b.say('primeira vez que eu fiz').inicio, pergunta, resposta, cta];
+		const niveis = [1.12, 1.26, 1.35];
+		const emendas = b.emendas
+			.filter((e) => trocas.every((t) => Math.abs(t - e) > 0.25))
+			.map((e, i) => ({tipo: 'zoom' as const, em: e, escala: niveis[i % niveis.length], ...P}));
 		return [
-			{tipo: 'foco', em: 0},
-			{tipo: 'zoom', em: 0, escala: 1},
-			{tipo: 'flash', em: b.at('Paola') - 0.05},
-			{tipo: 'zoom', em: b.at('Paola'), escala: 1.2, x: 0.5, y: 0.33},
-			{tipo: 'zoom', em: b.at('TikTok'), escala: 1.32, ...P},
-			// Paola: a primeira live
-			{tipo: 'chicote', em: b.at('primeira')},
-			{tipo: 'zoom', em: b.at('primeira'), escala: 1.35, ...P},
-			{tipo: 'zoom', em: b.at('chorando'), escala: 1.62, ...P},
-			{tipo: 'zoom', em: b.at('única'), escala: 1.3, ...P},
-			{tipo: 'zoom', em: b.at('irmã'), escala: 1.5, ...P},
-			// Drama: empurra devagar até o close enquanto a luz cai
-			{tipo: 'zoom', em: b.say('então isso me frustrava').inicio, escala: 1.2, ...P},
-			{tipo: 'zoom', em: b.at('depois'), escala: 1.6, suave: 1.1, ...P},
-			// Pergunta do entrevistador
-			{tipo: 'chicote', em: b.say('depois que você entrou').inicio},
-			{tipo: 'zoom', em: b.say('depois que você entrou').inicio, escala: 1, x: 0.5, y: 0.33},
-			{tipo: 'zoom', em: b.at('evolução'), escala: 1.25, x: 0.3, y: 0.3},
-			// Paola: a virada
-			{tipo: 'chicote', em: b.say('faz menos de um mês').inicio},
-			{tipo: 'zoom', em: b.say('faz menos de um mês').inicio, escala: 1.35, ...P},
-			{tipo: 'zoom', em: b.at('mês'), escala: 1.52, ...P},
-			{tipo: 'zoom', em: b.say('e aí na primeira live').inicio, escala: 1.15, ...BAIXO},
-			{tipo: 'zoom', em: b.at('20'), escala: 1.3, ...BAIXO},
-			{tipo: 'zoom', em: b.at('namorado'), escala: 1.45, ...BAIXO},
-			{tipo: 'zoom', em: b.at('segue'), escala: 1.3, ...P},
-			{tipo: 'zoom', em: b.at('Danilo'), escala: 1.48, ...P},
-			// Síntese: um punch por "tentar", clarão na virada
-			{tipo: 'zoom', em: b.at('frustrante'), escala: 1.22, ...P},
-			{tipo: 'zoom', em: tentar[0], escala: 1.34, ...P},
-			{tipo: 'zoom', em: tentar[1], escala: 1.48, ...P},
-			{tipo: 'zoom', em: tentar[2], escala: 1.64, ...P},
-			{tipo: 'zoom', em: b.at('achar'), escala: 1.3, ...P},
-			{tipo: 'flash', em: b.say('mas quando você entra').inicio},
-			{tipo: 'zoom', em: b.say('mas quando você entra').inicio, escala: 1.15, ...P},
-			{tipo: 'zoom', em: b.at('outra'), escala: 1.35, ...P},
-			{tipo: 'zoom', em: b.at('vender'), escala: 1.55, ...P},
+			// Gancho: abre já em close, câmera alta para o número 3D, clarão na batida
+			{tipo: 'zoom', em: 0, escala: 1.22, ...BAIXO},
+			{tipo: 'flash', em: b.at('20') - 0.04},
+			// Apresentação: plano aberto com os dois
+			{tipo: 'chicote', em: apresenta},
+			{tipo: 'zoom', em: apresenta, escala: 1, ...ABERTO},
+			{tipo: 'zoom', em: b.at('Paola'), escala: 1.12, ...ABERTO},
+			// Dor
+			{tipo: 'chicote', em: trocas[1]},
+			{tipo: 'zoom', em: trocas[1], escala: 1.18, ...P},
+			{tipo: 'zoom', em: b.at('chorando'), escala: 1.35, ...P},
+			{tipo: 'zoom', em: b.at('única'), escala: 1.1, ...P},
+			{tipo: 'zoom', em: b.at('irmã'), escala: 1.3, ...P},
+			{tipo: 'zoom', em: b.at('frustrava'), escala: 1.15, ...P},
+			{tipo: 'zoom', em: b.at('nunca'), escala: 1.35, suave: 0.6, ...P},
+			// Pergunta: aberto
+			{tipo: 'chicote', em: pergunta},
+			{tipo: 'zoom', em: pergunta, escala: 1, ...ABERTO},
+			// Virada e resultado
+			{tipo: 'chicote', em: resposta},
+			{tipo: 'zoom', em: resposta, escala: 1.25, ...P},
+			{tipo: 'zoom', em: b.at('mês'), escala: 1.35, ...P},
+			{tipo: 'zoom', em: b.say('primeira live').inicio, escala: 1.12, ...P},
+			{tipo: 'zoom', em: b.at('20', 2), escala: 1.2, ...BAIXO},
+			{tipo: 'zoom', em: b.at('namorado'), escala: 1.25, ...P},
+			// Lição: um punch por "tentar", clarão na virada
+			...emendas,
+			{tipo: 'zoom', em: tentar[0], escala: 1.12, ...P},
+			{tipo: 'zoom', em: tentar[1], escala: 1.24, ...P},
+			{tipo: 'zoom', em: tentar[2], escala: 1.35, ...P},
+			{tipo: 'zoom', em: b.at('erro'), escala: 1.15, ...P},
+			{tipo: 'flash', em: b.say('Mas quando você entra').inicio},
+			{tipo: 'zoom', em: b.say('Mas quando você entra').inicio, escala: 1.1, ...P},
+			{tipo: 'zoom', em: b.at('outra'), escala: 1.28, ...P},
+			{tipo: 'zoom', em: b.at('vender'), escala: 1.35, ...P},
+			// Crédito
+			{tipo: 'zoom', em: b.at('Danilow'), escala: 1.2, ...P},
+			{tipo: 'zoom', em: b.at('Felipe'), escala: 1.3, ...P},
+			{tipo: 'zoom', em: b.at('Danilow', 2), escala: 1.15, ...P},
 			// CTA em plano aberto
-			{tipo: 'chicote', em: b.say('se você tá travado').inicio},
-			{tipo: 'zoom', em: b.say('se você tá travado').inicio, escala: 1, x: 0.5, y: 0.33},
+			{tipo: 'chicote', em: cta},
+			{tipo: 'zoom', em: cta, escala: 1, ...ABERTO},
+			{tipo: 'zoom', em: b.at('chance'), escala: 1.12, ...ABERTO},
 		];
 	},
 	cenas: (b) => {
-		const nunca = b.at('nunca');
-		const live = b.tempos('abrir uma live')[2];
 		const fimFala = b.say('vamos pra cima').fim;
+		const vinte2 = b.at('20', 2);
 		return [
+			// 1. Gancho: R$ 20 MIL em ouro 3D acima da cabeça, com GMV em cima
 			{
-				tipo: 'pilula',
-				de: b.at('Paola') + 0.1,
-				ate: b.at('primeira') - 0.15,
-				rotulo: '+1 ano de TikTok Shop',
-				nome: 'Paola',
-				y: 0.55,
-				som: 'whoosh',
-				sons: [],
+				tipo: 'numero3d',
+				de: 0,
+				ate: b.say('eu fiz 20 mil em GMV').fim + 0.15,
+				texto: 'R$ 20 MIL',
+				rotulo: 'GMV',
+				abaixo: 'NA PRIMEIRA LIVE',
+				// Bate já no primeiro quadro: o gancho tem 1,7 s e as letras precisam assentar antes do "GMV".
+				em: 0,
+				som: 'impacto',
 			},
+			// 2. Nome na tela
+			{tipo: 'pilula', de: b.at('Paola') + 0.05, ate: b.say('há mais de um ano').fim + 0.1, rotulo: '+1 ano de TikTok Shop', nome: 'Paola', y: 0.49, som: 'swish'},
+			// 3. A live vazia: 1 espectador, só a irmã comentando
 			{
-				tipo: 'pilula',
-				de: b.at('única'),
-				ate: b.say('a minha irmã').fim + 0.1,
-				rotulo: 'Pessoas na live:',
-				nome: 'só 1',
-				y: 0.55,
+				tipo: 'live',
+				de: b.at('única') - 0.05,
+				ate: b.at('única') + 1.5,
+				host: 'Paola',
+				curtidas: '3 curtidas',
+				espectadores: '1',
+				comentarios: [{nome: 'Irmã', texto: 'tô aqui 💜'}],
+				coracoes: false,
+				som: 'whoosh',
+			},
+			// 4. NUNCA MAIS
+			{
+				tipo: 'frase',
+				de: b.at('nunca') - 0.08,
+				ate: b.say('tentei abrir uma live').fim + 0.15,
+				palavras: [
+					{texto: 'NUNCA', em: b.at('nunca')},
+					{texto: 'MAIS', em: b.at('mais'), destaque: true},
+				],
+				som: 'grave',
+			},
+			// 5. Menos de 1 mês
+			{
+				tipo: 'selo',
+				de: b.say('Faz menos').inicio - 0.02,
+				ate: b.say('aí na primeira live').inicio - 0.1,
+				texto: 'MENOS DE 1 MÊS',
+				chip: 'NO MÉTODO',
+				esconderLegenda: true,
 				som: 'tick',
 			},
+			// 6. A primeira live com o método: a live cheia
 			{
-				tipo: 'drama',
-				de: b.at('depois') - 0.05,
-				ate: b.say('abrir uma live').fim + 0.4,
-				pequeno: 'DEPOIS DESSE DIA',
-				grande: 'NUNCA MAIS',
-				em: nunca,
-				apaga: live,
-				...P,
-				som: 'subida',
-				sons: [
-					{em: nunca, som: 'impacto', ganho: 1},
-					{em: nunca, som: 'grave', ganho: 0.8},
-					{em: live, som: 'impacto', ganho: 0.9},
-					{em: live + 0.05, som: 'glitch', ganho: 0.45},
+				tipo: 'live',
+				de: b.say('aí na primeira live').inicio - 0.05,
+				ate: b.say('primeira live').inicio + 1.4,
+				host: 'Paola',
+				curtidas: '12,6 mil curtidas',
+				espectadores: '1,4 mil',
+				comentarios: [
+					{nome: 'Carla', texto: 'quero 2!'},
+					{nome: 'Bruno', texto: 'comprei 🔥'},
+					{nome: 'Ju', texto: 'que live boa'},
 				],
-			},
-			{
-				tipo: 'aovivo',
-				de: b.tempos('primeira live')[1] - 0.05,
-				ate: b.at('consegui'),
-				y: 0.55,
 				som: 'whoosh',
 			},
+			// 7. Resultado: R$ 20 MIL de novo, agora com a virada
 			{
-				tipo: 'contador',
-				de: b.at('20') - 0.45,
-				ate: b.say('do meu namorado').fim + 0.15,
+				tipo: 'numero3d',
+				de: vinte2 - 0.3,
+				ate: b.at('namorado') + 0.3,
+				texto: 'R$ 20 MIL',
 				rotulo: 'GMV',
-				prefixo: 'R$',
-				valor: 20,
-				sufixo: 'MIL',
-				em: b.at('20'),
-				yTexto: 0.15,
-				som: 'rise',
-				sons: [{em: b.at('20') + 0.8, som: 'boom', ganho: 0.55}],
+				abaixo: 'COM O MÉTODO',
+				em: vinte2 - 0.3,
+				som: 'impacto',
 			},
+			// 8. Tentar, tentar, tentar: um chip por vez no mesmo lugar, numerado
 			{
-				tipo: 'pilula',
-				de: b.at('segue'),
-				ate: b.at('Danilo') + 0.6,
-				rotulo: 'Siga',
-				nome: 'Danilo',
-				y: 0.55,
-				som: 'whoosh',
+				tipo: 'chips',
+				de: b.tempos('tentar tentar tentar')[0] - 0.05,
+				ate: b.at('erro') - 0.1,
+				itens: b.tempos('tentar tentar tentar').map((t) => ({texto: 'TENTAR', em: t})),
+				numerado: true,
+				y: 1020,
 				esconderLegenda: true,
 			},
+			// 9. A virada da lição
 			{
-				tipo: 'kicker',
-				de: b.say('se você tá travado').inicio,
-				ate: b.say('já me siga').inicio - 0.05,
-				pequeno: 'travado com live?',
-				grande: 'essa é a sua chance',
-				emGrande: b.at('essa') - b.say('se você tá travado').inicio,
-				estilo: 'ouro',
+				tipo: 'frase',
+				de: b.at('outra') - 0.08,
+				ate: b.at('coisa') + 0.75,
+				palavras: [
+					{texto: 'É', em: b.at('outra') - 0.12},
+					{texto: 'OUTRA', em: b.at('outra')},
+					{texto: 'COISA', em: b.at('coisa'), destaque: true},
+				],
 				som: 'whoosh',
 			},
+			// 10. O time: um nome por vez
 			{
-				tipo: 'pilula',
-				de: b.say('já siga a Paola').inicio,
-				ate: fimFala + 0.1,
-				rotulo: 'Siga',
-				nome: 'Paola',
-				y: 0.55,
-				som: 'whoosh',
+				tipo: 'chips',
+				de: b.say('o Danilow').inicio - 0.05,
+				ate: b.say('não seria possível').fim + 0.1,
+				itens: [
+					{texto: 'DANILOW', em: b.at('Danilow')},
+					{texto: 'FELIPE', em: b.at('Felipe')},
+					{texto: 'MATHEUS', em: b.at('Matheus')},
+				],
+				y: 1020,
 				esconderLegenda: true,
+				som: 'tick',
 			},
+			// 11. Siga
+			{tipo: 'siga', de: b.at('segue'), ate: b.say('ele é o cara').fim + 0.15, itens: [{texto: 'DANILOW', em: b.at('segue')}], y: 1040, esconderLegenda: true, som: 'swish'},
+			// 12. CTA
 			{
-				tipo: 'cenario',
-				de: fimFala + 0.1,
-				ate: fimFala + 3,
-				superficie: 'escuro',
-				luz: 'janela',
-				estiloTexto: 'ouro',
-				pequeno: 'da live chorando a',
-				grande: 'R$ 20 mil',
-				abaixo: 'na primeira live com método',
-				revelar: 'palavras',
-				objetos: [{tipo: 'celular', x: 0, y: -0.35, escala: 1}],
+				tipo: 'frase',
+				de: b.at('essa') - 0.08,
+				ate: b.at('chance') + 0.7,
+				palavras: [
+					{texto: 'ESSA É A SUA', em: b.at('essa')},
+					{texto: 'CHANCE', em: b.at('chance'), destaque: true},
+				],
 				som: 'whoosh',
 			},
+			{tipo: 'siga', de: b.say('já siga a Paola').inicio, ate: fimFala + 0.1, itens: [{texto: 'PAOLA', em: b.say('siga a Paola').inicio}], y: 1040, esconderLegenda: true, som: 'swish'},
+			// 13. Cartão final
+			{tipo: 'final', de: fimFala + 0.1, ate: fimFala + 2.6, marca: 'Danilow', sub: 'LIVE SHOP', som: 'whoosh'},
 		];
 	},
 };

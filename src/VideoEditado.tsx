@@ -423,7 +423,7 @@ export const VideoEditado: React.FC<PropsVideo> = ({projeto, duracaoFonte}) => {
 				<Camera edit={edit} montagem={montagem} telas={telas} atras={camada(atras)} />
 				{camada(cheias)}
 				{camada(sobre)}
-				{edit.legenda && <Legenda paginas={montagem.legenda} cfg={edit.legenda} />}
+				{edit.legenda && <Legenda paginas={montagem.legenda} cfg={{...edit.legenda, falantes: montagem.falantes}} />}
 			</AbsoluteFill>
 			{clarao > 0 && <AbsoluteFill style={{backgroundColor: '#fff', opacity: clarao}} />}
 			<Transicoes t={trans} />

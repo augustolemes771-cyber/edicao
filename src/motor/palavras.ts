@@ -45,30 +45,56 @@ export const paraTempoEditado = (t: number, mantidos: Trecho[]): number | null =
 
 export const palavrasEditadas = (legendas: Caption[], mantidos: Trecho[]): Palavra[] => {
 	const saida: Palavra[] = [];
+	// Início de cada trecho no vídeo editado.
+	const inicios: number[] = [];
+	mantidos.reduce((acc, [a, b]) => (inicios.push(acc), acc + (b - a)), 0);
 	for (const c of legendas) {
 		const texto = c.text.trim();
 		if (!texto) continue;
 		const ini = c.startMs / 1000;
 		const fimOriginal = c.endMs / 1000;
-		// A palavra fica no trecho mantido que cobre a maior parte dela (o tempo do Whisper erra ~0,3 s
-		// e a borda de um corte pode pegar o fim da palavra). Menos da metade dentro: a palavra saiu no corte.
+		// A palavra entra em cada trecho mantido que cobre a maior parte dela (o tempo do Whisper erra ~0,3 s e a borda de
+		// um corte pode pegar o fim da palavra). Menos da metade dentro: a palavra saiu no corte. Um trecho reaproveitado
+		// (ex.: o resultado usado como gancho e de novo no meio) repete as palavras dele.
 		const dur = Math.max(0.01, fimOriginal - ini);
-		let trecho: Trecho | null = null;
-		let melhor = 0;
-		for (const t of mantidos) {
+		mantidos.forEach((t, i) => {
 			const sobra = Math.min(fimOriginal, t[1]) - Math.max(ini, t[0]);
-			if (sobra > melhor) {
-				melhor = sobra;
-				trecho = t;
+			if (sobra / dur < 0.5) return;
+			const inicio = inicios[i] + (Math.max(ini, t[0]) - t[0]);
+			const fim = inicios[i] + (Math.min(fimOriginal, t[1]) - t[0]);
+			saida.push({texto, inicio, fim, indice: saida.length});
+		});
+	}
+	// Com trechos fora da ordem original, a ordem da fala editada é a do tempo editado.
+	saida.sort((a, b) => a.inicio - b.inicio);
+	saida.forEach((p, i) => (p.indice = i));
+	return saida;
+};
+
+// Encaixa as bordas dos trechos nas pausas medidas no áudio (silencios.json). O tempo de palavra do Whisper erra
+// ~0,3 s: cortar pela palavra come sílaba ou deixa respiração. Começo: logo antes de a fala voltar; fim: logo depois
+// de ela parar. Sem pausa perto (fala emendada), a borda fica onde está.
+export const encaixarNoSilencio = (trechos: Trecho[], silencios: Trecho[], janela = 0.3): Trecho[] => {
+	if (!silencios.length) return trechos;
+	const perto = (t: number) => {
+		let melhor: Trecho | null = null;
+		let dist = Infinity;
+		for (const s of silencios) {
+			const d = t < s[0] ? s[0] - t : t > s[1] ? t - s[1] : 0;
+			if (d <= janela && d < dist) {
+				dist = d;
+				melhor = s;
 			}
 		}
-		if (!trecho || melhor / dur < 0.5) continue;
-		const inicio = paraTempoEditado(Math.max(ini, trecho[0]), mantidos);
-		const fim = paraTempoEditado(Math.min(fimOriginal, trecho[1]), mantidos);
-		if (inicio === null || fim === null) continue;
-		saida.push({texto, inicio, fim, indice: saida.length});
-	}
-	return saida;
+		return melhor;
+	};
+	return trechos.map(([a, b]) => {
+		const sa = perto(a);
+		const sb = perto(b);
+		const na = sa ? Math.max(sa[0], sa[1] - 0.06) : a;
+		const nb = sb ? Math.min(sb[1], sb[0] + 0.1) : b;
+		return nb - na > 0.2 ? [na, nb] : [a, b];
+	});
 };
 
 export type Busca = {

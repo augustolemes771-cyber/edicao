@@ -40,4 +40,6 @@ if (vazia) {
 	if (!rodar('transcrever')) process.exit(1);
 } else console.log('[transcrever] já existe, pulei');
 if (!rodar('roteiro')) process.exit(1);
+// Pausas do áudio para os cortes caírem no silêncio (só para projetos que usam silencios.json).
+if (existsSync(path.join(raiz, 'src/projetos', nome, 'silencios.json'))) rodar('silencios');
 console.log(`\nPronto. Leia docs/${nome}/transcript-lines.txt e o guia docs/referencias/edit-ts-guia.md; depois escreva src/projetos/${nome}/edit.ts.`);

@@ -18,7 +18,9 @@
     "previas": "tsx scripts/previas.ts",
     "musica": "bash scripts/musica.sh",
     "painel": "node painel/servidor.mjs",
-    "miniaturas": "tsx scripts/miniaturas.ts"
+    "miniaturas": "tsx scripts/miniaturas.ts",
+    "silencios": "node scripts/silencios.mjs",
+    "preparar-video": "node scripts/preparar-video.mjs"
   },
   "dependencies": {
     "@react-three/fiber": "9.2.0",
