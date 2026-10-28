@@ -27,4 +27,9 @@ Regras aprendidas nos vídeos deste tema. O Claude lê isto antes de editar e ac
 - 2026-10-28 (primeiro): Reprovou o som 'grave' nos números 3D (macabro, sem sentido, sem tom profissional e animado). Para números/gancho usar sons curtos e claros (pop, swish, tick); evitar grave, impacto e subida (drones longos).
 - 2026-10-28 (primeiro): Som grave/drone no gancho foi reprovado ("macabro, sem tom profissional e animado"): em número 3D usar pop/swish/whoosh leves, nunca grave. Na legenda maré a palavra falada precisa mudar de cor (violeta vivo) enquanto é dita.
 - 2026-10-28 (primeiro): gancho R$ 20 MIL em ouro 3D + 1 ANO 3D + legenda de pílula no bloco 1 foram aprovados.
+- 2026-10-28 (modelo WhatsApp Video 2026-10-27 at 14.42.56 (1)): é o master 1080p do modelo danilowtts; medido nele: ~16 cortes/min contando transições, 0,8 evento/s, gancho com evento a cada ~0,6 s, fala a ~4,2 palavras/s sem pausa.
+- 2026-10-28 (modelo WhatsApp Video 2026-10-27 at 14.42.56 (1)): número do gancho conta com ease-out (saltos grandes que desaceleram) por ~2 s e só então trava com clarão; nunca aparece pronto.
+- 2026-10-28 (modelo WhatsApp Video 2026-10-27 at 14.42.56 (1)): rótulo pequeno acima da legenda diz quem fala (nome do convidado) ou "PERGUNTA" na fala do entrevistador; some na resposta seguinte.
+- 2026-10-28 (modelo WhatsApp Video 2026-10-27 at 14.42.56 (1)): na legenda, só a palavra-chave da frase vira pílula roxa com itálico serifado; no máximo uma por frase.
+- 2026-10-28 (modelo WhatsApp Video 2026-10-27 at 14.42.56 (1)): transições por função: chicote = troca de falante; desfoque curto = entrar no close da mesma cena; clarão = só gancho e síntese.
 - 2026-10-28 (primeiro): trechos vizinhos que se sobrepõem no original duplicam palavras/quadros; dividir a sobreposição ao meio. Frase de dor: estática, tela cheia, palavra por palavra, sem zoom de câmera.
