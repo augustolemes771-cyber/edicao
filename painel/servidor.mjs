@@ -22,11 +22,28 @@ import {criarTarefas} from './tarefas.mjs';
 
 const raiz = path.resolve(import.meta.dirname, '..');
 const porta = Number(process.env.PORTA ?? 4000);
-const token = randomBytes(24).toString('hex');
 const estado = path.join(raiz, '.painel');
 mkdirSync(estado, {recursive: true});
+// O token fica guardado neste PC (.painel/token, fora do git): se o painel já estiver aberto e o atalho for clicado de
+// novo, a segunda cópia só abre o navegador no painel que já está rodando.
+const arqToken = path.join(estado, 'token');
+const token = (() => {
+	try {
+		const t = readFileSync(arqToken, 'utf8').trim();
+		if (/^[a-f0-9]{48}$/.test(t)) return t;
+	} catch {}
+	const t = randomBytes(24).toString('hex');
+	writeFileSync(arqToken, t);
+	return t;
+})();
 const arqSessoes = path.join(estado, 'sessoes.json');
-const ler = (f, padrao) => (existsSync(f) ? JSON.parse(readFileSync(f, 'utf8')) : padrao);
+const ler = (f, padrao) => {
+	try {
+		return existsSync(f) ? JSON.parse(readFileSync(f, 'utf8')) : padrao;
+	} catch {
+		return padrao;
+	}
+};
 const sessoes = ler(arqSessoes, {});
 const cfg = criarConfig(raiz, estado);
 const historico = criarHistorico(estado);
@@ -866,7 +883,23 @@ createServer(async (req, res) => {
 		if (!res.headersSent) json(res, {erro: msg.slice(-600)}, e?.codigo ?? 500);
 		else res.end();
 	}
-}).listen(porta, '127.0.0.1', () => {
+})
+	.on('error', async (e) => {
+		if (e.code !== 'EADDRINUSE') throw e;
+		// Porta ocupada: se for este painel já aberto, só abre o navegador nele.
+		const endereco = `http://localhost:${porta}/#${token}`;
+		const r = await fetch(`http://127.0.0.1:${porta}/api/claude`, {headers: {'x-painel-token': token}}).catch(() => null);
+		if (r?.ok) {
+			console.log(`\nO painel já está aberto em outra janela. Abri no navegador: ${endereco}\n`);
+			if (!process.env.SEM_NAVEGADOR) abrirNoNavegador(endereco);
+			process.exit(0);
+		}
+		console.log(r
+			? `\nJá existe um painel antigo aberto na porta ${porta}. Feche a outra janela preta do painel (ou reinicie o PC) e abra de novo.\n`
+			: `\nA porta ${porta} está ocupada por outro programa. Feche esse programa ou reinicie o PC e abra o painel de novo.\n`);
+		process.exit(1);
+	})
+	.listen(porta, '127.0.0.1', () => {
 	const endereco = `http://localhost:${porta}/#${token}`;
 	console.log(`\nPainel de edição pronto: ${endereco}\n(não feche esta janela enquanto estiver editando)\n`);
 	if (!process.env.SEM_NAVEGADOR) abrirNoNavegador(endereco);
