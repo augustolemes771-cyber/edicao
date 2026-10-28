@@ -7,7 +7,7 @@
 //      node scripts/importar-pack.mjs <link do Drive> --pasta "D:\Pack"   (lista o Drive, usa a pasta como raiz no
 //      lugar, reconhece o que já está lá e baixa só o que falta, direto nela)
 // Uma linha JSON por evento em stdout, como o render-job.mjs:
-//   {"fase":"listando"|"baixando"|"extraindo", "pct":0..100, "arquivo":"..."}
+//   {"fase":"listando..."|"baixando N de M"|"extraindo", "pct":0..100, "arquivo":"..."}
 //   {"fim":true, "saida":"biblioteca/pack/catalogo.json", "total":n, "aviso"?:"..."}  ou  {"erro":"mensagem"}
 import {spawnSync} from 'node:child_process';
 import {copyFileSync, createWriteStream, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync} from 'node:fs';
@@ -132,13 +132,20 @@ const entidades = (s) =>
 		.replace(/&gt;/g, '>')
 		.replace(/&amp;/g, '&');
 
-const buscar = async (url, tentativas = 3) => {
+// Sem limite, uma resposta do Drive que nunca chega trava a importação para sempre (aconteceu na listagem).
+// `limite` vale até chegar o cabeçalho; o corpo do download tem o próprio vigia em baixarArquivo.
+const buscar = async (url, tentativas = 3, limite = 45000) => {
 	for (let i = 1; ; i++) {
+		const ctl = new AbortController();
+		const relogio = setTimeout(() => ctl.abort(), limite);
 		try {
-			const r = await fetch(url, {headers: UA, redirect: 'follow'});
+			const r = await fetch(url, {headers: UA, redirect: 'follow', signal: ctl.signal});
+			clearTimeout(relogio);
 			if (r.ok) return r;
 			if (i >= tentativas || r.status === 404 || r.status === 403) throw new Error(`HTTP ${r.status} em ${url}`);
 		} catch (e) {
+			clearTimeout(relogio);
+			if (ctl.signal.aborted) e = new Error(`O Drive não respondeu em ${limite / 1000} s (${new URL(url).host})`);
 			// "fetch failed" sozinho não ajuda: mostra o host e a causa (sem internet, DNS, bloqueio).
 			if (i >= tentativas) throw e.cause ? new Error(`Sem acesso a ${new URL(url).host} (${e.cause.code ?? e.cause.message})`) : e;
 		}
@@ -147,8 +154,23 @@ const buscar = async (url, tentativas = 3) => {
 };
 
 // Lista uma pasta pela página embeddedfolderview: [{id, nome, pasta}].
+const lerPagina = async (url) => {
+	for (let i = 1; ; i++) {
+		const r = await buscar(url);
+		let relogio;
+		const limite = new Promise((_, falha) => (relogio = setTimeout(() => falha(new Error('O Drive parou de mandar a lista da pasta')), 45000)));
+		try {
+			return await Promise.race([r.text(), limite]);
+		} catch (e) {
+			r.body?.cancel().catch(() => {});
+			if (i >= 3) throw e;
+		} finally {
+			clearTimeout(relogio);
+		}
+	}
+};
 const listarPasta = async (id) => {
-	const html = await (await buscar(`https://drive.google.com/embeddedfolderview?id=${id}`)).text();
+	const html = await lerPagina(`https://drive.google.com/embeddedfolderview?id=${id}`);
 	const itens = [];
 	for (const bloco of html.split(/<div class="flip-entry"/).slice(1)) {
 		const idItem = bloco.match(/id="entry-([\w-]+)"/)?.[1];
@@ -178,7 +200,7 @@ const listarTudo = async (idRaiz) => {
 		vistas.add(id);
 		// Não se sabe quantas subpastas há: estimativa que só avança, e 100 só no fim.
 		pct = Math.max(pct, Math.min(99, ((vistas.size - 1) / (vistas.size + fila.length)) * 100));
-		emitir({fase: 'listando', pct, arquivo: caminho.join('/') || '(raiz)'});
+		emitir({fase: 'listando as pastas do Drive', pct, arquivo: caminho.join('/') || '(raiz)'});
 		const usados = new Set();
 		for (const it of await listarPasta(id)) {
 			let nome = limpar(it.nome);
@@ -192,7 +214,7 @@ const listarTudo = async (idRaiz) => {
 			else if (!ignorar(nome)) arquivos.push({id: it.id, caminho: [...caminho, nome]});
 		}
 	}
-	emitir({fase: 'listando', pct: 100, arquivo: `${arquivos.length} arquivos`});
+	emitir({fase: 'listando as pastas do Drive', pct: 100, arquivo: `${arquivos.length} arquivos`});
 	return arquivos;
 };
 
@@ -215,13 +237,23 @@ const baixarArquivo = async (id, destino, aoProgredir) => {
 	const total = Number(r.headers.get('content-length')) || 0;
 	let feito = 0;
 	const corpo = Readable.fromWeb(r.body);
+	// Vigia: 90 s sem chegar nada = download parado; cai na nova tentativa de baixarLista.
+	let chegou = Date.now();
+	const vigia = setInterval(() => {
+		if (Date.now() - chegou > 90000) corpo.destroy(new Error('O download parou de receber dados'));
+	}, 5000);
 	corpo.on('data', (b) => {
+		chegou = Date.now();
 		feito += b.length;
 		if (total) aoProgredir(feito / total);
 	});
 	mkdirSync(path.dirname(destino), {recursive: true});
 	const parcial = destino + '.parcial';
-	await pipeline(corpo, createWriteStream(parcial));
+	try {
+		await pipeline(corpo, createWriteStream(parcial));
+	} finally {
+		clearInterval(vigia);
+	}
 	renameSync(parcial, destino);
 };
 
@@ -230,7 +262,7 @@ const baixarLista = async (lista) => {
 	const falhas = [];
 	for (const [i, it] of lista.entries()) {
 		const nome = rel(it.destino, it.base);
-		const pct = (frac) => emitir({fase: 'baixando', pct: ((i + frac) / lista.length) * 100, arquivo: nome});
+		const pct = (frac) => emitir({fase: `baixando ${i + 1} de ${lista.length}`, pct: ((i + frac) / lista.length) * 100, arquivo: nome});
 		pct(0);
 		for (let t = 1; ; t++) {
 			try {
@@ -249,7 +281,7 @@ const baixarLista = async (lista) => {
 		// Salva a cada arquivo: se cair no meio, o que já veio fica no catálogo.
 		salvarCatalogo();
 	}
-	emitir({fase: 'baixando', pct: 100, arquivo: ''});
+	emitir({fase: `baixando ${lista.length} de ${lista.length}`, pct: 100, arquivo: ''});
 	return falhas;
 };
 

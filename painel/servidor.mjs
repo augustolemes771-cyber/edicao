@@ -135,7 +135,9 @@ const biblioteca = () => {
 const raizesPack = () => {
 	const r = lerJson(path.join(estado, 'pack.json'), {})?.raiz;
 	const local = typeof r === 'string' && path.isAbsolute(r) && existsSync(r) ? [path.resolve(r)] : [];
-	return [...local, path.join(raiz, 'biblioteca/pack/arquivos')];
+	// Pastas de pack vinculadas ao Drive (scripts/drive.mjs config), também deste PC.
+	const drive = (lerJson(path.join(estado, 'drive.json'), {})?.packs ?? []).filter((p) => typeof p === 'string' && path.isAbsolute(p) && existsSync(p)).map((p) => path.resolve(p));
+	return [...local, ...drive, path.join(raiz, 'biblioteca/pack/arquivos')];
 };
 // Primeiro na pasta de .painel/pack.json, depois em biblioteca/pack/arquivos; sempre preso dentro da pasta.
 const acharPack = (rel, raizes = raizesPack()) => {
@@ -167,6 +169,28 @@ const listarMidias = (proj, tipo) => {
 		.map((d) => ({nome: d.name, tamanho: statSync(path.join(dir, d.name)).size}))
 		.sort((a, b) => a.nome.localeCompare(b.nome));
 };
+// Grupos de mídia: arquivos que o usuário juntou para virar UM vídeo. modo "todos" = usar todos na ordem; "ia" = a IA escolhe o que usar.
+// Fica em src/projetos/<projeto>/grupos-midia.json (vai para o git, sem os arquivos).
+const arqGrupos = (proj) => path.join(raiz, 'src/projetos', proj, 'grupos-midia.json');
+const lerGrupos = (proj) => {
+	const existentes = new Set(listarMidias(proj, 'midias').map((m) => m.nome));
+	const g = lerJson(arqGrupos(proj), {grupos: []})?.grupos;
+	return (Array.isArray(g) ? g : [])
+		.map((x) => ({nome: String(x?.nome ?? '').slice(0, 60), modo: x?.modo === 'ia' ? 'ia' : 'todos', ordem: x?.ordem === 'ia' ? 'ia' : 'minha', arquivos: (Array.isArray(x?.arquivos) ? x.arquivos : []).map(String).filter((a) => existentes.has(a))}))
+		.filter((x) => x.arquivos.length >= 2);
+};
+const textoGrupos = (proj) =>
+	lerGrupos(proj)
+		.map((g, i) => `- Vídeo único${g.nome ? ` "${g.nome}"` : ` ${i + 1}`}: ${g.arquivos.join(', ')}. ${g.modo === 'todos' ? 'USE TODOS estes arquivos' : 'A IA escolhe: use só os arquivos e trechos necessários para cumprir o pedido e descarte o resto'}${g.ordem === 'ia' ? '; a ORDEM é a IA quem define (a da lista é só a de seleção: reordene para o melhor roteiro e ritmo)' : '; mantenha ESTA ORDEM'}.`)
+		.join('\n');
+// Arquivos de grupos "usar todos" que o edit.ts não menciona (a edição não usou esse material).
+const midiasNaoUsadas = (proj) => {
+	if (!projetoOk(proj)) return [];
+	const edit = path.join(raiz, 'src/projetos', proj, 'edit.ts');
+	const codigo = existsSync(edit) ? readFileSync(edit, 'utf8').toLowerCase() : '';
+	const obrig = [...new Set(lerGrupos(proj).filter((g) => g.modo === 'todos').flatMap((g) => g.arquivos))];
+	return obrig.filter((a) => !codigo.includes(a.toLowerCase()) && !codigo.includes(a.toLowerCase().replace(/[.][^.]+$/, '')));
+};
 const arqNotas = (proj) => path.join(raiz, 'src/projetos', proj, 'referencias.md');
 const resumoMidias = (proj) => {
 	if (!projetoOk(proj)) return '';
@@ -174,7 +198,7 @@ const resumoMidias = (proj) => {
 	const notas = existsSync(arqNotas(proj)) ? readFileSync(arqNotas(proj), 'utf8').trim() : '';
 	return `
 Mídias do vídeo (public/projetos/${proj}/): ${lista('midias')}.
-Referências (public/projetos/${proj}/referencias/): ${lista('referencias')}.
+Referências (public/projetos/${proj}/referencias/): ${lista('referencias')}.${textoGrupos(proj) ? `\nGrupos de mídia que o usuário definiu (cada grupo é UM vídeo montado com aqueles arquivos; as mídias fora de grupos são material solto):\n${textoGrupos(proj)}` : ''}
 ${notas ? `Links e observações do usuário sobre as referências:\n${notas}\n` : ''}Use as mídias listadas como material do vídeo (se o vídeo principal não se chamar video.mp4, ajuste "video" em edit.ts). As referências mostram o estilo que o
 usuário quer: olhe as imagens e extraia quadros dos vídeos com ffmpeg para ver, e copie o jeito de editar (ritmo, tipografia, efeitos), sem copiar o conteúdo.`;
 };
@@ -253,15 +277,43 @@ const projetos = () => {
 		}));
 };
 
+// ---------- Google Drive para computador (vínculo das pastas, sem importar) ----------
+// scripts/drive.mjs faz o trabalho; o vínculo fica em .painel/drive.json (deste PC). "Puxar" roda em segundo plano.
+const driveJob = {rodando: false, fase: '', resultado: null, erro: ''};
+const rodarDrive = (args) =>
+	new Promise((ok, falha) => {
+		const p = spawn(process.execPath, [path.join(raiz, 'scripts/drive.mjs'), ...args], {cwd: raiz, stdio: ['ignore', 'pipe', 'pipe']});
+		let o = '', e = '';
+		p.stdout.on('data', (d) => (o += d));
+		p.stderr.on('data', (d) => (e += d));
+		p.on('error', falha);
+		p.on('close', (c) => {
+			const linha = (c === 0 ? o : e || o).trim().split('\n').pop() ?? '';
+			let j = null;
+			try { j = JSON.parse(linha); } catch {}
+			if (c === 0) ok(j ?? {}); else falha(new Error(j?.erro ?? (linha || `drive.mjs saiu com ${c}`)));
+		});
+	});
+const statusDrive = async () => ({...(await rodarDrive(['detectar'])), vinculo: lerJson(path.join(estado, 'drive.json'), null), job: driveJob});
+const puxarDrive = () => {
+	if (driveJob.rodando) return;
+	Object.assign(driveJob, {rodando: true, fase: 'copiando vídeos, projetos e modelos', resultado: null, erro: ''});
+	rodarDrive(['puxar'])
+		.then((r) => Object.assign(driveJob, {resultado: r}))
+		.catch((e) => (driveJob.erro = e.message))
+		.finally(() => (driveJob.rodando = false));
+};
+
 // ---------- Chat com o Claude Code ----------
 const instrucao = (projeto, tema, primeira) => {
 	const t = tema || 'aleatorios';
-	return `PAINEL DE EDIÇÃO do canal Mateus Dias. O usuário pede em texto e você edita. Projeto: "${projeto || 'nenhum (npm run novo se for vídeo novo)'}". Tema: "${t}".${primeira ? resumoMidias(projeto) : ''}
+	return `PAINEL DE EDIÇÃO do canal Mateus Dias. O usuário pede em texto e você edita. Projeto: "${projeto || 'nenhum (npm run novo se for vídeo novo)'}". Tema: "${t}".${primeira ? resumoMidias(projeto) : projetoOk(projeto) && textoGrupos(projeto) ? `\nGrupos de mídia (cada grupo é UM vídeo montado com aqueles arquivos):\n${textoGrupos(projeto)}` : ''}
 ECONOMIA DE LIMITE (prioridade máxima, sem baixar a qualidade da edição):
 - Responda em português, em no máximo 3 linhas; nada de narrar o que vai fazer nem repetir o que já disse. Sem código para o usuário: diga o que mudou e como ver (prévia ou Studio).
 - Nunca releia arquivo já lido nesta conversa. Arquivo grande (transcrição, edit.ts, JSON): Grep ou Read com offset/limit, nunca inteiro sem necessidade. Junte comandos independentes numa só chamada.
 - Não use subagentes. Não gere stills, prévias nem conferências que o pedido não exige; rode a conferência (npm run conferir) uma vez, antes da prévia.
 - Vídeo vertical (Reels/Shorts/TikTok): use também a skill .claude/skills/it-reelsmaker (corte por áudio, câmera virtual, legenda por palavra, recorte, rostos, master −14 LUFS, checklist). O SKILL.md dela é GRANDE: nunca leia inteiro. Veja os títulos com Grep "^## " e leia só a seção do passo atual (offset/limit); scripts em .claude/skills/it-reelsmaker/scripts (use references/scripts.md só para achar o comando certo). A composição continua nas peças do painel.
+- Vídeo novo ou sem transcrição: NÃO explore com ls/ffprobe/cat soltos. Rode 'npm run preparar -- <projeto>' (mídia + transcrição + roteiro numa só chamada) e escreva o edit.ts pelo guia docs/referencias/edit-ts-guia.md (API das âncoras e tipos de cena); não leia src/motor/plano.ts inteiro nem vários edit.ts de exemplo.
 - Reutilize antes de criar: procure em src/pecas, src/pecas/tres, src/projetos, public/sfx, public/fontes e biblioteca/itens (Grep por nome). Elemento novo reaproveitável: em src/pecas (ou src/pecas/tres) com comentário de 1 a 3 linhas no topo e item em biblioteca/itens/<nome>.json {"nome","tipo","descricao","arquivo","exemplo"}.
 ${primeira ? `- Primeiro pedido desta conversa: leia .claude/skills/editar-video/SKILL.md, CLAUDE.md e biblioteca/temas/${t}/aprendizado.md (regras já aprendidas; siga-as). Só se for criar um vídeo novo ou refazer o estilo, leia também biblioteca/temas/${t}/modelos/*.md e use os projetos de tema.json como base; em ajuste pontual, NÃO leia os modelos. Projeto novo entra em "projetos" do tema.json. Tema inexistente: crie a pasta com tema.json e aprendizado.md.` : '- Esta conversa já tem as regras da skill e do tema carregadas; não releia.'}
 - Quando o usuário aprovar, reprovar ou corrigir algo, acrescente em biblioteca/temas/${t}/aprendizado.md uma linha "- AAAA-MM-DD (projeto): lição" (só o que vale para os próximos vídeos do tema; o que vale para todos vai na skill).
@@ -270,6 +322,7 @@ ${textoPrefs(cfg.prefs())}`;
 };
 
 const LIMITE_TURNOS = 12;
+const arqPendente = path.join(estado, 'chat-pendente.json');
 const rodando = new Map();
 const chat = async (req, res) => {
 	const {projeto, pedido, tema} = await corpo(req);
@@ -292,6 +345,7 @@ const chat = async (req, res) => {
 	const chave = projeto || '_geral';
 	rodando.get(chave)?.kill();
 	historico.anotar(chave, 'eu', pedido);
+	writeFileSync(arqPendente, JSON.stringify({chave, projeto, tema, pedido, em: Date.now()}));
 	const arqInstrucao = path.join(estado, 'instrucao.txt');
 	const primeira = !sessoes[chave] || (sessoes[chave + '#n'] ?? 0) >= LIMITE_TURNOS;
 	writeFileSync(arqInstrucao, instrucao(projeto, tema, primeira));
@@ -349,6 +403,7 @@ const chat = async (req, res) => {
 	});
 	proc.on('close', async (c) => {
 		if (rodando.get(chave) === proc) rodando.delete(chave);
+		try { rmSync(arqPendente, {force: true}); } catch {}
 		if (c) enviar('erro', {texto: erro.trim().slice(-400) || `Terminou com código ${c}`});
 		// Salvar sozinho: commit e push depois de cada pedido que terminou sem erro.
 		if (!c && !falhou && !parado && cfg.prefs().salvarSozinho) {
@@ -358,6 +413,22 @@ const chat = async (req, res) => {
 			} catch (e) {
 				enviar('erro', {texto: `Não consegui salvar no git: ${String(e.stderr || e.message).slice(-300)}`});
 			}
+		}
+		// Conferência: grupos "usar todos" cujo material não entrou na edição. O painel pede para refazer.
+		if (!c && !falhou && !parado && projeto) {
+			const faltam = midiasNaoUsadas(projeto);
+			if (faltam.length) enviar('faltam', {arquivos: faltam});
+		}
+		// Imagens de como a edição está ficando: se o edit.ts mudou depois das últimas, gera de novo (não gasta limite do Claude).
+		if (!c && !falhou && !parado && projeto && projetoOk(projeto)) {
+			try {
+				const m = lerJson(path.join(raiz, 'out/previas', projeto, 'manifest.json'), null);
+				const edit = path.join(raiz, 'src/projetos', projeto, 'edit.ts');
+				if (existsSync(edit) && (!m || statSync(edit).mtimeMs > m.geradoEm)) {
+					tarefas.criar('previas', projeto, {});
+					enviar('acao', {acao: 'Gerando imagens da edição na aba Prévias'});
+				}
+			} catch {}
 		}
 		res.end();
 	});
@@ -466,7 +537,7 @@ createServer(async (req, res) => {
 	const url = new URL(req.url, 'http://x');
 	const p = url.pathname;
 	try {
-		if (!['/api/', '/out/', '/sfx/', '/fontes/', '/midia/', '/pack/', '/tema-modelo/'].some((x) => p.startsWith(x))) {
+		if (!['/api/', '/out/', '/previas/', '/sfx/', '/fontes/', '/midia/', '/pack/', '/tema-modelo/'].some((x) => p.startsWith(x))) {
 			const rel = p === '/' ? 'index.html' : p.slice(1);
 			const base = path.join(import.meta.dirname, 'web');
 			const f = path.join(base, rel);
@@ -505,6 +576,20 @@ createServer(async (req, res) => {
 		if (p === '/api/tarefas/cancelar' && req.method === 'POST') {
 			const {id} = await corpo(req);
 			return tarefas.cancelar(String(id ?? '')) ? json(res, {ok: true}) : json(res, {erro: 'Tarefa não encontrada ou já terminada'}, 400);
+		}
+		if (p === '/api/drive' && req.method === 'GET') {
+			try { return json(res, await statusDrive()); } catch (e) { return json(res, {erro: e.message}, 500); }
+		}
+		if (p === '/api/drive/vincular' && req.method === 'POST') {
+			try {
+				const r = await rodarDrive(['vincular']);
+				return json(res, {...r, ...(await statusDrive())});
+			} catch (e) { return json(res, {erro: e.message}, 400); }
+		}
+		if (p === '/api/drive/puxar' && req.method === 'POST') {
+			if (!lerJson(path.join(estado, 'drive.json'), null)) return json(res, {erro: 'Vincule o Drive primeiro.'}, 400);
+			puxarDrive();
+			return json(res, {ok: true});
 		}
 		if (p === '/api/pod/testar' && req.method === 'POST') {
 			try {
@@ -573,7 +658,18 @@ createServer(async (req, res) => {
 		if (p === '/api/midias') {
 			const proj = url.searchParams.get('projeto');
 			if (!projetoOk(proj)) return json(res, {erro: 'Projeto inválido'}, 400);
-			return json(res, {midias: listarMidias(proj, 'midias'), referencias: listarMidias(proj, 'referencias'), notas: existsSync(arqNotas(proj)) ? readFileSync(arqNotas(proj), 'utf8') : ''});
+			return json(res, {midias: listarMidias(proj, 'midias'), referencias: listarMidias(proj, 'referencias'), notas: existsSync(arqNotas(proj)) ? readFileSync(arqNotas(proj), 'utf8') : '', grupos: lerGrupos(proj), naoUsadas: midiasNaoUsadas(proj)});
+		}
+		if (p === '/api/midias/grupos' && req.method === 'POST') {
+			const {projeto, grupos} = await corpo(req);
+			if (!projetoOk(projeto)) return json(res, {erro: 'Projeto inválido'}, 400);
+			if (!Array.isArray(grupos) || grupos.length > 20) return json(res, {erro: 'Grupos inválidos'}, 400);
+			writeFileSync(arqGrupos(projeto), JSON.stringify({grupos}, null, 1) + '\n');
+			return json(res, {grupos: lerGrupos(projeto)});
+		}
+		if (p === '/api/chat/pendente') {
+			if (req.method === 'POST') { try { rmSync(arqPendente, {force: true}); } catch {} return json(res, {ok: true}); }
+			return json(res, lerJson(arqPendente, null));
 		}
 		if (p === '/api/midia' && req.method === 'POST') {
 			// Corpo = o arquivo cru, gravado direto no disco (vídeos grandes não passam pela memória).
@@ -690,6 +786,18 @@ createServer(async (req, res) => {
 		if (p === '/api/sync/salvar' && req.method === 'POST') {
 			const {mensagem} = await corpo(req);
 			return json(res, {saida: await salvarGit(mensagem)});
+		}
+		if (p.startsWith('/previas/')) {
+			const [, , proj, nomeArq] = p.split('/');
+			if (!projetoOk(proj) || !/^[\w-]+\.(jpg|json)$/.test(nomeArq ?? '')) { res.writeHead(404); return res.end(); }
+			return arquivo(req, res, path.join(raiz, 'out/previas', proj, nomeArq));
+		}
+		if (p === '/api/previas') {
+			const proj = new URL(req.url, 'http://x').searchParams.get('projeto');
+			if (!projetoOk(proj)) return json(res, {itens: []});
+			const m = lerJson(path.join(raiz, 'out/previas', proj, 'manifest.json'), null);
+			const edit = path.join(raiz, 'src/projetos', proj, 'edit.ts');
+			return json(res, {...(m ?? {itens: []}), desatualizada: Boolean(m) && existsSync(edit) && statSync(edit).mtimeMs > m.geradoEm});
 		}
 		if (p.startsWith('/out/')) return arquivo(req, res, path.join(raiz, 'out', path.basename(p)));
 		if (p.startsWith('/midia/')) {

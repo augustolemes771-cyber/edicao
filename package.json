@@ -14,6 +14,8 @@
     "preview": "node scripts/render-job.mjs --tipo previa",
     "tsc": "tsc --noEmit",
     "novo": "node scripts/novo.mjs",
+    "preparar": "node scripts/preparar.mjs",
+    "previas": "tsx scripts/previas.ts",
     "musica": "bash scripts/musica.sh",
     "painel": "node painel/servidor.mjs",
     "miniaturas": "tsx scripts/miniaturas.ts"

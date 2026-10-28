@@ -34,6 +34,8 @@ export const validarPod = (pod = {}) => {
 	if (!Number.isInteger(porta) || porta < 1 || porta > 65535) throw new Error('Porta do pod inválida');
 	if (!/^\/[A-Za-z0-9._-]+(\/[A-Za-z0-9._-]+)*$/.test(pasta) || pasta.split('/').includes('..')) throw new Error('Pasta do pod inválida (ex.: /workspace/edicao)');
 	if (!GLS.includes(gl)) throw new Error(`Modo de WebGL do pod inválido (use ${GLS.join(', ')})`);
+	// Se o comando SSH inteiro foi colado no campo da chave, usa só o caminho depois de -i (ou a chave padrão do PC).
+	if (/^ssh\s/.test(chave)) chave = /-i\s+("[^"]+"|\S+)/.exec(chave)?.[1]?.replace(/"/g, '') ?? '';
 	if (chave) {
 		if (chave.startsWith('~')) chave = path.join(os.homedir(), chave.slice(1));
 		chave = path.resolve(chave);
@@ -131,6 +133,19 @@ const enviarTar = (t, pod, raiz, itens, total, aoPct, exclui = []) =>
 	});
 
 const CODIGO = ['src', 'scripts', 'public/sfx', 'public/fontes', 'biblioteca', 'package.json', 'package-lock.json', 'remotion.config.ts', 'tsconfig.json'];
+// Mede a velocidade de envio do PC para o pod (4 MB), para decidir se vale enviar mídia grande. Devolve MB/s.
+const medirEnvio = (t, pod) =>
+	new Promise((ok) => {
+		const ssh = iniciar(exe('ssh'), sshArgs(pod, 'cat > /dev/null'), {stdio: ['pipe', 'ignore', 'ignore']});
+		t.procs.add(ssh);
+		const bytes = 4 * 1024 * 1024;
+		const ini = Date.now();
+		ssh.stdin.on('error', () => {});
+		ssh.stdin.end(Buffer.alloc(bytes, 7));
+		ssh.on('close', () => ok(bytes / 1048576 / Math.max(0.2, (Date.now() - ini) / 1000)));
+		ssh.on('error', () => ok(null));
+	});
+
 const FORA = ['biblioteca/pack/arquivos'];
 
 export const renderNoPod = async ({t, raiz, estado, podCfg, projeto, tipo, res, de, ate, hw, atualizar}) => {
@@ -162,6 +177,16 @@ export const renderNoPod = async ({t, raiz, estado, podCfg, projeto, tipo, res, 
 		const anterior = manifestos[chave]?.[projeto] ?? {};
 		const mudou = locais.filter((m) => remotos[m.rel] !== m.tamanho || anterior[m.rel] !== `${m.tamanho}:${m.mtime}`);
 		const totalMidia = mudou.reduce((s, m) => s + m.tamanho, 0);
+		if (mudou.length && totalMidia > 30 * 1048576) {
+			// Upload de casa costuma ser lento: se enviar levaria mais que o limite, avisa para renderizar neste PC.
+			atualizar({fase: 'medindo a velocidade de envio', pct: 4});
+			const mbs = await medirEnvio(t, pod);
+			const minutos = mbs ? totalMidia / 1048576 / mbs / 60 : null;
+			const limite = tipo === 'final' ? 20 : 3;
+			if (minutos !== null && minutos > limite) {
+				throw Object.assign(new Error(`Enviar ${Math.round(totalMidia / 1048576)} MB levaria cerca de ${Math.ceil(minutos)} min (${mbs.toFixed(2)} MB/s)`), {lento: true});
+			}
+		}
 		if (mudou.length) {
 			atualizar({fase: `enviando ${mudou.length} mídia(s) para o pod`});
 			// Em lotes, para não estourar o limite da linha de comando do Windows.
@@ -264,7 +289,7 @@ export const pararNoPod = (podCfg) => {
 export const prepararPod = async ({t, raiz, podCfg, atualizar}) => {
 	const pod = validarPod(podCfg);
 	atualizar({fase: 'conectando no pod', pct: 0});
-	const script = readFileSync(path.join(raiz, 'scripts/preparar-pod.sh'), 'utf8');
+	const script = readFileSync(path.join(raiz, 'scripts/preparar-pod.sh'), 'utf8').replace(/\r/g, '');
 	const r = await sshRodar(pod, 'bash -s', {
 		entrada: script,
 		aoProc: (p) => t.procs.add(p),

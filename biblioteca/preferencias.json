@@ -1,11 +1,11 @@
 {
  "formatoPadrao": "vertical",
- "resPrevia": 720,
+ "resPrevia": 540,
  "intensidade": "normal",
- "legendaPadrao": "palavra",
+ "legendaPadrao": "auto",
  "confirmarFinal": true,
  "amostras": false,
- "salvarSozinho": false,
+ "salvarSozinho": true,
  "salvarAoFechar": true,
  "sempre": ""
 }

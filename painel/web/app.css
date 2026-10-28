@@ -445,3 +445,24 @@ details[open]>summary .seta{transform:rotate(90deg)}
 .amostra-ia img{width:100%;max-height:280px;object-fit:contain;display:block;cursor:zoom-in;background:#000}
 .amostra-ia figcaption{padding:8px 10px 4px;font-size:12px;color:var(--mudo)}.amostra-ia figcaption b{color:var(--cor);font-size:14px;margin-right:4px}
 .amostra-ia .btn{margin:6px 10px 10px}
+
+.previas-topo{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.previas-topo small{color:var(--mudo, #8aa)}
+.previas-grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+.previa{margin:0;background:var(--card);border:1px solid var(--linha);border-radius:var(--r-2);overflow:hidden}
+.previa img{display:block;width:100%;aspect-ratio:9/16;object-fit:cover;cursor:zoom-in;background:#000}
+.previa figcaption{padding:6px 8px;font-size:12px;display:flex;flex-direction:column;gap:2px}
+.previa figcaption small{opacity:.7;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+
+.sel-midia{flex:none;width:16px;height:16px;accent-color:var(--cor, #12d4cd);cursor:pointer}
+.grupo-barra{display:flex;flex-direction:column;gap:8px;background:var(--card);border:1px solid var(--linha);border-radius:var(--r-2);padding:10px;font-size:12px}
+.grupo-barra input[type=text]{width:100%}
+.gr-op{display:flex;align-items:center;gap:6px;cursor:pointer}
+.grupo-card{margin-top:8px;background:var(--card);border:1px solid var(--linha);border-radius:var(--r-2);padding:8px 10px;font-size:12px}
+.grupo-topo{display:flex;align-items:center;gap:8px}
+.grupo-topo b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.grupo-card ol{margin:6px 0 0 18px;padding:0;opacity:.85}
+
+.grupo-alerta,.pendente{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;padding:8px 10px;border:1px solid #e0a43a;background:rgba(224,164,58,.1);border-radius:var(--r-2);font-size:12px}
+.grupo-alerta span,.pendente span{flex:1;min-width:140px}
+.pendente{margin:0 0 8px}

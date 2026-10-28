@@ -10,9 +10,9 @@ import {pipeline} from 'node:stream/promises';
 import {ehWin, executar, lerJson, matar} from './comum.mjs';
 import {pararNoPod, prepararPod, renderNoPod, validarPod} from './pod.mjs';
 
-export const TIPOS = ['previa', 'final', 'transcrever', 'roteiro', 'conferir', 'link', 'pack', 'preparar-pod'];
+export const TIPOS = ['previa', 'final', 'transcrever', 'roteiro', 'conferir', 'previas', 'link', 'pack', 'preparar-pod'];
 const RENDERS = ['previa', 'final'];
-const PUBLICOS = ['id', 'tipo', 'projeto', 'estado', 'fase', 'pct', 'eta', 'onde', 'saida', 'aviso', 'erro', 'log', 'inicio', 'fim'];
+const PUBLICOS = ['id', 'tipo', 'projeto', 'estado', 'fase', 'pct', 'eta', 'onde', 'saida', 'aviso', 'erro', 'log', 'inicio', 'fim', 'opcoes', 'retomada'];
 
 // URL de link: http(s), sem espaço, sem começar com '-' (não vira opção do yt-dlp).
 export const urlOk = (u) => {
@@ -26,8 +26,13 @@ export const urlOk = (u) => {
 
 export const criarTarefas = ({raiz, estado, cfg, projetoOk, pastaMidia, temaOk, pastaModelos}) => {
 	const arq = path.join(estado, 'tarefas.json');
-	// Tarefa que estava rodando quando o painel fechou não volta sozinha.
-	const lista = lerJson(arq, []).map((t) => (['fila', 'rodando'].includes(t.estado) ? {...t, estado: 'erro', erro: 'O painel foi fechado durante a tarefa.', fim: t.fim ?? Date.now()} : t));
+	// Tarefa que estava na fila ou rodando quando o painel fechou volta sozinha (mais abaixo, depois de criar()),
+	// mantendo a porcentagem que já tinha. As sem opções gravadas (versão antiga) viram erro.
+	const salvas = lerJson(arq, []);
+	const interrompidas = salvas.filter((t) => ['fila', 'rodando'].includes(t.estado) && t.opcoes && t.tipo !== 'preparar-pod').reverse();
+	const lista = salvas
+		.filter((t) => !interrompidas.includes(t))
+		.map((t) => (['fila', 'rodando'].includes(t.estado) ? {...t, estado: 'erro', erro: 'O painel foi fechado durante a tarefa.', fim: t.fim ?? Date.now()} : t));
 	const internos = new Map();
 	let salvarDepois = null;
 	const salvar = (agora = false) => {
@@ -55,7 +60,11 @@ export const criarTarefas = ({raiz, estado, cfg, projetoOk, pastaMidia, temaOk, 
 		if (o.fase !== undefined) t.fase = o.fase;
 		if (o.pct !== undefined) {
 			const pct = o.pct === null ? null : Math.max(0, Math.min(100, Math.round(o.pct * 10) / 10));
-			if (!(mesmaFase && pct !== null && t.pct !== null && pct < t.pct)) t.pct = pct;
+			// Tarefa retomada depois de reiniciar: a barra não volta atrás; fica no % anterior até o trabalho passar dele.
+			const piso = t.retomada?.pct ?? 0;
+			if (t.retomada && pct !== null && pct > piso) t.retomada = null;
+			const final = t.retomada && pct !== null ? Math.max(pct, piso) : pct;
+			if (!(mesmaFase && final !== null && t.pct !== null && final < t.pct)) t.pct = final;
 		}
 		if (o.eta !== undefined) t.eta = o.eta;
 		if (o.aviso !== undefined) t.aviso = t.aviso ? `${t.aviso}\n${o.aviso}` : o.aviso;
@@ -102,8 +111,15 @@ export const criarTarefas = ({raiz, estado, cfg, projetoOk, pastaMidia, temaOk, 
 		const {res, de, ate} = t.opcoes;
 		const hw = c.gpuCodificador !== false;
 		if (t.onde === 'pod') {
-			t.saida = await renderNoPod({t, raiz, estado, podCfg: c.pod, projeto: t.projeto, tipo: t.tipo, res, de, ate, hw, atualizar: atualizador(t)});
-			return;
+			try {
+				t.saida = await renderNoPod({t, raiz, estado, podCfg: c.pod, projeto: t.projeto, tipo: t.tipo, res, de, ate, hw, atualizar: atualizador(t)});
+				return;
+			} catch (e) {
+				// Envio lento demais: em vez de esperar horas, renderiza neste PC.
+				if (!e?.lento) throw e;
+				t.onde = 'pc';
+				atualizador(t)({aviso: `${e.message}. Renderizando neste PC (o pod só compensa com mídia menor ou já enviada).`, fase: 'renderizando neste PC', pct: 0});
+			}
 		}
 		const args = [path.join(raiz, 'scripts/render-job.mjs'), '--projeto', t.projeto, '--tipo', t.tipo, '--res', String(res)];
 		if (de !== undefined) args.push('--de', String(de));
@@ -117,10 +133,11 @@ export const criarTarefas = ({raiz, estado, cfg, projetoOk, pastaMidia, temaOk, 
 
 	// tsx carregado pelo próprio node: não precisa de npx nem de shell no Windows.
 	const script = async (t) => {
-		atualizador(t)({fase: {transcrever: 'transcrevendo', roteiro: 'gerando o roteiro', conferir: 'conferindo'}[t.tipo], pct: null});
+		atualizador(t)({fase: {transcrever: 'transcrevendo', roteiro: 'gerando o roteiro', conferir: 'conferindo', previas: 'gerando imagens da edição'}[t.tipo], pct: null});
 		const args = t.tipo === 'transcrever' ? [path.join(raiz, 'scripts/transcrever.mjs'), t.projeto] : ['--import', 'tsx', path.join(raiz, `scripts/${t.tipo}.ts`), t.projeto];
 		await rodarProc(t, process.execPath, args);
 		if (t.tipo === 'roteiro') t.saida = `docs/${t.projeto}/transcript-lines.txt`;
+		if (t.tipo === 'previas') t.saida = `out/previas/${t.projeto}/manifest.json`;
 		if (t.tipo === 'transcrever') t.saida = `src/projetos/${t.projeto}/transcricao.json`;
 	};
 
@@ -224,6 +241,7 @@ export const criarTarefas = ({raiz, estado, cfg, projetoOk, pastaMidia, temaOk, 
 		transcrever: script,
 		roteiro: script,
 		conferir: script,
+		previas: script,
 		link,
 		pack,
 		'preparar-pod': (t) => prepararPod({t, raiz, podCfg: cfg.config().pod, atualizar: atualizador(t)}),
@@ -320,7 +338,7 @@ export const criarTarefas = ({raiz, estado, cfg, projetoOk, pastaMidia, temaOk, 
 			opcoes: o,
 			estado: 'fila',
 			fase: 'na fila',
-			pct: tipo === 'transcrever' || tipo === 'roteiro' || tipo === 'conferir' ? null : 0,
+			pct: tipo === 'transcrever' || tipo === 'roteiro' || tipo === 'conferir' || tipo === 'previas' ? null : 0,
 			eta: null,
 			onde: tipo === 'preparar-pod' || (RENDERS.includes(tipo) && (opcoes.pod ?? cfg.config().pod.ativo)) ? 'pod' : 'pc',
 			saida: null,
@@ -364,6 +382,23 @@ export const criarTarefas = ({raiz, estado, cfg, projetoOk, pastaMidia, temaOk, 
 		for (const t of lista) if (t.procs) for (const p of t.procs) matar(p);
 		salvar(true);
 	};
+
+	// Retoma o que estava em andamento (ordem original). O trabalho já feito (pacote, mídias enviadas ao pod) é reaproveitado
+	// pelas próprias etapas; o resto recomeça, mas a barra continua do % em que parou.
+	for (const t of interrompidas) {
+		try {
+			const id = criar(t.tipo, t.projeto, t.opcoes);
+			const nova = internos.get(id);
+			if (nova && t.pct) {
+				nova.retomada = {pct: t.pct, fase: t.fase};
+				nova.pct = t.pct;
+				nova.aviso = `Retomada depois de reiniciar o painel (estava em ${Math.round(t.pct)}%).`;
+			}
+		} catch (e) {
+			lista.push({...t, estado: 'erro', erro: `Não consegui retomar: ${e.message}`, fim: Date.now()});
+		}
+	}
+	salvar(true);
 
 	return {
 		criar,

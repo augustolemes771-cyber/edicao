@@ -91,7 +91,7 @@ if (process.env.ELEVENLABS_API_KEY) {
 		whisperPath: pastaWhisper,
 		whisperCppVersion: versao,
 		model: modelo,
-		tokenLevelTimestamps: true,
+		tokenLevelTimestamps: false,
 		language: 'pt',
 		splitOnWord: true,
 	});

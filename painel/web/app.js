@@ -285,6 +285,7 @@ function aoTrocarProjeto({historico = true} = {}) {
 	if (historico) carregarHistorico();
 	renderRender();
 	carregarMidias();
+	if (S.aba === 'previas') carregarPrevias();
 	carregarFluxo();
 }
 $('#projeto').onchange = () => aoTrocarProjeto();
@@ -692,6 +693,7 @@ const SECOES_PREFS = [
 	['claude', 'Claude', 'claude'],
 	['pc', 'Este computador', 'monitor'],
 	['pod', 'Pod (nuvem)', 'server'],
+	['drive', 'Google Drive', 'download'],
 	['avisos', 'Avisos', 'bell'],
 ];
 async function abrirPreferencias(inicial = 'edicao') {
@@ -724,12 +726,18 @@ async function abrirPreferencias(inicial = 'edicao') {
 			txt('config.navegadorRender', c.navegadorRender, 'Navegador usado no render', 'deixe vazio para automático', 'text', 'Caminho de um Chrome/Chromium específico, se precisar.'),
 		pod: `<h4>Pod (computador na nuvem)</h4><p class="pref-desc">Um computador com placa de vídeo forte (ex.: RunPod) que renderiza por você. Ligue aqui para ser o padrão; na aba Render dá para escolher a cada vez.</p>` +
 			chave('config.pod.ativo', pod.ativo ?? false, 'Renderizar no pod por padrão', 'Desligado: tudo roda neste computador.') +
+			`<div class="campo"><label class="rotulo">Comando SSH do RunPod</label><input type="text" id="pfSshCola" placeholder="Cole aqui: ssh root@194.68.245.12 -p 13456 -i ~/.ssh/id_ed25519"><span class="ajuda">Só isso: o painel preenche endereço, porta e usuário. A chave padrão do seu PC é usada se você não informar outra. Fica salvo ao clicar em Salvar ou Testar.</span></div>` +
+			`<details><summary class="rotulo">Avançado (preenchido sozinho)</summary>` +
 			`<div class="grade-2">${txt('config.pod.host', pod.host, 'Endereço (host)', 'ex.: 194.68.245.12')}${txt('config.pod.porta', pod.porta ?? 22, 'Porta SSH', '22', 'number')}` +
 			`${txt('config.pod.usuario', pod.usuario ?? 'root', 'Usuário', 'root')}${txt('config.pod.pasta', pod.pasta ?? '/workspace/edicao', 'Pasta no pod', '/workspace/edicao')}</div>` +
 			txt('config.pod.chave', pod.chave, 'Chave SSH (caminho do arquivo)', 'ex.: C:\\Users\\voce\\.ssh\\id_ed25519', 'text', 'O arquivo da chave privada que dá acesso ao pod.') +
 			campo('Modo de desenho (gl)', sel('config.pod.gl', pod.gl ?? 'angle-egl', [['angle-egl', 'angle-egl (recomendado em GPU NVIDIA)'], ['egl', 'egl'], ['angle', 'angle'], ['vulkan', 'vulkan'], ['swangle', 'swangle (sem GPU)'], ['swiftshader', 'swiftshader (sem GPU)']])) +
+			`</details>` +
 			`<div class="linha"><button class="btn" id="pfTestar">${ic('zap')}<span>Testar conexão</span></button><button class="btn" id="pfPreparar">${ic('download')}<span>Preparar pod</span></button></div>` +
 			`<div id="pfResultado" class="resultado-teste" hidden></div>`,
+		drive: `<h4>Google Drive</h4><p class="pref-desc">Vincula as pastas <b>edição</b> (onde o painel guarda vídeos finais, mídias e modelos, e que tem um pack) e <b>InfynityPack</b> (pack extra) pelo Drive para computador. Nada é importado: o painel lê direto da unidade do Drive. Vale só neste computador.</p>` +
+			`<div id="pfDrive" class="resultado-teste">Verificando o Drive...</div>` +
+			`<div class="linha"><button type="button" class="btn primario" id="pfDriveVincular">${ic('link')}<span>Vincular e puxar as 2 pastas</span></button><button type="button" class="btn" id="pfDrivePuxar">${ic('download')}<span>Puxar de novo</span></button></div>`,
 		avisos: `<h4>Avisos</h4><p class="pref-desc">Receba um aviso do navegador quando uma prévia ou o vídeo final terminar, mesmo com o painel em segundo plano.</p>` +
 			chave('config.notificar', c.notificar ?? true, 'Avisar quando um render terminar') +
 			`<div class="linha"><button class="btn" id="pfPermitir">${ic('bell')}<span>Permitir avisos do navegador</span></button><span id="pfPerm" class="selo"></span></div>`,
@@ -800,6 +808,46 @@ async function abrirPreferencias(inicial = 'edicao') {
 		} catch (er) { resultado(er.emBreve ? 'O teste do pod chega na próxima atualização do painel.' : er.message, false); }
 		b.disabled = false;
 	};
+	// Google Drive: status, vincular as 2 pastas e puxar (copia só o que mudou, em segundo plano).
+	const driveTxt = (d) => {
+		if (!d || d.erro) return [`Não consegui verificar: ${d?.erro ?? 'sem resposta'}`, false];
+		if (!d.raizes?.length) return ['Drive para computador não encontrado. Instale, entre na conta e abra o Drive.', false];
+		const v = d.vinculo, linhas = [];
+		linhas.push(`edição: ${d.edicao ? 'encontrada' : 'NÃO encontrada em Meu Drive'}${v?.salvar ? ' · vinculada' : ''}`);
+		linhas.push(`InfynityPack: ${d.infynity ? 'encontrada' : 'NÃO encontrada (abra o link e use Organizar > Adicionar atalho)'}${v?.packs?.length > 1 ? ' · vinculada' : ''}`);
+		if (d.job?.rodando) linhas.push('Puxando: ' + d.job.fase + '...');
+		else if (d.job?.erro) linhas.push('Erro ao puxar: ' + d.job.erro);
+		else if (d.job?.resultado) linhas.push(`Pronto. ${d.job.resultado.novos ?? 0} arquivos novos no catálogo do pack.`);
+		return [linhas.join('\n'), !!d.edicao && !!d.infynity && !d.job?.erro];
+	};
+	const driveAtualizar = async () => {
+		const alvo = $('#pfDrive');
+		if (!alvo) return;
+		try { const d = await api('/api/drive'); const [t, ok] = driveTxt(d); alvo.textContent = t; alvo.className = 'resultado-teste ' + (ok ? 'ok' : 'erro'); alvo.style.whiteSpace = 'pre-line'; if (d.job?.rodando) setTimeout(driveAtualizar, 3000); }
+		catch (er) { alvo.textContent = er.emBreve ? 'O Drive chega na próxima atualização do painel.' : er.message; alvo.className = 'resultado-teste erro'; }
+	};
+	driveAtualizar();
+	$('#pfDriveVincular').onclick = async (e) => {
+		const b = e.currentTarget; b.disabled = true;
+		try { await api('/api/drive/vincular', {}); await api('/api/drive/puxar', {}); aviso('Drive vinculado. Puxando as pastas...', 'info'); } catch (er) { avisoErro(er, 'Drive'); }
+		b.disabled = false; driveAtualizar();
+	};
+	$('#pfDrivePuxar').onclick = async () => { try { await api('/api/drive/puxar', {}); } catch (er) { avisoErro(er, 'Drive'); } driveAtualizar(); };
+	// Colar o comando inteiro do RunPod ("ssh root@IP -p PORTA -i chave") no campo Endereço preenche host, porta, usuário e chave.
+	const campoPod = (n) => document.querySelector(`[name="config.pod.${n}"]`);
+	const lerSsh = (texto) => {
+		const m = /ssh\s+(?:-\S+\s+\S+\s+)*(?:([A-Za-z_][\w.-]*)@)?([A-Za-z0-9][A-Za-z0-9.-]*)/.exec(texto);
+		if (!m) return false;
+		const porta = /-p\s*(\d{1,5})/.exec(texto)?.[1];
+		const chave = /-i\s+("[^"]+"|\S+)/.exec(texto)?.[1]?.replace(/^"|"$/g, '');
+		campoPod('host').value = m[2];
+		if (m[1]) campoPod('usuario').value = m[1];
+		if (porta) campoPod('porta').value = porta;
+		if (chave && !chave.startsWith('~')) campoPod('chave').value = chave;
+		return true;
+	};
+	$('#pfSshCola')?.addEventListener('input', (e) => { if (lerSsh(e.target.value)) aviso('Comando SSH lido: endereço, porta e usuário preenchidos.', 'ok'); });
+	campoPod('host')?.addEventListener('input', (e) => { if (/\s/.test(e.target.value) && lerSsh(e.target.value)) aviso('Comando SSH lido: preenchi endereço, porta e usuário.', 'ok'); });
 	$('#pfPreparar').onclick = async () => {
 		if (S.configOk !== false) await salvar(true);
 		if (await criarTarefa('preparar-pod', {}, {projeto: proj()})) resultado('Preparando o pod (instala Node, ffmpeg e o projeto). Acompanhe na aba Render.', null);
@@ -810,7 +858,7 @@ $('#abrirPrefs').onclick = () => abrirPreferencias();
 addEventListener('pagehide', () => { if (T) navigator.sendBeacon('/api/fechou?t=' + encodeURIComponent(T)); });
 
 // ---------- Tarefas (render, link, pack...) ----------
-const NOMES_TAREFA = {previa: 'Prévia', final: 'Vídeo final', transcrever: 'Transcrição', roteiro: 'Roteiro', conferir: 'Conferência', link: 'Baixar link', pack: 'Importar pack', 'preparar-pod': 'Preparar pod'};
+const NOMES_TAREFA = {previa: 'Prévia', final: 'Vídeo final', transcrever: 'Transcrição', roteiro: 'Roteiro', conferir: 'Conferência', link: 'Baixar link', pack: 'Importar pack', 'preparar-pod': 'Preparar pod', previas: 'Prévias'};
 const ESTADOS = {fila: ['Na fila', ''], rodando: ['Rodando', 'cor'], ok: ['Pronto', 'ok'], erro: ['Erro', 'erro'], cancelado: ['Cancelado', 'alerta']};
 async function criarTarefa(tipo, opcoes = {}, {projeto = proj(), silencioso = false} = {}) {
 	try {
@@ -874,6 +922,7 @@ function aoTerminarTarefa(t) {
 		} else carregarMidias();
 	}
 	if (t.tipo === 'pack') carregarBiblioteca();
+	if (t.tipo === 'previas') carregarPrevias();
 	carregarFluxo();
 }
 const urlSaida = (s) => (s && /\.(mp4|mov|webm)$/i.test(s) ? `/out/${enc(String(s).split(/[\\/]/).pop())}?t=${T}` : '');
@@ -950,12 +999,42 @@ async function abrirPasta(onde, projeto = proj()) {
 	catch (e) { avisoErro(e, 'Não abri a pasta'); }
 }
 
+// ---------- Aba Prévias: imagens de como a edição está ficando (geradas sem gastar limite do Claude) ----------
+async function carregarPrevias() {
+	const el = $('#aba-previas');
+	const p = proj();
+	if (!el) return;
+	if (!p) { el.innerHTML = '<div class="vazio">Escolha um vídeo para ver as imagens da edição.</div>'; return; }
+	let d;
+	try { d = await api('/api/previas?projeto=' + enc(p)); } catch (e) { el.innerHTML = `<div class="vazio">${ic('alert')}<b>Não carreguei as prévias</b>${esc(e.message)}</div>`; return; }
+	const gerando = (S.tarefas ?? []).some((t) => t.tipo === 'previas' && t.projeto === p && ['fila', 'rodando'].includes(t.estado));
+	const quando = d.geradoEm ? new Date(d.geradoEm).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'}) : '';
+	const topo = `<div class="previas-topo"><button class="btn primario" id="prGerar" ${gerando ? 'disabled' : ''}>${ic('refresh')}<span>${gerando ? 'Gerando...' : 'Gerar imagens agora'}</span></button>` +
+		`<small>${d.itens?.length ? `${d.itens.length} imagens, geradas às ${quando}${d.desatualizada ? ' · <b>a edição mudou depois: gere de novo</b>' : ''}` : 'Ainda não há imagens deste vídeo.'}</small></div>`;
+	const grade = (d.itens ?? []).map((i) => {
+		const url = `/previas/${enc(p)}/${enc(i.arquivo)}?t=${T}&v=${d.geradoEm}`;
+		const min = Math.floor(i.t / 60), seg = String(Math.floor(i.t % 60)).padStart(2, '0');
+		return `<figure class="previa"><img loading="lazy" src="${esc(url)}" alt="${esc(i.tipo)}" data-ver-midia="${esc(url)}" data-nome="${esc(i.tipo)} ${min}:${seg}"><figcaption><b>${min}:${seg} · ${esc(i.tipo)}</b>${i.texto ? `<small>${esc(i.texto)}</small>` : ''}<button class="btn mini fantasma" data-mudar="${min}:${seg}|${esc(i.tipo)}|${esc(i.texto)}">${ic('edit')}<span>Mudar isto</span></button></figcaption></figure>`;
+	}).join('');
+	el.innerHTML = topo + (grade ? `<div class="previas-grade">${grade}</div>` : '');
+	el.querySelectorAll('[data-mudar]').forEach((bt) => (bt.onclick = () => {
+		const [tempo, tipo, texto] = bt.dataset.mudar.split('|');
+		const c = $('#pedido');
+		c.value = `Na prévia em ${tempo} (cena "${tipo}"${texto ? `, texto "${texto}"` : ''}): `;
+		c.focus();
+		ajustarCaixa();
+	}));
+	const b = $('#prGerar');
+	if (b) b.onclick = async () => { b.disabled = true; if (await criarTarefa('previas', {}, {projeto: p, silencioso: true})) aviso('Gerando as imagens da edição...', 'info', {ms: 2500}); carregarPrevias(); };
+}
+
 // ---------- Aba Render ----------
 function mostrarAba(a) {
 	S.aba = a;
 	gravarLocal('aba', a);
 	$$('.abas [data-aba]').forEach((b) => { b.classList.toggle('on', b.dataset.aba === a); b.setAttribute('aria-selected', b.dataset.aba === a); });
 	$$('.painel-aba').forEach((p) => (p.hidden = p.id !== 'aba-' + a));
+	if (a === 'previas') carregarPrevias();
 }
 $('.abas').onclick = (e) => { const b = e.target.closest('[data-aba]'); if (b) mostrarAba(b.dataset.aba); };
 function renderRender() {
@@ -1127,19 +1206,74 @@ function listaArquivos(tipo, itens) {
 	if (!itens.length) return '';
 	return itens.map((m) => {
 		const url = `/midia/${enc(p)}/${tipo}/${enc(m.nome)}?t=${T}`;
-		return `<div class="arq"><span class="mini">${eImg(m.nome) ? `<img loading="lazy" src="${esc(url)}" alt="">` : ic(icArquivo(m.nome))}</span><span class="n"><span title="${esc(m.nome)}">${esc(m.nome)}</span><small>${tam(m.tamanho)}</small></span>` +
+		const ck = tipo === 'midias' ? `<input type="checkbox" class="sel-midia" data-sel="${esc(m.nome)}" ${(S.selMidias ?? []).includes(m.nome) ? 'checked' : ''} title="Selecionar para juntar em um vídeo só" aria-label="Selecionar ${esc(m.nome)}">` : '';
+		const noGrupo = tipo === 'midias' ? (S.midias?.grupos ?? []).findIndex((g) => g.arquivos.includes(m.nome)) : -1;
+		return `<div class="arq">${ck}<span class="mini">${eImg(m.nome) ? `<img loading="lazy" src="${esc(url)}" alt="">` : ic(icArquivo(m.nome))}</span><span class="n"><span title="${esc(m.nome)}">${esc(m.nome)}</span><small>${tam(m.tamanho)}${noGrupo >= 0 ? ` · <b>vídeo ${noGrupo + 1}</b>` : ''}</small></span>` +
 			(eImg(m.nome) || eVideo(m.nome) || eAudio(m.nome) ? `<button class="btn icone mini fantasma" data-ver-midia="${esc(url)}" data-nome="${esc(m.nome)}" title="Ver" aria-label="Ver">${ic('eye')}</button>` : '') +
 			`<button class="btn icone mini fantasma" data-ap="${tipo}" data-nome="${esc(m.nome)}" title="Apagar" aria-label="Apagar">${ic('trash')}</button></div>`;
 	}).join('');
 }
 const zona = (tipo, titulo, txt) => `<div class="zona" data-z="${tipo}">${ic('upload')}<b>${esc(titulo)}</b>${esc(txt)}<input type="file" multiple hidden></div><div class="envio" hidden><small></small><div class="barra"><i></i></div></div>`;
 const colarLink = (destino, ph) => `<div class="colar"><input type="url" data-link="${destino}" placeholder="${esc(ph)}"><button class="btn primario" data-baixar="${destino}">${ic('download')}<span>Baixar</span></button></div>`;
+// Grupos de mídia: seleciona vários arquivos e define que viram UM vídeo; "todos" ou "a IA escolhe".
+const salvarGrupos = async (grupos) => {
+	try { const r = await api('/api/midias/grupos', {projeto: proj(), grupos}); S.midias.grupos = r.grupos; S.selMidias = []; renderMidias(); aviso('Grupos salvos. O Claude lê isso no próximo pedido.', 'ok', {ms: 2500}); }
+	catch (e) { avisoErro(e, 'Não salvei os grupos'); }
+};
+function htmlGrupos() {
+	const d = S.midias ?? {midias: [], grupos: []};
+	if (d.midias.length < 2) return '';
+	const sel = (S.selMidias ?? []).filter((n) => d.midias.some((m) => m.nome === n));
+	const barra = `<div class="grupo-barra"><b>${sel.length ? `${sel.length} selecionado${sel.length > 1 ? 's' : ''}` : 'Marque 2 ou mais arquivos acima para juntar em um vídeo só'}</b>` +
+		(sel.length >= 2 ? `<input type="text" id="grNome" placeholder="Nome do vídeo (opcional)" maxlength="60">` +
+		`<label class="gr-op"><input type="radio" name="grModo" value="todos" checked> Usar todos os arquivos</label>` +
+		`<label class="gr-op"><input type="radio" name="grModo" value="ia"> A IA escolhe só os que precisar</label>` +
+		`<label class="gr-op"><input type="radio" name="grOrdem" value="minha" checked> Ordem: a que eu marquei</label>` +
+		`<label class="gr-op"><input type="radio" name="grOrdem" value="ia"> Ordem: a IA define</label>` +
+		`<button class="btn primario" id="grCriar">${ic('check')}<span>Juntar em um vídeo só</span></button>` : '') + `</div>`;
+	const cards = (d.grupos ?? []).map((g, i) => `<div class="grupo-card" data-g="${i}"><div class="grupo-topo"><b>Vídeo ${i + 1}${g.nome ? ` · ${esc(g.nome)}` : ''}</b>` +
+		`<select data-gmodo="${i}"><option value="todos" ${g.modo === 'todos' ? 'selected' : ''}>Usar todos</option><option value="ia" ${g.modo === 'ia' ? 'selected' : ''}>A IA escolhe</option></select>` +
+		`<select data-gordem="${i}"><option value="minha" ${g.ordem !== 'ia' ? 'selected' : ''}>Minha ordem</option><option value="ia" ${g.ordem === 'ia' ? 'selected' : ''}>A IA ordena</option></select>` +
+		`<button class="btn icone mini fantasma" data-gdesfazer="${i}" title="Desfazer grupo" aria-label="Desfazer grupo">${ic('trash')}</button></div>` +
+		`<ol>${g.arquivos.map((n) => `<li>${esc(n)}</li>`).join('')}</ol></div>`).join('');
+	const nu = d.naoUsadas ?? [];
+	const alerta = nu.length ? `<div class="grupo-alerta">${ic('alert')}<span>A edição ainda <b>não usa</b>: ${nu.map(esc).join(', ')}.</span><button class="btn mini primario" id="grRefazer">Pedir para refazer usando todos</button></div>` : '';
+	return `<div class="titulo-secao">${ic('film')}Juntar em um vídeo só</div>${barra}${cards}${alerta}`;
+}
+function ligarGrupos() {
+	const el = $('#aba-midias');
+	el.querySelectorAll('[data-sel]').forEach((c) => (c.onchange = () => {
+		const n = c.dataset.sel;
+		S.selMidias = (S.selMidias ?? []).filter((x) => x !== n);
+		if (c.checked) S.selMidias.push(n);
+		renderMidias();
+	}));
+	const refazer = $('#grRefazer');
+	if (refazer) refazer.onclick = () => usarPedido(`Conferência: o edit.ts não usa estes arquivos que eu defini como "usar todos": ${(S.midias.naoUsadas ?? []).join(', ')}. Refaça a edição usando TODOS os arquivos do grupo (respeitando a ordem definida). Se algum realmente não couber, explique o motivo.`, {enviar: true});
+	const criar = $('#grCriar');
+	if (criar) criar.onclick = () => {
+		const modo = el.querySelector('[name=grModo]:checked')?.value ?? 'todos';
+		const ordem = el.querySelector('[name=grOrdem]:checked')?.value ?? 'minha';
+		const nome = ($('#grNome')?.value ?? '').trim();
+		const livres = (S.midias.grupos ?? []).map((g) => ({...g, arquivos: g.arquivos.filter((a) => !S.selMidias.includes(a))})).filter((g) => g.arquivos.length >= 2);
+		salvarGrupos([...livres, {nome, modo, ordem, arquivos: [...S.selMidias]}]);
+	};
+	el.querySelectorAll('[data-gmodo]').forEach((s) => (s.onchange = () => {
+		const g = (S.midias.grupos ?? []).map((x, i) => (i === Number(s.dataset.gmodo) ? {...x, modo: s.value} : x));
+		salvarGrupos(g);
+	}));
+	el.querySelectorAll('[data-gordem]').forEach((s) => (s.onchange = () => {
+		salvarGrupos((S.midias.grupos ?? []).map((x, i) => (i === Number(s.dataset.gordem) ? {...x, ordem: s.value} : x)));
+	}));
+	el.querySelectorAll('[data-gdesfazer]').forEach((b) => (b.onclick = () => salvarGrupos((S.midias.grupos ?? []).filter((_, i) => i !== Number(b.dataset.gdesfazer)))));
+}
 function renderMidias() {
 	const d = S.midias ?? {midias: [], referencias: [], notas: ''};
 	$('#aba-midias').innerHTML =
 		`<div class="titulo-secao">${ic('film')}Arquivos do vídeo<button class="btn mini fantasma" data-pasta="midias">${ic('folder')}<span>Abrir pasta</span></button></div>` +
 		zona('midias', 'Solte aqui o vídeo bruto', 'imagens, áudios... ou clique para escolher') +
 		(d.midias.length ? listaArquivos('midias', d.midias) : `<p style="color:var(--mudo);font-size:12px;margin:10px 2px 0">Nenhuma mídia ainda. Comece pelo vídeo gravado.</p>`) +
+		htmlGrupos() +
 		`<div class="titulo-secao">${ic('link')}Baixar de um link</div>` +
 		colarLink('midias', 'Cole o link do vídeo (YouTube, Drive, Instagram...)') +
 		`<p style="color:var(--mudo);font-size:12px;margin:8px 2px 0">O arquivo baixado entra nas mídias deste vídeo.</p>`;
@@ -1154,6 +1288,7 @@ function renderMidias() {
 		`<span class="ajuda" style="display:block;color:var(--mudo);font-size:12px;margin-top:5px">Salva sozinho ao sair da caixa. O Claude lê isso a cada pedido.</span>` +
 		`<div class="titulo-secao">${ic('wand')}Usar como estilo</div>` +
 		`<div class="estilo-botoes"><button class="btn" id="btAnalisar">${ic('search')}<span>Analisar estilo</span></button><button class="btn primario" id="btRecriar">${ic('wand')}<span>Recriar com este estilo</span></button></div>`;
+	ligarGrupos();
 	$('#notas').onchange = () => api('/api/notas', {projeto: proj(), texto: $('#notas').value}).then(() => { if (S.midias) S.midias.notas = $('#notas').value; aviso('Referências salvas. O Claude lê isso no próximo pedido.', 'ok', {ms: 3000}); }).catch((e) => avisoErro(e, 'Não salvei as notas'));
 	const temRef = () => (S.midias?.referencias?.length || ($('#notas')?.value ?? '').trim());
 	$('#btAnalisar').onclick = () => {
@@ -1397,14 +1532,28 @@ $('#zerar').onclick = async () => {
 	aviso('Conversa nova começada.', 'ok', {ms: 2500});
 };
 let ctrl = null;
-$('#parar').onclick = () => { ctrl?.abort(); api('/api/parar', {projeto: proj()}).catch(() => {}); aviso('Pedi para o Claude parar.', 'info', {ms: 2500}); };
+// Intervir: para o Claude agora e deixa a caixa pronta para o ajuste; a próxima mensagem continua a mesma conversa de onde parou.
+$('#parar').onclick = () => {
+	ctrl?.abort();
+	api('/api/parar', {projeto: proj()}).catch(() => {});
+	S.intervencao = true;
+	const c = $('#pedido');
+	c.placeholder = 'Parei o Claude. Diga o que mudar (ex.: "tira esse efeito", "mais lento aqui") e envie: ele continua de onde parou.';
+	c.focus();
+	aviso('Claude parado. Escreva o ajuste e envie.', 'info', {ms: 3500});
+};
 const ajustarCaixa = () => { const t = $('#pedido'); t.style.height = 'auto'; t.style.height = Math.min(220, Math.max(56, t.scrollHeight)) + 'px'; };
 $('#pedido').addEventListener('input', ajustarCaixa);
 $('#pedido').onkeydown = (e) => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); $('#f').requestSubmit(); } };
 $('#f').onsubmit = async (e) => {
 	e.preventDefault();
-	const pedido = $('#pedido').value.trim();
+	let pedido = $('#pedido').value.trim();
 	if (!pedido || S.chatAtivo) return;
+	if (S.intervencao) {
+		S.intervencao = false;
+		$('#pedido').placeholder = 'Ex.: usa o template do depoimento e coloca a moeda 3D girando quando eu falar "investimento"';
+		pedido = 'Interrompi seu trabalho para pedir um ajuste. Aplique o ajuste abaixo e CONTINUE o que estava fazendo (sem recomeçar do zero): ' + pedido;
+	}
 	if (!T) return aviso('Abra o endereço completo que apareceu no terminal (termina com #código).', 'erro');
 	const projetoChat = proj();
 	$('#pedido').value = '';
@@ -1421,7 +1570,7 @@ $('#f').onsubmit = async (e) => {
 	rolar();
 	const mesmo = () => proj() === projetoChat;
 	const add = (...a) => { if (!mesmo()) return null; const d = msg(...a); msgs.append(pensando); rolar(); return d; };
-	let ultimaIa = null;
+	let ultimaIa = null, faltam = null;
 	ctrl = new AbortController();
 	try {
 		const r = await fetch('/api/chat', {method: 'POST', headers: H, signal: ctrl.signal, body: JSON.stringify({projeto: projetoChat, pedido, tema: temaAtual()})});
@@ -1440,6 +1589,7 @@ $('#f').onsubmit = async (e) => {
 				if (ev.tipo === 'texto') ultimaIa = add(ev.texto, 'ia');
 				else if (ev.tipo === 'acao') add(ev.acao, 'acao');
 				else if (ev.tipo === 'erro') add(ev.texto, 'erro');
+				else if (ev.tipo === 'faltam') faltam = ev.arquivos;
 				else if (ev.tipo === 'fim' && ultimaIa && custoTxt(ev.custo)) ultimaIa.insertAdjacentHTML('beforeend', `<span class="custo">${esc(custoTxt(ev.custo))}</span>`);
 			}
 		}
@@ -1462,7 +1612,37 @@ $('#f').onsubmit = async (e) => {
 	carregarFluxo();
 	pollTarefas();
 	verificarClaude();
+	// Conferência: material que o usuário mandou usar e a edição não usou. Pede uma vez para refazer; na segunda, só avisa.
+	if (faltam?.length && mesmo()) {
+		const tent = (S.autoMidias ??= {});
+		if ((tent[projetoChat] ?? 0) < 1) {
+			tent[projetoChat] = (tent[projetoChat] ?? 0) + 1;
+			aviso(`Faltou usar: ${faltam.join(', ')}. Pedindo para refazer usando todos.`, 'alerta');
+			$('#pedido').value = `Conferência automática: o edit.ts não usa estes arquivos que eu defini como "usar todos": ${faltam.join(', ')}. Refaça a edição usando TODOS os arquivos do grupo (respeitando a ordem definida). Se algum realmente não couber, explique o motivo.`;
+			$('#f').requestSubmit();
+		} else aviso(`Ainda não usou: ${faltam.join(', ')}. Peça na conversa ou use o botão na aba Mídias.`, 'erro');
+	} else if (projetoChat && !faltam) delete (S.autoMidias ?? {})[projetoChat];
 };
+
+// Pedido que estava em andamento quando o painel fechou: oferece continuar de onde parou (não gasta limite sem você pedir).
+async function verificarPendente() {
+	try {
+		const p = await api('/api/chat/pendente');
+		if (!p || (p.projeto || '') !== (proj() || '')) return;
+		document.querySelector('.pendente')?.remove();
+		const d = document.createElement('div');
+		d.className = 'pendente';
+		d.innerHTML = `${ic('alert')}<span>O painel fechou no meio deste pedido: <b>${esc(String(p.pedido).slice(0, 140))}</b></span><button class="btn mini primario" id="pdContinuar">Continuar de onde parou</button><button class="btn mini fantasma" id="pdDescartar">Descartar</button>`;
+		$('#f').before(d);
+		$('#pdDescartar').onclick = () => { api('/api/chat/pendente', {}).catch(() => {}); d.remove(); };
+		$('#pdContinuar').onclick = () => {
+			api('/api/chat/pendente', {}).catch(() => {});
+			d.remove();
+			$('#pedido').value = 'O painel foi reiniciado no meio do seu trabalho. CONTINUE de onde parou (confira o que já está feito nos arquivos, sem recomeçar) o pedido: ' + p.pedido;
+			$('#f').requestSubmit();
+		};
+	} catch {}
+}
 
 // ---------- Início ----------
 async function iniciar() {
@@ -1474,6 +1654,7 @@ async function iniciar() {
 		return;
 	}
 	boasVindas();
+	verificarPendente();
 	await carregarConfig();
 	await atualizarTudo();
 	aoTrocarProjeto();

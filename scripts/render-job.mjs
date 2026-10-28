@@ -140,6 +140,11 @@ try {
 			});
 			rmSync(brutoRel, {force: true});
 		}
+		// Com o Drive vinculado (scripts/drive.mjs config), o vídeo final também vai para a pasta do Drive.
+		if (existsSync(path.join(raiz, '.painel/drive.json'))) {
+			const d = spawnSync('node', ['scripts/drive.mjs', 'salvar', finalRel], {cwd: raiz, shell: false, encoding: 'utf8'});
+			if (d.status !== 0) emitir({aviso: 'Não consegui copiar o vídeo para o Drive (o Drive para computador está aberto?).'});
+		}
 		emitir({fim: true, saida: finalRel});
 	} else {
 		emitir({fim: true, saida: brutoRel});
