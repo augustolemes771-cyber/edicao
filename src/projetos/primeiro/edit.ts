@@ -29,7 +29,7 @@ export const primeiro: Edit = {
 	transcricao,
 	trechos: (o) => {
 		// [início, fim] no tempo original, com folga; as bordas se encaixam nas pausas medidas (silencios.json).
-		const fala = (de: string, ate: string, folga = 0.07): Trecho => [o.say(de).inicio - 0.06, o.say(ate).fim + folga];
+		const fala = (de: string, ate: string, folga = 0.12): Trecho => [o.say(de).inicio - 0.06, o.say(ate).fim + folga];
 		const lista: Trecho[] = [
 			fala('eu fiz 20 mil em GMV', 'eu fiz 20 mil em GMV'),
 			fala('Tô aqui com a Paola', 'há quanto tempo que você faz live shop'),
@@ -55,19 +55,15 @@ export const primeiro: Edit = {
 				lista[i] = [meio, lista[i][1]];
 			}
 		}
-		// Cortes entre as pausas: tira os respiros entre palavras (vão > 0,12 s) sem remover fala; sobra ~0,07 s de ar.
-		// Bordas externas do trecho ficam; sub-trecho com menos de 0,25 s é juntado ao vizinho.
+		// Cortes entre as pausas: tira as pausas MEDIDAS no áudio (silencios.json) que caem dentro de um trecho, deixando
+		// 0,04 s de ar de cada lado. Pausa pelo vão do Whisper não serve: ele erra o tempo e o corte caía no meio da voz.
 		const cortado: Trecho[] = [];
 		for (const [a, z] of lista) {
-			const ps = o.palavras.filter((p) => p.inicio >= a && p.fim <= z);
 			let ini = a;
-			for (let i = 0; i < ps.length - 1; i++) {
-				if (ps[i + 1].inicio - ps[i].fim <= 0.09) continue;
-				const fimSub = ps[i].fim + 0.04;
-				const proxIni = ps[i + 1].inicio - 0.03;
-				if (fimSub - ini < 0.25 || z - proxIni < 0.25) continue;
-				cortado.push([ini, fimSub]);
-				ini = proxIni;
+			for (const [s0, s1] of silencios as Trecho[]) {
+				if (s0 <= ini + 0.25 || s1 >= z - 0.25 || s1 - s0 < 0.12) continue;
+				cortado.push([ini, s0 + 0.04]);
+				ini = s1 - 0.04;
 			}
 			cortado.push([ini, z]);
 		}
