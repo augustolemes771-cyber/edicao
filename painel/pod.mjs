@@ -3,7 +3,8 @@
 // Passos: enviar o código, enviar só as mídias do projeto que mudaram, npm ci se faltar, render com as mesmas linhas
 // JSON do scripts/render-job.mjs e baixar o resultado para out/.
 import {spawn} from 'node:child_process';
-import {createWriteStream, existsSync, mkdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {createWriteStream, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync} from 'node:fs';
 import os from 'node:os';
 import {finished} from 'node:stream/promises';
 import path from 'node:path';
@@ -195,8 +196,33 @@ export const enviarArquivos = async (t, pod, lista, aoPct) => {
 	}
 };
 
-// Código do projeto: um tar local (rápido) enviado por scp e aberto no pod.
+// Impressão do código a enviar (caminho, tamanho e data de cada arquivo): igual à do último envio para este pod = nada a enviar.
+const hashCodigo = (raiz, itens, exclui) => {
+	const h = createHash('sha1');
+	const fora = exclui.map((x) => x.replace(/\\/g, '/'));
+	const add = (rel) => {
+		if (fora.some((x) => rel === x || rel.startsWith(`${x}/`))) return;
+		const f = path.join(raiz, rel);
+		let st;
+		try {
+			st = statSync(f);
+		} catch {
+			return;
+		}
+		if (st.isDirectory()) for (const nome of readdirSync(f).sort()) add(`${rel}/${nome}`);
+		else h.update(`${rel}\t${st.size}\t${Math.floor(st.mtimeMs)}\n`);
+	};
+	itens.forEach(add);
+	return h.digest('hex');
+};
+
+// Código do projeto: um tar local (rápido) enviado por scp e aberto no pod. Pula tudo quando o pod já tem este mesmo código.
 export const enviarCodigo = async (t, pod, raiz, estado, itens, aoPct, exclui = []) => {
+	const hash = hashCodigo(raiz, itens, exclui);
+	const marca = `${pod.pasta}/.envio/codigo.hash`;
+	const prep = await sshRodar(pod, `mkdir -p ${q(`${pod.pasta}/.envio`)} && { cat ${q(marca)} 2>/dev/null; true; }`, {aoProc: (p) => t.procs.add(p)});
+	if (prep.codigo !== 0) throw new Error(erroSsh(prep.codigo, prep.erro));
+	if (prep.saida.trim() === hash) return aoPct(100), false;
 	const arq = path.join(estado, 'envio-codigo.tar');
 	const codTar = await executar(exe('tar'), ['-cf', arq, ...exclui.flatMap((x) => ['--exclude', x]), '--', ...itens], {cwd: raiz, env: {...process.env, COPYFILE_DISABLE: '1'}}).catch((e) => {
 		throw e.code === 'ENOENT' ? new Error('tar não encontrado neste computador') : e;
@@ -204,14 +230,13 @@ export const enviarCodigo = async (t, pod, raiz, estado, itens, aoPct, exclui = 
 	if (codTar !== 0 || !existsSync(arq)) throw new Error(`tar falhou ao empacotar o código (código ${codTar})`);
 	aoPct(30);
 	const remoto = `${pod.pasta}/.envio/codigo.tar`;
-	const prep = await sshRodar(pod, `mkdir -p ${q(`${pod.pasta}/.envio`)}`, {aoProc: (p) => t.procs.add(p)});
-	if (prep.codigo !== 0) throw new Error(erroSsh(prep.codigo, prep.erro));
 	await scpPara(t, pod, arq, remoto);
 	aoPct(85);
-	const ab = await sshRodar(pod, `tar -xf ${q(remoto)} -C ${q(pod.pasta)} --warning=no-unknown-keyword && rm -f ${q(remoto)}`, {aoProc: (p) => t.procs.add(p)});
+	const ab = await sshRodar(pod, `rm -f ${q(marca)} && tar -xf ${q(remoto)} -C ${q(pod.pasta)} --warning=no-unknown-keyword && rm -f ${q(remoto)} && echo ${hash} > ${q(marca)}`, {aoProc: (p) => t.procs.add(p)});
 	if (ab.codigo !== 0) throw new Error(`Não consegui abrir o código no pod: ${ab.erro.trim().slice(-300)}`);
 	rmSync(arq, {force: true});
 	aoPct(100);
+	return true;
 };
 
 const CODIGO = ['src', 'scripts', 'public/sfx', 'public/fontes', 'biblioteca', 'package.json', 'package-lock.json', 'remotion.config.ts', 'tsconfig.json'];
@@ -244,10 +269,20 @@ export const renderNoPod = async ({t, raiz, estado, podCfg, projeto, tipo, res, 
 	// Faixas da barra: código 0-4, mídias 4-20, dependências 20-23, render 23-95, download 95-100.
 	const faixa = (a, b) => (pct) => atualizar({pct: a + (pct / 100) * (b - a)});
 
+	// Tempo de cada etapa (no PC e, do render-job, dentro do pod) para a linha de resumo no fim.
+	const tempos = {};
+	let marcaT = Date.now();
+	const marcar = (nome) => {
+		tempos[nome] = Number(((Date.now() - marcaT) / 1000).toFixed(1));
+		marcaT = Date.now();
+	};
+	const inicioTotal = Date.now();
+
 	// 1. Código.
 	atualizar({fase: 'enviando o código para o pod', pct: 0});
 	const itens = CODIGO.filter((f) => existsSync(path.join(raiz, f)));
-	await enviarCodigo(t, pod, raiz, estado, itens, faixa(0, 4), FORA);
+	const codigoEnviado = await enviarCodigo(t, pod, raiz, estado, itens, faixa(0, 4), FORA);
+	marcar(codigoEnviado ? 'código' : 'código (igual, não enviado)');
 	parar();
 
 	// 2. Mídias do projeto: só as que faltam no pod, têm outro tamanho lá ou mudaram aqui desde o último envio.
@@ -289,6 +324,7 @@ export const renderNoPod = async ({t, raiz, estado, podCfg, projeto, tipo, res, 
 	}
 	parar();
 
+	marcar('mídias');
 	// 3. Dependências: npm ci quando falta node_modules ou o package-lock mudou.
 	atualizar({fase: 'instalando dependências no pod', pct: 20});
 	const dep = await sshRodar(
@@ -302,6 +338,7 @@ export const renderNoPod = async ({t, raiz, estado, podCfg, projeto, tipo, res, 
 
 	// Garante o limite de conexões do sshd do pod (pod novo ou reiniciado volta ao padrão de 10 e recusa conexões ao acaso).
 	await sshRodar(pod, `grep -qE '^MaxStartups[[:space:]]+100' /etc/ssh/sshd_config 2>/dev/null || { [ "$(id -u)" = 0 ] && echo 'MaxStartups 100:30:300' >> /etc/ssh/sshd_config && pkill -HUP -x sshd; }; true`).catch(() => null);
+	marcar('dependências');
 	// 4. Render, lendo as mesmas linhas JSON do render local.
 	atualizar({fase: 'renderizando no pod', pct: 23});
 	const args = ['--projeto', q(projeto), '--tipo', tipo, '--res', String(res)];
@@ -319,7 +356,8 @@ export const renderNoPod = async ({t, raiz, estado, podCfg, projeto, tipo, res, 
 				return atualizar({log: l});
 			}
 			if (ev.fase) atualizar({fase: `${ev.fase} no pod`, pct: 23 + ((ev.pct ?? 0) / 100) * 72, eta: ev.eta ?? null});
-			if (ev.aviso) atualizar({aviso: ev.aviso});
+			if (ev.tempos) Object.assign(tempos, Object.fromEntries(Object.entries(ev.tempos).map(([k, v]) => [`pod:${k}`, v])));
+			if (ev.aviso && !ev.tempos) atualizar({aviso: ev.aviso});
 			if (ev.gl) glQueFuncionou = ev.gl;
 			if (ev.erro) erroRemoto = ev.erro;
 			if (ev.fim) saidaRemota = ev.saida;
@@ -352,6 +390,7 @@ export const renderNoPod = async ({t, raiz, estado, podCfg, projeto, tipo, res, 
 	if (!saidaRemota) throw new Error(r.codigo === 255 ? erroSsh(r.codigo, r.erro) : r.erro.trim().slice(-500) || `Render no pod terminou com código ${r.codigo}`);
 	if (!/^out\/[\w.-]+\.mp4$/.test(saidaRemota)) throw new Error('Saída inesperada do render no pod');
 
+	marcar('render no pod');
 	// 5. Baixar o vídeo para out/.
 	atualizar({fase: 'baixando o vídeo do pod', pct: 95, eta: null});
 	const remoto = `${pod.pasta}/${saidaRemota}`;
@@ -384,6 +423,8 @@ export const renderNoPod = async ({t, raiz, estado, podCfg, projeto, tipo, res, 
 		throw e;
 	});
 	renameSync(parte, destino);
+	marcar('download');
+	atualizar({aviso: `Tempos no pod: ${Object.entries(tempos).map(([k, v]) => `${k} ${v}s`).join(', ')}, total ${((Date.now() - inicioTotal) / 1000).toFixed(1)}s.`});
 	return saidaRemota;
 };
 
