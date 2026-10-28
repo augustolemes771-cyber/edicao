@@ -454,7 +454,8 @@ const chat = async (req, res) => {
 	const arqHooks = path.join(estado, 'hooks.json');
 	writeFileSync(arqHooks, JSON.stringify({hooks: {PostToolUse: [{hooks: [{type: 'command', command: `node "${path.join(import.meta.dirname, 'hook-fila.mjs').replace(/\\/g, '/')}"`}]}]}}));
 	args.push('--settings', `"${arqHooks}"`);
-	const proc = rodar('claude', ehWin ? args : args.map((a) => a.replace(/^"|"$/g, '')), {stdio: ['pipe', 'pipe', 'pipe'], env: {...process.env, PAINEL_FILA: arqFila(chave), BASH_DEFAULT_TIMEOUT_MS: '1800000', BASH_MAX_TIMEOUT_MS: '3600000'}});
+	// Fora do Windows, grupo próprio: matar() encerra junto o bloco, o render e o ffmpeg que o Claude abriu.
+	const proc = rodar('claude', ehWin ? args : args.map((a) => a.replace(/^"|"$/g, '')), {detached: !ehWin, stdio: ['pipe', 'pipe', 'pipe'], env: {...process.env, PAINEL_FILA: arqFila(chave), BASH_DEFAULT_TIMEOUT_MS: '1800000', BASH_MAX_TIMEOUT_MS: '3600000'}});
 	proc.stdin.on('error', () => {});
 	proc.stdin.end(pedido);
 	rodando.set(chave, proc);
