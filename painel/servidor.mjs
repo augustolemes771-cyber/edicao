@@ -362,6 +362,16 @@ const arqPendente = path.join(estado, 'chat-pendente.json');
 const andamento = criarAndamento({raiz, estado, tarefas, historico, listarMidias, lerGrupos, midiasNaoUsadas, rodar, ehWin, atividade: async (proj) => ({chatRodando: rodando.has(proj || '_geral'), processos: await processosPesados()})});
 const rodando = new Map();
 const apagarProjeto = criarApagar({raiz, estado, dirTemas, projetoOk, tarefas, rodando, sessoes, gravarSessoes: () => writeFileSync(arqSessoes, JSON.stringify(sessoes))});
+const arqFila = (chave) => path.join(estado, `fila-${chave}.json`);
+const enfileirar = async (req, res) => {
+	const {projeto, pedido} = await corpo(req);
+	const chave = projeto || '_geral';
+	if (!nomeValido(projeto) || typeof pedido !== 'string' || !pedido.trim()) return json(res, {erro: 'Pedido inválido'}, 400);
+	if (!rodando.has(chave)) return json(res, {erro: 'O Claude não está trabalhando agora'}, 409);
+	writeFileSync(arqFila(chave), JSON.stringify([...lerJson(arqFila(chave), []), pedido.trim()]));
+	historico.anotar(chave, 'eu', pedido);
+	return json(res, {ok: true});
+};
 const chat = async (req, res) => {
 	const {projeto, pedido, tema} = await corpo(req);
 	if (!nomeValido(projeto) || !nomeValido(tema) || typeof pedido !== 'string' || !pedido.trim()) return json(res, {erro: 'Pedido inválido'}, 400);
@@ -404,7 +414,12 @@ const chat = async (req, res) => {
 	}
 	if (modelo && /^[a-z0-9][\w.-]{0,60}$/i.test(modelo)) args.push('--model', modelo);
 	if (['low', 'medium', 'high'].includes(esforco)) args.push('--effort', esforco);
-	const proc = rodar('claude', ehWin ? args : args.map((a) => a.replace(/^"|"$/g, '')), {stdio: ['pipe', 'pipe', 'pipe']});
+	// Mensagens enviadas durante o trabalho: o hook entrega ao Claude no próximo passo (sem interromper).
+	try { rmSync(arqFila(chave), {force: true}); } catch {}
+	const arqHooks = path.join(estado, 'hooks.json');
+	writeFileSync(arqHooks, JSON.stringify({hooks: {PostToolUse: [{hooks: [{type: 'command', command: `node "${path.join(import.meta.dirname, 'hook-fila.mjs').replace(/\\/g, '/')}"`}]}]}}));
+	args.push('--settings', `"${arqHooks}"`);
+	const proc = rodar('claude', ehWin ? args : args.map((a) => a.replace(/^"|"$/g, '')), {stdio: ['pipe', 'pipe', 'pipe'], env: {...process.env, PAINEL_FILA: arqFila(chave)}});
 	proc.stdin.on('error', () => {});
 	proc.stdin.end(pedido);
 	rodando.set(chave, proc);
@@ -447,6 +462,11 @@ const chat = async (req, res) => {
 	proc.on('close', async (c) => {
 		if (rodando.get(chave) === proc) rodando.delete(chave);
 		try { rmSync(arqPendente, {force: true}); } catch {}
+		if (!c && !parado) {
+			const sobra = lerJson(arqFila(chave), []);
+			try { rmSync(arqFila(chave), {force: true}); } catch {}
+			if (sobra.length) enviar('sobrou', {pedido: sobra.join('\n')});
+		}
 		if (c) enviar('erro', {texto: erro.trim().slice(-400) || `Terminou com código ${c}`});
 		// Salvar sozinho: commit e push depois de cada pedido que terminou sem erro.
 		if (!c && !falhou && !parado && cfg.prefs().salvarSozinho) {
@@ -808,6 +828,7 @@ createServer(async (req, res) => {
 			return json(res, {texto: readFileSync(path.join(raiz, rel), 'utf8')});
 		}
 		if (p === '/api/chat' && req.method === 'POST') return chat(req, res);
+		if (p === '/api/chat/fila' && req.method === 'POST') return enfileirar(req, res);
 		if (p === '/api/parar' && req.method === 'POST') {
 			const {projeto} = await corpo(req);
 			matar(rodando.get(projeto || '_geral'));

@@ -1669,7 +1669,16 @@ $('#pedido').onkeydown = (e) => { if (e.key === 'Enter' && !e.shiftKey && !e.isC
 $('#f').onsubmit = async (e) => {
 	e.preventDefault();
 	let pedido = $('#pedido').value.trim();
-	if (!pedido || S.chatAtivo) return;
+	if (!pedido) return;
+	// Claude trabalhando: a mensagem vai para a fila e ele a lê no próximo passo, sem parar.
+	if (S.chatAtivo) {
+		try { await api('/api/chat/fila', {projeto: proj(), pedido}); } catch (err) { return avisoErro(err); }
+		$('#pedido').value = '';
+		ajustarCaixa();
+		msg(pedido, 'eu', {t: Date.now()});
+		aviso('Mensagem enviada: o Claude lê no próximo passo, sem parar.', 'info', {ms: 2500});
+		return;
+	}
 	if (S.intervencao) {
 		S.intervencao = false;
 		$('#pedido').placeholder = 'Ex.: usa o template do depoimento e coloca a moeda 3D girando quando eu falar "investimento"';
@@ -1681,7 +1690,6 @@ $('#f').onsubmit = async (e) => {
 	msg(pedido, 'eu', {t: Date.now()});
 	S.chatAtivo = true;
 	atualizarPilulas();
-	$('#enviar').disabled = true;
 	$('#parar').hidden = false;
 	const pensando = document.createElement('div');
 	pensando.className = 'digitando';
@@ -1692,7 +1700,7 @@ $('#f').onsubmit = async (e) => {
 	rolar();
 	const mesmo = () => proj() === projetoChat;
 	const add = (...a) => { if (!mesmo()) return null; const d = msg(...a); msgs.append(pensando); rolar(); return d; };
-	let ultimaIa = null, faltam = null;
+	let ultimaIa = null, faltam = null, sobrou = null;
 	ctrl = new AbortController();
 	try {
 		const r = await fetch('/api/chat', {method: 'POST', headers: H, signal: ctrl.signal, body: JSON.stringify({projeto: projetoChat, pedido, tema: temaAtual()})});
@@ -1713,6 +1721,7 @@ $('#f').onsubmit = async (e) => {
 				else if (ev.tipo === 'acao') { textoAgora = traduzirAcao(ev.acao); ultimoEvento = Date.now(); add(ev.acao, 'acao'); }
 				else if (ev.tipo === 'erro') add(ev.texto, 'erro');
 				else if (ev.tipo === 'faltam') faltam = ev.arquivos;
+				else if (ev.tipo === 'sobrou') sobrou = ev.pedido;
 				else if (ev.tipo === 'fim' && ultimaIa && custoTxt(ev.custo)) ultimaIa.insertAdjacentHTML('beforeend', `<span class="custo">${esc(custoTxt(ev.custo))}</span>`);
 			}
 		}
@@ -1737,7 +1746,11 @@ $('#f').onsubmit = async (e) => {
 	pollTarefas();
 	verificarClaude();
 	// Conferência: material que o usuário mandou usar e a edição não usou. Pede uma vez para refazer; na segunda, só avisa.
-	if (faltam?.length && mesmo()) {
+	if (sobrou && mesmo()) {
+		// Mensagem da fila que o Claude não chegou a ler: vai como pedido normal.
+		$('#pedido').value = sobrou;
+		$('#f').requestSubmit();
+	} else if (faltam?.length && mesmo()) {
 		const tent = (S.autoMidias ??= {});
 		if ((tent[projetoChat] ?? 0) < 1) {
 			tent[projetoChat] = (tent[projetoChat] ?? 0) + 1;
