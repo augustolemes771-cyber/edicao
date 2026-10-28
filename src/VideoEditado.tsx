@@ -82,11 +82,12 @@ const Base: React.FC<{edit: Edit; montagem: Montagem; pessoa?: boolean}> = ({edi
 		<>
 			{montagem.mantidos.map(([ini, fim], i) => {
 				// Início e fim pelo tempo acumulado: trechos vizinhos se encostam sem quadro vazio.
+				// premountFor: no Studio o próximo trecho já carrega e busca o quadro 1 s antes, sem travar na emenda.
 				const from = Math.round(acumulado * fps);
 				acumulado += fim - ini;
 				const dur = Math.round(acumulado * fps) - from;
 				return (
-					<Sequence key={i} from={from} durationInFrames={dur} layout="none">
+					<Sequence key={i} from={from} durationInFrames={dur} layout="none" premountFor={fps}>
 						{/* OffthreadVideo extrai os quadros com o ffmpeg: o Video do @remotion/media travava no Windows. */}
 						<OffthreadVideo
 							src={fonte}
