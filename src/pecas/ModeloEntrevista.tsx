@@ -3,7 +3,7 @@
 // frase: frase grande palavra por palavra com uma ênfase em Playfair dourado, vídeo escurecido em roxo.
 // siga: pílulas "SIGA <nome>" uma a uma. live: interface de live sobre o vídeo (~0,7 a 2 s). chips: um item por vez no
 // mesmo lugar. comentario: caixa de comentário digitada. numero3d: número em ouro 3D acima da cabeça (gancho, resultado).
-// selo: pílula dourada com chip roxo. final: cartão final roxo com anel dourado e a marca.
+// celular3d: motion de tela cheia com celular 3D e texto 3D. selo: pílula dourada com chip roxo. final: cartão final roxo com anel dourado e a marca.
 import React from 'react';
 import {AbsoluteFill, interpolate, random, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {ThreeCanvas} from '@remotion/three';
@@ -16,6 +16,8 @@ import {LiveTemplate} from './modelo/motion5157e';
 import {Faiscas, Linha3D, Luzes, Onda} from './tres/Texto3D';
 import {ImpactoDor} from './efeitos/Impacto';
 import {ObjetoVoaAoCentro, OlhoDourado} from './efeitos/Voo3D';
+import {Celular} from './tres/Objetos3D';
+import {CelularPack} from './tres/CelularPack';
 
 type De<T extends CenaNoPlano['tipo']> = Extract<CenaNoPlano, {tipo: T}>;
 const lim = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
@@ -232,6 +234,52 @@ export const Final: React.FC<{cena: De<'final'>}> = ({cena}) => {
 					<span style={{fontFamily: poppins, fontWeight: 700, fontSize: 38, letterSpacing: '0.3em', marginRight: '-0.3em', color: '#fff'}}>{cena.sub}</span>
 				</div>
 			) : null}
+		</AbsoluteFill>
+	);
+};
+
+// Motion de tela cheia no roxo do tema: o celular 3D (tela de live; modelo do pack quando houver) entra de baixo girando e assenta no alto da tela;
+// cada linha de texto 3D cai letra por letra na hora da sua palavra, com onda e faíscas. As linhas fazem o papel da legenda.
+export const Celular3D: React.FC<{cena: De<'celular3d'>}> = ({cena}) => {
+	const frame = useCurrentFrame();
+	const {fps, width, height} = useVideoConfig();
+	const fim = Math.round((cena.ate - cena.de) * fps);
+	const entrada = interpolate(frame, [0, 7], [0, 1], lim);
+	const saida = interpolate(frame, [fim - 8, fim], [1, 0], lim);
+	const p = spring({frame, fps, config: {damping: 14, stiffness: 80, mass: 1}});
+	const t = frame / fps;
+	const batidas = cena.linhas.map((l) => Math.round(Math.max(0, rel(cena, l.em)) * fps));
+	// Linhas de baixo para cima a partir de -2,1 (câmera fov 35 a 14,5: meia altura ~4,57 unidades).
+	const yLinha = (i: number) => -1.85 - i * 1.15;
+	return (
+		<AbsoluteFill style={{pointerEvents: 'none', opacity: entrada * saida}}>
+			<AbsoluteFill style={{background: `radial-gradient(circle at 50% 36%, #4a2a86 0%, ${ROXO} 55%, #0d0620 100%)`}} />
+			<AbsoluteFill style={{background: `radial-gradient(circle at 50% 36%, rgba(232,194,122,${0.16 + Math.sin(t * 3) * 0.04}) 0%, rgba(232,194,122,0) 40%)`}} />
+			<AbsoluteFill style={{filter: 'drop-shadow(0 26px 34px rgba(8,2,20,0.7))'}}>
+				<ThreeCanvas
+					width={width}
+					height={height}
+					gl={{alpha: true, antialias: true, preserveDrawingBuffer: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.05}}
+					camera={{fov: 35, position: [0, 0, 14.5], near: 0.1, far: 60}}
+					style={{position: 'absolute', inset: 0}}
+				>
+					<Luzes quadro={frame} batidas={batidas} />
+					<group
+						position={[0, -6 + 7.4 * p + Math.sin(t * 1.8) * 0.06, 0]}
+						rotation={[0.12 * (1 - p) + 0.06, (1 - p) * 2.6 + Math.sin(t * 1.3) * 0.22, (1 - p) * -0.3]}
+						scale={0.9 + 0.3 * p}
+					>
+						{cena.modelo ? <CelularPack arquivo={cena.modelo} segundos={t} /> : <Celular segundos={t} />}
+					</group>
+					{cena.linhas.map((l, i) => (
+						<React.Fragment key={i}>
+							<Linha3D texto={l.texto} metal={i === 0 ? 'branco' : 'ouro'} largura={4.4} y={yLinha(i)} quadro={frame} batida={batidas[i]} profundidade={0.26} />
+							<Onda quadro={frame} inicio={batidas[i]} y={yLinha(i)} cor="#ffd27a" tamanho={2.6} />
+							<Faiscas quadro={frame} inicio={batidas[i]} y={yLinha(i)} cor="#ffd27a" largura={4} />
+						</React.Fragment>
+					))}
+				</ThreeCanvas>
+			</AbsoluteFill>
 		</AbsoluteFill>
 	);
 };

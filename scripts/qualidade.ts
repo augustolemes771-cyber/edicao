@@ -50,7 +50,7 @@ const textoDa = (c: CenaNoPlano): string => {
 	for (const k of ['texto', 'grande', 'pequeno', 'abaixo', 'rotulo', 'nome', 'titulo', 'linha1', 'linha2', 'valor', 'legenda', 'chip', 'marca']) {
 		if (typeof x[k] === 'string' || typeof x[k] === 'number') partes.push(String(x[k]));
 	}
-	for (const k of ['palavras', 'itens']) {
+	for (const k of ['palavras', 'itens', 'linhas']) {
 		const v = x[k];
 		if (Array.isArray(v)) v.forEach((i) => partes.push(typeof i === 'string' ? i : String((i as {texto?: string}).texto ?? '')));
 	}

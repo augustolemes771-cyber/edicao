@@ -220,6 +220,10 @@ export type Cena =
 	| (Base & {tipo: 'live'; drama?: boolean; olho3d?: number; espectadores?: string; comentarios?: {nome: string; texto: string}[]; coracoes?: boolean; host?: string; curtidas?: string})
 	// Chips de vidro com ✓ (ou 1/2/3), um por vez no mesmo lugar.
 	| (Base & {tipo: 'chips'; itens: {texto: string; em: number}[]; y?: number; numerado?: boolean})
+	// Motion de tela cheia: celular 3D (tela de live) voa ao centro girando e o texto 3D cai linha por linha na hora da fala.
+	// Ex.: linhas: [{texto: 'UM CELULAR', em: b.at('celular')}, {texto: '+ INTERNET', em: b.at('internet')}]. Esconde a legenda.
+	// modelo: arquivo OBJ do pack (biblioteca/pack/catalogo.json), ex.: '3D models/Phones/iphone.obj'; sem ele, celular de código.
+	| (Base & {tipo: 'celular3d'; linhas: {texto: string; em: number}[]; modelo?: string})
 	// Caixa de comentário digitada letra por letra.
 	| (Base & {tipo: 'comentario'; texto: string; y?: number})
 	// Número em ouro 3D acima da cabeça (y = centro em px), rótulo pequeno em cima e linha de vidro embaixo.
@@ -419,6 +423,7 @@ const MODO_PADRAO: Record<TipoCena, Modo> = {
 	chips: 'sobre',
 	comentario: 'sobre',
 	numero3d: 'sobre',
+	celular3d: 'cheia',
 	selo: 'sobre',
 	final: 'cheia',
 };
@@ -462,6 +467,7 @@ const SOM_PADRAO: Record<TipoCena, Som | null> = {
 	chips: 'tick',
 	comentario: 'tick',
 	numero3d: 'rise',
+	celular3d: 'whoosh',
 	selo: 'tick',
 	final: 'whoosh',
 };
@@ -642,6 +648,7 @@ const TEXTO_PROPRIO: TipoCena[] = [
 	'frase',
 	'live',
 	'numero3d',
+	'celular3d',
 	'final',
 	'titulo',
 	'numero',

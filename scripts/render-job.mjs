@@ -93,6 +93,43 @@ const ligarPublico = (destino) => {
 		}
 	};
 	for (const nome of readdirSync(origem)) ligar(nome);
+	ligarPack(destino);
+};
+// Modelos do pack citados no edit.ts do projeto (ex.: celular3d com modelo '3D models/Phones/iphone.obj') entram em
+// pack/<arquivo>, vindos da pasta do pack deste PC (.painel/pack.json, .painel/drive.json ou biblioteca/pack/arquivos).
+const ligarPack = (destino) => {
+	const ler = (f, padrao) => {
+		try {
+			return JSON.parse(readFileSync(f, 'utf8'));
+		} catch {
+			return padrao;
+		}
+	};
+	const cat = ler(path.join(raiz, 'biblioteca/pack/catalogo.json'), []);
+	const itens = Array.isArray(cat) ? cat : (cat?.itens ?? []);
+	let edit = '';
+	try {
+		edit = readFileSync(path.join(raiz, 'src/projetos', projeto, 'edit.ts'), 'utf8');
+	} catch {}
+	const usados = itens.filter((i) => i?.tipo === 'modelo3d' && typeof i.arquivo === 'string' && edit.includes(i.arquivo));
+	if (!usados.length) return;
+	const r = ler(path.join(raiz, '.painel/pack.json'), {})?.raiz;
+	const drive = ler(path.join(raiz, '.painel/drive.json'), {})?.packs ?? [];
+	const raizes = [r, ...drive].filter((x) => typeof x === 'string' && path.isAbsolute(x)).concat(path.join(raiz, 'biblioteca/pack/arquivos'));
+	for (const i of usados) {
+		const de = raizes.map((b) => path.resolve(b, i.arquivo)).find((f, k) => f.startsWith(path.resolve(raizes[k]) + path.sep) && existsSync(f));
+		if (!de) {
+			emitir({aviso: `Modelo do pack não encontrado neste PC: ${i.arquivo} (a cena usa o celular de código).`});
+			continue;
+		}
+		const para = path.join(destino, 'pack', i.arquivo);
+		mkdirSync(path.dirname(para), {recursive: true});
+		try {
+			linkSync(de, para);
+		} catch {
+			copyFileSync(de, para);
+		}
+	}
 };
 // Erro solto (ex.: EPIPE do ffmpeg interno) também vira a linha {"erro"} que o painel entende.
 process.on('uncaughtException', (e) => falhar(e?.message ?? e));

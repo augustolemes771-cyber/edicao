@@ -2165,7 +2165,7 @@ $('#plNota').onclick = () => {
 
 // Linha do tempo: faixas Texto (legenda), Efeitos (cenas), Câmera, Vídeo (trechos da gravação) e Áudio.
 const FAIXAS = [['legenda', 'Texto', 'type'], ['cenas', 'Efeitos', 'sparkles'], ['camera', 'Câmera', 'video'], ['trechos', 'Vídeo', 'film'], ['audio', 'Áudio', 'music']];
-const CORES_CENA = {numero3d: '#7c5cff', live: '#ff4d6d', frase: '#f5b544', selo: '#3ddc84', chips: '#4cc9f0', siga: '#ff7ab6', comentario: '#a0e426', final: '#b388ff', pilula: '#12d4cd'};
+const CORES_CENA = {numero3d: '#7c5cff', celular3d: '#7c5cff', live: '#ff4d6d', frase: '#f5b544', selo: '#3ddc84', chips: '#4cc9f0', siga: '#ff7ab6', comentario: '#a0e426', final: '#b388ff', pilula: '#12d4cd'};
 function ajustarZoom() {
 	if (!PL.meta) return;
 	const larg = $('#tlRolo').clientWidth - 24;

@@ -713,7 +713,8 @@ createServer(async (req, res) => {
 			}
 			let rel = '';
 			try { rel = decodeURIComponent(p.slice(8)); } catch { res.writeHead(400); return res.end(); }
-			const f = dentro(p.startsWith('/player/') ? player.pasta : path.join(raiz, 'public'), rel);
+			// public/pack/<arquivo>: modelo do pack usado numa cena (ex.: celular3d), servido do pack deste PC.
+			const f = p.startsWith('/public/pack/') ? acharPack(rel.slice('pack/'.length)) : dentro(p.startsWith('/player/') ? player.pasta : path.join(raiz, 'public'), rel);
 			if (!f) { res.writeHead(403); return res.end(); }
 			return arquivo(req, res, f);
 		}

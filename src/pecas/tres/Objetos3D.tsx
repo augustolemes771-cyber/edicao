@@ -323,13 +323,8 @@ export const Lampiao: React.FC<{cor?: string}> = ({cor = '#b6ff3a'}) => {
 	);
 };
 
-// Celular com a tela de uma live: selo AO VIVO, contador, produto em destaque e corações subindo.
-export const Celular: React.FC<{segundos: number}> = ({segundos}) => {
-	const corpo = useMemo(() => new RoundedBoxGeometry(1.5, 3.05, 0.16, 6, 0.2), []);
-	const metal = useMemo(
-		() => new THREE.MeshPhysicalMaterial({color: '#16171a', metalness: 0.6, roughness: 0.25, clearcoat: 1}),
-		[],
-	);
+// Tela de live (textura redesenhada a cada 1/10 s), usada pelo Celular de código e pelo modelo do pack (CelularPack).
+export const useTelaLive = (segundos: number) => {
 	// A tela é redesenhada a cada quadro inteiro de 1/10 s: os corações sobem.
 	const passo = Math.floor(segundos * 10);
 	const tela = useMemo(
@@ -401,7 +396,17 @@ export const Celular: React.FC<{segundos: number}> = ({segundos}) => {
 			}),
 		[passo],
 	);
-	const telaMat = useMemo(() => new THREE.MeshBasicMaterial({map: tela, toneMapped: false}), [tela]);
+	return useMemo(() => new THREE.MeshBasicMaterial({map: tela, toneMapped: false}), [tela]);
+};
+
+// Celular com a tela de uma live: selo AO VIVO, contador, produto em destaque e corações subindo.
+export const Celular: React.FC<{segundos: number}> = ({segundos}) => {
+	const corpo = useMemo(() => new RoundedBoxGeometry(1.5, 3.05, 0.16, 6, 0.2), []);
+	const metal = useMemo(
+		() => new THREE.MeshPhysicalMaterial({color: '#16171a', metalness: 0.6, roughness: 0.25, clearcoat: 1}),
+		[],
+	);
+	const telaMat = useTelaLive(segundos);
 	return (
 		<group>
 			<mesh geometry={corpo} material={metal} castShadow receiveShadow />

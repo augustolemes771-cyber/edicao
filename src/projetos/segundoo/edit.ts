@@ -31,20 +31,19 @@ export const segundoo: Edit = {
 	camera: (b) => [
 		{tipo: 'zoom', em: b.at('duas'), escala: 1.2},
 		{tipo: 'foco', em: b.at('Danilo,')},
-		{tipo: 'zoom', em: b.at('celular'), escala: 1.25},
 	],
 	// Bloco 1 (~10 s): gancho do número, pergunta e início da resposta do Danilo.
 	cenas: (b) => [
 		{tipo: 'numero3d', texto: 'R$ 10 MIL', abaixo: '2 HORAS POR DIA', de: b.at('duas'), ate: b.say('no seu bolso').fim + 0.3},
 		{
-			tipo: 'chips',
-			itens: [
+			tipo: 'celular3d',
+			modelo: '3D models/Phones/iphone.obj',
+			linhas: [
 				{texto: 'UM CELULAR', em: b.at('celular')},
-				{texto: 'INTERNET', em: b.at('internet')},
+				{texto: '+ INTERNET', em: b.at('internet')},
 			],
-			de: b.at('celular'),
+			de: b.at('celular') - 0.35,
 			ate: b.say('internet').fim + 0.8,
-			esconderLegenda: true,
 		},
 	],
 };
