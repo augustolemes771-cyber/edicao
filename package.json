@@ -24,7 +24,8 @@
     "preparar-video": "node scripts/preparar-video.mjs",
     "qualidade": "tsx scripts/qualidade.ts",
     "bloco": "tsx scripts/bloco.ts",
-    "auditar": "node scripts/auditar.mjs"
+    "auditar": "node scripts/auditar.mjs",
+    "analisar-referencia": "node scripts/analisar-referencia.mjs"
   },
   "dependencies": {
     "@react-three/fiber": "9.2.0",

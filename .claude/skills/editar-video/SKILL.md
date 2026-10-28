@@ -96,6 +96,11 @@ Leia `docs/estilo-do-usuario.md` (ritmo, paleta, receitas emoção→efeito, 3D,
 `src/pecas/efeitos/README.md`: `ImpactoDor` (tremida + glitch + aberração vermelha/ciano + vinheta pulsante), `ObjetoVoaAoCentro`
 (olho 3D do contador de espectadores), `Texto3DImpacto`. Dor = `frase` com `dor: true`; solidão = `live` com `drama`/`olho3d`.
 
+## Vídeo de referência/modelo
+
+Quando o usuário aprova um vídeo como modelo, ele quer o ESTILO e não a cópia: leia `docs/referencias/analisar-referencia.md` (coleta de evidências com
+`npm run analisar-referencia`, análise do porquê de cada efeito, auditoria de qualidade, gramática transferível e plano de equivalências por função da fala).
+
 ## Duração máxima (regra do usuário, 28/10/2026)
 
 Vídeo final com no máximo 59 s por padrão (preferência `duracaoMax` do painel, ou duração citada no pedido, manda no lugar) e dinâmico: corte as pausas (bordas no silêncio medido), tire enrolação e, só se faltar, acelere a fala de
