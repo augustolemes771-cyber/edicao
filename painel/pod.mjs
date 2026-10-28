@@ -26,7 +26,8 @@ export const validarPod = (pod = {}) => {
 	const usuario = String(pod.usuario ?? '').trim() || 'root';
 	const porta = Number(pod.porta || 22);
 	const pasta = String(pod.pasta ?? '').trim().replace(/\/+$/, '') || '/workspace/edicao';
-	const gl = String(pod.gl || 'angle-egl');
+	// 'swangle' (CPU) nunca é ponto de partida: o render-job só cai nele se os outros falharem.
+	const gl = ['swangle', 'swiftshader'].includes(pod.gl) ? 'egl' : String(pod.gl || 'egl');
 	let chave = String(pod.chave ?? '').trim();
 	if (!host) throw new Error('Preencha o endereço do pod nas configurações (o IP do "SSH over exposed TCP" do RunPod).');
 	if (!/^[A-Za-z0-9][A-Za-z0-9.-]{0,252}$/.test(host)) throw new Error('Endereço do pod inválido. Use só o IP ou o nome, ex.: 194.68.245.12');
@@ -298,7 +299,7 @@ export const renderNoPod = async ({t, raiz, estado, podCfg, projeto, tipo, res, 
 	});
 	parar();
 	// O modo de WebGL que funcionou no pod fica salvo: o próximo render já começa por ele.
-	if (glQueFuncionou && GLS.includes(glQueFuncionou) && estado) {
+	if (glQueFuncionou && GLS.includes(glQueFuncionou) && !['swangle', 'swiftshader'].includes(glQueFuncionou) && estado) {
 		try {
 			const arq = path.join(estado, 'config.json');
 			const c = JSON.parse(readFileSync(arq, 'utf8'));
