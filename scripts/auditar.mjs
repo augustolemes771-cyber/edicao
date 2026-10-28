@@ -2,6 +2,7 @@
 //   npm run auditar                       tudo (bundle + render curto + painel + ffmpeg + estáticos)
 //   npm run auditar -- --rapido           só estáticos, painel e ffmpeg (sem bundle nem render)
 //   npm run auditar -- --projeto P --de 2 --ate 6 --res 720   escolhe o trecho do render de teste
+//   npm run auditar -- --varrer-conc 4,8,12,16   (no pod) q/s por nº de abas do Chrome
 // Variáveis: BROWSER (chrome headless da nuvem), GL (padrão swangle fora do pod), CONC.
 // Números daqui valem para COMPARAR antes/depois no mesmo computador; não são os do pod.
 import {spawn, spawnSync} from 'node:child_process';
@@ -53,7 +54,6 @@ R.config = {
 };
 linha('jpegQuality (config/job)', `${R.config.jpegQuality}/${R.config.jobJpegQuality}`, 'prévia a 80-85 rende ~15-25% mais rápido');
 linha('concorrência', R.config.concurrencia);
-linha('cache do bundle entre blocos', R.config.bundleCache ? 'sim' : 'NÃO', 'cada bloco repete o webpack inteiro');
 linha('offthreadVideo cache/threads', R.config.offthreadCache ? 'sim (só no pod)' : 'não');
 const ffLoud = /loudnorm[^\n]*print_format=json/.test(job) && !/-vn[^\n]*loudnorm/.test(job.split('mixando')[1] ?? '');
 R.loudnormSemVn = ffLoud;
@@ -128,9 +128,8 @@ if (!rapido || args.includes('--painel')) {
 	if (token) {
 		R.painel = {subida_ms: Date.now() - t0, rotas: {}};
 		linha('painel sobe em', `${seg(Date.now() - t0)} s`);
-		const rotas = ['/', '/app.js', '/app.css', '/api/tarefas', '/api/claude'];
-		const extra = [...srvTxt.matchAll(/rota === '(\/api\/[\w/-]+)'/g)].map((m) => m[1]).filter((r) => /^\/api\/(config|projetos|biblioteca|itens|historico|estado|midias|fluxo)\b/.test(r));
-		for (const rota of [...new Set([...rotas, ...extra])].slice(0, 14)) {
+		const rotas = ['/', '/app.js', '/app.css', '/api/tarefas', '/api/claude', '/api/biblioteca', '/api/projetos', '/api/config', '/api/fluxo', '/api/historico', '/api/prompts', '/api/temas', '/api/andamento', '/api/pendencias', '/api/previas', '/api/midias?projeto=primeiro'];
+		for (const rota of rotas) {
 			const medidas = [];
 			let bytes = 0, status = 0;
 			for (let i = 0; i < 5; i++) {
@@ -186,9 +185,9 @@ if (!rapido) {
 		const achado = ['/opt/pw-browsers/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell', '/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell'].find(existsSync);
 		if (achado) env.BROWSER = achado;
 	}
-	const rodada = () => new Promise((ok) => {
+	const rodada = (ambiente = env) => new Promise((ok) => {
 		const t0 = Date.now(), marcos = {}, avisos = [];
-		const p = spawn(process.execPath, ['scripts/render-job.mjs', '--projeto', projeto, '--tipo', 'previa', '--res', res, '--de', de, '--ate', ate], {env});
+		const p = spawn(process.execPath, ['scripts/render-job.mjs', '--projeto', projeto, '--tipo', 'previa', '--res', res, '--de', de, '--ate', ate], {env: ambiente});
 		let resto = '';
 		p.stdout.on('data', (d) => {
 			resto += d;
@@ -215,6 +214,19 @@ if (!rapido) {
 		for (const a of r.avisos.slice(0, 2)) linha('  aviso', '', a.slice(0, 110));
 	}
 	R.render = {projeto, trecho: `${de}-${ate}`, res, rodadas: rs.map((r) => ({total_s: seg(r.total), marcos_s: Object.fromEntries(Object.entries(r.marcos).map(([k, v]) => [k, seg(v)])), codigo: r.codigo, avisos: r.avisos}))};
+	const quadrosReais = Math.round((Number(ate) - Number(de)) * 30);
+	const renderS = (r) => (r.total - (r.marcos.renderizando ?? 0)) / 1000;
+	linha('q/s reais (rodada quente)', (quadrosReais / renderS(rs[1])).toFixed(2), `${quadrosReais} quadros; o aviso do render-job divide pela composição inteira`);
+	R.render.qps_reais = +(quadrosReais / renderS(rs[1])).toFixed(2);
+	R.render.bundle_fria_s = seg(rs[0].marcos.renderizando ?? 0);
+	R.render.bundle_quente_s = seg(rs[1].marcos.renderizando ?? 0);
+	linha('webpack: fria → quente', `${R.render.bundle_fria_s} → ${R.render.bundle_quente_s} s`, 'cache em node_modules/.cache (no pod persiste entre blocos)');
+	const varrer = (arg('varrer-conc', '') || '').split(',').filter(Boolean);
+	for (const c of varrer) {
+		const r = await rodada({...env, CONC: c});
+		linha(`CONC=${c}`, `${(quadrosReais / renderS(r)).toFixed(2)} q/s`, `${seg(r.total)} s no total`);
+		(R.render.conc ??= {})[c] = +(quadrosReais / renderS(r)).toFixed(2);
+	}
 	const fria = rs[0].marcos;
 	linha('fração em empacotar+seleção', `${Math.round((((fria.renderizando ?? 0) - 0) / rs[0].total) * 100)}%`, 'tempo ANTES do primeiro quadro; se alto, vale cache de bundle');
 }
