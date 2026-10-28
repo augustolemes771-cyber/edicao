@@ -87,7 +87,7 @@ const Base: React.FC<{edit: Edit; montagem: Montagem; pessoa?: boolean}> = ({edi
 				acumulado += fim - ini;
 				const dur = Math.round(acumulado * fps) - from;
 				return (
-					<Sequence key={i} from={from} durationInFrames={dur} layout="none" premountFor={fps}>
+					<Sequence key={i} from={from} durationInFrames={dur} premountFor={fps}>
 						{/* OffthreadVideo extrai os quadros com o ffmpeg: o Video do @remotion/media travava no Windows. */}
 						<OffthreadVideo
 							src={fonte}
