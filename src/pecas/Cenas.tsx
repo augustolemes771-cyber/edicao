@@ -21,6 +21,7 @@ import {Passo} from './Passo';
 import {Titulo} from './Titulo';
 import {Cenario} from './Cenario';
 import {Celular3D, Chips, Comentario, Final, Frase, Live, Numero3D, Selo, Siga} from './ModeloEntrevista';
+import {Notificacoes, TextoLife} from './Lifestyle';
 import {AoVivo, Contador, Drama, Pilula} from './Entrevista';
 import {GradeAntesDepois} from './GradeAntesDepois';
 import {PresoClt} from './PresoClt';
@@ -345,6 +346,10 @@ const Conteudo: React.FC<Props> = ({cena, pasta}) => {
 			return <Medo3D cena={cena} />;
 		case 'selo':
 			return <Selo cena={cena} />;
+		case 'notificacoes':
+			return <Notificacoes cena={cena} />;
+		case 'textoLife':
+			return <TextoLife cena={cena} />;
 		case 'final':
 			return <Final cena={cena} />;
 		case 'rec':

@@ -243,6 +243,10 @@ export type Cena =
 	// metal 'branco' (prata) para o "antes" e ouro (padrão) para o resultado.
 	| (Base & {tipo: 'numero3d'; texto: string; rotulo?: string; abaixo?: string; nomeOuro?: boolean; em?: number; y?: number; largura?: number; metal?: 'ouro' | 'branco'})
 	// Pílula dourada com batida e chip roxo opcional.
+	// Banners de notificação de celular (vidro escuro, ícone de sacola) que descem do topo e empurram os anteriores (pilha de até 4).
+	| (Base & {tipo: 'notificacoes'; itens: {titulo: string; texto: string; em: number}[]; y?: number})
+	// Tipografia de lifestyle sem caixa: kicker em caixa alta, frase em Playfair itálico branco e sub; entra com fade + desfoque + subida.
+	| (Base & {tipo: 'textoLife'; kicker?: string; principal: string; sub?: string; em?: number; y?: number; alinhamento?: 'centro' | 'esquerda' | 'direita'})
 	| (Base & {tipo: 'selo'; texto: string; chip?: string; emChip?: number; y?: number})
 	// Cartão final roxo com anel dourado e a marca.
 	| (Base & {tipo: 'final'; marca: string; sub?: string})
@@ -443,6 +447,8 @@ const MODO_PADRAO: Record<TipoCena, Modo> = {
 	cards3d: 'sobre',
 	medo3d: 'sobre',
 	selo: 'sobre',
+	notificacoes: 'sobre',
+	textoLife: 'sobre',
 	final: 'cheia',
 };
 
@@ -491,6 +497,8 @@ const SOM_PADRAO: Record<TipoCena, Som | null> = {
 	cards3d: 'tick',
 	medo3d: 'swish',
 	selo: 'tick',
+	notificacoes: null,
+	textoLife: null,
 	final: 'whoosh',
 };
 
