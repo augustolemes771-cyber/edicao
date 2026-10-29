@@ -106,7 +106,10 @@ export const TextoLife: React.FC<{cena: De<'textoLife'>}> = ({cena}) => {
 	const s = interpolate(t, [dur - 0.25, dur], [1, 0], lim);
 	const al = cena.alinhamento ?? 'centro';
 	const tam = cena.principal.length <= 14 ? 132 : cena.principal.length <= 24 ? 116 : 100;
-	const sombra = '0 4px 22px rgba(0,0,0,0.45), 0 1px 3px rgba(0,0,0,0.55)';
+	// brilho: halo claro em volta das letras e sombra mais larga, para ler sobre imagem clara ou agitada.
+	const sombra = cena.brilho
+		? '0 0 18px rgba(255,244,222,0.55), 0 0 42px rgba(255,226,170,0.35), 0 4px 26px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.7)'
+		: '0 4px 22px rgba(0,0,0,0.45), 0 1px 3px rgba(0,0,0,0.55)';
 	// Cada linha entra um pouco depois da anterior: fade + desfoque 8→0 px + subida de 20 px em 0,4 s.
 	const a = (atraso: number) => suave(interpolate(t, [ini + atraso, ini + atraso + 0.4], [0, 1], lim)) * s;
 	const bloco = (v: number, filho: React.ReactNode) => (
@@ -147,6 +150,161 @@ export const TextoLife: React.FC<{cena: De<'textoLife'>}> = ({cena}) => {
 							<span style={{fontFamily: poppins, fontWeight: 600, fontSize: 44, letterSpacing: '0.08em', color: 'rgba(255,255,255,0.9)', textShadow: sombra}}>{cena.sub}</span>,
 						)
 					: null}
+			</div>
+		</AbsoluteFill>
+	);
+};
+
+const OURO = 'linear-gradient(180deg, #fff7dc 0%, #f8dc8a 28%, #dcaa42 52%, #a97420 72%, #f2d083 100%)';
+// Pseudoaleatório fixo por índice: a poeira é a mesma em todo quadro e em todo render.
+const acaso = (i: number) => {
+	const x = Math.sin(i * 127.1 + 311.7) * 43758.5453;
+	return x - Math.floor(x);
+};
+
+// Um ramo de louro do lado esquerdo (o direito é o espelho): caule em arco e folhas aos pares, de baixo para cima.
+const Ramo: React.FC<{t: number; cx: number; cy: number; r: number}> = ({t, cx, cy, r}) => {
+	const N = 10;
+	const a0 = 104;
+	const a1 = 236;
+	const rad = (g: number) => (g * Math.PI) / 180;
+	const ponto = (g: number) => [cx + r * Math.cos(rad(g)), cy + r * Math.sin(rad(g))];
+	const [x0, y0] = ponto(a0);
+	const [x1, y1] = ponto(a1);
+	const caule = interpolate(t, [0, 0.45], [0, 1], lim);
+	const comprimento = (r * Math.PI * (a1 - a0)) / 180;
+	return (
+		<g>
+			<path d={`M ${x0} ${y0} A ${r} ${r} 0 0 1 ${x1} ${y1}`} fill="none" stroke="url(#louroOuro)" strokeWidth={6} strokeLinecap="round" strokeDasharray={comprimento} strokeDashoffset={comprimento * (1 - caule)} />
+			{Array.from({length: N}, (_, i) => {
+				const g = a0 + ((a1 - a0) * (i + 0.6)) / N;
+				const [x, y] = ponto(g);
+				const tangente = g + 90;
+				// Cada par nasce quando o caule passa por ele, com mola; folhas menores perto da ponta.
+				const nasce = 0.04 + (i / N) * 0.42;
+				const p = suave(interpolate(t, [nasce, nasce + 0.22], [0, 1], lim));
+				const tam = 1 - (i / N) * 0.35;
+				return [-38, 38].map((giro, k) => (
+					<ellipse
+						key={`${i}-${k}`}
+						cx={30 * tam}
+						cy={0}
+						rx={30 * tam}
+						ry={11 * tam}
+						fill="url(#louroOuro)"
+						transform={`translate(${x} ${y}) rotate(${tangente + giro}) scale(${p})`}
+					/>
+				));
+			})}
+			{/* folha da ponta, no sentido do caule */}
+			<ellipse cx={26} cy={0} rx={26} ry={10} fill="url(#louroOuro)" transform={`translate(${x1} ${y1}) rotate(${a1 + 90}) scale(${suave(interpolate(t, [0.45, 0.65], [0, 1], lim))})`} />
+		</g>
+	);
+};
+
+export const Vitoria: React.FC<{cena: De<'vitoria'>}> = ({cena}) => {
+	const frame = useCurrentFrame();
+	const {fps} = useVideoConfig();
+	const t = frame / fps;
+	const dur = cena.ate - cena.de;
+	const pousa = (cena.pousa ?? cena.de + 1) - cena.de;
+	const yc = cena.y ?? 620;
+	const entra = suave(interpolate(t, [0, 0.3], [0, 1], lim));
+	const sai = interpolate(t, [dur - 0.3, dur], [1, 0], lim);
+	const vis = entra * sai;
+
+	// Caça-níquel: o dígito final gira por uma volta inteira (0 a 9) e para nele no tempo "pousa", com desfoque de movimento.
+	const alvo = Number(cena.numero);
+	const passos = 10 + alvo;
+	const pr = interpolate(t, [0.05, pousa], [0, 1], lim);
+	const giro = (1 - Math.pow(1 - pr, 4)) * passos;
+	const velocidade = pr < 1 ? 4 * Math.pow(1 - pr, 3) * passos : 0;
+	const tamNum = 330;
+	const altura = tamNum * 1.08;
+	// Pousou: soco de escala que assenta e reflexo de luz passando pelo ouro.
+	const depois = Math.max(0, t - pousa);
+	const soco = t >= pousa ? 1 + 0.08 * Math.exp(-depois * 7) * Math.cos(depois * 18) : 1;
+	const reflexo = interpolate(depois, [0, 0.55], [-60, 160], lim);
+	const textoOuro: React.CSSProperties = {backgroundImage: OURO, WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent', WebkitTextFillColor: 'transparent'};
+	const linha = (atraso: number) => suave(interpolate(t, [pousa + atraso, pousa + atraso + 0.35], [0, 1], lim));
+	const sobe = (v: number) => ({opacity: v, transform: `translateY(${(1 - v) * 18}px)`, filter: `blur(${(1 - v) * 6}px)`});
+
+	return (
+		<AbsoluteFill style={{pointerEvents: 'none', opacity: sai, filter: sai < 1 ? `blur(${(1 - sai) * 10}px)` : undefined}}>
+			{/* escurece em volta e acende um sol dourado atrás do número */}
+			<AbsoluteFill style={{opacity: entra, background: `radial-gradient(ellipse 70% 45% at 50% ${yc}px, rgba(0,0,0,0) 0%, rgba(8,5,0,0.55) 100%)`}} />
+			<AbsoluteFill style={{opacity: entra * (0.75 + 0.25 * Math.sin(t * 5)), background: `radial-gradient(circle at 50% ${yc}px, rgba(255,214,120,0.55) 0%, rgba(255,180,60,0.18) 22%, rgba(0,0,0,0) 45%)`, mixBlendMode: 'screen'}} />
+			<div
+				style={{
+					position: 'absolute',
+					left: 540 - 900,
+					top: yc - 900,
+					width: 1800,
+					height: 1800,
+					opacity: entra * 0.5,
+					transform: `rotate(${t * 14}deg)`,
+					background: 'repeating-conic-gradient(from 0deg, rgba(255,222,150,0.32) 0deg 5deg, rgba(255,222,150,0) 5deg 18deg)',
+					WebkitMaskImage: 'radial-gradient(circle, #000 0%, rgba(0,0,0,0.6) 25%, transparent 55%)',
+					maskImage: 'radial-gradient(circle, #000 0%, rgba(0,0,0,0.6) 25%, transparent 55%)',
+					mixBlendMode: 'screen',
+				}}
+			/>
+			{/* poeira dourada subindo */}
+			{Array.from({length: 46}, (_, i) => {
+				const vida = 1.6 + acaso(i) * 1.4;
+				const fase = ((t + acaso(i + 50) * vida) % vida) / vida;
+				const x = 540 + (acaso(i + 100) - 0.5) * 900 + Math.sin(t * 2 + i) * 14;
+				const y = yc + 420 - fase * 900;
+				const tam = 3 + acaso(i + 150) * 6;
+				const pisca = Math.sin(fase * Math.PI) * (0.5 + 0.5 * Math.sin(t * 9 + i * 3));
+				return <div key={i} style={{position: 'absolute', left: x, top: y, width: tam, height: tam, borderRadius: '50%', background: '#ffe6a3', boxShadow: '0 0 10px 2px rgba(255,205,110,0.8)', opacity: pisca * vis}} />;
+			})}
+			{/* louros em volta do número */}
+			<svg width={1080} height={1920} style={{position: 'absolute', left: 0, top: 0, opacity: entra, transform: `scale(${soco})`, transformOrigin: `540px ${yc}px`, filter: 'drop-shadow(0 6px 14px rgba(0,0,0,0.45)) drop-shadow(0 0 18px rgba(255,200,90,0.35))'}}>
+				<defs>
+					<linearGradient id="louroOuro" x1="0" y1="0" x2="0" y2="1">
+						<stop offset="0%" stopColor="#fff3c8" />
+						<stop offset="45%" stopColor="#e2b04a" />
+						<stop offset="100%" stopColor="#9c6a1c" />
+					</linearGradient>
+				</defs>
+				<Ramo t={t} cx={540} cy={yc + 10} r={270} />
+				<g transform="translate(1080 0) scale(-1 1)">
+					<Ramo t={t} cx={540} cy={yc + 10} r={270} />
+				</g>
+			</svg>
+			{/* kicker acima do número */}
+			<div style={{position: 'absolute', left: 0, width: 1080, top: yc - 300, textAlign: 'center', ...sobe(suave(interpolate(t, [0.1, 0.45], [0, 1], lim)) * sai)}}>
+				<span style={{fontFamily: poppins, fontWeight: 500, fontSize: 38, letterSpacing: '0.42em', marginRight: '-0.42em', color: '#fff3d1', textShadow: '0 2px 14px rgba(0,0,0,0.6)'}}>{cena.kicker}</span>
+			</div>
+			{/* R$ pequeno + dígito gigante girando */}
+			<div style={{position: 'absolute', left: 0, width: 1080, top: yc - altura / 2, height: altura, display: 'flex', justifyContent: 'center', alignItems: 'center', transform: `scale(${soco})`, filter: 'drop-shadow(0 8px 22px rgba(0,0,0,0.5)) drop-shadow(0 0 30px rgba(255,196,80,0.45))'}}>
+				{cena.prefixo ? <span style={{fontFamily: playfair, fontStyle: 'italic', fontWeight: 700, fontSize: 110, alignSelf: 'flex-start', marginTop: 40, marginRight: 10, ...textoOuro}}>{cena.prefixo}</span> : null}
+				<div style={{height: altura, overflow: 'hidden', position: 'relative'}}>
+					<div style={{transform: `translateY(${-(giro % 10) * altura}px)`, filter: velocidade > 0.5 ? `blur(0px) url(#)` : undefined}}>
+						{Array.from({length: 11}, (_, d) => (
+							<div key={d} style={{height: altura, lineHeight: `${altura}px`, fontFamily: playfair, fontStyle: 'italic', fontWeight: 700, fontSize: tamNum, padding: '0 0.08em', ...textoOuro, filter: velocidade > 0.5 ? `blur(${Math.min(velocidade * 0.9, 9)}px)` : undefined}}>
+								{d % 10}
+							</div>
+						))}
+					</div>
+					{/* reflexo passando pelo ouro depois que pousa */}
+					{t >= pousa ? (
+						<div style={{position: 'absolute', inset: 0, background: `linear-gradient(105deg, rgba(255,255,255,0) ${reflexo - 18}%, rgba(255,255,255,0.85) ${reflexo}%, rgba(255,255,255,0) ${reflexo + 18}%)`, mixBlendMode: 'overlay'}} />
+					) : null}
+				</div>
+			</div>
+			{/* palavra do valor, fio dourado e linha de baixo */}
+			<div style={{position: 'absolute', left: 0, width: 1080, top: yc + altura / 2 + 6, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 22}}>
+				<div style={sobe(linha(0.02) * sai)}>
+					<span style={{fontFamily: poppins, fontWeight: 700, fontSize: 70, letterSpacing: '0.3em', marginRight: '-0.3em', ...textoOuro, filter: 'drop-shadow(0 3px 10px rgba(0,0,0,0.55))'}}>{cena.palavra}</span>
+				</div>
+				<div style={{width: 520 * linha(0.12), height: 2, background: 'linear-gradient(90deg, rgba(240,200,110,0) 0%, #f3d27e 50%, rgba(240,200,110,0) 100%)'}} />
+				{cena.sub ? (
+					<div style={sobe(linha(0.22) * sai)}>
+						<span style={{fontFamily: poppins, fontWeight: 400, fontSize: 36, letterSpacing: '0.12em', color: 'rgba(255,255,255,0.94)', textShadow: '0 2px 14px rgba(0,0,0,0.7)'}}>{cena.sub}</span>
+					</div>
+				) : null}
 			</div>
 		</AbsoluteFill>
 	);
