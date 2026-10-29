@@ -19,7 +19,8 @@ const OURO = '#E8C27A';
 const OURO_TEXTO = 'linear-gradient(180deg,#FFF1C9 0%,#F2D08A 40%,#E8C27A 65%,#C9974A 100%)';
 
 // Plano de grade em perspectiva; teto = espelhado (também usado no presoClt e nas cartas). desloca: avanço das linhas em px.
-export const Plano: React.FC<{teto?: boolean; desloca: number; abre: number}> = ({teto, desloca, abre}) => {
+// cores: [linhas horizontais, verticais] (padrão ouro e lilás; o medo usa vermelho e violeta apagados).
+export const Plano: React.FC<{teto?: boolean; desloca: number; abre: number; cores?: [string, string]}> = ({teto, desloca, abre, cores = ['rgba(232,194,122,0.55)', 'rgba(190,150,255,0.45)']}) => {
 	const {width, height} = useVideoConfig();
 	const cel = 120;
 	return (
@@ -32,7 +33,7 @@ export const Plano: React.FC<{teto?: boolean; desloca: number; abre: number}> = 
 				top: teto ? -height * 1.2 + height * 0.36 : height * 0.64,
 				transformOrigin: teto ? '50% 100%' : '50% 0%',
 				transform: `rotateX(${(teto ? -1 : 1) * (90 - 18 * abre)}deg)`,
-				backgroundImage: `linear-gradient(rgba(232,194,122,0.55) 2px, transparent 2px), linear-gradient(90deg, rgba(190,150,255,0.45) 2px, transparent 2px)`,
+				backgroundImage: `linear-gradient(${cores[0]} 2px, transparent 2px), linear-gradient(90deg, ${cores[1]} 2px, transparent 2px)`,
 				backgroundSize: `${cel}px ${cel}px`,
 				backgroundPosition: `50% ${teto ? -desloca : desloca}px`,
 				WebkitMaskImage: `linear-gradient(${teto ? '0deg' : '180deg'}, rgba(0,0,0,0) 0%, #000 22%, #000 70%, rgba(0,0,0,0.2) 100%)`,

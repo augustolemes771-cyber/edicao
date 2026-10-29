@@ -10,6 +10,7 @@ import {ThreeCanvas} from '@remotion/three';
 import * as THREE from 'three';
 import type {CenaNoPlano} from '../motor/plano';
 import {Faiscas, Linha3D, Luzes, Onda} from './tres/Texto3D';
+import {Plano} from './GradeAntesDepois';
 
 type Cena = Extract<CenaNoPlano, {tipo: 'medo3d'}>;
 
@@ -106,6 +107,13 @@ export const Medo3D: React.FC<{cena: Cena}> = ({cena}) => {
 	return (
 		<AbsoluteFill style={{pointerEvents: 'none', opacity: fundo}}>
 			<AbsoluteFill style={{background: cena.pessoa ? 'radial-gradient(ellipse at 50% 55%, rgba(40,20,78,0.96) 0%, rgba(14,6,30,0.98) 70%)' : 'rgba(24,11,48,0.78)'}} />
+			{/* Grade sombria andando no fundo (pedido do usuário). */}
+			{cena.pessoa ? (
+				<AbsoluteFill style={{perspective: 900, perspectiveOrigin: '50% 50%', opacity: 0.8}}>
+					<Plano desloca={(frame / fps) * 200} abre={1} cores={['rgba(150,20,34,0.55)', 'rgba(110,70,170,0.4)']} />
+					<Plano teto desloca={(frame / fps) * 200} abre={1} cores={['rgba(150,20,34,0.55)', 'rgba(110,70,170,0.4)']} />
+				</AbsoluteFill>
+			) : null}
 			{cena.pessoa ? <PessoaPresa fim={fim} /> : null}
 			<AbsoluteFill style={{background: `radial-gradient(ellipse ${raio}% ${raio * 0.7}% at 50% ${cena.pessoa ? 52 : (topo / height) * 100 + 4}%, rgba(10,4,24,0) ${cena.pessoa ? 50 : 35}%, rgba(6,2,16,0.97) 100%)`}} />
 			{/* Névoa vermelha apagada atrás das letras escuras: recorta o texto sombrio sem clarear a cena. */}
