@@ -240,16 +240,14 @@ export const depoimento2: Edit = {
 				],
 				som: 'whoosh',
 			},
-			// 9. A objeção: medo de investir
+			// 9. A objeção: medo de investir em texto 3D, vinheta fechando (o glitch foi reprovado; tempo e texto mantidos)
 			{
-				tipo: 'frase',
-				dor: true,
+				tipo: 'medo3d',
 				de: b.at('medo') - 0.08,
 				ate: b.say('investir em pessoas').fim + 0.12,
-				palavras: [
-					{texto: 'MEDO', em: b.at('medo'), destaque: true},
-					{texto: 'DE', em: b.say('medo de investir').inicio + 0.2},
-					{texto: 'INVESTIR', em: b.at('investir')},
+				linhas: [
+					{texto: 'MEDO', em: b.at('medo')},
+					{texto: 'DE INVESTIR', em: b.say('medo de investir').inicio + 0.2},
 				],
 				som: 'swish',
 			},
@@ -285,7 +283,7 @@ export const depoimento2: Edit = {
 					{texto: 'APLICAR', em: b.at('aplicou')},
 					{texto: '1º RESULTADO', em: b.at('primeiro')},
 				],
-				y: 1000,
+				y: 1010,
 				som: 'tick',
 				sons: [
 					{em: b.at('aplicou'), som: 'tick'},
@@ -317,7 +315,7 @@ export const depoimento2: Edit = {
 					{texto: 'DELEGAR', em: b.at('delegar')},
 				],
 				inicio: 4,
-				y: 1000,
+				y: 1010,
 				som: 'tick',
 				sons: [{em: b.at('delegar'), som: 'tick'}],
 			},

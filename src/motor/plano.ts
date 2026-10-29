@@ -230,8 +230,10 @@ export type Cena =
 	// Motion "preso na CLT" (src/pecas/PresoClt.tsx): carteira de trabalho 3D, grades caem (em) e cadeado fecha (emCadeado);
 	// texto "PRESO NA" + destaque "CLT" em serifa dourada. Esconde a legenda.
 	| (Base & {tipo: 'presoClt'; em?: number; emCadeado?: number; texto?: string; destaque?: string})
-	// Cards 3D de vidro (mesmo estilo da gradeAntesDepois) empilhados conforme aparecem; y do primeiro card em px, numeração
-	// a partir de `inicio`. Esconde a legenda.
+	// Cartas de baralho 3D do tema (src/pecas/Cards3D.tsx): viram do verso na hora da palavra e caem em leque, ficando na tela;
+	// y = topo das cartas em px, numeração a partir de `inicio`. Esconde a legenda.
+	// Texto 3D com vinheta que fecha, sem glitch (src/pecas/Medo3D.tsx): cada linha bate no seu tempo; a última em ouro.
+	| (Base & {tipo: 'medo3d'; linhas: {texto: string; em: number; metal?: 'ouro' | 'branco'; largura?: number}[]; y?: number})
 	| (Base & {tipo: 'cards3d'; itens: {texto: string; em: number}[]; y?: number; inicio?: number})
 	// titulo: linhas em texto 3D no topo, cada uma no seu tempo (ex.: [{texto: 'COMO ERA', em}, {texto: 'SUA VIDA?', em}]).
 	| (Base & {tipo: 'gradeAntesDepois'; titulo?: {texto: string; em: number}[]; antes: {texto: string; em: number; valor?: string}; depois: {texto: string; em: number; valor?: string}})
@@ -439,6 +441,7 @@ const MODO_PADRAO: Record<TipoCena, Modo> = {
 	gradeAntesDepois: 'cheia',
 	presoClt: 'sobre',
 	cards3d: 'sobre',
+	medo3d: 'sobre',
 	selo: 'sobre',
 	final: 'cheia',
 };
@@ -486,6 +489,7 @@ const SOM_PADRAO: Record<TipoCena, Som | null> = {
 	gradeAntesDepois: 'whoosh',
 	presoClt: 'swish',
 	cards3d: 'tick',
+	medo3d: 'swish',
 	selo: 'tick',
 	final: 'whoosh',
 };
@@ -670,6 +674,7 @@ const TEXTO_PROPRIO: TipoCena[] = [
 	'gradeAntesDepois',
 	'presoClt',
 	'cards3d',
+	'medo3d',
 	'final',
 	'titulo',
 	'numero',
