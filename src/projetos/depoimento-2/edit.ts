@@ -253,8 +253,16 @@ export const depoimento2: Edit = {
 				],
 				som: 'swish',
 			},
-			// 10. Preso na CLT
-			{tipo: 'selo', de: b.at('preso') - 0.05, ate: b.at('horinha') - 0.2, texto: 'PRESO NA CLT', y: 1060, esconderLegenda: true, som: 'tick'},
+			// 10. Preso na CLT: carteira de trabalho atrás das grades, cadeado fecha no "CLT" (pedido do usuário)
+			{
+				tipo: 'presoClt',
+				de: b.say('tá preso CLT').inicio - 0.05,
+				ate: b.at('horinha') - 0.2,
+				em: b.at('preso'),
+				emCadeado: b.at('CLT?'),
+				som: 'swish',
+				sons: [{em: b.at('CLT?'), som: 'tick'}],
+			},
 			// 11. 1 HORA por dia em ouro 3D
 			{
 				tipo: 'numero3d',
@@ -267,9 +275,9 @@ export const depoimento2: Edit = {
 				esconderLegenda: true,
 				som: 'pop',
 			},
-			// 12. Os passos, um por vez no mesmo lugar
+			// 12. Os passos em cards 3D, empilhados conforme aparecem (pedido do usuário)
 			{
-				tipo: 'chips',
+				tipo: 'cards3d',
 				de: b.at('testando') - 0.05,
 				ate: b.at('aumentar') - 0.08,
 				itens: [
@@ -277,9 +285,12 @@ export const depoimento2: Edit = {
 					{texto: 'APLICAR', em: b.at('aplicou')},
 					{texto: '1º RESULTADO', em: b.at('primeiro')},
 				],
-				numerado: true,
-				y: 1040,
-				esconderLegenda: true,
+				y: 1000,
+				som: 'tick',
+				sons: [
+					{em: b.at('aplicou'), som: 'tick'},
+					{em: b.at('primeiro'), som: 'tick'},
+				],
 			},
 			// 13. "aumentar o seu tempo de live": a live dele, agora cheia
 			{
@@ -298,16 +309,17 @@ export const depoimento2: Edit = {
 			},
 			// 14. Escalar e delegar
 			{
-				tipo: 'chips',
+				tipo: 'cards3d',
 				de: b.at('escalar,') - 0.05,
 				ate: b.say('outras pessoas').fim + 0.15,
 				itens: [
 					{texto: 'ESCALAR', em: b.at('escalar,')},
 					{texto: 'DELEGAR', em: b.at('delegar')},
 				],
-				y: 1040,
-				esconderLegenda: true,
+				inicio: 4,
+				y: 1000,
 				som: 'tick',
+				sons: [{em: b.at('delegar'), som: 'tick'}],
 			},
 			// 15. CTA: dúvida digitada, siga um por vez
 			{tipo: 'comentario', de: b.say('Tem alguma dúvida').inicio - 0.05, ate: b.at('segue') - 0.1, texto: 'Como eu começo do zero?', y: 1060, som: 'swish'},
