@@ -224,6 +224,10 @@ export type Cena =
 	// Ex.: linhas: [{texto: 'UM CELULAR', em: b.at('celular')}, {texto: '+ INTERNET', em: b.at('internet')}]. Esconde a legenda.
 	// modelo: arquivo OBJ do pack (biblioteca/pack/catalogo.json), ex.: '3D models/Phones/iphone.obj'; sem ele, celular de código.
 	| (Base & {tipo: 'celular3d'; linhas: {texto: string; em: number}[]; modelo?: string})
+	// Motion de tela cheia "antes × agora" (src/pecas/GradeAntesDepois.tsx): grade em perspectiva roxa e dourada e dois cartões
+	// de vidro que sobem na hora de cada palavra (valor opcional; sem ele, "?"). Esconde a legenda.
+	// Ex.: antes: {texto: 'ANTES', em: b.at('antes')}, depois: {texto: 'AGORA', em: b.at('agora?')}
+	| (Base & {tipo: 'gradeAntesDepois'; antes: {texto: string; em: number; valor?: string}; depois: {texto: string; em: number; valor?: string}})
 	// Caixa de comentário digitada letra por letra.
 	| (Base & {tipo: 'comentario'; texto: string; y?: number})
 	// Número em ouro 3D acima da cabeça (y = centro em px), rótulo pequeno em cima e linha de vidro embaixo.
@@ -424,6 +428,7 @@ const MODO_PADRAO: Record<TipoCena, Modo> = {
 	comentario: 'sobre',
 	numero3d: 'sobre',
 	celular3d: 'cheia',
+	gradeAntesDepois: 'cheia',
 	selo: 'sobre',
 	final: 'cheia',
 };
@@ -468,6 +473,7 @@ const SOM_PADRAO: Record<TipoCena, Som | null> = {
 	comentario: 'tick',
 	numero3d: 'rise',
 	celular3d: 'whoosh',
+	gradeAntesDepois: 'whoosh',
 	selo: 'tick',
 	final: 'whoosh',
 };
@@ -649,6 +655,7 @@ const TEXTO_PROPRIO: TipoCena[] = [
 	'live',
 	'numero3d',
 	'celular3d',
+	'gradeAntesDepois',
 	'final',
 	'titulo',
 	'numero',
