@@ -6,10 +6,10 @@ import transcricao from './transcricao.json';
 // (segundos do vídeo final, que não tem cortes): batida do remix 0,4876 s (123,05 BPM), golpe do Mist/drop em 11,703 s.
 const B = 60 / 123.05; // batida do remix v6 (Congratulations + Mist)
 const DROP = 24 * B; // 11,703 s: o Mist entra em 16 batidas (1ª notificação), o okay em 10,40 s e o golpe cai aqui
-const OKAY = 10.4; // o "okay" sussurrado do Mist: único lugar com a transição de deslize (pedido do usuário)
+const OKAY = 10.4; // o "okay" sussurrado do Mist: o deslize começa aqui e segue em todo corte da batida até o fecho
 
-// Cortes da montagem (em batidas): lancha, carros, jet ski, festa, punchline e fecho. São secos; a direção ficou anotada
-// caso o deslize volte (o usuário pediu o deslize só no okay).
+// Cortes da montagem (em batidas) e o lado para onde cada plano desliza: lancha, carros, jet ski, festa, punchline e fecho.
+// O pulo no mar (52) desce; o resto alterna para dar sensação de andar pela vida nova.
 const CORTES: [number, 'cima' | 'baixo' | 'esquerda' | 'direita'][] = [
 	[28, 'cima'],
 	[30, 'direita'],
@@ -22,7 +22,7 @@ const CORTES: [number, 'cima' | 'baixo' | 'esquerda' | 'direita'][] = [
 	[55, 'cima'],
 ];
 
-// Dentro de cada plano a câmera só avança devagar (sem soco na batida): o ritmo vem dos cortes na batida.
+// Dentro de cada plano a câmera só avança devagar (sem soco na batida): o ritmo vem dos deslizes nos cortes.
 const deriva = (de: number, ate: number, escala = 1.06): EfeitoCamera[] => [
 	{tipo: 'zoom', em: de * B, escala: 1},
 	{tipo: 'zoom', em: de * B + 1 / 30, escala, suave: (ate - de) * B - 1 / 30},
@@ -47,9 +47,11 @@ export const lifestyle1: Edit = {
 		{tipo: 'flash', em: DROP},
 		{tipo: 'zoom', em: DROP, escala: 1.14},
 		{tipo: 'zoom', em: DROP + 1 / 30, escala: 1.02, suave: 4 * B},
+		...CORTES.map(([n, direcao]): EfeitoCamera => ({tipo: 'deslize', em: n * B, direcao})),
 		...CORTES.flatMap(([n], i) => deriva(n, CORTES[i + 1]?.[0] ?? 57)),
-		// Punchline: entra em foco; fecho em corte seco.
+		// Punchline: entra em foco; fecho sobe deslizando.
 		{tipo: 'foco', em: 57 * B, duracao: 0.35},
+		{tipo: 'deslize', em: 64 * B, direcao: 'cima'},
 		...deriva(64, 69, 1.08),
 	],
 	cenas: () => [
@@ -80,6 +82,7 @@ export const lifestyle1: Edit = {
 			y: 470,
 			sons: [
 				{em: 26 * B, som: 'shimmer', ganho: 0.8},
+				...[...CORTES.map(([n]) => n), 64].map((n) => ({em: n * B - 0.12, som: 'whoosh' as const, ganho: 0.45})),
 				{em: 52 * B - 0.25, som: 'subida' as const, ganho: 0.6},
 			],
 		},
