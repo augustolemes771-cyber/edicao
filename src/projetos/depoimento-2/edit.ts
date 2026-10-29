@@ -104,11 +104,8 @@ export const depoimento2: Edit = {
 			z(b.at('pessoas'), 1.38, HOST_A),
 			z(b.at('TikTok'), 1.08, HOST_A),
 			z(b.at('Wesley'), 1.22, HOST_A),
-			// Pergunta antes/agora: plano aberto no Wesley, aproxima no "agora"
-			{tipo: 'foco', em: pergunta1},
-			z(pergunta1, 1, WES_A),
-			z(b.at('antes'), 1.1, WES_A),
-			z(b.at('agora?'), 1.22, WES_A),
+			// Pergunta antes/agora: tela cheia de grade (cena gradeAntesDepois); a câmera só se prepara para a volta
+			z(pergunta1, 1.1, WES_A),
 			// Resposta: 120 mil (câmera alta para o contador), 500 mil (clarão e close)
 			{tipo: 'chicote', em: resposta1},
 			z(resposta1, 1.15, WES_BAIXO),
@@ -193,8 +190,16 @@ export const depoimento2: Edit = {
 			},
 			// 4. O convidado
 			{tipo: 'pilula', de: b.at('Tô') - 0.05, ate: b.at('Wesley') + 0.9, rotulo: 'CONVIDADO', nome: 'Wesley', y: 0.56, esconderLegenda: true, som: 'swish'},
-			// 5. A pergunta pousa nele: anel de luz em volta do rosto
-			{tipo: 'anel', de: b.at('antes') - 0.1, ate: b.at('antes') + 1.4, x: WES_A.x, y: 0.43, raio: 0.16},
+			// 5. A pergunta antes × agora: motion de grade com os dois cartões (pedido do usuário); mergulha no AGORA e volta ao rosto
+			{
+				tipo: 'gradeAntesDepois',
+				de: b.say('Como é que você estava antes').inicio - 0.05,
+				ate: b.say('você está agora').fim + 0.12,
+				antes: {texto: 'ANTES', em: b.at('antes') - 0.05},
+				depois: {texto: 'AGORA', em: b.at('agora?') - 0.15},
+				som: 'whoosh',
+				sons: [{em: b.at('agora?') - 0.15, som: 'swish'}],
+			},
 			// 6. Antes: contador sobe até 120 mil
 			{
 				tipo: 'contador',
@@ -239,7 +244,7 @@ export const depoimento2: Edit = {
 				ate: b.say('investir em pessoas').fim + 0.12,
 				palavras: [
 					{texto: 'MEDO', em: b.at('medo'), destaque: true},
-					{texto: 'DE', em: b.at('de', 0) > 0 ? b.say('medo de investir').inicio + 0.2 : b.at('investir') - 0.1},
+					{texto: 'DE', em: b.say('medo de investir').inicio + 0.2},
 					{texto: 'INVESTIR', em: b.at('investir')},
 				],
 				som: 'swish',
