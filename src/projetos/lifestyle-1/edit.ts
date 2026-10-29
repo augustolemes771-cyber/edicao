@@ -75,7 +75,7 @@ export const lifestyle1: Edit = {
 			palavra: 'milhões',
 			sub: 'faturados com o TikTok Shop',
 			pousa: 26 * B,
-			y: 760,
+			y: 470,
 			sons: [
 				{em: 26 * B, som: 'shimmer', ganho: 0.8},
 				...[...CORTES.map(([n]) => n), 64].map((n) => ({em: n * B - 0.12, som: 'whoosh' as const, ganho: 0.45})),

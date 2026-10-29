@@ -3,7 +3,7 @@
 // textoLife: tipografia elegante sem caixa (kicker em caixa alta, frase em Playfair itálico, sub), entra com fade + desfoque + subida.
 // vitoria: resultado premium: louros dourados que crescem folha a folha em volta de um número gigante em ouro que gira como
 // caça-níquel e pousa na batida com reflexo, raios de luz girando atrás e poeira dourada subindo.
-// valorLife: valor minimalista: número fino gigante (Unbounded Light) com a palavra em serifa itálica, brilho que acende na batida.
+// valorLife: valor em formato de título (uma linha: "R$ 2" em Unbounded Light + palavra em serifa itálica), brilho que acende na batida.
 import React from 'react';
 import {AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import type {CenaNoPlano} from '../motor/plano';
@@ -316,7 +316,7 @@ export const ValorLife: React.FC<{cena: De<'valorLife'>}> = ({cena}) => {
 	const t = frame / fps;
 	const dur = cena.ate - cena.de;
 	const pousa = (cena.pousa ?? cena.de + 0.9) - cena.de;
-	const yc = cena.y ?? 820;
+	const yc = cena.y ?? 480;
 	const sai = interpolate(t, [dur - 0.3, dur], [1, 0], lim);
 	// Entrada por desfoque: cada peça chega nítida em 0,45 s, com o espaçamento fechando um pouco.
 	const chega = (ini: number, d = 0.45) => suave(interpolate(t, [ini, ini + d], [0, 1], lim));
@@ -342,23 +342,24 @@ export const ValorLife: React.FC<{cena: De<'valorLife'>}> = ({cena}) => {
 	return (
 		<AbsoluteFill style={{pointerEvents: 'none'}}>
 			{/* escurece de leve em volta para o branco ler sobre a lancha */}
-			<AbsoluteFill style={{opacity: chega(0, 0.4) * sai, background: `radial-gradient(ellipse 80% 38% at 50% ${yc}px, rgba(0,0,0,0.38) 0%, rgba(0,0,0,0) 100%)`}} />
-			<div style={{position: 'absolute', left: 0, width: 1080, top: yc, transform: 'translateY(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10}}>
+			<AbsoluteFill style={{opacity: chega(0, 0.4) * sai, background: `radial-gradient(ellipse 85% 22% at 50% ${yc}px, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0) 100%)`}} />
+			<div style={{position: 'absolute', left: 0, width: 1080, top: yc, transform: 'translateY(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4}}>
 				{cena.kicker ? (
 					<div style={revela(chega(0.05))}>
 						<span style={{fontFamily: inter, fontWeight: 600, fontSize: 30, letterSpacing: `${0.9 - 0.3 * chega(0.05, 0.8)}em`, marginRight: '-0.6em', color: 'rgba(255,255,255,0.88)', textShadow: '0 2px 14px rgba(0,0,0,0.5)'}}>{cena.kicker}</span>
 					</div>
 				) : null}
-				<div style={{display: 'flex', alignItems: 'flex-end', filter: halo}}>
-					{cena.prefixo ? (
-						<span style={{fontFamily: unbounded, fontWeight: 300, fontSize: 64, alignSelf: 'flex-start', marginTop: 70, marginRight: 14, ...preenchimento, ...revela(chega(0.12))}}>{cena.prefixo}</span>
-					) : null}
-					<span style={{fontFamily: unbounded, fontWeight: 300, fontSize: 400, lineHeight: 1, letterSpacing: '-0.04em', ...preenchimento, ...revela(chega(0, 0.55), 0.12)}}>{cena.numero}</span>
-					<span style={{fontFamily: dmSerif, fontStyle: 'italic', fontSize: 132, lineHeight: 1, marginLeft: 18, marginBottom: 34, ...preenchimento, ...revela(chega(0.25))}}>{cena.palavra}</span>
+				{/* título numa linha só: "R$ 2" fino e "milhões" em serifa itálica na mesma linha de base */}
+				<div style={{display: 'flex', alignItems: 'baseline', whiteSpace: 'nowrap', filter: halo, lineHeight: 1}}>
+					<span style={{fontFamily: unbounded, fontWeight: 300, fontSize: 140, letterSpacing: '-0.03em', ...preenchimento, ...revela(chega(0, 0.5), 0.08)}}>
+						{cena.prefixo ? `${cena.prefixo} ` : ''}
+						{cena.numero}
+					</span>
+					<span style={{fontFamily: dmSerif, fontStyle: 'italic', fontSize: 156, marginLeft: 24, padding: '0 0.06em', ...preenchimento, ...revela(chega(0.18))}}>{cena.palavra}</span>
 				</div>
-				<div style={{width: 560 * fio, height: 1.5, marginTop: 6, opacity: sai, background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 50%, rgba(255,255,255,0) 100%)', boxShadow: '0 0 12px rgba(255,240,215,0.8)'}} />
+				<div style={{width: 720 * fio, height: 1.5, marginTop: 14, opacity: sai, background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 50%, rgba(255,255,255,0) 100%)', boxShadow: '0 0 12px rgba(255,240,215,0.8)'}} />
 				{cena.sub ? (
-					<div style={{...revela(chega(pousa + 0.05)), marginTop: 12}}>
+					<div style={{...revela(chega(pousa + 0.05)), marginTop: 8}}>
 						<span style={{fontFamily: inter, fontWeight: 600, fontSize: 32, letterSpacing: '0.16em', marginRight: '-0.16em', color: 'rgba(255,255,255,0.92)', textShadow: '0 2px 14px rgba(0,0,0,0.6)'}}>{cena.sub}</span>
 					</div>
 				) : null}

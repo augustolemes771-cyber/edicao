@@ -251,7 +251,7 @@ export type Cena =
 	// Resultado premium: louros dourados em volta de um dígito gigante em ouro que gira e para em "pousa" (segundo do vídeo),
 	// com prefixo pequeno (R$), palavra embaixo (MILHÕES), fio dourado e sub. y = centro do número em px.
 	| (Base & {tipo: 'vitoria'; numero: string; prefixo?: string; palavra: string; kicker?: string; sub?: string; pousa?: number; y?: number})
-	// Valor minimalista: kicker espaçado, número fino gigante em Unbounded Light com a palavra em serifa itálica ao lado,
+	// Valor em formato de título: kicker espaçado, "R$ 2" em Unbounded Light e a palavra em serifa itálica na mesma linha,
 	// brilho branco quente que acende em "pousa" e um reflexo de luz passando pelas letras.
 	| (Base & {tipo: 'valorLife'; numero: string; prefixo?: string; palavra: string; kicker?: string; sub?: string; pousa?: number; y?: number})
 	| (Base & {tipo: 'selo'; texto: string; chip?: string; emChip?: number; y?: number})
