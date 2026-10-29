@@ -1,0 +1,28 @@
+{
+ "_doc": "Vídeo base do lifestyle-1 (montado por scripts/montar.py). Tempos em segundos. Batida da música = 0,46875 s (128 BPM); drop em 9,375 s do vídeo. 'de' = início no arquivo de origem; 'dur' = duração no vídeo; 'vel' = velocidade (0,5 = câmera lenta; usa dur*vel segundos da origem). cor: antes | escuro | depois.",
+ "saida": "video.mp4",
+ "largura": 1080,
+ "altura": 1920,
+ "fps": 30,
+ "segmentos": [
+  {"arquivo": "brutos/IMG_5240.MOV", "de": 0.6, "dur": 1.875, "vel": 0.5, "cor": "depois", "nota": "gancho: rastro da lancha em câmera lenta"},
+  {"foto": "brutos/antes1.jpeg", "dur": 2.8125, "cor": "antes", "zoom": [1.0, 1.12], "nota": "noites no quintal"},
+  {"foto": "brutos/antes2.jpeg", "dur": 2.8125, "cor": "antes", "zoom": [1.0, 1.12], "nota": "escritório improvisado"},
+  {"foto": "brutos/antes2.jpeg", "dur": 1.875, "cor": "escuro", "zoom": [1.12, 1.2], "nota": "virada: notificações por cima"},
+  {"arquivo": "brutos/IMG_5241.MOV", "de": 0.5, "dur": 1.875, "vel": 1, "cor": "depois", "nota": "DROP: R$ 2 MILHÕES"},
+  {"arquivo": "brutos/IMG_5243.MOV", "de": 0.3, "dur": 0.9375, "vel": 1, "cor": "depois"},
+  {"arquivo": "brutos/IMG_5245 (1).MOV", "de": 1.0, "dur": 0.9375, "vel": 1, "cor": "depois"},
+  {"arquivo": "brutos/IMG_5259 (1).MOV", "de": 2.0, "dur": 0.9375, "vel": 1, "cor": "depois"},
+  {"arquivo": "brutos/IMG_5244.MOV", "de": 4.6, "dur": 1.875, "vel": 1, "cor": "depois", "nota": "pulo no mar"},
+  {"arquivo": "brutos/IMG_5248.MOV", "de": 12.0, "dur": 1.875, "vel": 1, "cor": "depois", "nota": "o escritório mudou"},
+  {"arquivo": "brutos/IMG_5246.MOV", "de": 0.0, "dur": 0.9375, "vel": 1, "cor": "depois"},
+  {"arquivo": "brutos/IMG_5239.MOV", "de": 1.0, "dur": 0.9375, "vel": 1, "cor": "depois"},
+  {"arquivo": "brutos/IMG_5240.MOV", "de": 4.0, "dur": 1.875, "vel": 0.5, "cor": "depois"},
+  {"arquivo": "brutos/IMG_5248.MOV", "de": 35.0, "dur": 1.875, "vel": 1, "cor": "depois"},
+  {"arquivo": "brutos/IMG_5260.MOV", "de": 1.0, "dur": 1.875, "vel": 1, "cor": "depois"},
+  {"arquivo": "brutos/IMG_5246.MOV", "de": 3.1, "dur": 3.2, "vel": 1, "cor": "depois", "voz": true, "nota": "punchline: Tá muito ruim aqui, hein, velho"},
+  {"arquivo": "brutos/IMG_5241.MOV", "de": 3.0, "dur": 2.8125, "vel": 0.6, "cor": "depois", "nota": "fecho com @"}
+ ],
+ "musica": {"arquivo": "brutos/summer.mp3", "inicio": 52.003, "entrada": 0.15, "saida": 1.4, "volume": 0.9, "abaixar_na_voz": 0.18},
+ "voz_volume": 1.6
+}
