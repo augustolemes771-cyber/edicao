@@ -108,6 +108,8 @@ export const Medo3D: React.FC<{cena: Cena}> = ({cena}) => {
 			<AbsoluteFill style={{background: cena.pessoa ? 'radial-gradient(ellipse at 50% 55%, rgba(40,20,78,0.96) 0%, rgba(14,6,30,0.98) 70%)' : 'rgba(24,11,48,0.78)'}} />
 			{cena.pessoa ? <PessoaPresa fim={fim} /> : null}
 			<AbsoluteFill style={{background: `radial-gradient(ellipse ${raio}% ${raio * 0.7}% at 50% ${cena.pessoa ? 52 : (topo / height) * 100 + 4}%, rgba(10,4,24,0) ${cena.pessoa ? 50 : 35}%, rgba(6,2,16,0.97) 100%)`}} />
+			{/* Névoa vermelha apagada atrás das letras escuras: recorta o texto sombrio sem clarear a cena. */}
+			{cena.pessoa ? <AbsoluteFill style={{background: `radial-gradient(ellipse 60% 13% at 50% ${((topo + 95) / height) * 100}%, rgba(140,14,26,${0.42 + 0.08 * Math.sin(frame / 6)}) 0%, rgba(80,6,16,0.18) 50%, rgba(0,0,0,0) 100%)`}} /> : null}
 			<AbsoluteFill style={{transform: `scale(${recua})`, filter: 'drop-shadow(0 20px 26px rgba(4,1,12,0.75))'}}>
 				<ThreeCanvas
 					width={width}
