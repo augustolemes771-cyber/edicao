@@ -207,6 +207,7 @@ const useTransicoes = (efeitos: EfeitoCamera[]) => {
 	let iris: {p: number; opacidade: number} | null = null;
 	let vazamento: {p: number; local: number; cores: [string, string, string]} | null = null;
 	let listras: {p: number; local: number} | null = null;
+	let deslize = {x: 0, y: 0, borrao: 0};
 	for (const e of efeitos) {
 		const local = frame - Math.round(e.em * fps);
 		if (e.tipo === 'flash') {
@@ -248,8 +249,21 @@ const useTransicoes = (efeitos: EfeitoCamera[]) => {
 			});
 			if (p > 0) listras = {p, local};
 		}
+		if (e.tipo === 'deslize') {
+			// Acelera 6 quadros até o corte e freia 8 depois; o borrão segue a velocidade.
+			const antes = interpolate(local, [-6, 0], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+			const depois = interpolate(local, [0, 8], [1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+			const d = local < 0 ? -antes * antes * antes : depois * depois * depois;
+			const v = local < 0 ? antes * antes : depois * depois;
+			if (v > Math.abs(deslize.borrao)) {
+				const dir = e.direcao ?? 'cima';
+				const sx = dir === 'esquerda' ? -1 : dir === 'direita' ? 1 : 0;
+				const sy = dir === 'cima' ? -1 : dir === 'baixo' ? 1 : 0;
+				deslize = {x: -sx * d, y: -sy * d, borrao: v * (sx !== 0 ? 1 : -1)};
+			}
+		}
 	}
-	return {clarao, chicote, mergulhoEscala, mergulhoBlur, iris, vazamento, listras};
+	return {clarao, chicote, mergulhoEscala, mergulhoBlur, iris, vazamento, listras, deslize};
 };
 
 // Sobreposições das transições da desmontagem-2.
@@ -395,7 +409,7 @@ const Avisos: React.FC<{montagem: Montagem}> = ({montagem}) => {
 };
 
 export const VideoEditado: React.FC<PropsVideo> = ({projeto, duracaoFonte}) => {
-	const {fps} = useVideoConfig();
+	const {fps, width, height} = useVideoConfig();
 	const edit = projetos[projeto];
 	const montagem = useMemo(() => montar(edit, duracaoFonte), [edit, duracaoFonte]);
 	const {escala, dx, dy, clarao} = useImpacto(montagem.cenas);
@@ -423,6 +437,10 @@ export const VideoEditado: React.FC<PropsVideo> = ({projeto, duracaoFonte}) => {
 				<filter id="chicote" x="-20%" y="0" width="140%" height="100%">
 					<feGaussianBlur stdDeviation={`${trans.chicote * 70} 0`} />
 				</filter>
+				{/* borrão do deslize: horizontal (borrao > 0) ou vertical (borrao < 0) */}
+				<filter id="deslize" x="-10%" y="-10%" width="120%" height="120%">
+					<feGaussianBlur stdDeviation={trans.deslize.borrao > 0 ? `${trans.deslize.borrao * 60} 0` : `0 ${-trans.deslize.borrao * 80}`} />
+				</filter>
 			</svg>
 			<AbsoluteFill
 				style={{
@@ -437,7 +455,19 @@ export const VideoEditado: React.FC<PropsVideo> = ({projeto, duracaoFonte}) => {
 				}}
 			>
 				{camada(telas)}
-				<Camera edit={edit} montagem={montagem} telas={telas} atras={camada(atras)} />
+				{trans.deslize.borrao !== 0 ? (
+					// O plano desliza com sobra de escala para a borda não aparecer.
+					<AbsoluteFill
+						style={{
+							transform: `translate(${trans.deslize.x * 0.1 * width}px, ${trans.deslize.y * 0.1 * height}px) scale(${1 + Math.abs(trans.deslize.borrao) * 0.24})`,
+							filter: Math.abs(trans.deslize.borrao) > 0.03 ? 'url(#deslize)' : undefined,
+						}}
+					>
+						<Camera edit={edit} montagem={montagem} telas={telas} atras={camada(atras)} />
+					</AbsoluteFill>
+				) : (
+					<Camera edit={edit} montagem={montagem} telas={telas} atras={camada(atras)} />
+				)}
 				{camada(cheias)}
 				{camada(sobre)}
 				{edit.legenda && <Legenda paginas={montagem.legenda} cfg={{...edit.legenda, falantes: montagem.falantes}} />}
