@@ -1,4 +1,5 @@
-// pessoa: silhueta presa no medo embaixo do texto (pedido do usuário: "uma pessoa presa no medo").
+// pessoa: silhueta presa no medo embaixo do texto (pedido do usuário: "uma pessoa presa no medo"); o texto passa a metais
+// sombrios (MEDO em aço cor de sangue, DE INVESTIR em grafite) com brasas vermelhas escuras no lugar das faíscas douradas.
 // "Medo" sem glitch (pedido do usuário, 28/10/2026, depoimento-2: gostou do tempo e do texto, não do glitch): o vídeo escurece
 // em roxo e uma vinheta vai fechando devagar em volta do texto (o medo aperta); cada linha bate em texto 3D de verdade no seu
 // tempo (primeira em branco metálico, a última em ouro), com onda e faíscas, e o bloco recua um pouco enquanto a vinheta fecha,
@@ -121,9 +122,9 @@ export const Medo3D: React.FC<{cena: Cena}> = ({cena}) => {
 						const ultima = i === cena.linhas.length - 1;
 						return (
 							<React.Fragment key={i}>
-								<Linha3D texto={l.texto} metal={l.metal ?? (ultima ? 'ouro' : 'branco')} largura={l.largura ?? (l.texto.length <= 5 ? 3.4 : 4.6)} y={y} quadro={frame} batida={batidas[i]} profundidade={0.32} />
-								<Onda quadro={frame} inicio={batidas[i]} y={y} cor={ultima ? '#ffd27a' : '#d9d2ff'} tamanho={2.4} />
-								<Faiscas quadro={frame} inicio={batidas[i]} y={y} cor={ultima ? '#ffd27a' : '#e6e0ff'} largura={4} />
+								<Linha3D texto={l.texto} metal={l.metal ?? (cena.pessoa ? (ultima ? 'cinza' : 'sangue') : ultima ? 'ouro' : 'branco')} largura={l.largura ?? (l.texto.length <= 5 ? 3.4 : 4.6)} y={y} quadro={frame} batida={batidas[i]} profundidade={0.32} />
+								<Onda quadro={frame} inicio={batidas[i]} y={y} cor={cena.pessoa ? '#7a1018' : ultima ? '#ffd27a' : '#d9d2ff'} tamanho={2.4} />
+								<Faiscas quadro={frame} inicio={batidas[i]} y={y} cor={cena.pessoa ? '#a3141f' : ultima ? '#ffd27a' : '#e6e0ff'} largura={4} />
 							</React.Fragment>
 						);
 					})}

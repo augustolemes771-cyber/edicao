@@ -13,9 +13,22 @@ import fonteJson from '../../../public/fontes/montserrat-black.typeface.json';
 const fonte = new FontLoader().parse(fonteJson as never);
 const lim = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 
-export type Metal = 'ouro' | 'branco';
+// sangue e cinza: metais sombrios para medo (aço escuro com reflexo vermelho apagado / grafite roxo), depoimento-2.
+export type Metal = 'ouro' | 'branco' | 'sangue' | 'cinza';
 
 const materiais = (metal: Metal) => {
+	if (metal === 'sangue') {
+		return [
+			new THREE.MeshPhysicalMaterial({color: '#5a0f14', metalness: 0.85, roughness: 0.38, clearcoat: 0.5, clearcoatRoughness: 0.3, envMapIntensity: 0.7}),
+			new THREE.MeshPhysicalMaterial({color: '#140306', metalness: 1, roughness: 0.45, envMapIntensity: 0.6}),
+		];
+	}
+	if (metal === 'cinza') {
+		return [
+			new THREE.MeshPhysicalMaterial({color: '#3a3446', metalness: 0.9, roughness: 0.42, clearcoat: 0.4, clearcoatRoughness: 0.35, envMapIntensity: 0.7}),
+			new THREE.MeshPhysicalMaterial({color: '#0d0a14', metalness: 1, roughness: 0.5, envMapIntensity: 0.5}),
+		];
+	}
 	if (metal === 'ouro') {
 		return [
 			new THREE.MeshPhysicalMaterial({color: '#e9b44c', metalness: 1, roughness: 0.22, clearcoat: 0.6, clearcoatRoughness: 0.15, envMapIntensity: 1.5}),

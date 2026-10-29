@@ -233,7 +233,7 @@ export type Cena =
 	// Cartas de baralho 3D do tema (src/pecas/Cards3D.tsx): viram do verso na hora da palavra e caem em leque, ficando na tela;
 	// y = topo das cartas em px, numeração a partir de `inicio`. Esconde a legenda.
 	// Texto 3D com vinheta que fecha, sem glitch (src/pecas/Medo3D.tsx): cada linha bate no seu tempo; a última em ouro.
-	| (Base & {tipo: 'medo3d'; linhas: {texto: string; em: number; metal?: 'ouro' | 'branco'; largura?: number}[]; y?: number; pessoa?: boolean})
+	| (Base & {tipo: 'medo3d'; linhas: {texto: string; em: number; metal?: 'ouro' | 'branco' | 'sangue' | 'cinza'; largura?: number}[]; y?: number; pessoa?: boolean})
 	| (Base & {tipo: 'cards3d'; itens: {texto: string; em: number}[]; y?: number; inicio?: number})
 	// titulo: linhas em texto 3D no topo, cada uma no seu tempo (ex.: [{texto: 'COMO ERA', em}, {texto: 'SUA VIDA?', em}]).
 	| (Base & {tipo: 'gradeAntesDepois'; titulo?: {texto: string; em: number}[]; antes: {texto: string; em: number; valor?: string}; depois: {texto: string; em: number; valor?: string}})
