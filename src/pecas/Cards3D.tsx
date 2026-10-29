@@ -51,7 +51,8 @@ const Frente: React.FC<{texto: string; n: number; brilho: number; reflexo: numbe
 				borderRadius: 26,
 				backfaceVisibility: 'hidden',
 				background: 'linear-gradient(160deg, #4a2a86 0%, #2a1552 55%, #170a33 100%)',
-				boxShadow: `inset 0 0 0 3px rgba(232,194,122,${0.6 + 0.4 * brilho}), 0 0 ${46 * brilho}px rgba(232,194,122,${0.55 * brilho})`,
+				// Sem filter no pai: filter achata o 3D e o verso apareceria por cima da frente.
+				boxShadow: `inset 0 0 0 3px rgba(232,194,122,${0.6 + 0.4 * brilho}), 0 26px 40px rgba(6,2,16,0.6), 0 0 ${46 * brilho}px rgba(232,194,122,${0.55 * brilho})`,
 				overflow: 'hidden',
 			}}
 		>
@@ -93,7 +94,7 @@ const Verso: React.FC = () => (
 			backfaceVisibility: 'hidden',
 			transform: 'rotateY(180deg)',
 			background: '#21104a',
-			boxShadow: 'inset 0 0 0 3px #E8C27A',
+			boxShadow: 'inset 0 0 0 3px #E8C27A, 0 26px 40px rgba(6,2,16,0.6)',
 			overflow: 'hidden',
 		}}
 	>
@@ -151,7 +152,6 @@ export const Cards3D: React.FC<{cena: Cena}> = ({cena}) => {
 								transformStyle: 'preserve-3d',
 								// Sai do baralho (fora da tela, embaixo à direita), voa girando e assenta no leque.
 								transform: `translate(${(1 - voo) * 520}px, ${(1 - voo) * 700}px) rotateZ(${giroFinal + (1 - voo) * 40}deg) rotateY(${(1 - vira) * 180}deg) rotateX(${(1 - voo) * 30}deg)`,
-								filter: 'drop-shadow(0 26px 30px rgba(6,2,16,0.6))',
 							}}
 						>
 							<Frente texto={it.texto} n={(cena.inicio ?? 1) + i} brilho={brilho} reflexo={interpolate(l, [6, 22], [0, 1], lim)} />
