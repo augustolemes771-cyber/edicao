@@ -41,7 +41,8 @@ for i, s in enumerate(cfg["segmentos"]):
     dur = s["dur"]
     out = os.path.join(tmp, f"s{i:02d}.mp4")
     grade = COR[s.get("cor", "depois")]
-    q = round(dur * FPS)
+    # quadros pelo tempo acumulado: cada corte cai na batida certa, sem acumular erro de arredondamento
+    q = round((t + dur) * FPS) - round(t * FPS)
     if "foto" in s:
         z0, z1 = s.get("zoom", [1.0, 1.0])
         # cobre 9:16, amplia 2x para o zoompan não tremer e anima o zoom do começo ao fim do clipe
