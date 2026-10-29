@@ -180,7 +180,7 @@ export const Numero3D: React.FC<{cena: De<'numero3d'>}> = ({cena}) => {
 					style={{position: 'absolute', inset: 0}}
 				>
 					<Luzes quadro={frame} batidas={[batida]} />
-					<Linha3D texto={cena.texto} metal="ouro" largura={cena.largura ?? 4.4} y={yMundo} quadro={frame} batida={batida} profundidade={0.26} />
+					<Linha3D texto={cena.texto} metal={cena.metal ?? 'ouro'} largura={cena.largura ?? 4.4} y={yMundo} quadro={frame} batida={batida} profundidade={0.26} />
 					<Onda quadro={frame} inicio={batida} y={yMundo} cor="#ffd27a" tamanho={2.6} />
 					<Faiscas quadro={frame} inicio={batida} y={yMundo} cor="#ffd27a" largura={4} />
 				</ThreeCanvas>

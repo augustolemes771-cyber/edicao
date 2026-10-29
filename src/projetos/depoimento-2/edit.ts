@@ -204,16 +204,16 @@ export const depoimento2: Edit = {
 				som: 'whoosh',
 				sons: [{em: b.at('agora?') - 0.15, som: 'swish'}],
 			},
-			// 6. Antes: contador sobe até 120 mil
+			// 6. Antes: R$ 120 MIL em prata 3D (o ouro fica para o depois)
 			{
-				tipo: 'contador',
-				de: b.at('faturando') - 0.1,
+				tipo: 'numero3d',
+				de: b.at('120') - 0.3,
 				ate: b.say('120 mil de GMV').fim + 0.15,
+				texto: 'R$ 120 MIL',
 				rotulo: 'ANTES · GMV',
-				valor: 120,
-				prefixo: 'R$ ',
-				sufixo: ' MIL',
-				em: b.at('120') - 0.6,
+				metal: 'branco',
+				em: b.at('120') - 0.25,
+				esconderLegenda: true,
 				som: 'tick',
 			},
 			// 7. Depois: R$ 500 MIL, 4x mais

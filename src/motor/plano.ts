@@ -232,7 +232,8 @@ export type Cena =
 	// Caixa de comentário digitada letra por letra.
 	| (Base & {tipo: 'comentario'; texto: string; y?: number})
 	// Número em ouro 3D acima da cabeça (y = centro em px), rótulo pequeno em cima e linha de vidro embaixo.
-	| (Base & {tipo: 'numero3d'; texto: string; rotulo?: string; abaixo?: string; nomeOuro?: boolean; em?: number; y?: number; largura?: number})
+	// metal 'branco' (prata) para o "antes" e ouro (padrão) para o resultado.
+	| (Base & {tipo: 'numero3d'; texto: string; rotulo?: string; abaixo?: string; nomeOuro?: boolean; em?: number; y?: number; largura?: number; metal?: 'ouro' | 'branco'})
 	// Pílula dourada com batida e chip roxo opcional.
 	| (Base & {tipo: 'selo'; texto: string; chip?: string; emChip?: number; y?: number})
 	// Cartão final roxo com anel dourado e a marca.
