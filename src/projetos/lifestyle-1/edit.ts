@@ -6,15 +6,25 @@ import transcricao from './transcricao.json';
 // (segundos do vídeo final, que não tem cortes): batida do remix 0,4876 s (123,05 BPM), golpe do Mist/drop em 11,703 s.
 const B = 60 / 123.05; // batida do remix v6 (Congratulations + Mist)
 const DROP = 24 * B; // 11,703 s: o Mist entra em 16 batidas (1ª notificação), o okay em 10,40 s e o golpe cai aqui
-const OURO: [string, string, string] = ['#fff1c4', '#f2b544', '#6b3f0c'];
 
-// Cortes da montagem (em batidas): lancha, carros, jet ski, festa, punchline e fecho.
-const CORTES = [28, 30, 34, 38, 42, 44, 48, 52, 55, 57];
+// Cortes da montagem (em batidas) e o lado para onde cada plano desliza: lancha, carros, jet ski, festa, punchline e fecho.
+// O pulo no mar (52) desce; o resto alterna para dar sensação de andar pela vida nova.
+const CORTES: [number, 'cima' | 'baixo' | 'esquerda' | 'direita'][] = [
+	[28, 'cima'],
+	[30, 'direita'],
+	[34, 'esquerda'],
+	[38, 'cima'],
+	[42, 'direita'],
+	[44, 'esquerda'],
+	[48, 'cima'],
+	[52, 'baixo'],
+	[55, 'cima'],
+];
 
-// Soco de zoom na batida: fecha seco e assenta em 0,35 s.
-const soco = (batida: number, escala = 1.05): EfeitoCamera[] => [
-	{tipo: 'zoom', em: batida * B, escala},
-	{tipo: 'zoom', em: batida * B + 1 / 30, escala: 1, suave: 0.35},
+// Dentro de cada plano a câmera só avança devagar (sem soco na batida): o ritmo vem dos deslizes nos cortes.
+const deriva = (de: number, ate: number, escala = 1.06): EfeitoCamera[] => [
+	{tipo: 'zoom', em: de * B, escala: 1},
+	{tipo: 'zoom', em: de * B + 1 / 30, escala, suave: (ate - de) * B - 1 / 30},
 ];
 
 export const lifestyle1: Edit = {
@@ -28,33 +38,20 @@ export const lifestyle1: Edit = {
 	transcricao,
 	cortes: [],
 	camera: () => [
-		{tipo: 'chicote', em: 4 * B},
+		{tipo: 'deslize', em: 4 * B, direcao: 'esquerda'},
 		{tipo: 'foco', em: 10 * B, duracao: 0.5},
 		// Virada: a câmera fecha devagar enquanto as vendas chegam e o Mist cresce.
 		{tipo: 'zoom', em: 16 * B, escala: 1.12, suave: 8 * B - 0.1},
+		// Drop: o único impacto seco do vídeo.
 		{tipo: 'flash', em: DROP},
-		{tipo: 'zoom', em: DROP, escala: 1.18},
-		{tipo: 'zoom', em: DROP + 1 / 30, escala: 1, suave: 0.9},
-		// O 2 pousa (2 batidas depois do drop).
-		...soco(26, 1.1),
-		// Montagem: um efeito em cada corte e um soco na batida no meio de cada plano (forte nos tempos pares).
-		{tipo: 'chicote', em: 28 * B},
-		{tipo: 'vazamento', em: 30 * B, cores: OURO},
-		{tipo: 'chicote', em: 34 * B},
-		{tipo: 'flash', em: 38 * B},
-		{tipo: 'chicote', em: 42 * B},
-		{tipo: 'vazamento', em: 44 * B, cores: OURO},
-		{tipo: 'chicote', em: 48 * B},
-		{tipo: 'mergulho', em: 52 * B},
-		{tipo: 'flash', em: 55 * B},
-		...Array.from({length: 55 - 28}, (_, i) => 28 + i)
-			.filter((n) => !CORTES.includes(n) && n !== 52 - 1 && n !== 53)
-			.flatMap((n) => soco(n, n % 2 ? 1.035 : 1.07)),
-		...[38, 44, 55].flatMap((n) => soco(n, 1.1)),
-		// Punchline: entra em foco; fecho com luz dourada e anel.
+		{tipo: 'zoom', em: DROP, escala: 1.14},
+		{tipo: 'zoom', em: DROP + 1 / 30, escala: 1.02, suave: 4 * B},
+		...CORTES.map(([n, direcao]): EfeitoCamera => ({tipo: 'deslize', em: n * B, direcao})),
+		...CORTES.flatMap(([n], i) => deriva(n, CORTES[i + 1]?.[0] ?? 57)),
+		// Punchline: entra em foco; fecho sobe deslizando.
 		{tipo: 'foco', em: 57 * B, duracao: 0.35},
-		{tipo: 'vazamento', em: 64 * B, cores: OURO},
-		{tipo: 'iris', em: 64 * B},
+		{tipo: 'deslize', em: 64 * B, direcao: 'cima'},
+		...deriva(64, 69, 1.08),
 	],
 	cenas: () => [
 		{tipo: 'textoLife', de: 0.15, ate: 1.85, principal: 'isso é hoje.', y: 620, som: 'pop'},
@@ -67,22 +64,21 @@ export const lifestyle1: Edit = {
 			itens: [16, 18, 20, 22].map((n) => n * B).map((em) => ({titulo: 'TikTok Shop', texto: 'Nova venda realizada 🛍️', em})),
 			sons: [16, 18, 20, 22].map((n) => n * B).map((em) => ({em, som: 'tick' as const})),
 		},
-		// Vitória: louros dourados e o 2 girando como caça-níquel até pousar na batida (sons da montagem vão aqui também).
+		// Valor minimalista: o 2 chega por desfoque no drop e o brilho estoura 2 batidas depois (sons da montagem vão aqui também).
 		{
-			tipo: 'vitoria',
+			tipo: 'valorLife',
 			de: DROP,
-			ate: 30 * B - 0.08,
+			ate: 28 * B - 0.12,
 			kicker: 'MAIS DE',
 			prefixo: 'R$',
 			numero: '2',
-			palavra: 'MILHÕES',
+			palavra: 'milhões',
 			sub: 'faturados com o TikTok Shop',
 			pousa: 26 * B,
-			y: 600,
+			y: 760,
 			sons: [
-				{em: 26 * B, som: 'shimmer'},
-				...[28, 34, 42, 48].map((n) => ({em: n * B - 0.08, som: 'whoosh' as const, ganho: 0.6})),
-				...[30, 44, 64].map((n) => ({em: n * B, som: 'shimmer' as const, ganho: 0.7})),
+				{em: 26 * B, som: 'shimmer', ganho: 0.8},
+				...[...CORTES.map(([n]) => n), 64].map((n) => ({em: n * B - 0.12, som: 'whoosh' as const, ganho: 0.45})),
 				{em: 52 * B - 0.25, som: 'subida' as const, ganho: 0.6},
 			],
 		},
