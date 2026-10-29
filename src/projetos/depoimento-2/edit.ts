@@ -342,9 +342,7 @@ export const depoimento2: Edit = {
 				de: b.say('O Wesley foi mais um').inicio - 0.05,
 				ate: fimFala + 0.1,
 				palavras: [
-					{texto: 'O WESLEY', em: b.say('O Wesley foi mais um').inicio},
-					{texto: 'FOI', em: b.at('foi', 2)},
-					{texto: 'MAIS UM', em: b.at('mais', 2), destaque: true},
+					{texto: 'MAIS UM', em: b.say('O Wesley foi mais um').inicio, destaque: true},
 				],
 				som: 'whoosh',
 			},
