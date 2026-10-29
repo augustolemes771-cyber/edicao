@@ -15,7 +15,7 @@ export const lifestyle1: Edit = {
 	extraFim: 0,
 	legenda: {
 		estilo: 'mare',
-		altura: 0.656,
+		altura: 0.5,
 		palavrasPorTela: 4,
 		enfase: [{palavra: 'ruim', estilo: 'serif'}],
 	},
@@ -40,6 +40,6 @@ export const lifestyle1: Edit = {
 		},
 		{tipo: 'numero3d', de: DROP, ate: 11.4, texto: 'R$ 2 MILHÕES', rotulo: '+ de', abaixo: 'faturados com TikTok Shop', y: 420, em: DROP + 0.05, som: 'pop'},
 		{tipo: 'textoLife', de: 15.95, ate: 17.7, principal: 'o escritório mudou', y: 620},
-		{tipo: 'textoLife', de: 28.6, ate: 31.2, kicker: 'TUDO COMEÇOU COM O', principal: 'TikTok Shop', sub: '@danilowtts', y: 760},
+		{tipo: 'textoLife', de: 28.6, ate: 31.2, kicker: 'TUDO COMEÇOU COM O', principal: 'TikTok Shop', sub: '@danilowtts', y: 540},
 	],
 };
