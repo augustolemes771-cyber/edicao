@@ -7,21 +7,18 @@ import transcricao from './transcricao.json';
 const B = 60 / 123.05; // batida do remix v6 (Congratulations + Mist)
 const DROP = 24 * B; // 11,703 s: o Mist entra em 16 batidas (1ª notificação), o okay em 10,40 s e o golpe cai aqui
 const OKAY = 10.4; // o "okay" sussurrado do Mist
-const DESLIZE = 22 * B; // 10,73 s: primeira batida depois do okay, o único deslize do vídeo (pedido do usuário)
-
-// Cortes da montagem (em batidas): lancha, carros, jet ski, festa, punchline e fecho. São secos; a direção ficou anotada
-// caso o deslize volte (o usuário pediu o deslize só na primeira batida depois do okay).
-const CORTES: [number, 'cima' | 'baixo' | 'esquerda' | 'direita'][] = [
-	[28, 'cima'],
-	[30, 'direita'],
-	[34, 'esquerda'],
-	[38, 'cima'],
-	[42, 'direita'],
-	[44, 'esquerda'],
-	[48, 'cima'],
-	[52, 'baixo'],
-	[55, 'cima'],
+// Batida logo depois de cada "okay" do Mist (10,73 / 14,14 / 17,07 / 19,02 / 21,94 s): só nelas há corte com deslize e whoosh;
+// a montagem foi ajustada para ter troca de plano em cada uma (pedido do usuário).
+const DESLIZES: [number, 'cima' | 'baixo' | 'esquerda' | 'direita'][] = [
+	[22, 'cima'],
+	[29, 'direita'],
+	[35, 'esquerda'],
+	[39, 'cima'],
+	[45, 'esquerda'],
 ];
+
+// Cortes da montagem depois do drop (em batidas): lancha, carros, jet ski, festa e punchline. Os que não estão em DESLIZES são secos.
+const CORTES = [29, 31, 35, 39, 43, 45, 48, 52, 55];
 
 // Dentro de cada plano a câmera só avança devagar (sem soco na batida): o ritmo vem dos cortes na batida.
 const deriva = (de: number, ate: number, escala = 1.06): EfeitoCamera[] => [
@@ -41,14 +38,14 @@ export const lifestyle1: Edit = {
 	cortes: [],
 	camera: () => [
 		{tipo: 'foco', em: 10 * B, duracao: 0.5},
-		{tipo: 'deslize', em: DESLIZE, direcao: 'cima'},
 		// Virada: a câmera fecha devagar enquanto as vendas chegam e o Mist cresce.
 		{tipo: 'zoom', em: 16 * B, escala: 1.12, suave: 8 * B - 0.1},
 		// Drop: o único impacto seco do vídeo.
 		{tipo: 'flash', em: DROP},
 		{tipo: 'zoom', em: DROP, escala: 1.14},
 		{tipo: 'zoom', em: DROP + 1 / 30, escala: 1.02, suave: 4 * B},
-		...CORTES.flatMap(([n], i) => deriva(n, CORTES[i + 1]?.[0] ?? 57)),
+		...DESLIZES.map(([n, direcao]): EfeitoCamera => ({tipo: 'deslize', em: n * B, direcao})),
+		...CORTES.flatMap((n, i) => deriva(n, CORTES[i + 1] ?? 57)),
 		// Punchline: entra em foco; fecho em corte seco.
 		{tipo: 'foco', em: 57 * B, duracao: 0.35},
 		...deriva(64, 69, 1.08),
@@ -64,14 +61,14 @@ export const lifestyle1: Edit = {
 			itens: [16, 18, 20, 22].map((n) => n * B).map((em) => ({titulo: 'TikTok Shop', texto: 'Nova venda realizada 🛍️', em})),
 			sons: [
 				...[16, 18, 20, 22].map((n) => n * B).map((em) => ({em, som: 'tick' as const})),
-				{em: DESLIZE - 0.12, som: 'whoosh' as const, ganho: 0.45},
+				...DESLIZES.map(([n]) => ({em: n * B - 0.12, som: 'whoosh' as const, ganho: 0.45})),
 			],
 		},
 		// Valor minimalista: o 2 chega por desfoque no drop e o brilho estoura 2 batidas depois (sons da montagem vão aqui também).
 		{
 			tipo: 'valorLife',
 			de: DROP,
-			ate: 28 * B - 0.12,
+			ate: 29 * B - 0.12,
 			kicker: 'MAIS DE',
 			prefixo: 'R$',
 			numero: '2',
@@ -84,7 +81,7 @@ export const lifestyle1: Edit = {
 				{em: 52 * B - 0.25, som: 'subida' as const, ganho: 0.6},
 			],
 		},
-		{tipo: 'textoLife', de: 30 * B + 0.05, ate: 34 * B - 0.05, principal: 'o escritório mudou', y: 620},
+		{tipo: 'textoLife', de: 31 * B + 0.05, ate: 35 * B - 0.05, principal: 'o escritório mudou', y: 620},
 		// Punchline falada: o texto do início no lugar da legenda, com brilho para ler.
 		{tipo: 'textoLife', de: 27.8, ate: 28.8, principal: 'ô, como que tá?', y: 960, brilho: true},
 		{tipo: 'textoLife', de: 28.78, ate: 31.1, principal: 'tá muito ruim aqui, hein, velho', y: 960, brilho: true},
