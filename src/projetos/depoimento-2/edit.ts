@@ -34,7 +34,8 @@ export const depoimento2: Edit = {
 			fala('Tô aqui com o Wesley', 'Tô aqui com o Wesley'),
 			fala('Como é que você estava antes', 'você está agora'),
 			fala('antes da mentoria eu tava faturando', '120 mil de GMV'),
-			fala('E após a mentoria', 'até agora somado'),
+			// Começa no "após": o "E" logo depois do "GMV" soava como o V repetido.
+			fala('após a mentoria', 'até agora somado'),
 			fala('E isso que destravou', 'a minha mentalidade foi a mentoria', 1, 0.02),
 			fala('muita gente tem essa objeção', 'medo de investir em pessoas'),
 			fala('qual é a dica que você dá pro iniciante', 'qual é a dica que você dá pro iniciante', 1, 0.02),
@@ -111,7 +112,7 @@ export const depoimento2: Edit = {
 			z(resposta1, 1.15, WES_BAIXO),
 			z(b.at('faturando'), 1.25, WES_BAIXO),
 			z(b.at('120'), 1.35, WES_BAIXO),
-			z(b.say('E após a mentoria').inicio, 1.12, WES_BAIXO),
+			z(b.say('após a mentoria').inicio, 1.12, WES_BAIXO),
 			{tipo: 'flash', em: b.at('500', 2) - 0.04},
 			z(b.at('500', 2), 1.42, WES_BAIXO),
 			z(b.at('somado.'), 1.2, WES_A),

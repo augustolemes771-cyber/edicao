@@ -554,21 +554,21 @@
  },
  {
   "text": " após",
-  "startMs": 22200,
-  "endMs": 22400,
+  "startMs": 22380,
+  "endMs": 22500,
   "timestampMs": null,
   "confidence": 0.998732
  },
  {
   "text": " a",
-  "startMs": 22400,
-  "endMs": 22430,
+  "startMs": 22500,
+  "endMs": 22530,
   "timestampMs": null,
   "confidence": 0.999817
  },
  {
   "text": " mentoria",
-  "startMs": 22430,
+  "startMs": 22530,
   "endMs": 22680,
   "timestampMs": null,
   "confidence": 0.999943
@@ -1430,7 +1430,7 @@
  {
   "text": " live.",
   "startMs": 62340,
-  "endMs": 62660,
+  "endMs": 62550,
   "timestampMs": null,
   "confidence": 0.999439
  },
@@ -1863,14 +1863,14 @@
  },
  {
   "text": " O",
-  "startMs": 81540,
-  "endMs": 81840,
+  "startMs": 81800,
+  "endMs": 81900,
   "timestampMs": null,
   "confidence": 0.983083
  },
  {
   "text": " Wesley",
-  "startMs": 81840,
+  "startMs": 81900,
   "endMs": 82050,
   "timestampMs": null,
   "confidence": 0.996936
