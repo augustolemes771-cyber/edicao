@@ -22,21 +22,24 @@ export type PropsVideo = {projeto: string; duracaoFonte: number};
 const VOLUME_SFX = dbParaGanho(-15);
 
 // Studio: assiste com a cópia leve (720p, scripts/proxy.mjs) quando ela existe; o render sempre usa o original.
-const leveExiste = new Map<string, boolean>();
+// A URL leva a data do arquivo (?v=): cópia leve refeita não fica presa no cache do navegador.
+const leveUrl = new Map<string, string | null>();
 const useFonteStudio = (pasta: string, video?: string) => {
 	const {isStudio, isRendering} = getRemotionEnvironment();
 	const leve = isStudio && !isRendering && video && !video.includes('/') ? staticFile(`${pasta}/_leve/${video.replace(/\.[^.]+$/, '.mp4')}`) : null;
-	const [ok, setOk] = useState(leve ? (leveExiste.get(leve) ?? false) : false);
+	const [url, setUrl] = useState(leve ? (leveUrl.get(leve) ?? null) : null);
 	useEffect(() => {
-		if (!leve || leveExiste.has(leve)) return;
-		fetch(leve, {method: 'HEAD'})
+		if (!leve || leveUrl.has(leve)) return;
+		fetch(leve, {method: 'HEAD', cache: 'no-store'})
 			.then((r) => {
-				leveExiste.set(leve, r.ok);
-				setOk(r.ok);
+				const v = r.headers.get('last-modified') ?? r.headers.get('etag');
+				const u = r.ok ? (v ? `${leve}?v=${encodeURIComponent(v)}` : leve) : null;
+				leveUrl.set(leve, u);
+				setUrl(u);
 			})
-			.catch(() => leveExiste.set(leve, false));
+			.catch(() => leveUrl.set(leve, null));
 	}, [leve]);
-	return leve && ok ? leve : video ? staticFile(`${pasta}/${video}`) : '';
+	return url ?? (video ? staticFile(`${pasta}/${video}`) : '');
 };
 
 // Vídeo decupado, com os cortes das notas faladas aplicados.
