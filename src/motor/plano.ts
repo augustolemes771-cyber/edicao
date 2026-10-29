@@ -251,6 +251,9 @@ export type Cena =
 	// Resultado premium: louros dourados em volta de um dígito gigante em ouro que gira e para em "pousa" (segundo do vídeo),
 	// com prefixo pequeno (R$), palavra embaixo (MILHÕES), fio dourado e sub. y = centro do número em px.
 	| (Base & {tipo: 'vitoria'; numero: string; prefixo?: string; palavra: string; kicker?: string; sub?: string; pousa?: number; y?: number})
+	// Valor minimalista: kicker espaçado, número fino gigante em Unbounded Light com a palavra em serifa itálica ao lado,
+	// brilho branco quente que acende em "pousa" e um reflexo de luz passando pelas letras.
+	| (Base & {tipo: 'valorLife'; numero: string; prefixo?: string; palavra: string; kicker?: string; sub?: string; pousa?: number; y?: number})
 	| (Base & {tipo: 'selo'; texto: string; chip?: string; emChip?: number; y?: number})
 	// Cartão final roxo com anel dourado e a marca.
 	| (Base & {tipo: 'final'; marca: string; sub?: string})
@@ -300,7 +303,10 @@ export type EfeitoCamera =
 	// Vazamento de luz laranja, magenta e roxo com clarão, na troca de cena (desmontagem-2, ref. 1).
 	| {tipo: 'vazamento'; em: number; cores?: [string, string, string]}
 	// Listras verticais de glitch com estouro de luz, 3 a 4 quadros (desmontagem-2, ref. 2).
-	| {tipo: 'listras'; em: number};
+	| {tipo: 'listras'; em: number}
+	// Deslize: o quadro acelera para um lado com borrão de movimento até o corte e o próximo plano chega do lado oposto e freia
+	// (empurrão suave na batida, lifestyle-1). Só move o vídeo: os textos ficam parados.
+	| {tipo: 'deslize'; em: number; direcao?: 'cima' | 'baixo' | 'esquerda' | 'direita'};
 
 export type EstiloLegenda = 'palavra' | 'ouro' | 'impacto' | 'neon' | 'mare';
 export type EstiloEnfase = 'serif' | 'cor' | 'caixa' | 'circulo' | 'grande' | 'riscar';
@@ -454,6 +460,7 @@ const MODO_PADRAO: Record<TipoCena, Modo> = {
 	notificacoes: 'sobre',
 	textoLife: 'sobre',
 	vitoria: 'sobre',
+	valorLife: 'sobre',
 	final: 'cheia',
 };
 
@@ -505,6 +512,7 @@ const SOM_PADRAO: Record<TipoCena, Som | null> = {
 	notificacoes: null,
 	textoLife: null,
 	vitoria: null,
+	valorLife: null,
 	final: 'whoosh',
 };
 
@@ -685,6 +693,7 @@ const TEXTO_PROPRIO: TipoCena[] = [
 	'live',
 	'numero3d',
 	'vitoria',
+	'valorLife',
 	'celular3d',
 	'gradeAntesDepois',
 	'presoClt',
