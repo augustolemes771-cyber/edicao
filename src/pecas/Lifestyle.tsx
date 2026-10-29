@@ -343,24 +343,25 @@ export const ValorLife: React.FC<{cena: De<'valorLife'>}> = ({cena}) => {
 		<AbsoluteFill style={{pointerEvents: 'none'}}>
 			{/* escurece de leve em volta para o branco ler sobre a lancha */}
 			<AbsoluteFill style={{opacity: chega(0, 0.4) * sai, background: `radial-gradient(ellipse 85% 22% at 50% ${yc}px, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0) 100%)`}} />
-			<div style={{position: 'absolute', left: 0, width: 1080, top: yc, transform: 'translateY(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4}}>
+			{/* bloco centralizado: cada linha numa linha só, espaçamento das letras compensado dos dois lados */}
+			<div style={{position: 'absolute', left: 0, width: 1080, top: yc, transform: 'translateY(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', whiteSpace: 'nowrap'}}>
 				{cena.kicker ? (
-					<div style={revela(chega(0.05))}>
-						<span style={{fontFamily: inter, fontWeight: 600, fontSize: 30, letterSpacing: `${0.9 - 0.3 * chega(0.05, 0.8)}em`, marginRight: '-0.6em', color: 'rgba(255,255,255,0.88)', textShadow: '0 2px 14px rgba(0,0,0,0.5)'}}>{cena.kicker}</span>
+					<div style={{...revela(chega(0.05)), marginBottom: 6}}>
+						<span style={{fontFamily: inter, fontWeight: 600, fontSize: 30, letterSpacing: '0.5em', paddingLeft: '0.5em', color: 'rgba(255,255,255,0.88)', textShadow: '0 2px 14px rgba(0,0,0,0.5)'}}>{cena.kicker}</span>
 					</div>
 				) : null}
-				{/* título numa linha só: "R$ 2" fino e "milhões" em serifa itálica na mesma linha de base */}
-				<div style={{display: 'flex', alignItems: 'baseline', whiteSpace: 'nowrap', filter: halo, lineHeight: 1}}>
-					<span style={{fontFamily: unbounded, fontWeight: 300, fontSize: 140, letterSpacing: '-0.03em', ...preenchimento, ...revela(chega(0, 0.5), 0.08)}}>
-						{cena.prefixo ? `${cena.prefixo} ` : ''}
-						{cena.numero}
-					</span>
-					<span style={{fontFamily: dmSerif, fontStyle: 'italic', fontSize: 156, marginLeft: 24, padding: '0 0.06em', ...preenchimento, ...revela(chega(0.18))}}>{cena.palavra}</span>
+				{/* "R$" pequeno no alto como em preço, "2" grande e "milhões" em serifa itálica na mesma linha de base */}
+				<div style={{display: 'flex', alignItems: 'baseline', justifyContent: 'center', filter: halo, lineHeight: 1}}>
+					{cena.prefixo ? (
+						<span style={{display: 'inline-block', alignSelf: 'flex-start', marginTop: 34, marginRight: 14, fontFamily: unbounded, fontWeight: 400, fontSize: 56, ...preenchimento, ...revela(chega(0, 0.5))}}>{cena.prefixo}</span>
+					) : null}
+					<span style={{display: 'inline-block', fontFamily: unbounded, fontWeight: 300, fontSize: 210, letterSpacing: '-0.04em', ...preenchimento, ...revela(chega(0, 0.5), 0.08)}}>{cena.numero}</span>
+					<span style={{display: 'inline-block', fontFamily: dmSerif, fontStyle: 'italic', fontSize: 150, marginLeft: 26, padding: '0 0.08em', ...preenchimento, ...revela(chega(0.18))}}>{cena.palavra}</span>
 				</div>
-				<div style={{width: 720 * fio, height: 1.5, marginTop: 14, opacity: sai, background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 50%, rgba(255,255,255,0) 100%)', boxShadow: '0 0 12px rgba(255,240,215,0.8)'}} />
+				<div style={{width: 640 * fio, height: 1.5, marginTop: 18, opacity: sai, background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 50%, rgba(255,255,255,0) 100%)', boxShadow: '0 0 12px rgba(255,240,215,0.8)'}} />
 				{cena.sub ? (
-					<div style={{...revela(chega(pousa + 0.05)), marginTop: 8}}>
-						<span style={{fontFamily: inter, fontWeight: 600, fontSize: 32, letterSpacing: '0.16em', marginRight: '-0.16em', color: 'rgba(255,255,255,0.92)', textShadow: '0 2px 14px rgba(0,0,0,0.6)'}}>{cena.sub}</span>
+					<div style={{...revela(chega(pousa + 0.05)), marginTop: 16}}>
+						<span style={{fontFamily: inter, fontWeight: 500, fontSize: 30, letterSpacing: '0.12em', paddingLeft: '0.12em', color: 'rgba(255,255,255,0.92)', textShadow: '0 2px 14px rgba(0,0,0,0.6)'}}>{cena.sub}</span>
 					</div>
 				) : null}
 			</div>
