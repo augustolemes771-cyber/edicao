@@ -555,20 +555,20 @@
  {
   "text": " após",
   "startMs": 22200,
-  "endMs": 22500,
+  "endMs": 22400,
   "timestampMs": null,
   "confidence": 0.998732
  },
  {
   "text": " a",
-  "startMs": 22170,
-  "endMs": 22180,
+  "startMs": 22400,
+  "endMs": 22430,
   "timestampMs": null,
   "confidence": 0.999817
  },
  {
   "text": " mentoria",
-  "startMs": 22180,
+  "startMs": 22430,
   "endMs": 22680,
   "timestampMs": null,
   "confidence": 0.999943
@@ -666,21 +666,21 @@
  },
  {
   "text": " isso",
-  "startMs": 26500,
-  "endMs": 26600,
+  "startMs": 26480,
+  "endMs": 26560,
   "timestampMs": null,
   "confidence": 0.999701
  },
  {
   "text": " que",
-  "startMs": 26600,
-  "endMs": 26700,
+  "startMs": 26560,
+  "endMs": 26620,
   "timestampMs": null,
   "confidence": 0.953172
  },
  {
   "text": " destravou",
-  "startMs": 26530,
+  "startMs": 26620,
   "endMs": 27110,
   "timestampMs": null,
   "confidence": 0.997681
