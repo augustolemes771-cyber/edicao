@@ -250,7 +250,7 @@ export const depoimento2: Edit = {
 				som: 'swish',
 			},
 			// 10. Preso na CLT
-			{tipo: 'selo', de: b.at('preso') - 0.05, ate: b.say('tá preso CLT').fim + 0.45, texto: 'PRESO NA CLT', y: 1060, esconderLegenda: true, som: 'tick'},
+			{tipo: 'selo', de: b.at('preso') - 0.05, ate: b.at('horinha') - 0.2, texto: 'PRESO NA CLT', y: 1060, esconderLegenda: true, som: 'tick'},
 			// 11. 1 HORA por dia em ouro 3D
 			{
 				tipo: 'numero3d',
@@ -306,7 +306,7 @@ export const depoimento2: Edit = {
 				som: 'tick',
 			},
 			// 15. CTA: dúvida digitada, siga um por vez
-			{tipo: 'comentario', de: b.at('Tem') - 0.05, ate: b.at('comentários.') + 0.55, texto: 'Como eu começo do zero?', y: 1060, som: 'swish'},
+			{tipo: 'comentario', de: b.say('Tem alguma dúvida').inicio - 0.05, ate: b.at('segue') - 0.1, texto: 'Como eu começo do zero?', y: 1060, som: 'swish'},
 			{
 				tipo: 'siga',
 				de: b.at('segue') - 0.05,
