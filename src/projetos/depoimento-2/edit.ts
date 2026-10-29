@@ -166,7 +166,7 @@ export const depoimento2: Edit = {
 			{
 				tipo: 'selo',
 				de: b.at('Lucrando') - 0.08,
-				ate: b.at('deixado'),
+				ate: b.at('pessoas') - 0.05,
 				texto: 'LUCRANDO COM LIVE',
 				chip: 'MÉTODO',
 				emChip: b.at('método'),
