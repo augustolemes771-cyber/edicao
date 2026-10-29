@@ -1,6 +1,8 @@
 // Peças genéricas do tema Lifestyle (props, para reaproveitar em outros vídeos):
 // notificacoes: banners de notificação de celular que descem do topo com mola e empurram os anteriores.
 // textoLife: tipografia elegante sem caixa (kicker em caixa alta, frase em Playfair itálico, sub), entra com fade + desfoque + subida.
+// vitoria: resultado premium: louros dourados que crescem folha a folha em volta de um número gigante em ouro que gira como
+// caça-níquel e pousa na batida com reflexo, raios de luz girando atrás e poeira dourada subindo.
 import React from 'react';
 import {AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import type {CenaNoPlano} from '../motor/plano';
