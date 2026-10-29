@@ -7,18 +7,20 @@ import transcricao from './transcricao.json';
 const B = 60 / 123.05; // batida do remix v6 (Congratulations + Mist)
 const DROP = 24 * B; // 11,703 s: o Mist entra em 16 batidas (1ª notificação), o okay em 10,40 s e o golpe cai aqui
 const OKAY = 10.4; // o "okay" sussurrado do Mist
-// Batida logo depois de cada "okay" do Mist depois do drop (14,14 / 17,07 / 19,02 / 21,94 s): só nelas há corte com deslize e whoosh;
+// Batida logo depois de cada "okay" do Mist depois do drop (14,14 / 17,07 / 19,13 / 21,94 s): só nelas há corte com deslize e whoosh;
 // a montagem foi ajustada para ter troca de plano em cada uma. Na virada o deslize vai no corte do golpe (24), junto do clarão (pedido do usuário).
+// O de 19,13 s fica fora da grade: o usuário ouve a batida ali, não em 19,02 s (39 batidas).
+const B19 = 19.13 / B;
 const DESLIZES: [number, 'cima' | 'baixo' | 'esquerda' | 'direita'][] = [
 	[24, 'cima'],
 	[29, 'direita'],
 	[35, 'cima'], // ele anda para a frente entre os carros: o quadro segue o passo
-	[39, 'direita'],
+	[B19, 'direita'],
 	[45, 'esquerda'],
 ];
 
 // Cortes da montagem depois do drop (em batidas): lancha, carros, jet ski, festa e punchline. Os que não estão em DESLIZES são secos.
-const CORTES = [29, 31, 35, 39, 43, 45, 48, 52, 55];
+const CORTES = [29, 31, 35, B19, 43, 45, 48, 52, 55];
 
 // Dentro de cada plano a câmera só avança devagar (sem soco na batida): o ritmo vem dos cortes na batida.
 const deriva = (de: number, ate: number, escala = 1.06): EfeitoCamera[] => [
