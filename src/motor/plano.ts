@@ -227,7 +227,8 @@ export type Cena =
 	// Motion de tela cheia "antes × agora" (src/pecas/GradeAntesDepois.tsx): grade em perspectiva roxa e dourada e dois cartões
 	// de vidro que sobem na hora de cada palavra (valor opcional; sem ele, "?"). Esconde a legenda.
 	// Ex.: antes: {texto: 'ANTES', em: b.at('antes')}, depois: {texto: 'AGORA', em: b.at('agora?')}
-	| (Base & {tipo: 'gradeAntesDepois'; antes: {texto: string; em: number; valor?: string}; depois: {texto: string; em: number; valor?: string}})
+	// titulo: linhas em texto 3D no topo, cada uma no seu tempo (ex.: [{texto: 'COMO ERA', em}, {texto: 'SUA VIDA?', em}]).
+	| (Base & {tipo: 'gradeAntesDepois'; titulo?: {texto: string; em: number}[]; antes: {texto: string; em: number; valor?: string}; depois: {texto: string; em: number; valor?: string}})
 	// Caixa de comentário digitada letra por letra.
 	| (Base & {tipo: 'comentario'; texto: string; y?: number})
 	// Número em ouro 3D acima da cabeça (y = centro em px), rótulo pequeno em cima e linha de vidro embaixo.

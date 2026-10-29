@@ -195,6 +195,10 @@ export const depoimento2: Edit = {
 				tipo: 'gradeAntesDepois',
 				de: b.say('Como é que você estava antes').inicio - 0.05,
 				ate: b.say('você está agora').fim + 0.12,
+				titulo: [
+					{texto: 'COMO ERA', em: b.say('Como é que você estava antes').inicio},
+					{texto: 'SUA VIDA?', em: b.at('estava')},
+				],
 				antes: {texto: 'ANTES', em: b.at('antes') - 0.05},
 				depois: {texto: 'AGORA', em: b.at('agora?') - 0.15},
 				som: 'whoosh',

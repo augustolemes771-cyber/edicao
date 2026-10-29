@@ -3,10 +3,15 @@
 // sobem da grade, cada um na hora da sua palavra (ANTES à esquerda, AGORA à direita, levemente virados para o centro), com
 // valor ou "?" em Playfair dourado; uma seta dourada se desenha de um para o outro quando o segundo chega. Na saída a câmera
 // mergulha no cartão da direita (a resposta vem a seguir no vídeo). Faz o papel da legenda.
+// titulo: linhas de texto 3D de verdade (letras extrudadas em ouro e branco metálico, mola, onda e faíscas) no topo,
+// cada uma batendo no seu tempo (ex.: COMO ERA / SUA VIDA?).
 import React from 'react';
 import {AbsoluteFill, interpolate, random, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import type {CenaNoPlano} from '../motor/plano';
+import {ThreeCanvas} from '@remotion/three';
+import * as THREE from 'three';
 import {playfair, poppins} from '../motor/tema';
+import {Faiscas, Linha3D, Luzes, Onda} from './tres/Texto3D';
 
 type Cena = Extract<CenaNoPlano, {tipo: 'gradeAntesDepois'}>;
 const lim = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
@@ -121,6 +126,39 @@ const Cartao: React.FC<{lado: -1 | 1; rotulo: string; valor?: string; entra: num
 	);
 };
 
+// Câmera fov 35 a 14,5: meia altura visível ~4,57 unidades; px do quadro 1080x1920 → mundo.
+const Titulo3D: React.FC<{linhas: {texto: string; em: number}[]; de: number}> = ({linhas, de}) => {
+	const frame = useCurrentFrame();
+	const {fps, width, height} = useVideoConfig();
+	const meia = 14.5 * Math.tan((35 / 2) * (Math.PI / 180));
+	const yMundo = (px: number) => ((height / 2 - px) / (height / 2)) * meia;
+	const batidas = linhas.map((l) => Math.round(Math.max(0, l.em - de) * fps));
+	return (
+		<AbsoluteFill style={{filter: 'drop-shadow(0 20px 26px rgba(8,2,20,0.7))'}}>
+			<ThreeCanvas
+				width={width}
+				height={height}
+				gl={{alpha: true, antialias: true, preserveDrawingBuffer: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.05}}
+				camera={{fov: 35, position: [0, 0, 14.5], near: 0.1, far: 60}}
+				style={{position: 'absolute', inset: 0}}
+			>
+				<Luzes quadro={frame} batidas={batidas} />
+				{linhas.map((l, i) => {
+					const y = yMundo(330 + i * 175);
+					const ultima = i === linhas.length - 1;
+					return (
+						<React.Fragment key={i}>
+							<Linha3D texto={l.texto} metal={ultima ? 'ouro' : 'branco'} largura={ultima ? 4.6 : 3.6} y={y} quadro={frame} batida={batidas[i]} profundidade={0.3} />
+							<Onda quadro={frame} inicio={batidas[i]} y={y} cor="#ffd27a" tamanho={2.4} />
+							<Faiscas quadro={frame} inicio={batidas[i]} y={y} cor="#ffd27a" largura={4} />
+						</React.Fragment>
+					);
+				})}
+			</ThreeCanvas>
+		</AbsoluteFill>
+	);
+};
+
 export const GradeAntesDepois: React.FC<{cena: Cena}> = ({cena}) => {
 	const frame = useCurrentFrame();
 	const {fps, width, height} = useVideoConfig();
@@ -166,6 +204,7 @@ export const GradeAntesDepois: React.FC<{cena: Cena}> = ({cena}) => {
 					<Cartao lado={-1} rotulo={cena.antes.texto} valor={cena.antes.valor} entra={emA} />
 					<Cartao lado={1} rotulo={cena.depois.texto} valor={cena.depois.valor} entra={emB} destaque />
 				</AbsoluteFill>
+				{cena.titulo?.length ? <Titulo3D linhas={cena.titulo} de={cena.de} /> : null}
 				{/* Seta dourada do antes para o agora, acima dos cartões. */}
 				<svg width={width} height={height} style={{position: 'absolute', inset: 0}}>
 					<defs>
