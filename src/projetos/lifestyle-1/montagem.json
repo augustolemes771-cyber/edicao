@@ -1,5 +1,5 @@
 {
- "_doc": "Vídeo base do lifestyle-1, montado por scripts/montar.py na grade do remix v5 (Congratulations 26,3 s original + Mist). Batida = 0.4876 s (123,05 BPM); 'okay' em 10,40 s; golpe do Mist/drop em 11,70 s (24 batidas). 'de' = início no arquivo; 'dur' = duração no vídeo; 'vel' = velocidade (0,5 = câmera lenta; lê dur*vel s da origem). cor: antes | escuro | depois.",
+ "_doc": "Vídeo base do lifestyle-1, montado por scripts/montar.py na grade do remix v6 (Congratulations original + Mist, que entra junto da 1ª notificação em 7,80 s = 16 batidas). Batida = 0.4876 s (123,05 BPM); 'okay' em 10,40 s; golpe do Mist/drop em 11,70 s (24 batidas). 'de' = início no arquivo; 'dur' = duração no vídeo; 'vel' = velocidade (0,5 = câmera lenta; lê dur*vel s da origem). cor: antes | escuro | depois.",
  "saida": "video.mp4",
  "largura": 1080,
  "altura": 1920,
@@ -40,7 +40,7 @@
     1.12,
     1.24
    ],
-   "nota": "virada: notificações por cima; o okay entra em 10,4 s e o golpe do Mist em 11,7 s",
+   "nota": "virada: notificações por cima; o Mist entra junto da 1ª notificação (7,8 s) e o golpe cai em 11,7 s",
    "dur": 3.9009
   },
   {
@@ -139,7 +139,7 @@
   }
  ],
  "musica": {
-  "arquivo": "brutos/musicas/remix_v5.mp3",
+  "arquivo": "brutos/musicas/remix_v6.mp3",
   "entrada": 0.0,
   "saida": 1.4,
   "volume": 0.95,
