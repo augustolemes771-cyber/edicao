@@ -246,7 +246,11 @@ export type Cena =
 	// Banners de notificação de celular (vidro escuro, ícone de sacola) que descem do topo e empurram os anteriores (pilha de até 4).
 	| (Base & {tipo: 'notificacoes'; itens: {titulo: string; texto: string; em: number}[]; y?: number})
 	// Tipografia de lifestyle sem caixa: kicker em caixa alta, frase em Playfair itálico branco e sub; entra com fade + desfoque + subida.
-	| (Base & {tipo: 'textoLife'; kicker?: string; principal: string; sub?: string; em?: number; y?: number; alinhamento?: 'centro' | 'esquerda' | 'direita'})
+	// brilho: halo claro em volta das letras para ler sobre imagem clara (ex.: fala no lugar da legenda).
+	| (Base & {tipo: 'textoLife'; kicker?: string; principal: string; sub?: string; em?: number; y?: number; alinhamento?: 'centro' | 'esquerda' | 'direita'; brilho?: boolean})
+	// Resultado premium: louros dourados em volta de um dígito gigante em ouro que gira e para em "pousa" (segundo do vídeo),
+	// com prefixo pequeno (R$), palavra embaixo (MILHÕES), fio dourado e sub. y = centro do número em px.
+	| (Base & {tipo: 'vitoria'; numero: string; prefixo?: string; palavra: string; kicker?: string; sub?: string; pousa?: number; y?: number})
 	| (Base & {tipo: 'selo'; texto: string; chip?: string; emChip?: number; y?: number})
 	// Cartão final roxo com anel dourado e a marca.
 	| (Base & {tipo: 'final'; marca: string; sub?: string})
@@ -449,6 +453,7 @@ const MODO_PADRAO: Record<TipoCena, Modo> = {
 	selo: 'sobre',
 	notificacoes: 'sobre',
 	textoLife: 'sobre',
+	vitoria: 'sobre',
 	final: 'cheia',
 };
 
@@ -499,6 +504,7 @@ const SOM_PADRAO: Record<TipoCena, Som | null> = {
 	selo: 'tick',
 	notificacoes: null,
 	textoLife: null,
+	vitoria: null,
 	final: 'whoosh',
 };
 
@@ -678,6 +684,7 @@ const TEXTO_PROPRIO: TipoCena[] = [
 	'frase',
 	'live',
 	'numero3d',
+	'vitoria',
 	'celular3d',
 	'gradeAntesDepois',
 	'presoClt',

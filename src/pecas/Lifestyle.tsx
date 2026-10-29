@@ -281,7 +281,7 @@ export const Vitoria: React.FC<{cena: De<'vitoria'>}> = ({cena}) => {
 			<div style={{position: 'absolute', left: 0, width: 1080, top: yc - altura / 2, height: altura, display: 'flex', justifyContent: 'center', alignItems: 'center', transform: `scale(${soco})`, filter: 'drop-shadow(0 8px 22px rgba(0,0,0,0.5)) drop-shadow(0 0 30px rgba(255,196,80,0.45))'}}>
 				{cena.prefixo ? <span style={{fontFamily: playfair, fontStyle: 'italic', fontWeight: 700, fontSize: 110, alignSelf: 'flex-start', marginTop: 40, marginRight: 10, ...textoOuro}}>{cena.prefixo}</span> : null}
 				<div style={{height: altura, overflow: 'hidden', position: 'relative'}}>
-					<div style={{transform: `translateY(${-(giro % 10) * altura}px)`, filter: velocidade > 0.5 ? `blur(0px) url(#)` : undefined}}>
+					<div style={{transform: `translateY(${-(giro % 10) * altura}px)`}}>
 						{Array.from({length: 11}, (_, d) => (
 							<div key={d} style={{height: altura, lineHeight: `${altura}px`, fontFamily: playfair, fontStyle: 'italic', fontWeight: 700, fontSize: tamNum, padding: '0 0.08em', ...textoOuro, filter: velocidade > 0.5 ? `blur(${Math.min(velocidade * 0.9, 9)}px)` : undefined}}>
 								{d % 10}
