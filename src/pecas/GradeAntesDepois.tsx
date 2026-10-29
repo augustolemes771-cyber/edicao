@@ -18,8 +18,8 @@ const lim = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 const OURO = '#E8C27A';
 const OURO_TEXTO = 'linear-gradient(180deg,#FFF1C9 0%,#F2D08A 40%,#E8C27A 65%,#C9974A 100%)';
 
-// Plano de grade em perspectiva; teto = espelhado. desloca: avanço das linhas em px.
-const Plano: React.FC<{teto?: boolean; desloca: number; abre: number}> = ({teto, desloca, abre}) => {
+// Plano de grade em perspectiva; teto = espelhado (também usado no presoClt e nas cartas). desloca: avanço das linhas em px.
+export const Plano: React.FC<{teto?: boolean; desloca: number; abre: number}> = ({teto, desloca, abre}) => {
 	const {width, height} = useVideoConfig();
 	const cel = 120;
 	return (

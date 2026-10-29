@@ -1,10 +1,11 @@
-// Motion "preso na CLT" (pedido do usuário, 28/10/2026, depoimento-2): o vídeo escurece em roxo, a carteira de trabalho azul
+// Motion "preso na CLT" (pedido do usuário, 28/10/2026, depoimento-2): o vídeo escurece em roxo com a grade andando atrás, a carteira de trabalho azul
 // entra girando em 3D e assenta no centro; grades de metal caem na frente dela com quique (em: segundo da batida), o cadeado
 // dourado fecha com tremida (emCadeado) e o texto "PRESO NA / CLT" sobe embaixo. Faz o papel da legenda.
 import React from 'react';
 import {AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import type {CenaNoPlano} from '../motor/plano';
 import {playfair, poppins} from '../motor/tema';
+import {Plano} from './GradeAntesDepois';
 
 type Cena = Extract<CenaNoPlano, {tipo: 'presoClt'}>;
 const lim = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
@@ -141,6 +142,11 @@ export const PresoClt: React.FC<{cena: Cena}> = ({cena}) => {
 	return (
 		<AbsoluteFill style={{pointerEvents: 'none'}}>
 			<AbsoluteFill style={{opacity: fundo, background: 'radial-gradient(ellipse at 50% 45%, rgba(46,24,90,0.9) 0%, rgba(20,9,40,0.95) 70%)'}} />
+			{/* Grade em perspectiva andando atrás, só para dar vida ao fundo. */}
+			<AbsoluteFill style={{opacity: fundo * 0.75, perspective: 900, perspectiveOrigin: '50% 50%'}}>
+				<Plano desloca={(frame / fps) * 260} abre={1} />
+				<Plano teto desloca={(frame / fps) * 260} abre={1} />
+			</AbsoluteFill>
 			<AbsoluteFill style={{opacity: saida, transform: `translateX(${dx}px)`}}>
 				<Carteira p={pCarteira} />
 				{frame >= batida ? <Grade y={yGrade} /> : null}
