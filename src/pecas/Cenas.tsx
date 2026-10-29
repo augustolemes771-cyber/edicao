@@ -23,6 +23,8 @@ import {Cenario} from './Cenario';
 import {Celular3D, Chips, Comentario, Final, Frase, Live, Numero3D, Selo, Siga} from './ModeloEntrevista';
 import {AoVivo, Contador, Drama, Pilula} from './Entrevista';
 import {GradeAntesDepois} from './GradeAntesDepois';
+import {PresoClt} from './PresoClt';
+import {Cards3D} from './Cards3D';
 import {
 	Alertas,
 	Anel,
@@ -334,6 +336,10 @@ const Conteudo: React.FC<Props> = ({cena, pasta}) => {
 			return <Celular3D cena={cena} />;
 		case 'gradeAntesDepois':
 			return <GradeAntesDepois cena={cena} />;
+		case 'presoClt':
+			return <PresoClt cena={cena} />;
+		case 'cards3d':
+			return <Cards3D cena={cena} />;
 		case 'selo':
 			return <Selo cena={cena} />;
 		case 'final':

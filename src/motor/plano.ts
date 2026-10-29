@@ -227,6 +227,12 @@ export type Cena =
 	// Motion de tela cheia "antes × agora" (src/pecas/GradeAntesDepois.tsx): grade em perspectiva roxa e dourada e dois cartões
 	// de vidro que sobem na hora de cada palavra (valor opcional; sem ele, "?"). Esconde a legenda.
 	// Ex.: antes: {texto: 'ANTES', em: b.at('antes')}, depois: {texto: 'AGORA', em: b.at('agora?')}
+	// Motion "preso na CLT" (src/pecas/PresoClt.tsx): carteira de trabalho 3D, grades caem (em) e cadeado fecha (emCadeado);
+	// texto "PRESO NA" + destaque "CLT" em serifa dourada. Esconde a legenda.
+	| (Base & {tipo: 'presoClt'; em?: number; emCadeado?: number; texto?: string; destaque?: string})
+	// Cards 3D de vidro (mesmo estilo da gradeAntesDepois) empilhados conforme aparecem; y do primeiro card em px, numeração
+	// a partir de `inicio`. Esconde a legenda.
+	| (Base & {tipo: 'cards3d'; itens: {texto: string; em: number}[]; y?: number; inicio?: number})
 	// titulo: linhas em texto 3D no topo, cada uma no seu tempo (ex.: [{texto: 'COMO ERA', em}, {texto: 'SUA VIDA?', em}]).
 	| (Base & {tipo: 'gradeAntesDepois'; titulo?: {texto: string; em: number}[]; antes: {texto: string; em: number; valor?: string}; depois: {texto: string; em: number; valor?: string}})
 	// Caixa de comentário digitada letra por letra.
@@ -431,6 +437,8 @@ const MODO_PADRAO: Record<TipoCena, Modo> = {
 	numero3d: 'sobre',
 	celular3d: 'cheia',
 	gradeAntesDepois: 'cheia',
+	presoClt: 'sobre',
+	cards3d: 'sobre',
 	selo: 'sobre',
 	final: 'cheia',
 };
@@ -476,6 +484,8 @@ const SOM_PADRAO: Record<TipoCena, Som | null> = {
 	numero3d: 'rise',
 	celular3d: 'whoosh',
 	gradeAntesDepois: 'whoosh',
+	presoClt: 'swish',
+	cards3d: 'tick',
 	selo: 'tick',
 	final: 'whoosh',
 };
@@ -658,6 +668,8 @@ const TEXTO_PROPRIO: TipoCena[] = [
 	'numero3d',
 	'celular3d',
 	'gradeAntesDepois',
+	'presoClt',
+	'cards3d',
 	'final',
 	'titulo',
 	'numero',
