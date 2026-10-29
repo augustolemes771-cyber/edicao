@@ -1,7 +1,8 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useMemo} from 'react';
 import {
 	AbsoluteFill,
 	getRemotionEnvironment,
+	getStaticFiles,
 	interpolate,
 	OffthreadVideo,
 	Sequence,
