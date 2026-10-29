@@ -51,6 +51,8 @@ const temp = path.join(pasta, '.video-preparando.mp4');
 console.log(`Preparando ${infos.length} clipe(s) em ${L}x${A}, 30 qps${infos.some((i) => i.hdr) ? ', HDR → SDR' : ''}...`);
 // Codificação na placa NVIDIA (NVENC) quando houver: tira o peso do processador. Qualidade alta (cq 16, preset p6).
 // Se a placa não abrir o codificador, refaz na CPU (x264 slow, crf 14), como antes.
+// Quadro-chave a cada 0,5 s e sem B-frames: com o GOP longo, o render final 4K do depoimento-2 (28/10/2026) caiu com
+// "No frame found at position" e busca de quadro passando de 28 s.
 const ffArgs = (codec) => [
 	'-hide_banner', '-loglevel', 'error', '-stats', '-y',
 	...entradas.flatMap((e) => ['-i', e]),
@@ -64,10 +66,10 @@ const temNvenc = !process.env.SEM_GPU && spawnSync('nvidia-smi', ['-L'], {window
 let r = {status: 1};
 if (temNvenc) {
 	console.log('Codificando na placa de vídeo NVIDIA (NVENC)...');
-	r = spawnSync('ffmpeg', ffArgs(['-c:v', 'h264_nvenc', '-preset', 'p6', '-tune', 'hq', '-rc', 'vbr', '-cq', '16', '-b:v', '0', '-profile:v', 'high']), {stdio: 'inherit'});
+	r = spawnSync('ffmpeg', ffArgs(['-c:v', 'h264_nvenc', '-preset', 'p6', '-tune', 'hq', '-rc', 'vbr', '-cq', '16', '-b:v', '0', '-profile:v', 'high', '-g', '15', '-bf', '0']), {stdio: 'inherit'});
 	if (r.status !== 0) console.log('A placa não abriu o codificador: fazendo na CPU.');
 }
-if (r.status !== 0) r = spawnSync('ffmpeg', ffArgs(['-c:v', 'libx264', '-preset', 'slow', '-crf', '14']), {stdio: 'inherit'});
+if (r.status !== 0) r = spawnSync('ffmpeg', ffArgs(['-c:v', 'libx264', '-preset', 'slow', '-crf', '14', '-g', '15', '-bf', '0']), {stdio: 'inherit'});
 if (r.status !== 0) {
 	console.error('O ffmpeg falhou ao preparar o vídeo.');
 	process.exit(1);

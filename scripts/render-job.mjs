@@ -288,7 +288,15 @@ try {
 		sufixo = `-${de ?? 0}s-${ate ?? 'fim'}s`;
 	}
 	const nQuadros = frameRange ? frameRange[1] - frameRange[0] + 1 : composition.durationInFrames;
-	const brutoRel = tipo === 'final' ? `out/${projeto}-bruto.mp4` : `out/${projeto}-preview${sufixo}.mp4`;
+	let brutoRel = tipo === 'final' ? `out/${projeto}-bruto.mp4` : `out/${projeto}-preview${sufixo}.mp4`;
+	// Vídeo anterior aberto num player: o Windows não deixa substituir (EPERM no fim do render, depois de minutos).
+	// Testa antes e, se estiver preso, grava com outro nome.
+	try {
+		rmSync(path.join(raiz, brutoRel), {force: true});
+	} catch {
+		brutoRel = brutoRel.replace(/\.mp4$/, `-${new Date().toTimeString().slice(0, 5).replace(':', 'h')}.mp4`);
+		emitir({aviso: `O vídeo anterior está aberto em outro programa; esta versão sai como ${brutoRel}.`});
+	}
 	const opcoes = {
 		serveUrl,
 		composition,
@@ -305,6 +313,8 @@ try {
 		// CONC (o pod passa o nº de núcleos): usa todos, não só metade como o padrão do Remotion.
 		concurrency: Number(process.env.CONC) > 0 ? Number(process.env.CONC) : null,
 		...(Number(process.env.CONC) > 0 ? {offthreadVideoCacheSizeInBytes: Math.floor(os.totalmem() * 0.4), offthreadVideoThreads: Number(process.env.CONC)} : {}),
+		// Vídeo 4K do iPhone (~1 GB): buscar um quadro com várias threads passava dos 28 s padrão e o final caía (depoimento-2).
+		timeoutInMilliseconds: tipo === 'final' ? 120000 : 60000,
 		frameRange,
 		browserExecutable,
 		chromiumOptions,

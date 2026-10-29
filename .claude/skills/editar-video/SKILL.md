@@ -112,3 +112,9 @@ e deixe o pedido em `docs/agentes/NOTAS.md`. Conferir `duracaoEditada <= duraç�
 - Não renderizar de novo sem pedido. Ajuste depois da entrega vai para o código e para esta skill; render novo só
   quando ele pedir o vídeo.
 - Correção que ele pedir vira regra nesta skill, com data.
+
+## Render final de vídeo 4K do celular (28/10/2026, depoimento-2)
+
+- O `preparar-video` grava com quadro-chave a cada 0,5 s (`-g 15 -bf 0`): com GOP longo o render final caía ("No frame found at
+  position", busca de quadro > 28 s). Vídeo preparado antes disso: recodificar com esses parâmetros antes do final.
+- No PC de 16 GB, rodar o final com o paralelismo padrão; `CONC=6` (cache de 40% da RAM) estourou a memória do Chrome.
