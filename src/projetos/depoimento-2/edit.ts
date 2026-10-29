@@ -240,10 +240,12 @@ export const depoimento2: Edit = {
 				],
 				som: 'whoosh',
 			},
-			// 9. A objeção: medo de investir em texto 3D, vinheta fechando (o glitch foi reprovado; tempo e texto mantidos)
+			// 9. A objeção: pessoa presa no medo (tentáculos de sombra, sombra gigante) + MEDO / DE INVESTIR em texto 3D (o glitch foi reprovado)
 			{
 				tipo: 'medo3d',
-				de: b.at('medo') - 0.08,
+				de: b.at('objeção') - 0.1,
+				pessoa: true,
+				y: 330,
 				ate: b.say('investir em pessoas').fim + 0.12,
 				linhas: [
 					{texto: 'MEDO', em: b.at('medo')},
