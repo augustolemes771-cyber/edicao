@@ -1,43 +1,49 @@
-import type {EfeitoCamera, Edit} from '../../motor/plano';
+import type {Cena, EfeitoCamera, Edit} from '../../motor/plano';
 import type {Busca, Trecho} from '../../motor/palavras';
 import silencios from './silencios.json';
 import transcricao from './transcricao.json';
 
 // Entrevista 3, vídeo 14 (tema Entrevista): Danilow com o Rogério no evento da MVM em Floripa, sobre investir em conhecimento.
 // Fonte 14.MOV (4K HDR do iPhone) convertida para 1440x2560 SDR 30 qps (scripts/converter-entrevista-3.sh).
-// Roteiro: gancho R$ 50 MIL em mentores → Floripa, 2 anos, R$ 500 mi → Rogério, 1 ano de TikTok Shop → pergunta (20, 30,
-// 40 mil: por quê?) → próximo nível = investir em você → ponto A → B → conhecimento, pessoas, mentoria → o mentor já errou →
-// síntese "uma vez expandida, não volta ao normal" → CTA (siga, dúvida) → cartão final.
-// O v5 tem o mesmo gancho dos 500 milhões: aqui os 500 mi viram chip e o 3D fica com o investimento do Rogério.
-// Posição do rosto sem medir: zoom no centro e no máximo 1,3; conferir no Studio.
-const P = {x: 0.5, y: 0.3};
+// Revisão de 30/10 ("nada de novo, texto saindo da tela, cortes mal feitos"): sem limite de tempo, a fala do Rogério vai
+// inteira, e quase tudo é peça própria (pecas.tsx): pergunta com interrogação 3D → contador R$ 50 MIL com moedas → pino em
+// Floripa → escada 20/30/40 mil até o próximo nível → interrogação → pegadas "um passo" → rota A → B → três placas →
+// estrada com buracos e linha-guia → "o mentor já errou antes" → termômetro → rede de pessoas → bateria da ambição →
+// calendário de 1 ano → escada MVM/mentores → mente que sai da caixa e não volta → CTA → cartão final.
+// Pausas: medidas pela energia com limiar fixo de −44 dB (o Rogério fala mais baixo que o Danilow, que está de lapela: um
+// limiar relativo cortava fala dele); as palavras que o Whisper pôs dentro dessas pausas foram empurradas para a borda.
+// Posição dos rostos pelos quadros: convidado à esquerda/centro, y ≈ 0,4.
+const P = {x: 0.45, y: 0.4};
 
 const F = {
-	gancho: ['já investiu em conhecimento', 'Mais de 50 mil'],
-	floripa: ['Estamos aqui em Floripa', '500 milhões faturado'],
-	apresenta: ['Estou aqui com o Rogério', 'Estou aqui com o Rogério'],
-	ano: ['Há quanto tempo você', 'Faz um ano'],
-	pergunta: ['para as pessoas estarem aqui hoje', '40 mil reais'],
+	gancho: ['quanto você já investiu em conhecimento', 'Mais de 50 mil'],
+	abertura: ['Estamos aqui em Floripa', 'vivem do TikTok Shop'],
 	porque: ['Por que você faria', 'tipo de investimento'],
-	resposta1: ['para você chegar no próximo nível', 'investir em conhecimento'],
-	resposta2: ['quer sair do ponto A', 'outras pessoas, mentoria'],
-	mentor: ['porque o mentor', 'já errou antes'],
-	sintese: ['Dessa forma', 'volta ao normal novamente'],
-	siga: ['Já me siga', 'vamos para cima'],
-	duvida: ['Se tiver alguma dúvida', 'deixe nos comentários'],
+	resposta: ['Cara, primeiramente', 'Faz um ano'],
+	fecho: ['É isso, pessoal', 'deixe nos comentários'],
 } as const;
 const ini = (b: Busca, k: keyof typeof F) => b.say(F[k][0]).inicio;
 const fim = (b: Busca, k: keyof typeof F) => b.say(F[k][1]).fim;
 
-// Ritmo frenético (evento a cada 0,3–0,6 s): punch-in nas palavras, ciclo médio → close → aberto, até 1,3.
-const ESCALAS = [1.1, 1.2, 1.28, 1.14, 1.24, 1.06];
-const punches = (b: Busca, frase: string, passo = 0.5): EfeitoCamera[] => {
+// Janelas de tela inteira (o rosto não aparece): sem zoom de câmera dentro delas.
+const cheias = (b: Busca): Trecho[] => [
+	[0, b.at('Mais') - 0.05],
+	[b.at('próximo', 2) - 0.3, b.say('em conhecimento', 2).fim + 0.1],
+	[b.at('quer') - 0.1, b.at('Investe') + 0.85],
+	[b.say('Para você não errar').inicio - 0.05, b.say('direcionamento maior').fim + 0.15],
+	[b.at('expandir') - 0.35, b.say('volta ao normal novamente').fim + 0.2],
+];
+
+// Ritmo: punch-in a cada ~0,6 s fora das telas inteiras, ciclo médio → close → aberto, até 1,28.
+const ESCALAS = [1.08, 1.18, 1.26, 1.12, 1.22, 1.04];
+const punches = (b: Busca): EfeitoCamera[] => {
+	const fora = cheias(b);
 	const lista: EfeitoCamera[] = [];
 	let ultimo = -9;
-	for (const t of b.tempos(frase)) {
-		if (t - ultimo < passo) continue;
-		lista.push({tipo: 'zoom', em: t, escala: ESCALAS[lista.length % ESCALAS.length], ...P});
-		ultimo = t;
+	for (const p of b.palavras) {
+		if (p.inicio - ultimo < 0.6 || fora.some(([a, z]) => p.inicio > a - 0.1 && p.inicio < z + 0.1)) continue;
+		lista.push({tipo: 'zoom', em: p.inicio, escala: ESCALAS[lista.length % ESCALAS.length], ...P});
+		ultimo = p.inicio;
 	}
 	return lista;
 };
@@ -48,11 +54,13 @@ export const entrevista3V14: Edit = {
 	formato: 'vertical',
 	verificarCurva: false,
 	regraCamera: false,
-	extraFim: 2.4,
+	extraFim: 2.8,
 	silencios: silencios as Trecho[],
 	transcricao,
 	trechos: (o) => {
 		const lista: Trecho[] = (Object.keys(F) as (keyof typeof F)[]).map((k) => [o.say(F[k][0]).inicio - 0.06, o.say(F[k][1]).fim + 0.08]);
+		// O gancho começa no meio da frase ("assim, quanto..."): a voz tem um vale em ~81,26 s, logo antes do "quanto".
+		lista[0][0] = o.say(F.gancho[0]).inicio + 0.02;
 		// Trechos colados ou sobrepostos no original (na ordem) viram um só: não repete palavra.
 		for (let i = lista.length - 1; i > 0; i--) {
 			const vao = lista[i][0] - lista[i - 1][1];
@@ -76,241 +84,295 @@ export const entrevista3V14: Edit = {
 		altura: 0.656,
 		palavrasPorTela: 4,
 		enfase: [
-			{palavra: 'faria', estilo: 'serif'},
 			{palavra: 'passo', estilo: 'serif'},
-			{palavra: 'mentalidade', estilo: 'serif'},
+			{palavra: 'comprando', estilo: 'serif'},
+			{palavra: 'evento', estilo: 'serif'},
 		],
 		falantes: (b) => [
-			{de: ini(b, 'pergunta') - 0.1, ate: fim(b, 'porque') + 0.1, nome: 'PERGUNTA'},
-			{de: fim(b, 'porque') + 0.1, ate: fim(b, 'mentor') + 0.1, nome: 'ROGÉRIO'},
+			{de: b.at('Rogério', 2) - 0.05, ate: fim(b, 'abertura') + 0.1, nome: 'PERGUNTA'},
+			{de: ini(b, 'porque') - 0.05, ate: fim(b, 'porque') + 0.1, nome: 'PERGUNTA'},
+			{de: ini(b, 'resposta') - 0.05, ate: b.say('ambição renovada').fim + 0.1, nome: 'ROGÉRIO'},
+			{de: b.say('Há quanto tempo').inicio - 0.05, ate: b.at('Faz') - 0.05, nome: 'PERGUNTA'},
 		],
 	},
-	camera: (b) => {
-		const z = (em: number, escala: number): EfeitoCamera => ({tipo: 'zoom', em, escala, ...P});
-		return [
-			// Gancho: a pergunta em close e o clarão quando o número trava
-			z(0, 1.18),
-			z(b.at('mentores'), 1.08),
-			{tipo: 'flash', em: b.at('50') - 0.04},
-			z(b.at('50'), 1.28),
-			{tipo: 'chicote', em: ini(b, 'floripa')},
-			z(ini(b, 'floripa'), 1),
-			...punches(b, 'dois anos de MVM, mais de 500 milhões faturado'),
-			{tipo: 'chicote', em: ini(b, 'apresenta')},
-			z(b.at('Rogério'), 1.15),
-			z(ini(b, 'ano'), 1.04),
-			z(b.at('ano'), 1.24),
-			{tipo: 'chicote', em: ini(b, 'pergunta')},
-			z(ini(b, 'pergunta'), 1),
-			...punches(b, 'para as pessoas estarem aqui hoje, elas tiveram que'),
-			z(b.at('investir'), 1.1),
-			z(b.at('20'), 1.16),
-			z(b.at('30'), 1.22),
-			z(b.at('40'), 1.28),
-			z(ini(b, 'porque'), 1.06),
-			z(b.at('faria'), 1.18),
-			{tipo: 'chicote', em: ini(b, 'resposta1')},
-			...punches(b, 'para você chegar no próximo nível, você precisa dar um passo', 0.55),
-			...punches(b, 'E esse passo é você investir em você, investir em conhecimento', 0.55),
-			// Por baixo da grade em tela cheia: a volta ao rosto já vem num plano novo
-			...punches(b, 'quer sair do ponto A e ir para o ponto B', 0.6),
-			z(b.at('Investe'), 1.28),
-			...punches(b, 'Investe em conhecimento, investe em outras pessoas, mentoria', 0.55),
-			{tipo: 'foco', em: ini(b, 'mentor')},
-			{tipo: 'chicote', em: ini(b, 'sintese')},
-			z(ini(b, 'sintese'), 1),
-			z(b.at('expandir'), 1.14),
-			z(b.at('mentalidade'), 1.24),
-			{tipo: 'flash', em: b.at('normal') - 0.04},
-			{tipo: 'chicote', em: ini(b, 'siga')},
-			...punches(b, 'Já me siga, Dani Lowe, já siga o Rogério, siga o MVM, vamos para cima'),
-			z(ini(b, 'duvida'), 1.06),
-			z(b.at('comentários'), 1.2),
-		];
-	},
+	camera: (b) => [
+		...punches(b),
+		{tipo: 'chicote', em: b.at('Mais')},
+		{tipo: 'flash', em: b.at('mil') - 0.04},
+		{tipo: 'chicote', em: ini(b, 'abertura')},
+		{tipo: 'chicote', em: ini(b, 'porque')},
+		{tipo: 'chicote', em: ini(b, 'resposta')},
+		{tipo: 'chicote', em: ini(b, 'fecho')},
+		{tipo: 'flash', em: b.at('muda') - 0.04},
+	],
 	cenas: (b) => {
-		const fimFala = fim(b, 'duvida');
-		return [
-			// 1. Gancho: a pergunta no topo e o investimento do Rogério em ouro 3D
+		const fimFala = fim(b, 'fecho');
+		const cenas: Cena[] = [
+			// 1. Gancho: a pergunta numa tela inteira com interrogação de ouro girando
 			{
-				tipo: 'selo',
+				tipo: 'peca',
+				nome: 'v14Pergunta',
 				de: 0,
-				ate: b.at('Mais') - 0.1,
-				texto: 'QUANTO VOCÊ JÁ INVESTIU?',
-				chip: 'MENTORES',
-				emChip: b.at('mentores'),
-				y: 330,
+				ate: b.at('Mais') - 0.05,
+				modo: 'cheia',
+				esconderLegenda: true,
+				som: 'pro_whoosh',
+				dados: {
+					linhas: [
+						{texto: 'QUANTO VOCÊ', em: b.at('quanto') + 0.05, metal: 'branco'},
+						{texto: 'JÁ INVESTIU', em: b.at('investiu'), metal: 'branco'},
+						{texto: 'EM MENTORES?', em: b.at('mentores'), metal: 'ouro'},
+					],
+				},
+				sons: [{em: b.at('mentores'), som: 'pro_pop', ganho: 0.7}],
+			},
+			// 2. A resposta: contador em ouro 3D com moedas caindo, trava com clarão no "mil"
+			{
+				tipo: 'peca',
+				nome: 'v14Contador',
+				de: b.at('Mais') - 0.05,
+				ate: ini(b, 'abertura') + 0.75,
 				esconderLegenda: true,
 				som: 'pro_swipe',
+				dados: {marcos: [b.at('Mais'), b.at('mil'), b.at('mil') + 0.1], valor: 50, prefixo: 'R$ ', sufixo: ' MIL', rotulo: 'EM CONHECIMENTO'},
+				sons: [{em: b.at('mil'), som: 'pro_pop', ganho: 0.8}],
 			},
+			// 3. Floripa: pino de mapa 3D, a etiqueta troca com cada informação
 			{
-				tipo: 'numero3d',
-				de: b.at('Mais') - 0.1,
-				ate: fim(b, 'gancho') + 0.1,
-				texto: 'R$ 50 MIL',
-				rotulo: 'ROGÉRIO',
-				abaixo: 'EM MENTORES',
-				nomeOuro: true,
-				em: b.at('50') - 0.2,
+				tipo: 'peca',
+				nome: 'v14Pino',
+				de: b.at('Floripa') - 0.12,
+				ate: b.say('Isso aqui é surreal').fim + 0.1,
 				esconderLegenda: true,
-				som: 'pro_pop',
-			},
-			// 2. O evento: Floripa, 2 anos, R$ 500 mi (no v5 é 3D; aqui chips um por vez)
-			{
-				tipo: 'chips',
-				de: ini(b, 'floripa') + 0.1,
-				ate: fim(b, 'floripa') + 0.15,
-				itens: [
-					{texto: 'FLORIPA', em: b.at('Floripa')},
-					{texto: '2 ANOS DE MVM', em: b.at('dois')},
-					{texto: 'R$ 500 MI FATURADOS', em: b.at('500')},
-				],
-				y: 1080,
-				esconderLegenda: true,
-				som: 'pro_tick',
-				sons: [
-					{em: b.at('dois'), som: 'pro_tick', ganho: 0.8},
-					{em: b.at('500'), som: 'pro_tick', ganho: 0.8},
-				],
-			},
-			// 3. Rogério: 1 ano de TikTok Shop em prata 3D (o ouro é do gancho)
-			{
-				tipo: 'numero3d',
-				de: b.at('Faz') - 0.1,
-				ate: fim(b, 'ano') + 0.2,
-				texto: '1 ANO',
-				rotulo: 'NO TIKTOK SHOP',
-				metal: 'branco',
-				em: b.at('ano') - 0.1,
-				esconderLegenda: true,
-				som: 'pro_pop',
-			},
-			// 4. Pergunta: 20, 30, 40 mil caem como cartas, uma por número
-			{
-				tipo: 'cards3d',
-				de: b.at('20') - 0.1,
-				ate: b.at('20') + 2.75,
-				itens: [
-					{texto: 'R$ 20 MIL', em: b.at('20')},
-					{texto: 'R$ 30 MIL', em: b.at('30')},
-					{texto: 'R$ 40 MIL', em: b.at('40')},
-				],
-				y: 1010,
 				som: 'pro_pouso',
-				sons: [
-					{em: b.at('30'), som: 'pro_pouso', ganho: 0.8},
-					{em: b.at('40'), som: 'pro_pouso', ganho: 0.8},
-				],
+				dados: {
+					itens: [
+						{texto: 'FLORIPA', em: b.at('Floripa')},
+						{texto: '2 ANOS DE MVM', em: b.at('dois')},
+						{texto: 'R$ 500 MILHÕES', em: b.at('500')},
+					],
+				},
+				sons: [{em: b.at('500'), som: 'pro_tick', ganho: 0.7}],
 			},
-			// 5. Próximo nível: dar um passo
+			{tipo: 'pilula', de: b.at('Rogério') - 0.1, ate: b.at('para') - 0.1, rotulo: 'CONVIDADO', nome: 'ROGÉRIO', esconderLegenda: true, som: 'pro_tick'},
+			// 4. Pergunta: escada 3D de 20, 30 e 40 mil até o próximo nível
 			{
-				tipo: 'frase',
-				de: b.at('próximo') - 0.05,
-				ate: b.say('dar um passo').fim + 0.1,
-				palavras: [
-					{texto: 'PRÓXIMO NÍVEL', em: b.at('próximo')},
-					{texto: 'UM PASSO', em: b.at('passo'), destaque: true},
-				],
-				som: 'pro_frase',
-			},
-			// 6. O passo: investir em você e em conhecimento
-			{
-				tipo: 'chips',
-				de: b.at('investir', 2) - 0.05,
-				ate: fim(b, 'resposta1') + 0.15,
-				itens: [
-					{texto: 'EM VOCÊ', em: b.at('investir', 2)},
-					{texto: 'EM CONHECIMENTO', em: b.at('investir', 3)},
-				],
-				y: 1080,
+				tipo: 'peca',
+				nome: 'v14Degraus',
+				de: b.at('20') - 0.25,
+				ate: fim(b, 'abertura') + 0.1,
 				esconderLegenda: true,
-				som: 'pro_tick',
-				sons: [{em: b.at('investir', 3), som: 'pro_tick', ganho: 0.8}],
-			},
-			// 7. Ponto A → ponto B: grade em tela cheia com o título 3D e os dois cartões
-			{
-				tipo: 'gradeAntesDepois',
-				de: ini(b, 'resposta2') - 0.05,
-				ate: b.at('Investe') + 0.45,
-				titulo: [
-					{texto: 'QUER SAIR', em: ini(b, 'resposta2')},
-					{texto: 'DO A PRO B?', em: b.at('ponto')},
+				som: 'pro_pouso',
+				dados: {
+					passos: [
+						{texto: 'R$ 20 MIL', em: b.at('20')},
+						{texto: 'R$ 30 MIL', em: b.at('30')},
+						{texto: 'R$ 40 MIL', em: b.at('40')},
+					],
+					topo: {texto: 'próximo nível', em: b.at('próximo')},
+				},
+				sons: [
+					{em: b.at('30'), som: 'pro_pouso', ganho: 0.6},
+					{em: b.at('40'), som: 'pro_pouso', ganho: 0.6},
+					{em: b.at('próximo'), som: 'pro_pulso', ganho: 0.7},
 				],
-				antes: {texto: 'PONTO A', em: b.at('ponto') + 0.1},
-				depois: {texto: 'PONTO B', em: b.at('ponto', 2) + 0.1},
+			},
+			// 5. "Por que você faria esse tipo de investimento?": interrogação girando acima da cabeça
+			{tipo: 'peca', nome: 'v14Interroga', de: ini(b, 'porque') - 0.05, ate: fim(b, 'porque') + 0.1, som: 'pro_whoosh_curto'},
+			// 6. "Dar um passo, investir em você, em conhecimento": pegadas na grade e as frases em 3D
+			{
+				tipo: 'peca',
+				nome: 'v14Pegadas',
+				de: b.at('próximo', 2) - 0.3,
+				ate: b.say('em conhecimento', 2).fim + 0.1,
+				modo: 'cheia',
+				esconderLegenda: true,
+				som: 'pro_whoosh',
+				dados: {
+					marcos: [b.at('passo')],
+					linhas: [
+						{texto: 'PRÓXIMO NÍVEL', em: b.at('próximo', 2), metal: 'branco'},
+						{texto: 'UM PASSO', em: b.at('passo'), metal: 'ouro'},
+						{texto: 'INVISTA EM VOCÊ', em: b.say('investir em você').inicio, metal: 'branco'},
+						{texto: 'CONHECIMENTO', em: b.at('conhecimento', 2), metal: 'ouro'},
+					],
+				},
+				sons: [
+					{em: b.at('passo'), som: 'pro_pouso', ganho: 0.8},
+					{em: b.at('conhecimento', 2), som: 'pro_pop', ganho: 0.6},
+				],
+			},
+			// 7. Ponto A → ponto B: rota no mapa e "INVESTE." em 3D
+			{
+				tipo: 'peca',
+				nome: 'v14Rota',
+				de: b.at('quer') - 0.1,
+				ate: b.at('Investe') + 0.85,
+				modo: 'cheia',
+				esconderLegenda: true,
+				som: 'pro_whoosh',
+				dados: {marcos: [b.tempos('ponto A')[1], b.tempos('ponto B')[1], b.at('Investe')]},
+				sons: [
+					{em: b.tempos('ponto B')[1], som: 'pro_pouso', ganho: 0.7},
+					{em: b.at('Investe'), som: 'pro_pop', ganho: 0.8},
+				],
+			},
+			// 8. Conhecimento, pessoas, mentoria: três placas acima da cabeça
+			{
+				tipo: 'peca',
+				nome: 'v14Tres',
+				de: b.at('conhecimento', 3) - 0.15,
+				ate: b.at('mentoria') + 0.9,
+				esconderLegenda: true,
 				som: 'pro_swipe',
-				sons: [{em: b.at('ponto', 2) + 0.1, som: 'pro_swipe', ganho: 0.7}],
-			},
-			// 8. Investe em: chips ✓ um por vez
-			{
-				tipo: 'chips',
-				de: b.at('Investe', 2) - 0.05,
-				ate: fim(b, 'resposta2') + 0.2,
-				itens: [
-					{texto: '✓ CONHECIMENTO', em: b.at('conhecimento', 3)},
-					{texto: '✓ OUTRAS PESSOAS', em: b.at('outras')},
-					{texto: '✓ MENTORIA', em: b.at('mentoria')},
+				dados: {
+					itens: [
+						{texto: 'CONHECIMENTO', em: b.at('conhecimento', 3), icone: 'livro'},
+						{texto: 'PESSOAS', em: b.say('outras pessoas').inicio + 0.1, icone: 'pessoas'},
+						{texto: 'MENTORIA', em: b.at('mentoria'), icone: 'capelo'},
+					],
+				},
+				sons: [
+					{em: b.say('outras pessoas').inicio + 0.1, som: 'pro_swipe', ganho: 0.6},
+					{em: b.at('mentoria'), som: 'pro_swipe', ganho: 0.6},
 				],
-				y: 1080,
+			},
+			// 9. "Para você não errar, ter um direcionamento maior": estrada com buracos e a linha-guia dourada
+			{
+				tipo: 'peca',
+				nome: 'v14Caminho',
+				de: b.say('Para você não errar').inicio - 0.05,
+				ate: b.say('direcionamento maior').fim + 0.15,
+				modo: 'cheia',
+				esconderLegenda: true,
+				som: 'pro_whoosh',
+				dados: {marcos: [b.at('errar'), b.at('direcionamento')]},
+				sons: [{em: b.at('direcionamento'), som: 'pro_pulso', ganho: 0.6}],
+			},
+			// 10. "O mentor já errou antes": os erros riscados um a um
+			{
+				tipo: 'peca',
+				nome: 'v14Mentor',
+				de: b.at('mentor') - 0.1,
+				ate: b.say('já errou antes').fim + 0.45,
 				esconderLegenda: true,
 				som: 'pro_tick',
+				dados: {marcos: [b.at('errou')]},
+				sons: [{em: b.at('errou') + 0.2, som: 'pro_swipe', ganho: 0.5}],
+			},
+			// 11. Cabeça fervendo: termômetro que sobe e ferve
+			{
+				tipo: 'peca',
+				nome: 'v14Termometro',
+				de: b.say('a gente sai daqui com a cabeça').inicio - 0.05,
+				ate: b.at('fervendo') + 0.95,
+				esconderLegenda: true,
+				som: 'pro_pulso',
+				dados: {marcos: [b.at('fervendo')]},
+			},
+			// 12. Contato com pessoas: rede de avatares que se liga; "muda vidas" em ouro
+			{
+				tipo: 'peca',
+				nome: 'v14Rede',
+				de: b.at('contato') - 0.2,
+				ate: b.say('muda vidas').fim + 0.5,
+				esconderLegenda: true,
+				som: 'pro_swipe',
+				dados: {marcos: [b.at('contato'), b.at('muda')]},
+				sons: [{em: b.at('muda'), som: 'pro_pop', ganho: 0.7}],
+			},
+			// 13. Ambição renovada: bateria que recarrega
+			{
+				tipo: 'peca',
+				nome: 'v14Bateria',
+				de: b.at('costumo') - 0.1,
+				ate: b.say('Há quanto tempo').inicio - 0.02,
+				esconderLegenda: true,
+				som: 'pro_tick',
+				dados: {marcos: [b.at('ambição'), b.at('renovada')]},
+				sons: [{em: b.at('renovada'), som: 'pro_pulso', ganho: 0.7}],
+			},
+			// 14. Um ano: calendário que vira os 12 meses
+			{
+				tipo: 'peca',
+				nome: 'v14Calendario',
+				de: b.say('Há quanto tempo').inicio,
+				ate: b.say('Faz um ano').fim + 0.7,
+				esconderLegenda: true,
+				som: 'pro_swipe',
+				dados: {marcos: [b.at('tempo'), b.tempos('Faz um ano')[2]]},
+				sons: [{em: b.tempos('Faz um ano')[2], som: 'pro_pop', ganho: 0.7}],
+			},
+			// 15. Próximo nível de novo: a escada agora com o MVM e os mentores
+			{
+				tipo: 'peca',
+				nome: 'v14Degraus',
+				de: b.say('Se você quiser').inicio - 0.05,
+				ate: b.at('expandir') - 0.37,
+				esconderLegenda: true,
+				som: 'pro_pouso',
+				dados: {
+					passos: [
+						{texto: 'O MVM', em: b.at('MVM', 2)},
+						{texto: 'MENTORES', em: b.at('mentores', 2)},
+					],
+					topo: {texto: 'próximo nível', em: b.at('próximo', 3)},
+				},
 				sons: [
-					{em: b.at('outras'), som: 'pro_tick', ganho: 0.8},
-					{em: b.at('mentoria'), som: 'pro_pop', ganho: 0.7},
+					{em: b.at('MVM', 2), som: 'pro_pouso', ganho: 0.6},
+					{em: b.at('mentores', 2), som: 'pro_pouso', ganho: 0.6},
 				],
 			},
-			// 9. O mentor já errou antes: frase estática
+			// 16. Mentalidade expandida: a esfera estoura a caixa e não volta ao normal
 			{
-				tipo: 'frase',
-				de: ini(b, 'mentor') - 0.05,
-				ate: fim(b, 'mentor') + 0.15,
-				palavras: [
-					{texto: 'O MENTOR', em: b.at('mentor')},
-					{texto: 'JÁ ERROU', em: b.at('errou'), destaque: true},
-					{texto: 'ANTES', em: b.at('antes')},
+				tipo: 'peca',
+				nome: 'v14Mente',
+				de: b.at('expandir') - 0.35,
+				ate: b.say('volta ao normal novamente').fim + 0.2,
+				modo: 'cheia',
+				esconderLegenda: true,
+				som: 'pro_whoosh',
+				dados: {
+					marcos: [b.at('expandir'), b.say('não volta').inicio],
+					linhas: [
+						{texto: 'NÃO VOLTA', em: b.say('não volta').inicio, metal: 'ouro'},
+						{texto: 'AO NORMAL', em: b.at('normal'), metal: 'branco'},
+					],
+				},
+				sons: [
+					{em: b.at('expandir'), som: 'pro_quebra', ganho: 0.6},
+					{em: b.at('normal'), som: 'pro_pop', ganho: 0.6},
 				],
-				som: 'pro_frase',
 			},
-			// 10. Síntese: mentalidade expandida não volta ao normal (clarão no "normal")
-			{
-				tipo: 'frase',
-				de: b.at('Uma') - 0.05,
-				ate: fim(b, 'sintese') + 0.2,
-				palavras: [
-					{texto: 'UMA VEZ EXPANDIDA', em: b.at('Uma')},
-					{texto: 'NÃO VOLTA', em: b.at('não')},
-					{texto: 'AO NORMAL', em: b.at('normal'), destaque: true},
-				],
-				som: 'pro_frase',
-			},
-			// 11. CTA: siga cada um e a caixa de comentário
+			// 17. CTA: siga cada um e a caixa de comentário
 			{
 				tipo: 'siga',
-				de: ini(b, 'siga') - 0.05,
-				ate: fim(b, 'siga') + 0.1,
+				de: b.say('Já me siga').inicio - 0.05,
+				ate: b.say('vamos para cima').fim + 0.1,
 				itens: [
-					{texto: 'DANILOW', em: b.at('Dani')},
-					{texto: 'ROGÉRIO', em: b.at('Rogério', 2)},
-					{texto: 'MVM', em: b.at('MVM', 2)},
+					{texto: 'DANILOW', em: b.at('Danilow')},
+					{texto: 'ROGÉRIO', em: b.at('Rogério', 3)},
+					{texto: 'MVM', em: b.at('MVM', 3)},
 				],
 				y: 1040,
 				esconderLegenda: true,
 				som: 'pro_swipe',
 				sons: [
-					{em: b.at('Rogério', 2), som: 'pro_swipe', ganho: 0.7},
-					{em: b.at('MVM', 2), som: 'pro_swipe', ganho: 0.7},
+					{em: b.at('Rogério', 3), som: 'pro_swipe', ganho: 0.6},
+					{em: b.at('MVM', 3), som: 'pro_swipe', ganho: 0.6},
 				],
 			},
 			{
 				tipo: 'comentario',
-				de: ini(b, 'duvida') - 0.05,
-				ate: fimFala + 0.2,
+				de: b.say('Se tiver alguma dúvida').inicio - 0.05,
+				ate: fimFala + 0.45,
 				texto: 'Tenho uma dúvida...',
 				y: 1060,
 				som: 'pro_digita',
 			},
-			// 12. Cartão final
-			{tipo: 'final', de: fimFala + 0.1, ate: fimFala + 2.4, marca: 'MVM', linha2: 'CREATORS', sub: 'EVENTO EM FLORIPA', tres: true, som: 'pro_logo'},
+			// 18. Cartão final
+			{tipo: 'final', de: fimFala + 0.5, ate: fimFala + 2.8, marca: 'MVM', linha2: 'CREATORS', sub: 'EVENTO EM FLORIPA', tres: true, som: 'pro_logo'},
 		];
+		return cenas;
 	},
 };

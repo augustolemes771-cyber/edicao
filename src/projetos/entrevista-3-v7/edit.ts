@@ -5,36 +5,45 @@ import transcricao from './transcricao.json';
 
 // Entrevista 3, vídeo 7 (tema Entrevista): Danilow entrevista o NewTex, ex-profissional de educação física que fatura
 // R$ 8 milhões com live. Fonte 7.MOV convertida para 1440x2560 SDR 30 qps (scripts/converter-entrevista-3.sh).
-// Roteiro: gancho R$ 8 MILHÕES → zero barreira (celular + internet) → NewTex, brabo das lives → pergunta (preso na CLT) →
-// procure o TikTok Shop → produto em casa, fitness, suplemento → pessoas perguntando → recorde 1,4 MI → 140 MIL de lucro →
-// 8 h de live? passo até 24 HORAS → "não é fácil, mas é muito simples" → siga → cartão final.
+// Roteiro: gancho (halter 3D → conta até R$ 8 MILHÕES) → zero barreira (muro quebra) → celular + internet → NewTex, brabo das
+// lives → dica pro iniciante → pergunta (corrida dos ratos → preso na CLT) → procure o TikTok Shop, zero barreira → produto em
+// casa, suplemento, área fitness → na mesa mesmo, dicas → pessoas perguntando → recorde R$ 1,4 MI (barras) → R$ 140 MIL de
+// lucro → 8 h de live? passo até 24 HORAS (relógio) → "não é fácil, mas é muito simples" → quer começar? → siga → cartão final.
+// Revisão de 30/10/2026: sem limite de tempo (voltaram as falas tiradas só para caber em 59 s), bordas dos trechos medidas pela
+// energia da voz e transcrição com os tempos refeitos pelo DTW do whisper (estava até 0,9 s adiantada: legenda fora de
+// sincronia e o fim de "começar" vazava como um "tá" no começo da pergunta). Peças novas em ./pecas.tsx.
 // O Whisper escreveu "Danilo" e "Newtags": na tela vão DANILOW e NEWTEX.
-// Posição do rosto sem medir: zoom no centro e no máximo 1,3; conferir no Studio.
-const P = {x: 0.5, y: 0.3};
+const P = {x: 0.5, y: 0.35};
 
-const F = {
-	gancho: ['Ex-profissional de educação física', 'só fazendo live'],
-	celular: ['Rapaziada, zero barreira de entrada', 'é um celular e internet'],
-	apresenta: ['Estou aqui com o NewTex', 'brabo demais das lives'],
-	pergunta: ['Qual é o insight', 'presa no CLT'],
-	resposta1: ['hoje eu indico para você', 'procurar o TikTok Shopping'],
-	resposta2: ['Todo mundo tem produtos em casa', 'foi assim que eu comecei'],
-	resposta3: ['E aí várias pessoas foram perguntando', 'comecei a ter resultado no começo'],
-	recorde: ['E qual foi o seu recorde', '1 milhão e 400'],
-	lucro: ['1 milhão de faturamento', 'deu 140 mil de lucro'],
-	compensa: ['Será que compensa', 'passo até 24 horas'],
-	sintese: ['Não é fácil', 'muito simples'],
-	siga: ['Segue o Danilo', 'vamos para cima'],
-} as const;
-const ini = (b: Busca, k: keyof typeof F) => b.say(F[k][0]).inicio;
-const fim = (b: Busca, k: keyof typeof F) => b.say(F[k][1]).fim;
+// Trechos mantidos, no tempo original, com as bordas no silêncio medido (energia da voz, banda 250–3500 Hz). Ficam de fora:
+// a pausa antes de "Rapaziada", a pergunta repetida ("Qual é a dica... destravar no digital?"), "É isso, rapaziada", o
+// "tá?" depois de "muito simples" e o "Valeu. E aí, gente, vai." do fim.
+const TRECHOS: Trecho[] = [
+	[0.36, 5.48], // Ex-profissional de educação física, mais de 8 milhões faturados, só fazendo live.
+	[5.86, 11.8], // Rapaziada, zero barreira de entrada, é um celular e internet. Estou aqui com o NewTex, brabo demais das lives.
+	[12.12, 15.42], // NewTex, vamos passar aqui uma dica para os iniciantes, para quem quer começar.
+	[16.0, 20.14], // Qual é o insight que você passa para a pessoa ali que está presa na corrida dos ratos, presa no CLT?
+	[24.52, 31.38], // Então, galera, hoje eu indico... TikTok Shopping, né? Porque zero barreira de entrada aí, porque eu tiro por mim.
+	[31.88, 36.42], // Tipo, todo mundo tem produtos em casa que vendem no TikTok Shopping, às vezes você tem um suplemento.
+	[36.7, 44.72], // Eu que sou da área fitness... foi assim que eu comecei. Peguei meus suplementos... como sou da área.
+	[45.38, 50.06], // E aí várias pessoas foram perguntando... comecei a ter resultado no começo.
+	[50.62, 52.98], // E qual foi o seu recorde de faturamento em um mês de lucro no bolso?
+	[53.32, 55.06], // De um mês, 1 milhão e 400.
+	[55.72, 60.04], // 1 milhão de faturamento deu 140 mil de lucro? Isso, eu vou aproximar de um mês.
+	[60.32, 63.84], // Será que compensa ficar 8 horas em live para lucrar 140 mil no mês?
+	[64.16, 66.0], // Amigo, desse jeito eu passo até 24 horas.
+	[67.32, 69.44], // Não é fácil, mas é muito simples,
+	[69.82, 71.0], // Quer começar no TikTok Shopping?
+	[71.32, 72.14], // Segue o Danilo,
+	[72.34, 75.08], // segue o Newtags, siga o MVM e vamos para cima.
+];
 
-// Ritmo frenético (evento a cada 0,3–0,6 s): punch-in nas palavras, ciclo médio → close → aberto, até 1,3.
+// Ritmo frenético (evento a cada 0,3–0,6 s): punch-in nas palavras, ciclo médio → close → aberto, até 1,28.
 const ESCALAS = [1.1, 1.2, 1.28, 1.14, 1.24, 1.06];
-const punches = (b: Busca, frase: string, passo = 0.5): EfeitoCamera[] => {
+const punches = (b: Busca, frase: string, passo = 0.5, ocorrencia = 1): EfeitoCamera[] => {
 	const lista: EfeitoCamera[] = [];
 	let ultimo = -9;
-	for (const t of b.tempos(frase)) {
+	for (const t of b.tempos(frase, ocorrencia)) {
 		if (t - ultimo < passo) continue;
 		lista.push({tipo: 'zoom', em: t, escala: ESCALAS[lista.length % ESCALAS.length], ...P});
 		ultimo = t;
@@ -51,16 +60,10 @@ export const entrevista3V7: Edit = {
 	extraFim: 2.4,
 	silencios: silencios as Trecho[],
 	transcricao,
-	trechos: (o) => {
-		const lista: Trecho[] = (Object.keys(F) as (keyof typeof F)[]).map((k) => [o.say(F[k][0]).inicio - 0.06, o.say(F[k][1]).fim + 0.08]);
-		// Trechos colados ou sobrepostos no original (na ordem) viram um só: não repete palavra.
-		for (let i = lista.length - 1; i > 0; i--) {
-			const vao = lista[i][0] - lista[i - 1][1];
-			if (vao < 0.4 && lista[i][0] > lista[i - 1][0]) lista.splice(i - 1, 2, [lista[i - 1][0], Math.max(lista[i][1], lista[i - 1][1])]);
-		}
-		// Tira as pausas medidas que caem dentro de um trecho, com 0,04 s de ar de cada lado.
+	trechos: () => {
+		// Tira as pausas medidas (≥ 0,25 s) que caem dentro de um trecho, com 0,04 s de ar de cada lado.
 		const cortado: Trecho[] = [];
-		for (const [a, z] of lista) {
+		for (const [a, z] of TRECHOS) {
 			let ini = a;
 			for (const [s0, s1] of silencios as Trecho[]) {
 				if (s0 <= ini + 0.25 || s1 >= z - 0.25 || s1 - s0 < 0.25) continue;
@@ -81,95 +84,107 @@ export const entrevista3V7: Edit = {
 			{palavra: 'resultado', estilo: 'serif'},
 		],
 		falantes: (b) => [
-			{de: ini(b, 'pergunta') - 0.1, ate: fim(b, 'pergunta') + 0.1, nome: 'PERGUNTA'},
-			{de: ini(b, 'resposta1') - 0.1, ate: fim(b, 'resposta3') + 0.1, nome: 'NEWTEX'},
-			{de: ini(b, 'recorde') - 0.1, ate: b.say('De um mês').inicio - 0.1, nome: 'PERGUNTA'},
+			{de: b.at('Qual') - 0.1, ate: b.at('CLT?') + 0.4, nome: 'PERGUNTA'},
+			{de: b.at('Então,') - 0.05, ate: b.say('começo.').fim + 0.1, nome: 'NEWTEX'},
+			{de: b.say('E qual foi').inicio - 0.05, ate: b.at('bolso?') + 0.4, nome: 'PERGUNTA'},
+			{de: b.at('De') - 0.05, ate: b.at('400.') + 0.3, nome: 'NEWTEX'},
+			{de: b.at('Será') - 0.05, ate: b.at('mês?') + 0.3, nome: 'PERGUNTA'},
+			{de: b.at('Amigo,') - 0.05, ate: b.at('horas.') + 0.3, nome: 'NEWTEX'},
 		],
 	},
 	camera: (b) => {
 		const z = (em: number, escala: number): EfeitoCamera => ({tipo: 'zoom', em, escala, ...P});
 		return [
-			// Gancho: clarão na batida do número
+			// Gancho: o clarão fica dentro da peça, na trava do número
 			z(0, 1.12),
-			z(b.at('educação'), 1.22),
-			{tipo: 'flash', em: b.at('8') - 0.04},
+			z(b.at('educação'), 1.2),
 			z(b.at('8'), 1.28),
-			z(b.at('fazendo'), 1.14),
-			z(b.at('Rapaziada,'), 1.24),
-			{tipo: 'chicote', em: ini(b, 'apresenta')},
+			z(b.at('live.'), 1.14),
+			z(b.at('Estou'), 1.06),
 			...punches(b, 'Estou aqui com o NewTex, brabo demais das lives'),
-			{tipo: 'chicote', em: ini(b, 'pergunta')},
-			z(ini(b, 'pergunta'), 1),
-			z(b.at('pessoa'), 1.12),
-			{tipo: 'chicote', em: ini(b, 'resposta1')},
-			...punches(b, 'hoje eu indico para você procurar o TikTok Shopping', 0.55),
-			...punches(b, 'Todo mundo tem produtos em casa que vendem no TikTok Shopping, às vezes você tem um suplemento', 0.55),
-			...punches(b, 'Eu que sou da área fitness, sempre tive suplemento em casa e foi assim que eu comecei', 0.55),
+			...punches(b, 'vamos passar aqui uma dica para os iniciantes, para quem quer começar', 0.55),
+			{tipo: 'chicote', em: b.at('Qual')},
+			z(b.at('Qual'), 1),
+			z(b.at('insight'), 1.12),
+			{tipo: 'chicote', em: b.at('Então,')},
+			...punches(b, 'Então, galera, hoje eu indico para você procurar o TikTok Shopping', 0.55),
+			...punches(b, 'Porque zero barreira de entrada aí, porque eu tiro por mim', 0.5),
+			...punches(b, 'Tipo, todo mundo tem produtos em casa', 0.55),
+			...punches(b, 'Peguei meus suplementos com o suplemento na mesa mesmo, comecei a falar, tirar dicas do pessoal como sou da área', 0.55),
 			...punches(b, 'E aí várias pessoas foram perguntando e eu entrei muito fácil no TikTok Shopping e comecei a ter resultado no começo', 0.55),
-			{tipo: 'chicote', em: ini(b, 'recorde')},
-			z(ini(b, 'recorde'), 1),
+			{tipo: 'chicote', em: b.say('E qual foi').inicio},
+			z(b.say('E qual foi').inicio, 1),
 			z(b.at('recorde'), 1.12),
-			{tipo: 'chicote', em: b.say('De um mês').inicio},
-			z(b.say('De um mês').inicio, 1.2),
-			z(ini(b, 'lucro'), 1.06),
+			z(b.at('lucro'), 1.2),
+			{tipo: 'chicote', em: b.at('De')},
+			z(b.at('De'), 1.08),
+			{tipo: 'chicote', em: b.at('1', 2)},
+			z(b.at('1', 2), 1.02),
+			z(b.at('faturamento', 2), 1.14),
 			z(b.at('140'), 1.26),
-			{tipo: 'chicote', em: ini(b, 'compensa')},
-			z(ini(b, 'compensa'), 1),
+			z(b.at('Isso,'), 1.1),
+			{tipo: 'chicote', em: b.at('Será')},
+			z(b.at('Será'), 1),
 			z(b.at('compensa'), 1.12),
+			z(b.at('lucrar'), 1.2),
 			{tipo: 'chicote', em: b.at('Amigo,')},
-			z(b.at('Amigo,'), 1.18),
+			z(b.at('Amigo,'), 1.16),
+			z(b.at('jeito'), 1.08),
 			z(b.at('24'), 1.28),
-			z(ini(b, 'sintese'), 1),
+			z(b.at('Não'), 1),
 			{tipo: 'flash', em: b.at('simples,') - 0.04},
 			z(b.at('simples,'), 1.25),
-			z(ini(b, 'siga'), 1.06),
+			z(b.at('Quer'), 1.08),
+			z(b.at('TikTok', 4), 1.18),
+			z(b.at('Segue'), 1.04),
 			z(b.at('Newtags,'), 1.16),
 			z(b.at('MVM'), 1.22),
-			z(b.at('vamos'), 1.28),
+			z(b.at('vamos', 2), 1.28),
 		];
 	},
 	cenas: (b) => {
-		const fimFala = fim(b, 'siga');
+		const fimFala = b.say('vamos para cima').fim;
+		const zero = b.at('zero');
+		const relogioAte = b.at('24') + 0.65;
 		return [
-			// 1. Gancho: quem ele é, depois o resultado em ouro 3D
+			// 1. Gancho: halter 3D acima da cabeça, depois o faturamento contando até R$ 8 MILHÕES e "SÓ FAZENDO LIVE"
 			{
-				tipo: 'chips',
+				tipo: 'peca',
+				nome: 'v7Gancho',
 				de: 0,
-				ate: b.at('8') - 0.12,
-				itens: [{texto: 'EX-EDUCADOR FÍSICO', em: 0.05}],
-				y: 1080,
-				esconderLegenda: true,
-				som: 'pro_tick',
-			},
-			{
-				tipo: 'numero3d',
-				de: b.at('8') - 0.12,
-				ate: fim(b, 'gancho') + 0.05,
-				texto: 'R$ 8 MILHÕES',
-				rotulo: 'NEWTEX',
-				abaixo: 'SÓ FAZENDO LIVE',
-				nomeOuro: true,
-				em: b.at('8') - 0.1,
+				ate: zero - 0.5,
+				dados: {conta: b.at('8') - 0.05, trava: b.at('faturados,') + 0.3, live: b.at('live.')},
 				esconderLegenda: true,
 				som: 'pro_pop',
+				sons: [{em: b.at('faturados,') + 0.3, som: 'pro_pop', ganho: 0.8}],
 			},
-			// 2. Zero barreira de entrada: celular 3D com o texto caindo na fala
+			// 2. Zero barreira: o muro se monta e quebra; depois o celular e a internet (tela inteira)
 			{
-				tipo: 'celular3d',
-				modelo: '3D models/Phones/iphone.obj',
-				de: b.at('zero') - 0.1,
-				ate: fim(b, 'celular') + 0.1,
-				linhas: [
-					{texto: 'ZERO BARREIRA', em: b.at('zero')},
-					{texto: 'UM CELULAR', em: b.at('celular')},
-					{texto: '+ INTERNET', em: b.at('internet.')},
-				],
+				tipo: 'peca',
+				nome: 'v7ZeroBarreira',
+				modo: 'cheia',
+				de: zero - 0.5,
+				ate: b.say('é um celular').inicio - 0.02,
+				dados: {quebra: b.at('barreira')},
+				esconderLegenda: true,
 				som: 'pro_whoosh',
+				sons: [{em: b.at('barreira') + 0.02, som: 'pro_quebra', ganho: 0.7}],
+			},
+			{
+				tipo: 'peca',
+				nome: 'v7CelularInternet',
+				modo: 'cheia',
+				de: b.say('é um celular').inicio - 0.02,
+				ate: b.at('internet.') + 0.75,
+				dados: {celular: b.at('celular'), internet: b.at('internet.')},
+				esconderLegenda: true,
+				som: 'pro_whoosh_curto',
+				sons: [{em: b.at('internet.'), som: 'pro_tick', ganho: 0.7}],
 			},
 			// 3. Apresentação: o nome na pílula e a live dele no "lives"
 			{
 				tipo: 'pilula',
-				de: b.at('NewTex,') - 0.05,
+				de: b.at('internet.') + 0.75,
 				ate: b.at('lives.') - 0.05,
 				rotulo: 'BRABO DAS LIVES',
 				nome: 'NewTex',
@@ -180,7 +195,7 @@ export const entrevista3V7: Edit = {
 			{
 				tipo: 'live',
 				de: b.at('lives.') - 0.05,
-				ate: fim(b, 'apresenta') + 0.05,
+				ate: b.at('NewTex,', 2) + 0.5,
 				host: 'NewTex',
 				curtidas: '48,2 mil curtidas',
 				espectadores: '2,3 mil',
@@ -190,21 +205,42 @@ export const entrevista3V7: Edit = {
 				],
 				som: 'pro_whoosh_curto',
 			},
-			// 4. Pergunta: preso na corrida dos ratos, na CLT
+			// 4. A dica para quem está começando
+			{
+				tipo: 'chips',
+				de: b.at('dica') - 0.05,
+				ate: b.at('Qual') - 0.05,
+				itens: [{texto: 'DICA PRO INICIANTE', em: b.at('dica')}],
+				y: 1080,
+				esconderLegenda: true,
+				som: 'pro_tick',
+			},
+			// 5. Pergunta: a corrida dos ratos (rato na roda, tela inteira) e logo a prisão da CLT
+			{
+				tipo: 'peca',
+				nome: 'v7CorridaRatos',
+				modo: 'cheia',
+				de: b.at('pessoa') - 0.05,
+				ate: b.at('presa', 2) - 0.02,
+				dados: {corrida: b.at('presa'), ratos: b.at('corrida')},
+				esconderLegenda: true,
+				som: 'pro_whoosh',
+				sons: [{em: b.at('corrida'), som: 'pro_tick', ganho: 0.6}],
+			},
 			{
 				tipo: 'presoClt',
-				de: b.at('presa') - 0.05,
-				ate: fim(b, 'pergunta') + 0.15,
-				em: b.at('presa'),
+				de: b.at('presa', 2) - 0.02,
+				ate: b.at('Então,') + 0.6,
+				em: b.at('presa', 2),
 				emCadeado: b.at('CLT?'),
 				som: 'pro_swipe',
 				sons: [{em: b.at('CLT?'), som: 'pro_tick', ganho: 0.8}],
 			},
-			// 5. A dica: TikTok Shop
+			// 6. A dica: TikTok Shop
 			{
 				tipo: 'selo',
 				de: b.at('procurar') - 0.1,
-				ate: fim(b, 'resposta1') + 0.1,
+				ate: b.at('Porque') + 0.2,
 				texto: 'TIKTOK SHOP',
 				chip: 'A DICA',
 				emChip: b.at('procurar'),
@@ -212,24 +248,42 @@ export const entrevista3V7: Edit = {
 				esconderLegenda: true,
 				som: 'pro_swipe',
 			},
-			// 6. Como ele começou: cartas em leque, uma por ideia
+			// 7. Como ele começou: o pote de suplemento pula a cada ideia (meia tela)
 			{
-				tipo: 'cards3d',
+				tipo: 'peca',
+				nome: 'v7Suplemento',
 				de: b.at('produtos') - 0.1,
-				ate: fim(b, 'resposta2') + 0.1,
-				itens: [
-					{texto: 'PRODUTO EM CASA', em: b.at('produtos')},
-					{texto: 'SUPLEMENTO', em: b.at('suplemento.')},
-					{texto: 'SUA ÁREA', em: b.at('fitness,')},
-				],
-				y: 1010,
+				ate: b.at('Peguei') - 0.02,
+				dados: {
+					linhas: [
+						{texto: 'PRODUTO EM CASA', em: b.at('produtos')},
+						{texto: 'SUPLEMENTO', em: b.at('suplemento.')},
+						{texto: 'ÁREA FITNESS', em: b.at('fitness,')},
+						{texto: 'ASSIM COMECEI', em: b.at('comecei.')},
+					],
+				},
+				esconderLegenda: true,
 				som: 'pro_pouso',
 				sons: [
-					{em: b.at('suplemento.'), som: 'pro_pouso', ganho: 0.8},
-					{em: b.at('fitness,'), som: 'pro_pouso', ganho: 0.8},
+					{em: b.at('suplemento.'), som: 'pro_pouso', ganho: 0.7},
+					{em: b.at('fitness,'), som: 'pro_pouso', ganho: 0.7},
+					{em: b.at('comecei.'), som: 'pro_pouso', ganho: 0.7},
 				],
 			},
-			// 7. Várias pessoas perguntando: mensagens chegando
+			{
+				tipo: 'chips',
+				de: b.at('mesa') - 0.1,
+				ate: b.at('área.') + 0.25,
+				itens: [
+					{texto: 'NA MESA MESMO', em: b.at('mesa')},
+					{texto: 'DICAS DO PESSOAL', em: b.at('dicas')},
+				],
+				y: 1080,
+				esconderLegenda: true,
+				som: 'pro_tick',
+				sons: [{em: b.at('dicas'), som: 'pro_tick', ganho: 0.7}],
+			},
+			// 8. Várias pessoas perguntando: mensagens chegando
 			{
 				tipo: 'notificacoes',
 				de: b.at('várias') - 0.1,
@@ -244,23 +298,21 @@ export const entrevista3V7: Edit = {
 				somItem: 'pro_msg',
 				ganhoItem: 0.5,
 			},
-			// 8. Recorde: faturamento em prata, lucro em ouro
+			// 9. Recorde: barras 3D sobem e o valor conta até R$ 1,4 MI; o lucro em ouro 3D
 			{
-				tipo: 'numero3d',
-				de: b.say('De um mês').inicio - 0.05,
-				ate: fim(b, 'recorde') + 0.1,
-				texto: 'R$ 1,4 MI',
-				rotulo: 'RECORDE EM 1 MÊS',
-				abaixo: 'FATURAMENTO',
-				metal: 'branco',
-				em: b.at('1'),
+				tipo: 'peca',
+				nome: 'v7Recorde',
+				de: b.at('De') - 0.05,
+				ate: b.at('400.') + 0.85,
+				dados: {sobe: b.at('1'), trava: b.at('400.') + 0.1},
 				esconderLegenda: true,
-				som: 'pro_pop',
+				som: 'pro_swipe',
+				sons: [{em: b.at('400.') + 0.1, som: 'pro_pop', ganho: 0.7}],
 			},
 			{
 				tipo: 'numero3d',
 				de: b.at('140') - 0.1,
-				ate: fim(b, 'lucro') + 0.2,
+				ate: b.at('Isso,') + 0.3,
 				texto: 'R$ 140 MIL',
 				rotulo: 'NO BOLSO',
 				abaixo: 'DE LUCRO',
@@ -268,46 +320,35 @@ export const entrevista3V7: Edit = {
 				esconderLegenda: true,
 				som: 'pro_pop',
 			},
-			// 9. "Compensa ficar 8 horas em live?": a live na tela; resposta em ouro 3D
+			// 10. "Compensa ficar 8 horas em live?" → "passo até 24 horas": relógio de ouro com os ponteiros voando
 			{
-				tipo: 'live',
-				de: b.at('live', 2) - 0.05,
-				ate: b.at('lucrar') + 0.25,
-				host: 'NewTex',
-				curtidas: '96,5 mil curtidas',
-				espectadores: '4,8 mil',
-				comentarios: [{nome: 'Dani', texto: 'quero 2!'}],
-				som: 'pro_whoosh_curto',
-			},
-			{
-				tipo: 'numero3d',
-				de: b.at('passo') - 0.1,
-				ate: fim(b, 'compensa') + 0.15,
-				texto: '24 HORAS',
-				rotulo: 'EU PASSO ATÉ',
-				abaixo: 'DE LIVE',
-				em: b.at('24'),
+				tipo: 'peca',
+				nome: 'v7Relogio',
+				de: b.at('8', 2) - 0.15,
+				ate: relogioAte,
+				dados: {oito: b.at('8', 2), vinte4: b.at('24')},
 				esconderLegenda: true,
-				som: 'pro_pop',
+				som: 'pro_tick',
+				sons: [{em: b.at('24'), som: 'pro_pop', ganho: 0.7}],
 			},
-			// 10. Síntese
+			// 11. Síntese
 			{
 				tipo: 'frase',
-				de: ini(b, 'sintese') - 0.05,
-				ate: ini(b, 'siga') - 0.1,
+				de: relogioAte,
+				ate: b.at('Quer') + 0.15,
 				palavras: [
-					{texto: 'NÃO É FÁCIL', em: ini(b, 'sintese')},
+					{texto: 'NÃO É FÁCIL', em: b.at('Não')},
 					{texto: 'É MUITO SIMPLES', em: b.say('muito simples').inicio, destaque: true},
 				],
 				som: 'pro_frase',
 			},
-			// 11. CTA: siga cada um
+			// 12. CTA: siga cada um
 			{
 				tipo: 'siga',
-				de: ini(b, 'siga') - 0.05,
+				de: b.at('Segue') - 0.05,
 				ate: fimFala + 0.05,
 				itens: [
-					{texto: 'DANILOW', em: ini(b, 'siga')},
+					{texto: 'DANILOW', em: b.at('Segue')},
 					{texto: 'NEWTEX', em: b.at('Newtags,')},
 					{texto: 'MVM', em: b.at('MVM')},
 				],
@@ -319,7 +360,7 @@ export const entrevista3V7: Edit = {
 					{em: b.at('MVM'), som: 'pro_swipe', ganho: 0.7},
 				],
 			},
-			// 12. Cartão final
+			// 13. Cartão final
 			{tipo: 'final', de: fimFala + 0.1, ate: fimFala + 2.4, marca: 'MVM', linha2: 'CREATORS', sub: 'LIVE NO TIKTOK SHOP', tres: true, som: 'pro_logo'},
 		];
 	},

@@ -66,7 +66,7 @@ const Folha: React.FC<{n: number; giro: number; ouro?: boolean; z?: number}> = (
 			backfaceVisibility: 'hidden',
 		}}
 	>
-		<span style={{fontFamily: playfair, fontStyle: 'italic', fontWeight: 800, fontSize: 210, lineHeight: 1, marginTop: 70, color: ouro ? '#9b6a22' : ROXO}}>{n}</span>
+		<span style={{fontFamily: playfair, fontStyle: 'italic', fontWeight: 800, fontSize: 180, lineHeight: 1, marginTop: 70, color: ouro ? '#9b6a22' : ROXO}}>{n}</span>
 	</div>
 );
 
@@ -93,17 +93,17 @@ const Calendario: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const tremor = travou ? Math.sin((frame - fUm) * 2.2) * 7 * Math.exp(-(frame - fUm) / 5) : 0;
 	return (
 		<AbsoluteFill style={{pointerEvents: 'none', opacity: saida}}>
-			<AbsoluteFill style={{background: `linear-gradient(180deg, rgba(30,15,58,0.86) 0%, rgba(30,15,58,0.6) 34%, rgba(30,15,58,0) 52%)`, opacity: entra}} />
-			<Rotulo texto="O SALÁRIO DE" y={150} k={rot} tamanho={38} ouro />
+			<AbsoluteFill style={{background: `linear-gradient(180deg, rgba(30,15,58,0) 44%, rgba(30,15,58,0.62) 54%, rgba(24,11,48,0.88) 100%)`, opacity: entra}} />
+			<Rotulo texto="O SALÁRIO DE" y={975} k={rot} tamanho={38} ouro />
 			<div
 				style={{
 					position: 'absolute',
-					left: 540 - 175,
-					top: 225,
-					width: 350,
-					height: 380,
+					left: 540 - 160,
+					top: 1060,
+					width: 320,
+					height: 330,
 					perspective: 1100,
-					transform: `translateY(${(1 - entra) * -420}px) rotate(${(1 - entra) * -14 + tremor * 0.3}deg) translateX(${tremor}px)`,
+					transform: `translateY(${(1 - entra) * 700}px) rotate(${(1 - entra) * -14 + tremor * 0.3}deg) translateX(${tremor}px)`,
 				}}
 			>
 				<div style={{position: 'absolute', inset: 0, transformStyle: 'preserve-3d', transform: `rotateX(14deg) rotateY(${-16 + balanca}deg)`}}>
@@ -122,7 +122,7 @@ const Calendario: React.FC<{cena: CenaPeca}> = ({cena}) => {
 						</span>
 					</div>
 					{[0.22, 0.5, 0.78].map((x) => (
-						<div key={x} style={{position: 'absolute', left: 350 * x - 13, top: -24, width: 26, height: 52, borderRadius: 13, border: '6px solid #E8C27A', transform: 'translateZ(10px)'}} />
+						<div key={x} style={{position: 'absolute', left: 320 * x - 13, top: -24, width: 26, height: 52, borderRadius: 13, border: '6px solid #E8C27A', transform: 'translateZ(10px)'}} />
 					))}
 				</div>
 			</div>
@@ -131,9 +131,9 @@ const Calendario: React.FC<{cena: CenaPeca}> = ({cena}) => {
 				<AbsoluteFill style={{filter: 'drop-shadow(0 22px 30px rgba(12,4,28,0.65))'}}>
 					<ThreeCanvas width={width} height={height} gl={GL} camera={CAMERA} style={{position: 'absolute', inset: 0}}>
 						<Luzes quadro={frame} batidas={[fUm]} />
-						<pointLight position={[0, yMundo(660), 4]} intensity={40} distance={10} color="#fff1cf" />
-						<group position={[0, yMundo(675), 0]} rotation={[0, Math.sin((frame - fUm) / 10) * 0.18, 0]}>
-							<Linha3D texto="EM 1 DIA" metal="ouro" largura={4.2} y={0} quadro={frame} batida={fUm} profundidade={0.55} />
+						<pointLight position={[0, yMundo(1440), 4]} intensity={40} distance={10} color="#fff1cf" />
+						<group position={[0, yMundo(1455), 0]} rotation={[0, Math.sin((frame - fUm) / 10) * 0.18, 0]}>
+							<Linha3D texto="EM 1 DIA" metal="ouro" largura={3.9} y={0} quadro={frame} batida={fUm} profundidade={0.55} />
 						</group>
 					</ThreeCanvas>
 				</AbsoluteFill>
@@ -234,7 +234,7 @@ const VideoLive: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const ce = spring({frame: frame - fL + 6, fps, config: {damping: 12, stiffness: 120}});
 	const kV = interpolate(frame, [fV, fV + 6], [0, 1], lim);
 	const kL = interpolate(frame, [fL, fL + 6], [0, 1], lim);
-	const yObj = yMundo(1330);
+	const yObj = yMundo(1160);
 	return (
 		<AbsoluteFill style={{pointerEvents: 'none', opacity: saida}}>
 			<AbsoluteFill style={{opacity: entrada, background: 'linear-gradient(180deg, rgba(30,15,58,0) 44%, rgba(30,15,58,0.5) 54%, rgba(24,11,48,0.72) 100%)'}} />
@@ -254,10 +254,10 @@ const VideoLive: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					) : null}
 				</ThreeCanvas>
 			</AbsoluteFill>
-			<div style={{position: 'absolute', top: 1640, left: 300 - 220, width: 440, textAlign: 'center', opacity: kV, transform: `translateY(${(1 - kV) * 16}px)`}}>
+			<div style={{position: 'absolute', top: 1400, left: 300 - 220, width: 440, textAlign: 'center', opacity: kV, transform: `translateY(${(1 - kV) * 16}px)`}}>
 				<span style={{fontFamily: poppins, fontWeight: 900, fontSize: 54, color: '#fff', letterSpacing: '0.04em', textShadow: '0 6px 18px rgba(8,2,20,0.7)'}}>FAZ VÍDEO</span>
 			</div>
-			<div style={{position: 'absolute', top: 1640, left: 790 - 220, width: 440, textAlign: 'center', opacity: kL, transform: `translateY(${(1 - kL) * 16}px)`}}>
+			<div style={{position: 'absolute', top: 1392, left: 790 - 220, width: 440, textAlign: 'center', opacity: kL, transform: `translateY(${(1 - kL) * 16}px)`}}>
 				<span style={{fontFamily: playfair, fontStyle: 'italic', fontWeight: 800, fontSize: 66, padding: '0 0.06em', background: OURO_TEXTO, WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent'}}>faz live</span>
 			</div>
 		</AbsoluteFill>
@@ -339,7 +339,7 @@ const OndaAzul: React.FC<{cena: CenaPeca}> = ({cena}) => {
 				<ThreeCanvas width={width} height={height} gl={GL} camera={CAMERA} style={{position: 'absolute', inset: 0}}>
 					<Luzes quadro={frame} batidas={[fO]} />
 					<directionalLight position={[0, 5, 6]} intensity={1.4} color="#bfe0ff" />
-					<group position={[0, yMundo(1260) - (1 - sobe) * 3, 0]}>
+					<group position={[0, yMundo(1120) - (1 - sobe) * 3, 0]}>
 						<Mar t={t} />
 						<Prancha x={-4 + ((t * 1.6) % 8)} z={0.2} t={t} cor="#E8C27A" escala={0.9} />
 						{varios.map((v, i) =>
@@ -353,7 +353,7 @@ const OndaAzul: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					<Linha3D texto="ONDA AZUL" metal="branco" largura={4.4} y={yMundo(470)} quadro={frame} batida={fO} profundidade={0.5} />
 				</ThreeCanvas>
 			</AbsoluteFill>
-			<Rotulo texto="TODO MUNDO SURFANDO" y={1660} k={kS} tamanho={44} ouro />
+			<Rotulo texto="TODO MUNDO SURFANDO" y={1440} k={kS} tamanho={44} ouro />
 		</AbsoluteFill>
 	);
 };
@@ -441,7 +441,7 @@ const Salario: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					<Linha3D texto="O MESMO" metal="branco" largura={2.9} y={yMundo(360)} quadro={frame} batida={2} profundidade={0.45} />
 					<Linha3D texto="SALÁRIO" metal="ouro" largura={4.0} y={yMundo(560)} quadro={frame} batida={fSal} profundidade={0.55} />
 					{frame >= fP - 4 ? (
-						<group position={[xMundo(780), yMundo(1560), 0]} scale={0.62 * rel} rotation={[0.15, -0.3, 0]}>
+						<group position={[xMundo(930), yMundo(905), 0]} scale={0.5 * rel} rotation={[0.15, -0.3, 0]}>
 							<Relogio segundos={giro} />
 						</group>
 					) : null}

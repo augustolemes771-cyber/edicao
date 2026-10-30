@@ -3,7 +3,7 @@
 // v7ZeroBarreira e v7CelularInternet também servem ao v11 (mesmo contrato de dados; tempos em segundos do vídeo editado).
 // Câmera 3D de referência: fov 35 a 14,5 de distância (meia altura ~4,57, meia largura ~2,57 unidades; y 0 = meio do quadro).
 import React, {useMemo} from 'react';
-import {AbsoluteFill, interpolate, random, spring, useCurrentFrame, useVideoConfig} from 'remotion';
+import {AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {ThreeCanvas} from '@remotion/three';
 import * as THREE from 'three';
 import type {CenaPeca, Pecas} from '../../pecas/peca';
