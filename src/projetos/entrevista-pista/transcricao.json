@@ -127,7 +127,7 @@
  },
  {
   "text": " aqui,",
-  "startMs": 4450,
+  "startMs": 4800,
   "endMs": 4870,
   "timestampMs": null,
   "confidence": 0.999661
@@ -400,7 +400,7 @@
  },
  {
   "text": " horas",
-  "startMs": 18880,
+  "startMs": 18950,
   "endMs": 19110,
   "timestampMs": null,
   "confidence": 0.999968
@@ -505,7 +505,7 @@
  },
  {
   "text": " barreira",
-  "startMs": 22490,
+  "startMs": 22500,
   "endMs": 22840,
   "timestampMs": null,
   "confidence": 0.999693
@@ -652,7 +652,7 @@
  },
  {
   "text": " precisa",
-  "startMs": 29390,
+  "startMs": 29400,
   "endMs": 29770,
   "timestampMs": null,
   "confidence": 0.98917
@@ -680,7 +680,7 @@
  },
  {
   "text": " Beleza,",
-  "startMs": 31420,
+  "startMs": 31650,
   "endMs": 32060,
   "timestampMs": null,
   "confidence": 0.990968
@@ -848,7 +848,7 @@
  },
  {
   "text": " vai",
-  "startMs": 38990,
+  "startMs": 39000,
   "endMs": 39060,
   "timestampMs": null,
   "confidence": 0.999485
@@ -883,7 +883,7 @@
  },
  {
   "text": " Ferreto,",
-  "startMs": 39940,
+  "startMs": 40050,
   "endMs": 40410,
   "timestampMs": null,
   "confidence": 0.999794
@@ -1051,7 +1051,7 @@
  },
  {
   "text": " você",
-  "startMs": 46700,
+  "startMs": 46850,
   "endMs": 46920,
   "timestampMs": null,
   "confidence": 0.98988
@@ -1212,7 +1212,7 @@
  },
  {
   "text": " Depois",
-  "startMs": 53980,
+  "startMs": 54200,
   "endMs": 54360,
   "timestampMs": null,
   "confidence": 0.99935
@@ -1380,7 +1380,7 @@
  },
  {
   "text": " Depois",
-  "startMs": 60760,
+  "startMs": 61000,
   "endMs": 61070,
   "timestampMs": null,
   "confidence": 0.975455
@@ -1758,7 +1758,7 @@
  },
  {
   "text": " agora",
-  "startMs": 75760,
+  "startMs": 75800,
   "endMs": 76240,
   "timestampMs": null,
   "confidence": 0.992087
@@ -1940,7 +1940,7 @@
  },
  {
   "text": " Danilow,",
-  "startMs": 86490,
+  "startMs": 86700,
   "endMs": 86990,
   "timestampMs": null,
   "confidence": 0.999649
@@ -2983,7 +2983,7 @@
  },
  {
   "text": " Danilow",
-  "startMs": 129790,
+  "startMs": 129800,
   "endMs": 129990,
   "timestampMs": null,
   "confidence": 0.997444
@@ -3032,7 +3032,7 @@
  },
  {
   "text": " Ferreto",
-  "startMs": 131770,
+  "startMs": 132200,
   "endMs": 132260,
   "timestampMs": null,
   "confidence": 0.999209
@@ -3151,7 +3151,7 @@
  },
  {
   "text": " mano.",
-  "startMs": 137280,
+  "startMs": 137300,
   "endMs": 137580,
   "timestampMs": null,
   "confidence": 0.857115
@@ -3221,7 +3221,7 @@
  },
  {
   "text": " você",
-  "startMs": 140330,
+  "startMs": 140500,
   "endMs": 140660,
   "timestampMs": null,
   "confidence": 0.999973
@@ -3410,21 +3410,21 @@
  },
  {
   "text": " você",
-  "startMs": 149640,
+  "startMs": 149650,
   "endMs": 149860,
   "timestampMs": null,
   "confidence": 0.999981
  },
  {
   "text": " quer",
-  "startMs": 149860,
+  "startMs": 149950,
   "endMs": 150170,
   "timestampMs": null,
   "confidence": 0.999632
  },
  {
   "text": " saber",
-  "startMs": 150170,
+  "startMs": 150250,
   "endMs": 150430,
   "timestampMs": null,
   "confidence": 0.9995
@@ -3522,7 +3522,7 @@
  },
  {
   "text": " fiquei",
-  "startMs": 154930,
+  "startMs": 155000,
   "endMs": 155120,
   "timestampMs": null,
   "confidence": 0.994865
@@ -3627,7 +3627,7 @@
  },
  {
   "text": " Para",
-  "startMs": 158720,
+  "startMs": 158750,
   "endMs": 158920,
   "timestampMs": null,
   "confidence": 0.665297
@@ -3641,7 +3641,7 @@
  },
  {
   "text": " gravar",
-  "startMs": 159220,
+  "startMs": 159250,
   "endMs": 159320,
   "timestampMs": null,
   "confidence": 0.846168
@@ -3725,7 +3725,7 @@
  },
  {
   "text": " então.",
-  "startMs": 162430,
+  "startMs": 163100,
   "endMs": 163360,
   "timestampMs": null,
   "confidence": 0.982317
@@ -3802,7 +3802,7 @@
  },
  {
   "text": " Se",
-  "startMs": 167140,
+  "startMs": 167200,
   "endMs": 167260,
   "timestampMs": null,
   "confidence": 0.970281
@@ -3956,7 +3956,7 @@
  },
  {
   "text": " Segue",
-  "startMs": 174880,
+  "startMs": 174950,
   "endMs": 175130,
   "timestampMs": null,
   "confidence": 0.997986
