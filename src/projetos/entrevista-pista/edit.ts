@@ -223,10 +223,11 @@ export const entrevistaPista: Edit = {
 				som: 'pro_swipe',
 				sons: [{em: b.at('pontos') + 0.45, som: 'pro_pouso', ganho: 0.8}],
 			},
-			// 3. "um celular e internet": celular realista entra girando, o sinal sai dele e o globo da internet acende as conexões
+			// 3. "um celular e internet" (tela cheia): celular realista entra girando, o sinal sai dele, o globo acende e os dados correm
 			{
 				tipo: 'motion3d',
 				modelo: 'celularInternet',
+				cheia: true,
 				de: ini(b, 'resposta1') - 0.05,
 				ate: b.at('Duas') - 0.08,
 				linhas: [
@@ -366,10 +367,12 @@ export const entrevistaPista: Edit = {
 				som: 'pro_swipe',
 				sons: [{em: b.at('liberdade', 2), som: 'pro_pouso', ganho: 0.8}],
 			},
-			// 13. "as minhas IAs estão trabalhando para mim" até "não reclama": robôs filmando para ele; o relógio voa no "24"
+			// 13. "as minhas IAs estão trabalhando para mim" até "não reclama" (tela cheia): robôs filmando e os vídeos subindo para o
+			// feed → crachá de funcionária → holerite carimbado R$ 0 → sol, lua e relógio (24 horas) → placa RECLAMAÇÕES 0
 			{
 				tipo: 'motion3d',
 				modelo: 'robos',
+				cheia: true,
 				de: b.at('IAs') - 0.1,
 				ate: b.at('Essa') - 0.08,
 				linhas: [
@@ -380,7 +383,7 @@ export const entrevistaPista: Edit = {
 					{texto: 'NÃO RECLAMA', em: b.at('reclama.'), metal: 'branco'},
 				],
 				troca: true,
-				marcos: [b.at('24')],
+				marcos: [b.at('funcionária'), b.at('salário,'), b.at('24'), b.at('reclama.')],
 				som: 'pro_robo',
 				sons: [
 					{em: b.at('24'), som: 'pro_tick', ganho: 0.8},
