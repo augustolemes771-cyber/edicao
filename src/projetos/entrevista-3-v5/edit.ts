@@ -93,6 +93,8 @@ export const entrevista3V5: Edit = {
 			...punches(b, 'como é a experiência, cara, de estar num evento com tanta gente vivendo do digital, vivendo o TikTok Shop', PERGUNTA, 0.7),
 			z(b.at('bagagem'), 1.16, PERGUNTA),
 			z(b.say('O que você leva de Floripa').inicio, 1.04, PERGUNTA),
+			z(b.at('Floripa', 2), 1.12, PERGUNTA),
+			z(b.at('Rio'), 1.2, PERGUNTA),
 			// Resposta do Ricardo: troca de falante = chicote
 			{tipo: 'chicote', em: b.at('Cara')},
 			z(b.at('Cara'), 1.06, RICARDO),
@@ -100,7 +102,16 @@ export const entrevista3V5: Edit = {
 			...punches(b, 'e a cada evento que a gente volta para casa, a gente volta com energia renovada', RICARDO, 0.6),
 			...punches(b, 'a mudança de ambiente, o que isso traz para a gente, agrega na nossa operação, toda vez é um insight novo', RICARDO),
 			...punches(b, 'Então sempre que a gente volta, na semana que a gente volta para casa, a gente volta realmente com a bagagem com muita informação e pronto para aplicar', RICARDO),
+			// Dentro das telas cheias (investimento, obeso) o zoom segue as batidas para o vídeo voltar já no ritmo
+			z(b.at('supérfluo'), 1.14, RICARDO),
+			z(b.at('investimento'), 1.22, RICARDO),
+			z(b.at('networking'), 1.08, RICARDO),
+			z(b.at('amizade'), 1.16, RICARDO),
+			z(b.at('ambiente', 2), 1.1, RICARDO),
 			z(b.at('porque'), 1.08, RICARDO),
+			z(b.at('obeso'), 1.12, RICARDO),
+			z(b.at('intelectual'), 1.2, RICARDO),
+			z(b.at('praticar'), 1.06, RICARDO),
 			// Pergunta à Isabela e resposta dela
 			{tipo: 'chicote', em: b.at('Isabela')},
 			z(b.at('Isabela'), 1, ISABELA),
@@ -108,10 +119,15 @@ export const entrevista3V5: Edit = {
 			{tipo: 'chicote', em: b.at('Com')},
 			...punches(b, 'Com certeza, porque como o Ricardo falou, a gente não está, não é gasto, é investimento', ISABELA),
 			z(b.at('insight', 2), 1.06, ISABELA),
+			z(b.at('melhores'), 1.18, ISABELA),
+			z(b.at('aprende'), 1.1, ISABELA),
+			z(b.at('aplica'), 1.22, ISABELA),
+			z(b.say('então com certeza').inicio, 1.06, ISABELA),
 			// CTA
 			{tipo: 'chicote', em: b.at('Ó')},
 			...punches(b, 'Ó, já me siga aqui, Danilo, siga o Ricardo, siga a Isabela, siga o MVM, vamos para cima', DANILOW),
 			...punches(b, 'e quem puder, sempre estar num ambiente desse, num evento, com pessoas que vivem no digital, faça esse investimento', DANILOW, 0.6),
+			...punches(b, 'nunca vai ser gasto, sempre um investimento', DANILOW, 0.6),
 		];
 	},
 	cenas: (b) => {
@@ -134,10 +150,7 @@ export const entrevista3V5: Edit = {
 				tipo: 'chips',
 				de: b.at('Floripa') - 0.05,
 				ate: b.at('top') - 0.45,
-				itens: [
-					{texto: 'EVENTO MVM · FLORIPA', em: b.at('Floripa')},
-					{texto: 'COM O RICARDO', em: b.at('Ricardo')},
-				],
+				itens: [{texto: 'FLORIPA · EVENTO MVM', em: b.at('Floripa')}],
 				y: 1080,
 				esconderLegenda: true,
 				som: 'pro_tick',
@@ -160,7 +173,7 @@ export const entrevista3V5: Edit = {
 				ate: b.say('O que você leva de Floripa').inicio - 0.15,
 				itens: [
 					{texto: 'TANTA GENTE VIVENDO DO DIGITAL', em: b.at('tanta')},
-					{texto: 'O QUE VAI NA BAGAGEM?', em: b.at('bagagem')},
+					{texto: 'O QUE VAI NA BAGAGEM?', em: b.at('traz')},
 				],
 				y: 1080,
 				esconderLegenda: true,
@@ -178,7 +191,7 @@ export const entrevista3V5: Edit = {
 			{
 				tipo: 'selo',
 				de: b.at('terceiro') - 0.1,
-				ate: b.say('terceiro evento da MVM').fim + 0.45,
+				ate: b.at('cada') - 0.2,
 				texto: '3º EVENTO',
 				chip: 'MVM',
 				emChip: b.at('terceiro'),
@@ -191,7 +204,7 @@ export const entrevista3V5: Edit = {
 				tipo: 'peca',
 				nome: 'v5Bateria',
 				de: b.at('cada') - 0.15,
-				ate: b.say('com energia renovada').fim + 0.7,
+				ate: b.at('mudança') - 0.1,
 				dados: {enche: b.at('cada'), renovada: b.at('renovada')},
 				esconderLegenda: true,
 				som: 'pro_swipe',
@@ -283,6 +296,18 @@ export const entrevista3V5: Edit = {
 				esconderLegenda: true,
 				som: 'pro_pop',
 			},
+			// 13a. A Isabela repete a ideia: aqui em selo, sem o mesmo efeito da 1ª vez
+			{
+				tipo: 'selo',
+				de: b.at('gasto', 2) - 0.1,
+				ate: b.at('insight', 2) - 0.3,
+				texto: 'É INVESTIMENTO',
+				chip: 'NÃO É GASTO',
+				emChip: b.at('gasto', 2),
+				y: 330,
+				esconderLegenda: true,
+				som: 'pro_swipe',
+			},
 			// 13. Resposta da Isabela: o ciclo do evento
 			{
 				tipo: 'peca',
@@ -309,7 +334,7 @@ export const entrevista3V5: Edit = {
 			{
 				tipo: 'siga',
 				de: b.at('siga') - 0.05,
-				ate: b.say('vamos para cima').fim + 0.25,
+				ate: b.at('puder') - 0.15,
 				itens: [
 					{texto: 'DANILOW', em: b.at('Danilo')},
 					{texto: 'RICARDO', em: b.say('siga o Ricardo').inicio},
