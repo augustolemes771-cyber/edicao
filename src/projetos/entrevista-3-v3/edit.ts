@@ -49,6 +49,11 @@ export const entrevista3V3: Edit = {
 	transcricao,
 	trechos: (o) => {
 		const lista: Trecho[] = (Object.keys(F) as (keyof typeof F)[]).map((k) => [o.say(F[k][0]).inicio - 0.06, o.say(F[k][1]).fim + 0.08]);
+		// Trechos colados ou sobrepostos no original (na ordem) viram um só: não repete palavra.
+		for (let i = lista.length - 1; i > 0; i--) {
+			const vao = lista[i][0] - lista[i - 1][1];
+			if (vao < 0.4 && lista[i][0] > lista[i - 1][0]) lista.splice(i - 1, 2, [lista[i - 1][0], Math.max(lista[i][1], lista[i - 1][1])]);
+		}
 		// Tira as pausas medidas que caem dentro de um trecho, com 0,04 s de ar de cada lado.
 		const cortado: Trecho[] = [];
 		for (const [a, z] of lista) {
@@ -89,9 +94,11 @@ export const entrevista3V3: Edit = {
 			...punches(b, 'Estou aqui com a Ludi, ex-atleta de Karate, chegou a ficar em quinto no Mundial'),
 			{tipo: 'chicote', em: ini(b, 'pergunta')},
 			z(ini(b, 'pergunta'), 1),
-			z(b.at('Floripa', 2), 1.12),
+			z(b.at('Floripa'), 1.12),
 			{tipo: 'chicote', em: ini(b, 'resposta1')},
-			...punches(b, 'O que eu acho que eu levo de mais importante é eu sempre fico lá, sair do modo caverna, dentro de casa, fazendo live', 0.55),
+			...punches(b, 'O que eu acho que eu levo de mais importante', 0.55),
+			...punches(b, 'sair do modo caverna', 0.55),
+			...punches(b, 'dentro de casa, fazendo live', 0.55),
 			{tipo: 'foco', em: b.at('poder')},
 			...punches(b, 'olhar para a minha operação hoje, para a nossa operação, minha e da Karol, de uma maneira ampla', 0.55),
 			...punches(b, 'A gente saiu daqui com várias possibilidades, não só de live shop, claro que esse ainda é o nosso carro-chefe', 0.55),
@@ -106,7 +113,7 @@ export const entrevista3V3: Edit = {
 			z(ini(b, 'duvida'), 1),
 			z(b.at('comentários'), 1.15),
 			z(ini(b, 'siga'), 1.08),
-			z(b.at('MVM', 2), 1.2),
+			z(b.at('MVM'), 1.2),
 			z(ini(b, 'bora'), 1.28),
 		];
 	},
@@ -189,13 +196,14 @@ export const entrevista3V3: Edit = {
 				chip: 'LIVE',
 				emChip: b.at('carro-chefe'),
 				y: 330,
+				esconderLegenda: true,
 				som: 'pro_swipe',
 			},
 			// 7. Crescer para outras áreas: cartas 3D em leque
 			{
 				tipo: 'cards3d',
 				de: b.at('outras') - 0.1,
-				ate: fim(b, 'resposta3') + 0.3,
+				ate: ini(b, 'sintese') - 0.12,
 				itens: [
 					{texto: 'OUTRAS ÁREAS', em: b.at('outras')},
 					{texto: 'NOVOS BRAÇOS', em: b.at('braços')},
@@ -234,12 +242,12 @@ export const entrevista3V3: Edit = {
 				ate: fim(b, 'siga') + 0.3,
 				itens: [
 					{texto: 'LUDI', em: ini(b, 'siga')},
-					{texto: 'MVM', em: b.at('MVM', 2)},
+					{texto: 'MVM', em: b.at('MVM')},
 				],
 				y: 1040,
 				esconderLegenda: true,
 				som: 'pro_swipe',
-				sons: [{em: b.at('MVM', 2), som: 'pro_swipe', ganho: 0.7}],
+				sons: [{em: b.at('MVM'), som: 'pro_swipe', ganho: 0.7}],
 			},
 			// 10. Cartão final
 			{tipo: 'final', de: fimFala + 0.1, ate: fimFala + 2.4, marca: 'MVM', linha2: 'CREATORS', sub: 'LIVE NO TIKTOK SHOP', tres: true, som: 'pro_logo'},
