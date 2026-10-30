@@ -1,6 +1,6 @@
 # Converte os .MOV do iPhone (4K HDR 60 qps) de public/projetos/entrevista-3/ para o video.mp4 de cada projeto:
 # 1440x2560, 30 qps em grade exata, HDR -> SDR, quadro-chave a cada 0,5 s. Cada .MOV é um vídeo; 11 + 11.1 viram um só.
-# Uso (Git Bash, na raiz do projeto): bash scripts/converter-entrevista-3.sh [3 5 7 11]
+# Uso (Git Bash, na raiz do projeto): bash scripts/converter-entrevista-3.sh [3 5 7 11 12 14]
 # Com placa NVIDIA usa libplacebo + NVENC; sem ela, SEM_GPU=1 usa zscale + x264 (mais lento).
 set -e
 cd "$(dirname "$0")/.."
@@ -17,7 +17,7 @@ fi
 ENC="$VENC -g 15 -bf 0 -color_primaries bt709 -color_trc bt709 -colorspace bt709 -c:a aac -b:a 256k -movflags +faststart"
 V="$HDR,scale=1440:2560:flags=lanczos,fps=30,format=yuv420p,setsar=1"
 A='aresample=48000,aformat=channel_layouts=stereo'
-for n in ${@:-3 5 7 11}; do
+for n in ${@:-3 5 7 11 12 14}; do
 	mkdir -p public/projetos/entrevista-3-v$n
 	saida=public/projetos/entrevista-3-v$n/video.mp4
 	if [ "$n" = "11" ]; then
