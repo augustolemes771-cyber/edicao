@@ -291,6 +291,10 @@ export type Cena =
 	// Cartão final roxo com anel dourado e a marca.
 	// tres: marca em texto 3D de verdade sobre grade em perspectiva, sem anel (entrevista-pista). linha2: 2ª linha da marca em 3D.
 	| (Base & {tipo: 'final'; marca: string; sub?: string; tres?: boolean; linha2?: string})
+	// Peça própria de um projeto (src/projetos/<projeto>/pecas.tsx, registrada em src/pecas/registro.ts): efeitos novos de
+	// um vídeo sem mexer neste arquivo. nome: chave no objeto `pecas` do projeto; dados: o que a peça precisar (tempos em
+	// segundos do vídeo editado). Motion de tela inteira: modo 'cheia'. A legenda só some com esconderLegenda.
+	| (Base & {tipo: 'peca'; nome: string; dados?: Record<string, unknown>})
 	// Pílulas vermelhas de vidro com ícone, texto palavra por palavra (desmontagem-2, ref. 2, "what to say?").
 	// variante escura: vidro quase preto e texto branco inteiro (contraste sobre roupa vermelha, 23/10/2026).
 	| (Base & {
@@ -498,6 +502,7 @@ const MODO_PADRAO: Record<TipoCena, Modo> = {
 	vitoria: 'sobre',
 	valorLife: 'sobre',
 	final: 'cheia',
+	peca: 'sobre',
 };
 
 const SOM_PADRAO: Record<TipoCena, Som | null> = {
@@ -552,6 +557,7 @@ const SOM_PADRAO: Record<TipoCena, Som | null> = {
 	vitoria: null,
 	valorLife: null,
 	final: 'whoosh',
+	peca: null,
 };
 
 // Mesmo fps da composição: as emendas caem em quadro inteiro.
