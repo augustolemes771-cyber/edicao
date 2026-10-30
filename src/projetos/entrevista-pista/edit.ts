@@ -26,15 +26,16 @@ const F = {
 	pergunta2: ['E você, Ferreto, qual você considera', 'pontos positivos de trabalhar com IA no TikTok Shop'],
 	resposta2: ['Você não precisa aparecer, você', 'também não precisa ter estoque'],
 	pergunta3: ['Agora, para o Danilow', 'negativos de fazer live shopping no TikTok Shop'],
-	resposta3: ['Um ponto negativo, partir', 'pedir dinheiro emprestado'],
+	resposta3: ['Um ponto negativo', 'pedir dinheiro emprestado'],
 	pergunta4: ['Agora você, Ferreto', 'principais pontos negativos de trabalhar com IA'],
 	resposta4: ['Você vai querer ficar só viajando', 'Essa é a vantagem negativa'],
 	obrigado: ['Obrigado, TikTok Shop', 'Siga o Ferreto para aprender com IA'],
 	cta: ['Se você quer aprender como funciona todo esse ecossistema', 'Segue o MVM Creators'],
 } as const;
-// A última tomada do CTA é a 2ª vez que ele fala "Se você quer aprender como funciona todo esse ecossistema".
+// No original, a tomada boa do CTA é a 2ª vez que ele fala "Se você quer aprender como funciona todo esse ecossistema";
+// no vídeo editado ela é a única (b usa a 1ª).
 const OCORRENCIA: Partial<Record<keyof typeof F, number>> = {cta: 2};
-const ini = (b: Busca, k: keyof typeof F) => b.say(F[k][0], OCORRENCIA[k] ?? 1).inicio;
+const ini = (b: Busca, k: keyof typeof F) => b.say(F[k][0]).inicio;
 const fim = (b: Busca, k: keyof typeof F) => b.say(F[k][1]).fim;
 
 // Ritmo frenético (preferência do painel: evento a cada 0,3–0,6 s): punch-in nas palavras do trecho, uma a cada ≥ 0,45 s,
@@ -135,7 +136,7 @@ export const entrevistaPista: Edit = {
 			z(ini(b, 'pergunta3'), 1, HOST),
 			z(b.at('negativos'), 1.18, HOST),
 			{tipo: 'chicote', em: ini(b, 'resposta3')},
-			...punches(b, 'Um ponto negativo, partir do momento que você começar em live shopping no TikTok', DANILOW),
+			...punches(b, 'Um ponto negativo a partir do momento que você começar em live shopping no TikTok', DANILOW),
 			// Pergunta 4 e a "vantagem negativa" do Ferreto
 			{tipo: 'chicote', em: ini(b, 'pergunta4')},
 			z(ini(b, 'pergunta4'), 1, HOST),
@@ -155,7 +156,7 @@ export const entrevistaPista: Edit = {
 			z(b.at('Siga'), 1.2, DANILOW),
 			z(b.at('Siga', 2), 1.2, FERRETO),
 			{tipo: 'chicote', em: ini(b, 'cta')},
-			...punches(b, 'Se você quer aprender como funciona todo esse ecossistema', HOST, 2, 0.55),
+			...punches(b, 'Se você quer aprender como funciona todo esse ecossistema', HOST, 1, 0.55),
 			z(b.at('Segue'), 1.3, HOST),
 		];
 	},
