@@ -2,14 +2,16 @@
 
 São 6 vídeos separados (tema Entrevista), um projeto cada:
 
-| Projeto | Fonte | Situação em 30/10 17h30 |
+| Projeto | Fonte | Situação em 30/10 19h |
 |---|---|---|
-| `entrevista-3-v3` | 3.MOV | edit.ts pronto (~54 s, qualidade 0 erro), falta conferir no Studio e renderizar |
-| `entrevista-3-v5` | 5.MOV | edit.ts pronto (~46 s), transcrição feita; falta converter, medir pausas, conferir e renderizar |
-| `entrevista-3-v7` | 7.MOV | idem |
-| `entrevista-3-v11` | 11.MOV + 11.1.MOV (um vídeo só, o 11.1 continua o 11) | idem |
-| `entrevista-3-v12` | 12.MOV | idem |
-| `entrevista-3-v14` | 14.MOV | idem |
+| `entrevista-3-v3` | 3.MOV | edit pronto (53,9 s), convertido, pausas medidas, qualidade 0 erro; falta conferir no Studio e renderizar |
+| `entrevista-3-v5` | 5.MOV | edit pronto (46,2 s), idem |
+| `entrevista-3-v7` | 7.MOV | edit pronto (58,1 s), idem |
+| `entrevista-3-v11` | 11.MOV + 11.1.MOV (um vídeo só) | edit pronto (58,5 s), idem |
+| `entrevista-3-v12` | 12.MOV | edit pronto (52,2 s), idem |
+| `entrevista-3-v14` | 14.MOV | edit pronto (56,6 s), idem |
+
+Pausas: `FRACAO=0.2 node scripts/pausas-energia.mjs entrevista-3-v<n>` (não use o `npm run silencios` nestes vídeos).
 
 ## 1. Preparar o PC
 
