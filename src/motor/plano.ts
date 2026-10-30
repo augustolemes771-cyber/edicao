@@ -26,6 +26,21 @@ export type Som =
 	| 'impacto'
 	| 'grave'
 	| 'subida'
+	// Kit pro sintetizado (make_sfx_pro.py do modelo + entrevista-pista): sem sino, plim nem moedinha.
+	| 'pro_pop'
+	| 'pro_tick'
+	| 'pro_whoosh'
+	| 'pro_whoosh_curto'
+	| 'pro_swipe'
+	| 'pro_pouso'
+	| 'pro_pulso'
+	| 'pro_frase'
+	| 'pro_logo'
+	| 'pro_digita'
+	| 'pro_msg'
+	| 'pro_aviao'
+	| 'pro_quebra'
+	| 'pro_robo'
 	// "punch" nunca toca: antes de t2 vira swish, depois some.
 	| 'punch';
 
@@ -244,7 +259,22 @@ export type Cena =
 	| (Base & {tipo: 'numero3d'; texto: string; rotulo?: string; abaixo?: string; nomeOuro?: boolean; em?: number; y?: number; largura?: number; metal?: 'ouro' | 'branco'})
 	// Pílula dourada com batida e chip roxo opcional.
 	// Banners de notificação de celular (vidro escuro, ícone de sacola) que descem do topo e empurram os anteriores (pilha de até 4).
-	| (Base & {tipo: 'notificacoes'; itens: {titulo: string; texto: string; em: number}[]; y?: number})
+	// icone 'mensagem': balão de app de mensagens no lugar da sacola; som: toca em cada item que chega (ganho baixo).
+	| (Base & {tipo: 'notificacoes'; itens: {titulo: string; texto: string; em: number}[]; y?: number; icone?: 'sacola' | 'mensagem'; somItem?: Som; ganhoItem?: number})
+	// Motion de meia tela (src/pecas/MotionPista.tsx): a metade de baixo vira o roxo do tema com grade em perspectiva andando,
+	// um objeto 3D com movimento curto ligado à fala e texto 3D (sem anel nem faíscas); o rosto fica livre em cima. Esconde a legenda.
+	// linhas: texto 3D no seu tempo; com `troca`, cada linha substitui a anterior no mesmo lugar. marcos: tempos de ações do objeto
+	// (ex.: a parede quebra no marco 0). chip: pílula pequena no topo do painel (ex.: LIVE, IA).
+	| (Base & {
+			tipo: 'motion3d';
+			modelo: 'celularInternet' | 'positivoLive' | 'positivoIa' | 'negativoLive' | 'negativoIa' | 'barreira' | 'liberdade' | 'robos';
+			linhas: {texto: string; em: number; metal?: 'ouro' | 'branco'}[];
+			troca?: boolean;
+			marcos?: number[];
+			chip?: string;
+	  })
+	// Avião 3D que cruza o céu acima da pessoa deixando rastro (y = altura do voo em px).
+	| (Base & {tipo: 'aviao'; y?: number})
 	// Tipografia de lifestyle sem caixa: kicker em caixa alta, frase em Playfair itálico branco e sub; entra com fade + desfoque + subida.
 	// brilho: halo claro em volta das letras para ler sobre imagem clara (ex.: fala no lugar da legenda).
 	// palavras: segundo (vídeo editado) em que cada palavra da frase principal é dita; com ele a frase entra palavra por palavra.
@@ -257,7 +287,8 @@ export type Cena =
 	| (Base & {tipo: 'valorLife'; numero: string; prefixo?: string; palavra: string; kicker?: string; sub?: string; pousa?: number; y?: number})
 	| (Base & {tipo: 'selo'; texto: string; chip?: string; emChip?: number; y?: number})
 	// Cartão final roxo com anel dourado e a marca.
-	| (Base & {tipo: 'final'; marca: string; sub?: string})
+	// tres: marca em texto 3D de verdade sobre grade em perspectiva, sem anel (entrevista-pista). linha2: 2ª linha da marca em 3D.
+	| (Base & {tipo: 'final'; marca: string; sub?: string; tres?: boolean; linha2?: string})
 	// Pílulas vermelhas de vidro com ícone, texto palavra por palavra (desmontagem-2, ref. 2, "what to say?").
 	// variante escura: vidro quase preto e texto branco inteiro (contraste sobre roupa vermelha, 23/10/2026).
 	| (Base & {
@@ -459,6 +490,8 @@ const MODO_PADRAO: Record<TipoCena, Modo> = {
 	medo3d: 'sobre',
 	selo: 'sobre',
 	notificacoes: 'sobre',
+	motion3d: 'sobre',
+	aviao: 'sobre',
 	textoLife: 'sobre',
 	vitoria: 'sobre',
 	valorLife: 'sobre',
@@ -511,6 +544,8 @@ const SOM_PADRAO: Record<TipoCena, Som | null> = {
 	medo3d: 'swish',
 	selo: 'tick',
 	notificacoes: null,
+	motion3d: 'pro_whoosh',
+	aviao: 'pro_aviao',
 	textoLife: null,
 	vitoria: null,
 	valorLife: null,
@@ -691,6 +726,7 @@ export const montar = (edit: Edit, duracaoFonte: number): Montagem => {
 
 const TEXTO_PROPRIO: TipoCena[] = [
 	'frase',
+	'motion3d',
 	'live',
 	'numero3d',
 	'vitoria',

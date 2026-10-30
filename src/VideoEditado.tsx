@@ -345,6 +345,9 @@ const Sons: React.FC<{cenas: CenaNoPlano[]}> = ({cenas}) => {
 		if (c.tipo === 'alertas') {
 			for (const item of c.itens) eventos.push({quadro: Math.round(item.em * fps), som: 'pop', ganho: 0.7});
 		}
+		if (c.tipo === 'notificacoes' && c.somItem) {
+			for (const item of c.itens) eventos.push({quadro: Math.round(item.em * fps), som: c.somItem, ganho: c.ganhoItem ?? 0.5});
+		}
 		if (c.tipo === 'checklist') {
 			for (const item of c.itens) eventos.push({quadro: Math.round(item.em * fps), som: 'pop', ganho: 0.8});
 		}
