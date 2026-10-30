@@ -359,7 +359,7 @@ export const entrevista3V14: Edit = {
 			{
 				tipo: 'siga',
 				de: b.say('Já me siga').inicio - 0.05,
-				ate: b.say('vamos para cima').fim + 0.1,
+				ate: Math.min(b.say('vamos para cima').fim + 0.1, b.say('Se tiver alguma dúvida').inicio - 0.08),
 				itens: [
 					{texto: 'DANILOW', em: b.at('Danilow')},
 					{texto: 'ROGÉRIO', em: b.at('Rogério', 3)},
