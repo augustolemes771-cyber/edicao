@@ -174,7 +174,7 @@ export const entrevista3V11: Edit = {
 				nome: 'v7CelularInternet',
 				modo: 'cheia',
 				de: b.at('precisa') - 0.06,
-				ate: fim(b, 'gancho') + 0.7,
+				ate: ini(b, 'apresenta') - 0.02,
 				dados: {celular: b.at('celular'), internet: b.at('internet.')},
 				esconderLegenda: true,
 			},

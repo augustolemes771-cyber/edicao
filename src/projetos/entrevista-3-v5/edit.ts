@@ -5,31 +5,32 @@ import transcricao from './transcricao.json';
 
 // Entrevista 3, vídeo 5 (tema Entrevista): Danilow com o Ricardo (top creator) e a Isabela no evento da MVM em Floripa.
 // Fonte 5.MOV (4K HDR do iPhone) convertida para 1440x2560 SDR 30 qps (scripts/converter-entrevista-3.sh).
-// Roteiro: gancho R$ 500 MILHÕES da comunidade → Ricardo, top creator → pergunta (Floripa → Rio) → energia renovada →
-// não é gasto, é investimento → "obeso intelectual" → pergunta à Isabela (R$ 20 mil?) → resposta → siga → cartão final.
-// Posição do rosto sem medir (feito sem o vídeo): zoom no centro e no máximo 1,3; conferir no Studio.
-const P = {x: 0.5, y: 0.3};
+// Revisão de 30/10 (sem limite de tempo): a fala vai quase inteira, cortando só pausas, o "Boa!" do meio e o "Vai, boa!".
+// Roteiro: gancho (gráfico de ouro e contador → R$ 500 MILHÕES) → Floripa, Ricardo top creator (pódio) → pergunta e rota
+// Floripa → Rio → 3º evento → energia renovada (bateria) → ambiente, insight → nunca é gasto, é INVESTIMENTO (tela cheia)
+// → bagagem → obeso intelectual / sem prática (tela cheia) → Isabela: R$ 20 mil? → ciclo insight, melhores, aprende,
+// aplica → siga Danilow, Ricardo, Isabela, MVM → "sempre um investimento" → cartão final.
+// Peças próprias em ./pecas.tsx. Rostos medidos nos quadros: Danilow no centro (abertura) e à direita (perguntas), Ricardo
+// à esquerda (x ≈ 0,2), Isabela em x ≈ 0,55; o zoom usa o rosto de quem fala como origem.
+const DANILOW = {x: 0.5, y: 0.4};
+const PERGUNTA = {x: 0.72, y: 0.4};
+const RICARDO = {x: 0.24, y: 0.42};
+const ISABELA = {x: 0.55, y: 0.43};
 
-const F = {
-	gancho: ['Dois anos de MVM', 'faturados na comunidade'],
-	apresenta: ['estou aqui com o Ricardo', 'do TikTok Shop'],
-	pergunta: ['O que você leva de Floripa', 'para o Rio de Janeiro'],
-	energia: ['a cada evento que a gente volta para casa', 'com energia renovada'],
-	investimento: ['então a gente nunca enxerga isso daqui como um gasto', 'isso aqui é um investimento'],
-	obeso: ['vir para cá, se tornar um obeso intelectual', 'não vai adiantar nada na sua operação'],
-	pergunta2: ['Isabela, você investiria', 'para estar num ambiente desse'],
-	resposta2: ['Com certeza, porque como o Ricardo falou', 'os melhores criadores do mercado'],
-	siga: ['siga o Ricardo', 'vamos para cima'],
-} as const;
-const ini = (b: Busca, k: keyof typeof F) => b.say(F[k][0]).inicio;
-const fim = (b: Busca, k: keyof typeof F) => b.say(F[k][1]).fim;
+// Bordas medidas pela energia da voz (s da origem): "operação." termina em 59,45 e o "Boa!" vai de 59,85 a 60,05;
+// "Isabela" começa em 60,35; "certeza." termina em 75,95; "Ó, já me siga" começa em 76,75; "investimento." termina
+// em 89,15 (depois vem "Vai, boa!").
+const TRECHOS: Trecho[] = [
+	[0.9, 59.48],
+	[60.3, 76.0],
+	[76.7, 89.18],
+];
 
-// Ritmo frenético (evento a cada 0,3–0,6 s): punch-in nas palavras, ciclo médio → close → aberto, até 1,3.
 const ESCALAS = [1.1, 1.2, 1.28, 1.14, 1.24, 1.06];
-const punches = (b: Busca, frase: string, passo = 0.55): EfeitoCamera[] => {
+const punches = (b: Busca, frase: string, P: {x: number; y: number}, passo = 0.55, ocorrencia?: number): EfeitoCamera[] => {
 	const lista: EfeitoCamera[] = [];
 	let ultimo = -9;
-	for (const t of b.tempos(frase)) {
+	for (const t of b.tempos(frase, ocorrencia)) {
 		if (t - ultimo < passo) continue;
 		lista.push({tipo: 'zoom', em: t, escala: ESCALAS[lista.length % ESCALAS.length], ...P});
 		ultimo = t;
@@ -43,19 +44,13 @@ export const entrevista3V5: Edit = {
 	formato: 'vertical',
 	verificarCurva: false,
 	regraCamera: false,
-	extraFim: 2.4,
+	extraFim: 2.6,
 	silencios: silencios as Trecho[],
 	transcricao,
-	trechos: (o) => {
-		const lista: Trecho[] = (Object.keys(F) as (keyof typeof F)[]).map((k) => [o.say(F[k][0]).inicio - 0.06, o.say(F[k][1]).fim + 0.08]);
-		// Trechos colados ou sobrepostos no original (na ordem) viram um só: não repete palavra.
-		for (let i = lista.length - 1; i > 0; i--) {
-			const vao = lista[i][0] - lista[i - 1][1];
-			if (vao < 0.4 && lista[i][0] > lista[i - 1][0]) lista.splice(i - 1, 2, [lista[i - 1][0], Math.max(lista[i][1], lista[i - 1][1])]);
-		}
+	trechos: () => {
 		// Tira as pausas medidas que caem dentro de um trecho, com 0,04 s de ar de cada lado.
 		const cortado: Trecho[] = [];
-		for (const [a, z] of lista) {
+		for (const [a, z] of TRECHOS) {
 			let ini = a;
 			for (const [s0, s1] of silencios as Trecho[]) {
 				if (s0 <= ini + 0.25 || s1 >= z - 0.25 || s1 - s0 < 0.25) continue;
@@ -71,128 +66,216 @@ export const entrevista3V5: Edit = {
 		altura: 0.656,
 		palavrasPorTela: 4,
 		enfase: [
-			{palavra: 'renovada', estilo: 'serif'},
-			{palavra: 'intelectual', estilo: 'serif'},
-			{palavra: 'melhores', estilo: 'serif'},
+			{palavra: 'experiência', estilo: 'serif'},
+			{palavra: 'mudança', estilo: 'serif'},
+			{palavra: 'informação', estilo: 'serif'},
+			{palavra: 'certeza', estilo: 'serif'},
 		],
 		falantes: (b) => [
-			{de: ini(b, 'pergunta') - 0.1, ate: fim(b, 'pergunta') + 0.1, nome: 'PERGUNTA'},
-			{de: fim(b, 'pergunta') + 0.1, ate: ini(b, 'pergunta2') - 0.1, nome: 'RICARDO'},
-			{de: ini(b, 'pergunta2') - 0.1, ate: fim(b, 'pergunta2') + 0.1, nome: 'PERGUNTA'},
-			{de: fim(b, 'pergunta2') + 0.1, ate: fim(b, 'resposta2') + 0.1, nome: 'ISABELA'},
+			{de: b.at('Ricardo', 2) - 0.1, ate: b.say('para o Rio de Janeiro').fim + 0.1, nome: 'PERGUNTA'},
+			{de: b.at('Cara') - 0.1, ate: b.say('na sua operação').fim + 0.1, nome: 'RICARDO'},
+			{de: b.at('Isabela') - 0.1, ate: b.say('para estar num ambiente desse').fim + 0.1, nome: 'PERGUNTA'},
+			{de: b.at('Com') - 0.1, ate: b.say('então com certeza').fim + 0.1, nome: 'ISABELA'},
 		],
 	},
 	camera: (b) => {
-		const z = (em: number, escala: number): EfeitoCamera => ({tipo: 'zoom', em, escala, ...P});
+		const z = (em: number, escala: number, P: {x: number; y: number}): EfeitoCamera => ({tipo: 'zoom', em, escala, ...P});
 		return [
-			// Gancho: clarão na batida do número
-			z(0, 1.15),
-			z(b.at('anos'), 1.22),
+			// Gancho: o zoom acompanha o contador e bate no 500
+			z(0, 1.12, DANILOW),
+			z(b.at('anos'), 1.2, DANILOW),
 			{tipo: 'flash', em: b.at('500') - 0.04},
-			z(b.at('500'), 1.28),
-			z(b.at('comunidade'), 1.12),
-			{tipo: 'chicote', em: ini(b, 'apresenta')},
-			...punches(b, 'é um top creator aqui do TikTok Shop'),
-			{tipo: 'chicote', em: ini(b, 'pergunta')},
-			z(ini(b, 'pergunta'), 1),
-			z(b.at('Rio'), 1.12),
-			{tipo: 'chicote', em: ini(b, 'energia')},
-			...punches(b, 'a cada evento que a gente volta para casa, a gente volta com energia renovada'),
-			...punches(b, 'então a gente nunca enxerga isso daqui como um gasto, nunca é supérfluo, isso aqui é um investimento'),
-			{tipo: 'foco', em: ini(b, 'obeso')},
-			...punches(b, 'vir para cá, se tornar um obeso intelectual e não praticar'),
-			z(b.at('adiantar'), 1.26),
-			{tipo: 'chicote', em: ini(b, 'pergunta2')},
-			z(ini(b, 'pergunta2'), 1),
-			z(b.at('20'), 1.2),
-			{tipo: 'chicote', em: ini(b, 'resposta2')},
-			...punches(b, 'Com certeza, porque como o Ricardo falou, a gente não está, não é gasto, é investimento, você pega insight, você está com os melhores criadores do mercado'),
-			{tipo: 'chicote', em: ini(b, 'siga')},
-			...punches(b, 'siga o Ricardo, siga a Isabela, siga o MVM, vamos para cima'),
+			z(b.at('500'), 1.28, DANILOW),
+			z(b.at('comunidade'), 1.1, DANILOW),
+			...punches(b, 'Estamos aqui em Floripa, estou aqui com o Ricardo', DANILOW),
+			// Pergunta: Danilow à direita, sem chicote (o plano é o mesmo e o pódio acabou de sair)
+			z(b.at('Ricardo', 2), 1, PERGUNTA),
+			...punches(b, 'como é a experiência, cara, de estar num evento com tanta gente vivendo do digital, vivendo o TikTok Shop', PERGUNTA, 0.7),
+			z(b.at('bagagem'), 1.16, PERGUNTA),
+			z(b.say('O que você leva de Floripa').inicio, 1.04, PERGUNTA),
+			// Resposta do Ricardo: troca de falante = chicote
+			{tipo: 'chicote', em: b.at('Cara')},
+			z(b.at('Cara'), 1.06, RICARDO),
+			...punches(b, 'a experiência de estar nesses eventos da MVM, já o nosso terceiro evento da MVM', RICARDO),
+			...punches(b, 'e a cada evento que a gente volta para casa, a gente volta com energia renovada', RICARDO, 0.6),
+			...punches(b, 'a mudança de ambiente, o que isso traz para a gente, agrega na nossa operação, toda vez é um insight novo', RICARDO),
+			...punches(b, 'Então sempre que a gente volta, na semana que a gente volta para casa, a gente volta realmente com a bagagem com muita informação e pronto para aplicar', RICARDO),
+			z(b.at('porque'), 1.08, RICARDO),
+			// Pergunta à Isabela e resposta dela
+			{tipo: 'chicote', em: b.at('Isabela')},
+			z(b.at('Isabela'), 1, ISABELA),
+			z(b.at('20'), 1.2, ISABELA),
+			{tipo: 'chicote', em: b.at('Com')},
+			...punches(b, 'Com certeza, porque como o Ricardo falou, a gente não está, não é gasto, é investimento', ISABELA),
+			z(b.at('insight', 2), 1.06, ISABELA),
+			// CTA
+			{tipo: 'chicote', em: b.at('Ó')},
+			...punches(b, 'Ó, já me siga aqui, Danilo, siga o Ricardo, siga a Isabela, siga o MVM, vamos para cima', DANILOW),
+			...punches(b, 'e quem puder, sempre estar num ambiente desse, num evento, com pessoas que vivem no digital, faça esse investimento', DANILOW, 0.6),
 		];
 	},
 	cenas: (b) => {
-		const fimFala = fim(b, 'siga');
+		const sempre = b.tempos('sempre um investimento');
+		const fimFala = b.say('sempre um investimento').fim;
 		return [
-			// 1. Gancho: o faturamento da comunidade em ouro 3D
+			// 1. Gancho: contador e gráfico de ouro crescendo → R$ 500 MILHÕES em 3D
 			{
-				tipo: 'numero3d',
+				tipo: 'peca',
+				nome: 'v5Gancho',
 				de: 0,
-				ate: fim(b, 'gancho') + 0.05,
-				texto: 'R$ 500 MILHÕES',
-				rotulo: '2 ANOS DE MVM',
-				abaixo: 'NA COMUNIDADE',
-				nomeOuro: true,
-				em: b.at('500') - 0.2,
+				ate: b.say('faturados na comunidade').fim + 0.2,
+				dados: {anos: b.at('anos'), quinhentos: b.at('500') - 0.1, comunidade: b.at('comunidade')},
 				esconderLegenda: true,
 				som: 'pro_pop',
+				sons: [{em: b.at('anos'), som: 'pro_tick', ganho: 0.6}],
 			},
-			// 2. Ricardo, top creator
-			{
-				tipo: 'selo',
-				de: b.at('top') - 0.1,
-				ate: fim(b, 'apresenta') + 0.2,
-				texto: 'TOP CREATOR',
-				chip: 'RICARDO',
-				emChip: b.at('top'),
-				y: 330,
-				esconderLegenda: true,
-				som: 'pro_swipe',
-			},
-			// 3. Pergunta: de Floripa para o Rio, avião cruzando acima da cabeça
-			{
-				tipo: 'aviao',
-				de: ini(b, 'pergunta') - 0.05,
-				ate: fim(b, 'pergunta') + 0.6,
-				y: 230,
-				som: 'pro_aviao',
-			},
-			// 4. Energia renovada
-			{
-				tipo: 'frase',
-				de: b.at('energia') - 0.05,
-				ate: fim(b, 'energia') + 0.25,
-				palavras: [
-					{texto: 'ENERGIA', em: b.at('energia')},
-					{texto: 'RENOVADA', em: b.at('renovada'), destaque: true},
-				],
-				som: 'pro_frase',
-			},
-			// 5. Não é gasto, é investimento (1ª vez: chips; a Isabela repete e leva outro efeito)
+			// 2. Floripa, evento da MVM
 			{
 				tipo: 'chips',
-				de: b.at('gasto') - 0.05,
-				ate: fim(b, 'investimento') + 0.2,
+				de: b.at('Floripa') - 0.05,
+				ate: b.at('top') - 0.45,
 				itens: [
-					{texto: '✗ GASTO', em: b.at('gasto')},
-					{texto: '✗ SUPÉRFLUO', em: b.at('supérfluo')},
-					{texto: '✓ INVESTIMENTO', em: b.at('investimento')},
+					{texto: 'EVENTO MVM · FLORIPA', em: b.at('Floripa')},
+					{texto: 'COM O RICARDO', em: b.at('Ricardo')},
 				],
 				y: 1080,
 				esconderLegenda: true,
 				som: 'pro_tick',
-				sons: [
-					{em: b.at('supérfluo'), som: 'pro_tick', ganho: 0.8},
-					{em: b.at('investimento'), som: 'pro_pop', ganho: 0.7},
-				],
 			},
-			// 6. "obeso intelectual": frase estática, sem zoom
+			// 3. Top creator: pódio 3D de meia tela
 			{
-				tipo: 'frase',
-				de: b.at('obeso') - 0.05,
-				ate: fim(b, 'obeso') + 0.2,
-				palavras: [
-					{texto: 'OBESO', em: b.at('obeso')},
-					{texto: 'INTELECTUAL', em: b.at('intelectual'), destaque: true},
-					{texto: 'SEM PRATICAR', em: b.at('praticar')},
-				],
-				som: 'pro_frase',
+				tipo: 'peca',
+				nome: 'v5TopCreator',
+				de: b.at('top') - 0.35,
+				ate: b.say('do TikTok Shop').fim + 0.55,
+				dados: {top: b.at('top'), tiktok: b.at('TikTok')},
+				esconderLegenda: true,
+				som: 'pro_swipe',
+				sons: [{em: b.at('top'), som: 'pro_pop', ganho: 0.6}],
 			},
-			// 7. Pergunta à Isabela: R$ 20 mil em prata
+			// 4. A pergunta: viver do digital e a bagagem
+			{
+				tipo: 'chips',
+				de: b.at('tanta') - 0.05,
+				ate: b.say('O que você leva de Floripa').inicio - 0.15,
+				itens: [
+					{texto: 'TANTA GENTE VIVENDO DO DIGITAL', em: b.at('tanta')},
+					{texto: 'O QUE VAI NA BAGAGEM?', em: b.at('bagagem')},
+				],
+				y: 1080,
+				esconderLegenda: true,
+				som: 'pro_tick',
+			},
+			// 5. Rota Floripa → Rio de Janeiro com o avião
+			{
+				tipo: 'peca',
+				nome: 'v5Rota',
+				de: b.say('O que você leva de Floripa').inicio - 0.1,
+				ate: b.say('para o Rio de Janeiro').fim + 0.9,
+				som: 'pro_aviao',
+			},
+			// 6. Terceiro evento da MVM
+			{
+				tipo: 'selo',
+				de: b.at('terceiro') - 0.1,
+				ate: b.say('terceiro evento da MVM').fim + 0.45,
+				texto: '3º EVENTO',
+				chip: 'MVM',
+				emChip: b.at('terceiro'),
+				y: 330,
+				esconderLegenda: true,
+				som: 'pro_swipe',
+			},
+			// 7. Energia renovada: bateria enchendo
+			{
+				tipo: 'peca',
+				nome: 'v5Bateria',
+				de: b.at('cada') - 0.15,
+				ate: b.say('com energia renovada').fim + 0.7,
+				dados: {enche: b.at('cada'), renovada: b.at('renovada')},
+				esconderLegenda: true,
+				som: 'pro_swipe',
+				sons: [{em: b.at('renovada'), som: 'pro_pop', ganho: 0.6}],
+			},
+			// 8. O que o ambiente traz
+			{
+				tipo: 'chips',
+				de: b.at('mudança') - 0.05,
+				ate: b.at('enxerga') - 0.35,
+				itens: [
+					{texto: 'MUDANÇA DE AMBIENTE', em: b.at('mudança')},
+					{texto: 'AGREGA NA OPERAÇÃO', em: b.at('agrega')},
+					{texto: 'UM INSIGHT NOVO', em: b.at('insight')},
+				],
+				y: 1080,
+				numerado: true,
+				esconderLegenda: true,
+				som: 'pro_tick',
+				sons: [
+					{em: b.at('agrega'), som: 'pro_tick', ganho: 0.7},
+					{em: b.at('insight'), som: 'pro_tick', ganho: 0.7},
+				],
+			},
+			// 9. Frase-chave: GASTO e SUPÉRFLUO caem, INVESTIMENTO bate em ouro; os ganhos entram embaixo
+			{
+				tipo: 'peca',
+				nome: 'v5Investimento',
+				modo: 'cheia',
+				de: b.at('enxerga') - 0.25,
+				ate: b.say('um ambiente, entendeu').fim + 0.35,
+				dados: {
+					gasto: b.at('gasto'),
+					superfluo: b.at('supérfluo'),
+					investimento: b.at('investimento'),
+					networking: b.at('networking'),
+					amizade: b.at('amizade'),
+					ambiente: b.at('ambiente', 2),
+				},
+				esconderLegenda: true,
+				som: 'pro_whoosh',
+				sons: [
+					{em: b.at('gasto'), som: 'pro_tick', ganho: 0.6},
+					{em: b.at('supérfluo'), som: 'pro_tick', ganho: 0.6},
+					{em: b.at('investimento'), som: 'pro_pop', ganho: 0.8},
+				],
+			},
+			// 10. A bagagem de volta para casa: cartas
+			{
+				tipo: 'cards3d',
+				de: b.at('bagagem', 2) - 0.15,
+				ate: b.at('tornar') - 0.3,
+				itens: [
+					{texto: 'BAGAGEM', em: b.at('bagagem', 2)},
+					{texto: 'INFORMAÇÃO', em: b.at('informação')},
+					{texto: 'APLICAR', em: b.at('aplicar')},
+				],
+				y: 1010,
+				som: 'pro_pouso',
+				sons: [
+					{em: b.at('informação'), som: 'pro_pouso', ganho: 0.8},
+					{em: b.at('aplicar'), som: 'pro_pouso', ganho: 0.8},
+				],
+			},
+			// 11. Obeso intelectual: cérebro pesado e lento → sem prática (tela cheia)
+			{
+				tipo: 'peca',
+				nome: 'v5Obeso',
+				modo: 'cheia',
+				de: b.at('tornar') - 0.15,
+				ate: b.say('na sua operação').fim + 0.3,
+				dados: {obeso: b.at('obeso'), intelectual: b.at('intelectual'), praticar: b.at('praticar'), adiantar: b.at('adiantar')},
+				esconderLegenda: true,
+				som: 'pro_whoosh',
+				sons: [
+					{em: b.at('obeso'), som: 'pro_pouso', ganho: 0.7},
+					{em: b.at('praticar'), som: 'pro_tick', ganho: 0.6},
+				],
+			},
+			// 12. Pergunta à Isabela: R$ 20 mil em prata
 			{
 				tipo: 'numero3d',
-				de: b.at('20') - 0.15,
-				ate: fim(b, 'pergunta2') + 0.1,
+				de: b.at('20') - 0.2,
+				ate: b.say('para estar num ambiente desse').fim + 0.2,
 				texto: 'R$ 20 MIL',
 				rotulo: 'VOCÊ INVESTIRIA?',
 				metal: 'branco',
@@ -200,43 +283,75 @@ export const entrevista3V5: Edit = {
 				esconderLegenda: true,
 				som: 'pro_pop',
 			},
-			// 8. Resposta da Isabela: o que se ganha, em cartas 3D
+			// 13. Resposta da Isabela: o ciclo do evento
 			{
-				tipo: 'cards3d',
-				de: b.at('investimento', 2) - 0.1,
-				ate: ini(b, 'siga') - 0.15,
-				itens: [
-					{texto: 'INVESTIMENTO', em: b.at('investimento', 2)},
-					{texto: 'INSIGHTS', em: b.at('insight')},
-					{texto: 'OS MELHORES', em: b.at('melhores')},
-				],
-				y: 1010,
-				som: 'pro_pouso',
+				tipo: 'peca',
+				nome: 'v5Ciclo',
+				de: b.at('insight', 2) - 0.2,
+				ate: b.say('então com certeza').fim + 0.3,
+				dados: {
+					itens: [
+						{texto: 'INSIGHT', em: b.at('insight', 2)},
+						{texto: 'OS MELHORES', em: b.at('melhores')},
+						{texto: 'APRENDE', em: b.at('aprende')},
+						{texto: 'APLICA', em: b.at('aplica')},
+					],
+				},
+				esconderLegenda: true,
+				som: 'pro_swipe',
 				sons: [
-					{em: b.at('insight'), som: 'pro_pouso', ganho: 0.8},
-					{em: b.at('melhores'), som: 'pro_pouso', ganho: 0.8},
+					{em: b.at('melhores'), som: 'pro_tick', ganho: 0.6},
+					{em: b.at('aprende'), som: 'pro_tick', ganho: 0.6},
+					{em: b.at('aplica'), som: 'pro_tick', ganho: 0.6},
 				],
 			},
-			// 9. Siga cada um
+			// 14. CTA: siga cada um
 			{
 				tipo: 'siga',
-				de: ini(b, 'siga') - 0.05,
-				ate: fimFala + 0.1,
+				de: b.at('siga') - 0.05,
+				ate: b.say('vamos para cima').fim + 0.25,
 				itens: [
-					{texto: 'RICARDO', em: ini(b, 'siga')},
-					{texto: 'ISABELA', em: b.at('Isabela', 2)},
-					{texto: 'MVM', em: b.at('MVM', 2)},
+					{texto: 'DANILOW', em: b.at('Danilo')},
+					{texto: 'RICARDO', em: b.say('siga o Ricardo').inicio},
+					{texto: 'ISABELA', em: b.say('siga a Isabela').inicio},
+					{texto: 'MVM', em: b.say('siga o MVM').inicio},
 				],
 				y: 1040,
 				esconderLegenda: true,
 				som: 'pro_swipe',
 				sons: [
-					{em: b.at('Isabela', 2), som: 'pro_swipe', ganho: 0.7},
-					{em: b.at('MVM', 2), som: 'pro_swipe', ganho: 0.7},
+					{em: b.say('siga o Ricardo').inicio, som: 'pro_swipe', ganho: 0.6},
+					{em: b.say('siga a Isabela').inicio, som: 'pro_swipe', ganho: 0.6},
+					{em: b.say('siga o MVM').inicio, som: 'pro_swipe', ganho: 0.6},
 				],
 			},
-			// 10. Cartão final
-			{tipo: 'final', de: fimFala + 0.1, ate: fimFala + 2.4, marca: 'MVM', linha2: 'CREATORS', sub: 'EVENTO EM FLORIPA', tres: true, som: 'pro_logo'},
+			// 15. Esteja nesse ambiente
+			{
+				tipo: 'chips',
+				de: b.at('puder') - 0.1,
+				ate: b.at('faça') - 0.3,
+				itens: [
+					{texto: 'NUM EVENTO', em: b.say('num evento', 2).inicio},
+					{texto: 'COM QUEM VIVE DO DIGITAL', em: b.at('pessoas')},
+				],
+				y: 1080,
+				esconderLegenda: true,
+				som: 'pro_tick',
+			},
+			// 16. Fecho: nunca é gasto, sempre investimento
+			{
+				tipo: 'frase',
+				de: b.at('faça') - 0.05,
+				ate: fimFala + 0.6,
+				palavras: [
+					{texto: 'NUNCA É GASTO', em: b.say('nunca vai ser gasto').inicio},
+					{texto: 'SEMPRE', em: sempre[0]},
+					{texto: 'INVESTIMENTO', em: sempre[2], destaque: true},
+				],
+				som: 'pro_frase',
+			},
+			// 17. Cartão final
+			{tipo: 'final', de: fimFala + 0.65, ate: fimFala + 2.95, marca: 'MVM', linha2: 'CREATORS', sub: 'EVENTO EM FLORIPA', tres: true, som: 'pro_logo'},
 		];
 	},
 };
