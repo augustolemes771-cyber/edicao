@@ -183,6 +183,7 @@ export const entrevistaPista: Edit = {
 	},
 	cenas: (b) => {
 		const fimFala = fim(b, 'cta');
+		const zero = b.at('Zero');
 		return [
 			// 1. Gancho: o resultado dos dois, um de cada vez (ouro para a live, prata para a IA: o duelo)
 			{
@@ -195,7 +196,7 @@ export const entrevistaPista: Edit = {
 				nomeOuro: true,
 				em: b.at('10') - 0.2,
 				esconderLegenda: true,
-				som: 'pop',
+				som: 'pro_pop',
 			},
 			{
 				tipo: 'numero3d',
@@ -208,30 +209,32 @@ export const entrevistaPista: Edit = {
 				metal: 'branco',
 				em: b.at('10', 2) - 0.2,
 				esconderLegenda: true,
-				som: 'pop',
+				som: 'pro_pop',
 			},
-			// 2. Pergunta 1: o tema sobe ao topo (LIVE)
+			// 2. Pergunta 1 (positivo da live): medalha de "+" que salta da grade girando como moeda e assenta
 			{
-				tipo: 'selo',
-				de: b.at('positivos') - 0.1,
+				tipo: 'motion3d',
+				modelo: 'positivoLive',
+				de: b.at('pontos') - 0.15,
 				ate: fim(b, 'pergunta1') + 0.05,
-				texto: 'PONTOS POSITIVOS',
+				linhas: [{texto: 'PONTOS POSITIVOS', em: b.at('pontos')}],
 				chip: 'LIVE',
-				emChip: b.say('fazer live shopping').inicio,
-				y: 380,
-				esconderLegenda: true,
-				som: 'tick',
+				som: 'pro_swipe',
+				sons: [{em: b.at('pontos') + 0.45, som: 'pro_pouso', ganho: 0.8}],
 			},
-			// 3. "um celular e internet": celular 3D voa ao centro com o texto 3D
+			// 3. "um celular e internet": celular realista entra girando, o sinal sai dele e o globo da internet acende as conexões
 			{
-				tipo: 'celular3d',
+				tipo: 'motion3d',
+				modelo: 'celularInternet',
 				de: ini(b, 'resposta1') - 0.05,
 				ate: b.at('Duas') - 0.08,
 				linhas: [
 					{texto: 'UM CELULAR', em: b.at('celular')},
-					{texto: '+ INTERNET', em: b.at('internet.')},
+					{texto: '+ INTERNET', em: b.at('internet.'), metal: 'ouro'},
 				],
-				som: 'whoosh',
+				marcos: [b.at('internet.') - 0.1],
+				som: 'pro_whoosh',
+				sons: [{em: b.at('internet.'), som: 'pro_pulso', ganho: 0.6}],
 			},
 			// 4. 2 HORAS por dia → R$ 10 MIL de lucro
 			{
@@ -243,41 +246,43 @@ export const entrevistaPista: Edit = {
 				metal: 'branco',
 				em: b.at('Duas'),
 				esconderLegenda: true,
-				som: 'tick',
+				som: 'pro_tick',
 			},
 			{
 				tipo: 'numero3d',
 				de: b.at('10', 3) - 0.15,
-				ate: b.at('Zero') - 0.08,
+				ate: zero - 0.45,
 				texto: 'R$ 10 MIL',
 				rotulo: 'DE LUCRO',
 				abaixo: 'NO SEU BOLSO',
 				em: b.at('10', 3) - 0.1,
 				esconderLegenda: true,
-				som: 'pop',
+				som: 'pro_pop',
 			},
-			// 5. Zero barreira
+			// 5. Zero barreira: a parede de tijolos se monta, o ZERO bate e ela explode no "barreira"
 			{
-				tipo: 'frase',
-				de: b.at('Zero') - 0.05,
-				ate: fim(b, 'resposta1') + 0.12,
-				palavras: [
-					{texto: 'ZERO', em: b.at('Zero'), destaque: true},
-					{texto: 'BARREIRA', em: b.at('barreira')},
+				tipo: 'motion3d',
+				modelo: 'barreira',
+				de: zero - 0.45,
+				ate: fim(b, 'resposta1') + 0.3,
+				linhas: [
+					{texto: 'ZERO', em: zero, metal: 'ouro'},
+					{texto: 'BARREIRA', em: b.at('barreira'), metal: 'branco'},
 				],
-				som: 'whoosh',
+				marcos: [b.at('barreira')],
+				som: 'pro_whoosh_curto',
+				sons: [{em: b.at('barreira'), som: 'pro_quebra', ganho: 0.75}],
 			},
-			// 6. Pergunta 2: o tema troca para IA
+			// 6. Pergunta 2 (positivo da IA): chip de IA sobe da grade e as trilhas de ouro acendem
 			{
-				tipo: 'selo',
-				de: b.at('positivos', 2) - 0.1,
+				tipo: 'motion3d',
+				modelo: 'positivoIa',
+				de: b.at('pontos', 2) - 0.15,
 				ate: fim(b, 'pergunta2') + 0.05,
-				texto: 'PONTOS POSITIVOS',
+				linhas: [{texto: 'PONTOS POSITIVOS', em: b.at('pontos', 2)}],
 				chip: 'IA',
-				emChip: b.at('IA', 2),
-				y: 380,
-				esconderLegenda: true,
-				som: 'tick',
+				som: 'pro_swipe',
+				sons: [{em: b.at('pontos', 2) + 0.4, som: 'pro_pulso', ganho: 0.6}],
 			},
 			// 7. Os três "não precisa" em cartas 3D que viram e ficam em leque
 			{
@@ -290,25 +295,24 @@ export const entrevistaPista: Edit = {
 					{texto: 'SEM ESTOQUE', em: b.at('estoque.')},
 				],
 				y: 1010,
-				som: 'tick',
+				som: 'pro_pouso',
 				sons: [
-					{em: b.at('anúncio,'), som: 'tick'},
-					{em: b.at('estoque.'), som: 'tick'},
+					{em: b.at('anúncio,'), som: 'pro_pouso', ganho: 0.8},
+					{em: b.at('estoque.'), som: 'pro_pouso', ganho: 0.8},
 				],
 			},
-			// 8. Pergunta 3: o lado negativo da live
+			// 8. Pergunta 3 (negativo da live): placa de alerta desce pendurada e balança
 			{
-				tipo: 'selo',
-				de: b.at('negativos') - 0.1,
+				tipo: 'motion3d',
+				modelo: 'negativoLive',
+				de: b.at('pontos', 3) - 0.15,
 				ate: fim(b, 'pergunta3') + 0.05,
-				texto: 'PONTOS NEGATIVOS',
+				linhas: [{texto: 'PONTOS NEGATIVOS', em: b.at('pontos', 3)}],
 				chip: 'LIVE',
-				emChip: b.say('fazer live shopping', 2).inicio,
-				y: 380,
-				esconderLegenda: true,
-				som: 'tick',
+				som: 'pro_swipe',
+				sons: [{em: b.at('pontos', 3) + 0.35, som: 'pro_pouso', ganho: 0.8}],
 			},
-			// 9. "os familiares vão te pedir dinheiro emprestado": as mensagens da família chegando no celular
+			// 9. "os familiares vão te pedir dinheiro emprestado": mensagens da família chegando, com som baixo de mensagem em cada uma
 			{
 				tipo: 'notificacoes',
 				de: b.at('familiares') - 0.1,
@@ -319,64 +323,68 @@ export const entrevistaPista: Edit = {
 					{titulo: 'Mãe', texto: 'e aquele empréstimo?', em: b.at('emprestado.')},
 				],
 				y: 300,
+				icone: 'mensagem',
+				somItem: 'pro_msg',
+				ganhoItem: 0.45,
 				esconderLegenda: true,
-				som: 'tick',
-				sons: [
-					{em: b.at('pedir'), som: 'tick'},
-					{em: b.at('emprestado.'), som: 'tick'},
-				],
+				som: null,
 			},
-			// 10. Pergunta 4: o lado negativo da IA
+			// 10. Pergunta 4 (negativo da IA): balança de ouro, o prato do "−" pesa no "negativos"
 			{
-				tipo: 'selo',
-				de: b.say('principais pontos negativos de trabalhar com IA').inicio + 0.3,
+				tipo: 'motion3d',
+				modelo: 'negativoIa',
+				de: b.at('pontos', 4) - 0.15,
 				ate: fim(b, 'pergunta4') + 0.3,
-				texto: 'PONTOS NEGATIVOS',
+				linhas: [{texto: 'PONTOS NEGATIVOS', em: b.at('pontos', 4)}],
 				chip: 'IA',
-				emChip: b.say('trabalhar com IA no TikTok', 2).inicio + 0.4,
-				y: 380,
-				esconderLegenda: true,
-				som: 'tick',
+				marcos: [b.at('negativos', 2)],
+				som: 'pro_swipe',
+				sons: [{em: b.at('negativos', 2), som: 'pro_tick', ganho: 0.8}],
 			},
-			// 11. As duas liberdades, uma por vez
+			// 11. "ficar só viajando": avião cruza o céu acima dele
 			{
-				tipo: 'chips',
-				de: b.at('liberdade') - 0.05,
+				tipo: 'aviao',
+				de: ini(b, 'resposta4') + 0.05,
+				ate: b.at('viajando.') + 0.9,
+				y: 210,
+				som: 'pro_aviao',
+			},
+			// 12. Liberdade financeira (pilha de moedas) e geográfica (globo com pino)
+			{
+				tipo: 'motion3d',
+				modelo: 'liberdade',
+				de: b.at('liberdade') - 0.1,
 				ate: b.at('Olha') - 0.05,
-				itens: [
-					{texto: 'LIBERDADE FINANCEIRA', em: b.at('liberdade')},
-					{texto: 'LIBERDADE GEOGRÁFICA', em: b.at('liberdade', 2)},
+				linhas: [
+					{texto: 'FINANCEIRA', em: b.at('financeira,')},
+					{texto: 'GEOGRÁFICA', em: b.at('geográfica.')},
 				],
-				y: 1080,
-				esconderLegenda: true,
-				som: 'swish',
-				sons: [{em: b.at('liberdade', 2), som: 'tick'}],
+				troca: true,
+				chip: 'LIBERDADE',
+				marcos: [b.at('liberdade'), b.at('liberdade', 2)],
+				som: 'pro_swipe',
+				sons: [{em: b.at('liberdade', 2), som: 'pro_pouso', ganho: 0.8}],
 			},
-			// 12. "as minhas IAs estão trabalhando para mim": a live da IA rodando sozinha, cheia
+			// 13. "as minhas IAs estão trabalhando para mim" até "não reclama": robôs filmando para ele; o relógio voa no "24"
 			{
-				tipo: 'live',
-				de: b.at('IAs') - 0.05,
-				ate: b.at('funcionária') - 0.1,
-				host: 'IA do Ferreto',
-				curtidas: '12,7 mil curtidas',
-				espectadores: '2,3 mil',
-				comentarios: [
-					{nome: 'Ana', texto: 'quero 2!'},
-					{nome: 'Rui', texto: 'comprei 🔥'},
-				],
-				som: 'whoosh',
-			},
-			// 13. A funcionária que trabalha 24 horas
-			{
-				tipo: 'numero3d',
-				de: b.at('24') - 0.25,
+				tipo: 'motion3d',
+				modelo: 'robos',
+				de: b.at('IAs') - 0.1,
 				ate: b.at('Essa') - 0.08,
-				texto: '24 HORAS',
-				rotulo: 'SEM SALÁRIO',
-				abaixo: 'E NÃO RECLAMA',
-				em: b.at('24') - 0.2,
-				esconderLegenda: true,
-				som: 'pop',
+				linhas: [
+					{texto: 'MINHAS IAs', em: b.at('IAs'), metal: 'branco'},
+					{texto: 'FUNCIONÁRIA', em: b.at('funcionária')},
+					{texto: 'SEM SALÁRIO', em: b.at('salário,'), metal: 'branco'},
+					{texto: '24 HORAS', em: b.at('24')},
+					{texto: 'NÃO RECLAMA', em: b.at('reclama.'), metal: 'branco'},
+				],
+				troca: true,
+				marcos: [b.at('24')],
+				som: 'pro_robo',
+				sons: [
+					{em: b.at('24'), som: 'pro_tick', ganho: 0.8},
+					{em: b.at('reclama.'), som: 'pro_pop', ganho: 0.6},
+				],
 			},
 			// 14. A síntese: clarão + frase
 			{
@@ -387,7 +395,7 @@ export const entrevistaPista: Edit = {
 					{texto: 'A VANTAGEM', em: b.at('Essa')},
 					{texto: 'NEGATIVA', em: b.at('negativa.'), destaque: true},
 				],
-				som: 'whoosh',
+				som: 'pro_frase',
 			},
 			// 15. Siga cada um, no nome
 			{
@@ -400,7 +408,8 @@ export const entrevistaPista: Edit = {
 				],
 				y: 1040,
 				esconderLegenda: true,
-				som: 'swish',
+				som: 'pro_swipe',
+				sons: [{em: b.at('Siga', 2), som: 'pro_swipe', ganho: 0.7}],
 			},
 			// 16. CTA: o que se aprende no ecossistema, um chip por vez, e o MVM Creators
 			{
@@ -414,7 +423,11 @@ export const entrevistaPista: Edit = {
 				],
 				y: 1080,
 				esconderLegenda: true,
-				som: 'tick',
+				som: 'pro_tick',
+				sons: [
+					{em: b.at('Sem', 2), som: 'pro_tick', ganho: 0.8},
+					{em: b.at('qualquer'), som: 'pro_tick', ganho: 0.8},
+				],
 			},
 			{
 				tipo: 'siga',
@@ -423,10 +436,10 @@ export const entrevistaPista: Edit = {
 				itens: [{texto: 'MVM CREATORS', em: b.at('Segue')}],
 				y: 1040,
 				esconderLegenda: true,
-				som: 'swish',
+				som: 'pro_swipe',
 			},
-			// 17. Cartão final
-			{tipo: 'final', de: fimFala + 0.1, ate: fimFala + 2.4, marca: 'MVM Creators', sub: 'LIVE × IA NO TIKTOK SHOP', som: 'whoosh'},
+			// 17. Cartão final: MVM em ouro e CREATORS em branco, texto 3D sobre a grade (sem anel)
+			{tipo: 'final', de: fimFala + 0.1, ate: fimFala + 2.4, marca: 'MVM', linha2: 'CREATORS', sub: 'LIVE × IA NO TIKTOK SHOP', tres: true, som: 'pro_logo'},
 		];
 	},
 };
