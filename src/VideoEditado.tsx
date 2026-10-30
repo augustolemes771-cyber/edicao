@@ -455,19 +455,20 @@ export const VideoEditado: React.FC<PropsVideo> = ({projeto, duracaoFonte}) => {
 				}}
 			>
 				{camada(telas)}
-				{trans.deslize.borrao !== 0 ? (
-					// O plano desliza com sobra de escala para a borda não aparecer.
-					<AbsoluteFill
-						style={{
-							transform: `translate(${trans.deslize.x * 0.1 * width}px, ${trans.deslize.y * 0.1 * height}px) scale(${1 + Math.abs(trans.deslize.borrao) * 0.24})`,
-							filter: Math.abs(trans.deslize.borrao) > 0.03 ? 'url(#deslize)' : undefined,
-						}}
-					>
-						<Camera edit={edit} montagem={montagem} telas={telas} atras={camada(atras)} />
-					</AbsoluteFill>
-				) : (
+				{/* O plano desliza com sobra de escala para a borda não aparecer. O invólucro fica sempre montado: trocar a árvore
+				    no deslize remontava o vídeo (no Studio: travada, tela preta e áudio sumindo em cada transição). */}
+				<AbsoluteFill
+					style={
+						trans.deslize.borrao !== 0
+							? {
+									transform: `translate(${trans.deslize.x * 0.1 * width}px, ${trans.deslize.y * 0.1 * height}px) scale(${1 + Math.abs(trans.deslize.borrao) * 0.24})`,
+									filter: Math.abs(trans.deslize.borrao) > 0.03 ? 'url(#deslize)' : undefined,
+								}
+							: undefined
+					}
+				>
 					<Camera edit={edit} montagem={montagem} telas={telas} atras={camada(atras)} />
-				)}
+				</AbsoluteFill>
 				{camada(cheias)}
 				{camada(sobre)}
 				{edit.legenda && <Legenda paginas={montagem.legenda} cfg={{...edit.legenda, falantes: montagem.falantes}} />}
