@@ -93,8 +93,6 @@ export const CelularReal: React.FC<{segundos: number}> = ({segundos}) => {
 	}, []);
 	const modulo = useMemo(() => new RoundedBoxGeometry(0.62, 0.62, 0.06, 4, 0.12), []);
 	const telaMat = useTelaLive(segundos);
-	// Reflexo de estúdio que corre no vidro.
-	const reflexo = ((segundos * 0.45) % 1.6) - 0.3;
 	return (
 		<group>
 			<mesh geometry={corpo} material={m.titanio} />
