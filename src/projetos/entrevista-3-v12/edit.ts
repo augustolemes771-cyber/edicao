@@ -278,14 +278,14 @@ export const entrevista3V12: Edit = {
 				ate: b.at('vamos') - 0.05,
 				itens: [
 					{texto: 'DANILOW', em: ini(b, 'siga')},
-					{texto: 'MARCI', em: b.at('Marci,', 3)},
+					{texto: 'MARCI', em: b.at('Marci,', 2)},
 					{texto: 'MVM', em: b.at('MVM,')},
 				],
 				y: 1040,
 				esconderLegenda: true,
 				som: 'pro_swipe',
 				sons: [
-					{em: b.at('Marci,', 3), som: 'pro_swipe', ganho: 0.7},
+					{em: b.at('Marci,', 2), som: 'pro_swipe', ganho: 0.7},
 					{em: b.at('MVM,'), som: 'pro_swipe', ganho: 0.7},
 				],
 			},
