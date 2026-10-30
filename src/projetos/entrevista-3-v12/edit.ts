@@ -98,6 +98,7 @@ export const entrevista3V12: Edit = {
 			...punches(b, 'porque o TikTok Shop aqui no Brasil é recente', 0.55),
 			...punches(b, 'E o que eu falo é, você precisa investir em um método certo, pessoas confiáveis e o método Danilo é o melhor método pra você começar', 0.55),
 			...punches(b, 'se você quer fazer de cara lives, escolhendo o produto certo, escolhendo o timing', 0.55),
+			...punches(b, 'Hoje, por exemplo, eu consigo tirar o meu salário de farmacêutica que eu ganhava antigamente em poucas horas, nem um dia', 0.9),
 			{tipo: 'chicote', em: b.say('não demora muito tempo').inicio},
 			z(b.say('não demora muito tempo').inicio, 1),
 			{tipo: 'flash', em: b.at('começa') - 0.04},
@@ -182,7 +183,7 @@ export const entrevista3V12: Edit = {
 			{
 				tipo: 'selo',
 				de: b.at('compensa') - 0.1,
-				ate: b.say('compensa começar hoje no TikTok Shop').fim + 0.6,
+				ate: b.say('compensa demais').inicio - 0.1,
 				texto: 'COMPENSA COMEÇAR?',
 				chip: 'HOJE',
 				emChip: b.at('hoje', 2),
@@ -207,7 +208,7 @@ export const entrevista3V12: Edit = {
 			// 6. TikTok Shop recente no Brasil: selo acima da cabeça
 			{
 				tipo: 'selo',
-				de: b.at('Brasil') - 0.1,
+				de: b.say('o TikTok Shop aqui no Brasil').inicio - 0.05,
 				ate: b.at('grande') - 0.35,
 				texto: 'RECENTE NO BRASIL',
 				chip: 'TIKTOK SHOP',
