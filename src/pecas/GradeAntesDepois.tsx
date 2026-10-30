@@ -8,6 +8,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, random, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import type {CenaNoPlano} from '../motor/plano';
+import {GradeReta} from './FundoMotion';
 import {ThreeCanvas} from '@remotion/three';
 import * as THREE from 'three';
 import {playfair, poppins} from '../motor/tema';
@@ -18,31 +19,10 @@ const lim = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 const OURO = '#E8C27A';
 const OURO_TEXTO = 'linear-gradient(180deg,#FFF1C9 0%,#F2D08A 40%,#E8C27A 65%,#C9974A 100%)';
 
-// Plano de grade em perspectiva; teto = espelhado (também usado no presoClt e nas cartas). desloca: avanço das linhas em px.
-// cores: [linhas horizontais, verticais] (padrão ouro e lilás; o medo usa vermelho e violeta apagados).
-export const Plano: React.FC<{teto?: boolean; desloca: number; abre: number; cores?: [string, string]}> = ({teto, desloca, abre, cores = ['rgba(232,194,122,0.55)', 'rgba(190,150,255,0.45)']}) => {
-	const {width, height} = useVideoConfig();
-	const cel = 120;
-	return (
-		<div
-			style={{
-				position: 'absolute',
-				left: -width,
-				width: width * 3,
-				height: height * 1.2,
-				top: teto ? -height * 1.2 + height * 0.36 : height * 0.64,
-				transformOrigin: teto ? '50% 100%' : '50% 0%',
-				transform: `rotateX(${(teto ? -1 : 1) * (90 - 18 * abre)}deg)`,
-				backgroundImage: `linear-gradient(${cores[0]} 2px, transparent 2px), linear-gradient(90deg, ${cores[1]} 2px, transparent 2px)`,
-				backgroundSize: `${cel}px ${cel}px`,
-				backgroundPosition: `50% ${teto ? -desloca : desloca}px`,
-				WebkitMaskImage: `linear-gradient(${teto ? '0deg' : '180deg'}, rgba(0,0,0,0) 0%, #000 22%, #000 70%, rgba(0,0,0,0.2) 100%)`,
-				maskImage: `linear-gradient(${teto ? '0deg' : '180deg'}, rgba(0,0,0,0) 0%, #000 22%, #000 70%, rgba(0,0,0,0.2) 100%)`,
-				opacity: teto ? 0.45 : 0.9,
-			}}
-		/>
-	);
-};
+// Grade de fundo dos motions de tela inteira (também usada no presoClt, no medo3d e no cartão final). Era chão e teto em
+// perspectiva; o usuário pediu grade reta, sem inclinação, no tom do fundo e com espaçamento médio (30/10/2026): agora o
+// chão desenha a GradeReta de FundoMotion e o teto não desenha nada. Os parâmetros antigos ficam para não mexer nas peças.
+export const Plano: React.FC<{teto?: boolean; desloca: number; abre: number; cores?: [string, string]}> = ({teto}) => (teto ? null : <GradeReta />);
 
 const Cartao: React.FC<{lado: -1 | 1; rotulo: string; valor?: string; entra: number; destaque?: boolean}> = ({lado, rotulo, valor, entra, destaque}) => {
 	const frame = useCurrentFrame();

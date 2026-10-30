@@ -12,6 +12,7 @@ import * as THREE from 'three';
 import type {CenaNoPlano} from '../motor/plano';
 import {poppins} from '../motor/tema';
 import {Plano} from './GradeAntesDepois';
+import {GradeReta} from './FundoMotion';
 import {CameraTremor, Linha3D, Luzes} from './tres/Texto3D';
 import {Aviao, Balanca, CelularReal, ChipIa, Globo, MedalhaMais, Parede, PilhaMoedas, Pino, PlacaAlerta, Relogio24, Robo, Sinal} from './tres/ObjetosPista';
 import {CartaoVideo, Cracha, Holerite, PlacaZero, SolLua} from './tres/ObjetosIas';
@@ -28,27 +29,6 @@ const suave = (x: number) => 1 - Math.pow(1 - x, 3);
 const MEIA = {titulo: -0.45, objeto: -1.6, baixo: -2.5, escala: 0.72};
 const CHEIA = {titulo: 3.35, objeto: 0, baixo: -2.55, escala: 1};
 
-// Grade reta, fina e de uma cor só, andando devagar para baixo. topo: onde começa (fração da altura).
-const GradeReta: React.FC<{topo: number; desloca: number}> = ({topo, desloca}) => {
-	const {height} = useVideoConfig();
-	const mascara = `linear-gradient(180deg, rgba(0,0,0,0) 0%, #000 ${topo > 0 ? 10 : 18}%, #000 ${topo > 0 ? 100 : 82}%, rgba(0,0,0,${topo > 0 ? 1 : 0}) 100%)`;
-	return (
-		<div
-			style={{
-				position: 'absolute',
-				left: 0,
-				right: 0,
-				top: height * topo,
-				bottom: 0,
-				backgroundImage: `linear-gradient(${COR_GRADE} 2px, transparent 2px), linear-gradient(90deg, ${COR_GRADE} 2px, transparent 2px)`,
-				backgroundSize: '54px 54px',
-				backgroundPosition: `center ${desloca}px`,
-				WebkitMaskImage: mascara,
-				maskImage: mascara,
-			}}
-		/>
-	);
-};
 
 // Cena das IAs em tela cheia, acompanhando a fala: robôs filmando e os vídeos subindo para o feed → a "funcionária" ganha o
 // crachá → holerite carimbado com R$ 0 → sol e lua girando com o relógio (24 horas) → placa "RECLAMAÇÕES 0" e o robô acena.
@@ -228,13 +208,13 @@ export const Motion3D: React.FC<{cena: De<'motion3d'>}> = ({cena}) => {
 			{cena.cheia ? (
 				<AbsoluteFill style={{opacity: entrada}}>
 					<AbsoluteFill style={{background: 'radial-gradient(ellipse at 50% 45%, #3d1f74 0%, #1E0F3A 55%, #0b051c 100%)'}} />
-					<GradeReta topo={0} desloca={t * 30} />
+					<GradeReta />
 				</AbsoluteFill>
 			) : (
 				<AbsoluteFill style={{opacity: entrada}}>
 					{/* Véu roxo translúcido: o vídeo continua bem visível atrás. */}
 					<AbsoluteFill style={{background: 'linear-gradient(180deg, rgba(30,15,58,0) 45%, rgba(30,15,58,0.42) 54%, rgba(24,11,48,0.55) 100%)'}} />
-					<GradeReta topo={0.5} desloca={t * 30} />
+					<GradeReta topo={0.5} />
 				</AbsoluteFill>
 			)}
 			{/* Poeira de ouro lenta. */}
