@@ -30,11 +30,9 @@ const F = {
 	pergunta4: ['Agora você, Ferreto', 'principais pontos negativos de trabalhar com IA'],
 	resposta4: ['Você vai querer ficar só viajando', 'Essa é a vantagem negativa'],
 	obrigado: ['Obrigado, TikTok Shop', 'Siga o Ferreto para aprender com IA'],
-	cta: ['Se você quer aprender como funciona todo esse ecossistema', 'Segue o MVM Creators'],
+	// O CTA foi gravado várias vezes: só a tomada boa segue com "Ganhar dinheiro".
+	cta: ['Se você quer aprender como funciona todo esse ecossistema Ganhar', 'Segue o MVM Creators'],
 } as const;
-// No original, a tomada boa do CTA é a 2ª vez que ele fala "Se você quer aprender como funciona todo esse ecossistema";
-// no vídeo editado ela é a única (b usa a 1ª).
-const OCORRENCIA: Partial<Record<keyof typeof F, number>> = {cta: 2};
 const ini = (b: Busca, k: keyof typeof F) => b.say(F[k][0]).inicio;
 const fim = (b: Busca, k: keyof typeof F) => b.say(F[k][1]).fim;
 
@@ -62,7 +60,7 @@ export const entrevistaPista: Edit = {
 	silencios: silencios as Trecho[],
 	transcricao,
 	trechos: (o) => {
-		const fala = (k: keyof typeof F, folga = 0.08): Trecho => [o.say(F[k][0], OCORRENCIA[k] ?? 1).inicio - 0.06, o.say(F[k][1]).fim + folga];
+		const fala = (k: keyof typeof F, folga = 0.08): Trecho => [o.say(F[k][0]).inicio - 0.06, o.say(F[k][1]).fim + folga];
 		const lista: Trecho[] = (Object.keys(F) as (keyof typeof F)[]).map((k) => fala(k));
 		// Trechos vizinhos que se sobrepõem no original repetem quadros e palavras: divide a sobreposição ao meio.
 		for (let i = 1; i < lista.length; i++) {
