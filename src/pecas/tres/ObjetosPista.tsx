@@ -498,7 +498,8 @@ export const Pino: React.FC<{q: number; entra: number}> = ({q, entra}) => {
 // ---------------------------------------------------------------- robôs
 
 // Robô de vidro branco com visor roxo e olhos de ouro, filmando com um celular na mão (REC piscando).
-export const Robo: React.FC<{segundos: number; fase: number}> = ({segundos, fase}) => {
+// aceno: 0 → 1 levanta o braço esquerdo acenando; filma: false esconde o celular.
+export const Robo: React.FC<{segundos: number; fase: number; aceno?: number; filma?: boolean}> = ({segundos, fase, aceno = 0, filma = true}) => {
 	const m = useMats();
 	const cabeca = useMemo(() => new RoundedBoxGeometry(0.8, 0.62, 0.62, 5, 0.18), []);
 	const visor = useMemo(() => new RoundedBoxGeometry(0.66, 0.34, 0.1, 4, 0.1), []);
@@ -530,7 +531,7 @@ export const Robo: React.FC<{segundos: number; fase: number}> = ({segundos, fase
 				</mesh>
 			</group>
 			{/* Braço direito segura o celular filmando para a frente. */}
-			<group position={[0.42, -0.35, 0.1]} rotation={[-1.1 + Math.sin(t * 2.2) * 0.08, 0, 0.25]}>
+			<group visible={filma} position={[0.42, -0.35, 0.1]} rotation={[-1.1 + Math.sin(t * 2.2) * 0.08, 0, 0.25]}>
 				<mesh position={[0, 0.25, 0]} material={m.branco}>
 					<capsuleGeometry args={[0.08, 0.36, 6, 12]} />
 				</mesh>
@@ -542,7 +543,7 @@ export const Robo: React.FC<{segundos: number; fase: number}> = ({segundos, fase
 					</mesh>
 				</group>
 			</group>
-			<mesh position={[-0.42, -0.6, 0]} rotation={[0, 0, -0.2 + Math.sin(t * 1.9) * 0.1]} material={m.branco}>
+			<mesh position={[-0.42 - 0.12 * aceno, -0.6 + 0.45 * aceno, 0]} rotation={[0, 0, -0.2 + Math.sin(t * 1.9) * 0.1 - aceno * (2.4 + Math.sin(t * 9) * 0.25)]} material={m.branco}>
 				<capsuleGeometry args={[0.08, 0.36, 6, 12]} />
 			</mesh>
 		</group>
