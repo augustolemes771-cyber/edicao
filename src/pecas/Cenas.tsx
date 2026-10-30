@@ -28,6 +28,7 @@ import {GradeAntesDepois} from './GradeAntesDepois';
 import {PresoClt} from './PresoClt';
 import {Cards3D} from './Cards3D';
 import {Medo3D} from './Medo3D';
+import {PECAS} from './registro';
 import {
 	Alertas,
 	Anel,
@@ -357,6 +358,10 @@ const Conteudo: React.FC<Props> = ({cena, pasta}) => {
 			return <Vitoria cena={cena} />;
 		case 'final':
 			return cena.tres ? <Final3D cena={cena} /> : <Final cena={cena} />;
+		case 'peca': {
+			const P = PECAS[cena.nome];
+			return P ? <P cena={cena} /> : null;
+		}
 		case 'motion3d':
 			return <Motion3D cena={cena} />;
 		case 'aviao':
