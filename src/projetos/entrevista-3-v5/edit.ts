@@ -92,7 +92,7 @@ export const entrevista3V5: Edit = {
 			z(b.at('500'), 1.28),
 			z(b.at('comunidade'), 1.12),
 			{tipo: 'chicote', em: ini(b, 'apresenta')},
-			...punches(b, 'estou aqui com o Ricardo, é um top creator aqui do TikTok Shop'),
+			...punches(b, 'é um top creator aqui do TikTok Shop'),
 			{tipo: 'chicote', em: ini(b, 'pergunta')},
 			z(ini(b, 'pergunta'), 1),
 			z(b.at('Rio'), 1.12),
