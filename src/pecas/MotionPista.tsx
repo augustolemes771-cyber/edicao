@@ -247,7 +247,7 @@ export const Motion3D: React.FC<{cena: De<'motion3d'>}> = ({cena}) => {
 				return <div key={i} style={{position: 'absolute', left: x, top: y, width: s, height: s, borderRadius: s, background: OURO, opacity: (0.15 + 0.35 * random(`mo${i}`)) * entrada, boxShadow: `0 0 ${s * 3}px ${OURO}`}} />;
 			})}
 			{cena.chip ? (
-				<div style={{position: 'absolute', top: height * (cena.cheia ? 0.08 : 0.497), width: '100%', display: 'flex', justifyContent: 'center', opacity: chip, transform: `translateY(${(1 - chip) * 16}px)`}}>
+				<div style={{position: 'absolute', top: height * (cena.cheia ? 0.08 : 0.468), width: '100%', display: 'flex', justifyContent: 'center', opacity: chip, transform: `translateY(${(1 - chip) * 16}px)`}}>
 					<div style={{display: 'flex', alignItems: 'center', gap: 14, padding: '10px 28px', borderRadius: 999, background: 'rgba(30,15,58,0.82)', boxShadow: `inset 0 0 0 2px ${OURO}`, fontFamily: poppins, fontWeight: 800, fontSize: 32, letterSpacing: '0.2em', color: '#fff'}}>
 						{cena.chip === 'LIVE' ? <span style={{width: 16, height: 16, borderRadius: 8, background: '#ff3b4d', boxShadow: '0 0 12px #ff3b4d', opacity: 0.6 + 0.4 * Math.sin(t * 8)}} /> : null}
 						<span style={{marginRight: '-0.2em'}}>{cena.chip}</span>

@@ -383,7 +383,7 @@ export const Parede: React.FC<{q: number; quebra: number}> = ({q, quebra}) => {
 	const mats = useMemo(
 		() =>
 			Array.from({length: 4}, (_, i) =>
-				new THREE.MeshStandardMaterial({color: new THREE.Color().setHSL(0.73, 0.32 - i * 0.04, 0.2 + i * 0.035), metalness: 0.15, roughness: 0.7}),
+				new THREE.MeshStandardMaterial({color: new THREE.Color().setHSL(0.74, 0.45 - i * 0.04, 0.09 + i * 0.025), metalness: 0.2, roughness: 0.55}),
 			),
 		[],
 	);
