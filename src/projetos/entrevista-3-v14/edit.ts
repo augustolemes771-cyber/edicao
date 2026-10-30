@@ -102,6 +102,7 @@ export const entrevista3V14: Edit = {
 			z(b.at('ano'), 1.24),
 			{tipo: 'chicote', em: ini(b, 'pergunta')},
 			z(ini(b, 'pergunta'), 1),
+			...punches(b, 'para as pessoas estarem aqui hoje, elas tiveram que'),
 			z(b.at('investir'), 1.1),
 			z(b.at('20'), 1.16),
 			z(b.at('30'), 1.22),
@@ -111,6 +112,8 @@ export const entrevista3V14: Edit = {
 			{tipo: 'chicote', em: ini(b, 'resposta1')},
 			...punches(b, 'para você chegar no próximo nível, você precisa dar um passo', 0.55),
 			...punches(b, 'E esse passo é você investir em você, investir em conhecimento', 0.55),
+			// Por baixo da grade em tela cheia: a volta ao rosto já vem num plano novo
+			...punches(b, 'quer sair do ponto A e ir para o ponto B', 0.6),
 			z(b.at('Investe'), 1.28),
 			...punches(b, 'Investe em conhecimento, investe em outras pessoas, mentoria', 0.55),
 			{tipo: 'foco', em: ini(b, 'mentor')},
@@ -137,6 +140,7 @@ export const entrevista3V14: Edit = {
 				chip: 'MENTORES',
 				emChip: b.at('mentores'),
 				y: 330,
+				esconderLegenda: true,
 				som: 'pro_swipe',
 			},
 			{
@@ -185,7 +189,7 @@ export const entrevista3V14: Edit = {
 			{
 				tipo: 'cards3d',
 				de: b.at('20') - 0.1,
-				ate: fim(b, 'pergunta') + 0.25,
+				ate: b.at('20') + 2.75,
 				itens: [
 					{texto: 'R$ 20 MIL', em: b.at('20')},
 					{texto: 'R$ 30 MIL', em: b.at('30')},

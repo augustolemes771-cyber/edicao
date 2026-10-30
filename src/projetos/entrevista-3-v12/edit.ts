@@ -53,6 +53,10 @@ export const entrevista3V12: Edit = {
 	transcricao,
 	trechos: (o) => {
 		const lista: Trecho[] = (Object.keys(F) as (keyof typeof F)[]).map((k) => [o.say(F[k][0]).inicio - 0.06, o.say(F[k][1]).fim + 0.08]);
+		// Trecho que começa dentro de outro já usado (a síntese logo depois do gancho, fora de ordem) começa no fim dele.
+		for (let i = 0; i < lista.length; i++) {
+			for (let j = 0; j < lista.length; j++) if (j !== i && lista[i][0] > lista[j][0] && lista[i][0] < lista[j][1]) lista[i][0] = lista[j][1];
+		}
 		// Trechos colados ou sobrepostos no original (na ordem) viram um só: não repete palavra.
 		for (let i = lista.length - 1; i > 0; i--) {
 			const vao = lista[i][0] - lista[i - 1][1];
@@ -107,6 +111,7 @@ export const entrevista3V12: Edit = {
 			...punches(b, 'porque o TikTok Shop aqui no Brasil é recente, então é uma', 0.55),
 			...punches(b, 'você precisa investir em um método certo, pessoas confiáveis e o método Danilo é o melhor método pra você começar', 0.55),
 			...punches(b, 'escolhendo o produto certo, escolhendo o timing', 0.55),
+			...punches(b, 'eu consigo tirar o meu salário de farmacêutica que eu ganhava antigamente em poucas horas, nem um dia', 0.6),
 			{tipo: 'chicote', em: ini(b, 'sintese')},
 			z(ini(b, 'sintese'), 1),
 			{tipo: 'flash', em: b.at('começa') - 0.04},
@@ -205,6 +210,7 @@ export const entrevista3V12: Edit = {
 				chip: 'TIKTOK SHOP',
 				emChip: b.at('recente,'),
 				y: 330,
+				esconderLegenda: true,
 				som: 'pro_swipe',
 			},
 			// 6. A grande onda azul: frase estática, palavra por palavra
@@ -267,7 +273,7 @@ export const entrevista3V12: Edit = {
 			{
 				tipo: 'comentario',
 				de: ini(b, 'duvida') - 0.05,
-				ate: fim(b, 'duvida') + 0.15,
+				ate: ini(b, 'siga') - 0.1,
 				texto: 'Tenho uma dúvida...',
 				y: 1060,
 				som: 'pro_digita',
