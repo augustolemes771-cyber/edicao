@@ -115,7 +115,7 @@ export const entrevista3V11: Edit = {
 			z(b.say('Foi assim que funcionou pra mim').inicio, 1.1),
 			{tipo: 'chicote', em: ini(b, 'pergunta2')},
 			z(ini(b, 'pergunta2'), 1),
-			z(b.at('compensa'), 1.12),
+			...punches(b, 'E hoje você acha que compensa a pessoa que tá travada no CLT', 0.6),
 			z(b.at('ratos,'), 1.06),
 			z(b.at('abrir'), 1.18),
 			z(b.say('vale a pena').inicio, 1.08),
@@ -340,6 +340,7 @@ export const entrevista3V11: Edit = {
 				de: b.say('sempre deu certo').inicio - 0.05,
 				ate: fim(b, 'certo') + 0.08,
 				dados: {texto: 'SEMPRE DEU CERTO'},
+				esconderLegenda: true,
 				som: 'pro_pop',
 			},
 			// 18. Síntese
@@ -357,10 +358,10 @@ export const entrevista3V11: Edit = {
 			{
 				tipo: 'notificacoes',
 				de: b.say('ligar a live').inicio - 0.1,
-				ate: fim(b, 'precisa') + 0.7,
+				ate: Math.min(fim(b, 'precisa') + 0.7, ini(b, 'duvida') - 0.08),
 				itens: [
-					{titulo: 'TikTok Shop', texto: 'Live iniciada · 1,2 mil assistindo', em: b.say('ligar a live').inicio},
-					{titulo: 'Nova venda', texto: 'Pedido confirmado · R$ 89,90', em: b.at('vender.') - 0.25},
+					{titulo: 'AO VIVO', texto: 'Live iniciada', em: b.say('ligar a live').inicio},
+					{titulo: 'NOVA VENDA', texto: 'R$ 89,90', em: b.say('começar a vender').inicio},
 				],
 				y: 300,
 				icone: 'sacola',
@@ -372,7 +373,7 @@ export const entrevista3V11: Edit = {
 			{
 				tipo: 'comentario',
 				de: ini(b, 'duvida') - 0.05,
-				ate: fim(b, 'duvida') + 0.6,
+				ate: ini(b, 'siga') - 0.08,
 				texto: 'Tenho uma dúvida...',
 				y: 1060,
 				som: 'pro_digita',
