@@ -59,7 +59,7 @@ export const entrevista3V3: Edit = {
 		for (const [a, z] of lista) {
 			let ini = a;
 			for (const [s0, s1] of silencios as Trecho[]) {
-				if (s0 <= ini + 0.25 || s1 >= z - 0.25 || s1 - s0 < 0.12) continue;
+				if (s0 <= ini + 0.25 || s1 >= z - 0.25 || s1 - s0 < 0.25) continue;
 				cortado.push([ini, s0 + 0.04]);
 				ini = s1 - 0.04;
 			}

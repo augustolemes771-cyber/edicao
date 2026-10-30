@@ -58,7 +58,7 @@ export const entrevista3V5: Edit = {
 		for (const [a, z] of lista) {
 			let ini = a;
 			for (const [s0, s1] of silencios as Trecho[]) {
-				if (s0 <= ini + 0.25 || s1 >= z - 0.25 || s1 - s0 < 0.12) continue;
+				if (s0 <= ini + 0.25 || s1 >= z - 0.25 || s1 - s0 < 0.25) continue;
 				cortado.push([ini, s0 + 0.04]);
 				ini = s1 - 0.04;
 			}
@@ -204,7 +204,7 @@ export const entrevista3V5: Edit = {
 			{
 				tipo: 'cards3d',
 				de: b.at('investimento', 2) - 0.1,
-				ate: fim(b, 'resposta2') + 0.3,
+				ate: ini(b, 'siga') - 0.15,
 				itens: [
 					{texto: 'INVESTIMENTO', em: b.at('investimento', 2)},
 					{texto: 'INSIGHTS', em: b.at('insight')},
