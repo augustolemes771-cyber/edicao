@@ -169,6 +169,7 @@ export const entrevistaPista: Edit = {
 			z(b.at('Olha'), 1, POS.resposta4b),
 			z(b.at('vivendo.'), 1.1, POS.resposta4b),
 			...punches(b, 'Eu estou aqui curtindo e as minhas IAs estão trabalhando para mim', POS.resposta4b, 1, 0.5),
+			...punches(b, 'Eu tenho uma funcionária que eu não pago salário, ela trabalha 24 horas por dia para mim e não reclama', POS.resposta4b, 1, 0.55),
 			{tipo: 'flash', em: b.at('vantagem') - 0.04},
 			// Fecho: aberto com todos, punch no nome de cada um
 			{tipo: 'chicote', em: ini(b, 'obrigado')},
