@@ -21,6 +21,7 @@ import {Passo} from './Passo';
 import {Titulo} from './Titulo';
 import {Cenario} from './Cenario';
 import {Celular3D, Chips, Comentario, Final, Frase, Live, Numero3D, Selo, Siga} from './ModeloEntrevista';
+import {AviaoCena, Final3D, Motion3D} from './MotionPista';
 import {Notificacoes, TextoLife, ValorLife, Vitoria} from './Lifestyle';
 import {AoVivo, Contador, Drama, Pilula} from './Entrevista';
 import {GradeAntesDepois} from './GradeAntesDepois';
@@ -355,7 +356,11 @@ const Conteudo: React.FC<Props> = ({cena, pasta}) => {
 		case 'vitoria':
 			return <Vitoria cena={cena} />;
 		case 'final':
-			return <Final cena={cena} />;
+			return cena.tres ? <Final3D cena={cena} /> : <Final cena={cena} />;
+		case 'motion3d':
+			return <Motion3D cena={cena} />;
+		case 'aviao':
+			return <AviaoCena cena={cena} />;
 		case 'rec':
 			return <Rec />;
 		case 'alertas':
