@@ -23,7 +23,7 @@ const F = {
 	gancho2: ['E aqui, Ferreto, mais de 10 milhões', 'faturados só com IA'],
 	pergunta1: ['Danilow, qual você considera', 'de fazer live shopping no TikTok Shop'],
 	resposta1: ['Tudo que você precisa', 'Zero barreira de entrada'],
-	pergunta2: ['E você, Ferreto, qual você considera', 'pontos positivos de trabalhar com IA no TikTok Shop'],
+	pergunta2: ['E você, Ferreto, qual você considera', 'qual você considera os pontos positivos de trabalhar com IA no TikTok Shop'],
 	resposta2: ['Você não precisa aparecer, você', 'também não precisa ter estoque'],
 	pergunta3: ['Agora, para o Danilow', 'negativos de fazer live shopping no TikTok Shop'],
 	resposta3: ['Um ponto negativo', 'pedir dinheiro emprestado'],
@@ -62,6 +62,11 @@ export const entrevistaPista: Edit = {
 	trechos: (o) => {
 		const fala = (k: keyof typeof F, folga = 0.08): Trecho => [o.say(F[k][0]).inicio - 0.06, o.say(F[k][1]).fim + folga];
 		const lista: Trecho[] = (Object.keys(F) as (keyof typeof F)[]).map((k) => fala(k));
+		// Trechos quase colados no original (< 1 s) viram um só: as pausas de dentro saem logo abaixo.
+		for (let i = lista.length - 1; i > 0; i--) {
+			const vao = lista[i][0] - lista[i - 1][1];
+			if (vao >= 0 && vao < 1) lista.splice(i - 1, 2, [lista[i - 1][0], lista[i][1]]);
+		}
 		// Trechos vizinhos que se sobrepõem no original repetem quadros e palavras: divide a sobreposição ao meio.
 		for (let i = 1; i < lista.length; i++) {
 			if (lista[i][0] < lista[i - 1][1] && lista[i][0] > lista[i - 1][0]) {
@@ -89,10 +94,10 @@ export const entrevistaPista: Edit = {
 		palavrasPorTela: 4,
 		enfase: [
 			{palavra: 'positivos', estilo: 'serif'},
-			{palavra: 'IA', estilo: 'serif', ocorrencia: 3},
+			{palavra: 'IA', estilo: 'serif', ocorrencia: 2},
 			{palavra: 'negativos', estilo: 'serif'},
 			{palavra: 'viajando.', estilo: 'serif'},
-			{palavra: 'ecossistema...', estilo: 'serif', ocorrencia: 4},
+			{palavra: 'ecossistema...', estilo: 'serif'},
 		],
 		falantes: (b) => [
 			{de: ini(b, 'pergunta1') - 0.1, ate: fim(b, 'pergunta1') + 0.1, nome: 'PERGUNTA'},
@@ -120,13 +125,14 @@ export const entrevistaPista: Edit = {
 			// Pergunta 1 em plano aberto; resposta do Danilow em punches (os motions de tela cheia cobrem parte dela)
 			{tipo: 'chicote', em: ini(b, 'pergunta1')},
 			z(ini(b, 'pergunta1'), 1, HOST),
+			z(b.at('considera'), 1.08, HOST),
 			z(b.at('positivos'), 1.15, HOST),
 			{tipo: 'chicote', em: ini(b, 'resposta1')},
 			...punches(b, 'Duas horas por dia vai te render 10 mil reais de lucro no seu bolso Zero barreira de entrada', baixo(DANILOW)),
 			// Pergunta 2 e resposta do Ferreto
 			{tipo: 'chicote', em: ini(b, 'pergunta2')},
 			z(ini(b, 'pergunta2'), 1, HOST),
-			z(b.at('positivos', 3), 1.15, HOST),
+			z(b.at('positivos', 2), 1.15, HOST),
 			{tipo: 'chicote', em: ini(b, 'resposta2')},
 			z(ini(b, 'resposta2'), 1.1, FERRETO),
 			// Pergunta 3 e a família do Danilow
@@ -194,8 +200,9 @@ export const entrevistaPista: Edit = {
 				ate: fim(b, 'pergunta1') + 0.05,
 				texto: 'PONTOS POSITIVOS',
 				chip: 'LIVE',
-				emChip: b.at('live', 1),
+				emChip: b.say('fazer live shopping').inicio,
 				y: 380,
+				esconderLegenda: true,
 				som: 'tick',
 			},
 			// 3. "um celular e internet": celular 3D voa ao centro com o texto 3D
@@ -246,12 +253,13 @@ export const entrevistaPista: Edit = {
 			// 6. Pergunta 2: o tema troca para IA
 			{
 				tipo: 'selo',
-				de: b.at('positivos', 3) - 0.1,
+				de: b.at('positivos', 2) - 0.1,
 				ate: fim(b, 'pergunta2') + 0.05,
 				texto: 'PONTOS POSITIVOS',
 				chip: 'IA',
-				emChip: b.at('IA', 3),
+				emChip: b.at('IA', 2),
 				y: 380,
+				esconderLegenda: true,
 				som: 'tick',
 			},
 			// 7. Os três "não precisa" em cartas 3D que viram e ficam em leque
@@ -260,7 +268,7 @@ export const entrevistaPista: Edit = {
 				de: ini(b, 'resposta2') + 0.1,
 				ate: fim(b, 'resposta2') + 0.25,
 				itens: [
-					{texto: 'SEM APARECER', em: b.at('aparecer,', 2)},
+					{texto: 'SEM APARECER', em: b.at('aparecer,')},
 					{texto: 'SEM ANÚNCIO', em: b.at('anúncio,')},
 					{texto: 'SEM ESTOQUE', em: b.at('estoque.')},
 				],
@@ -280,17 +288,18 @@ export const entrevistaPista: Edit = {
 				chip: 'LIVE',
 				emChip: b.say('fazer live shopping', 2).inicio,
 				y: 380,
+				esconderLegenda: true,
 				som: 'tick',
 			},
 			// 9. "os familiares vão te pedir dinheiro emprestado": as mensagens da família chegando no celular
 			{
 				tipo: 'notificacoes',
 				de: b.at('familiares') - 0.1,
-				ate: fim(b, 'resposta3') + 0.6,
+				ate: ini(b, 'pergunta4') + 0.5,
 				itens: [
-					{titulo: 'Tia Cida', texto: 'oi sumido, me empresta 500?', em: b.at('familiares')},
-					{titulo: 'Primo Léo', texto: 'tá rico né, faz um pix aí', em: b.at('pedir')},
-					{titulo: 'Mãe', texto: 'filho, e aquele empréstimo?', em: b.at('emprestado.')},
+					{titulo: 'Tia Cida', texto: 'me empresta 500?', em: b.at('familiares')},
+					{titulo: 'Primo Léo', texto: 'faz um pix aí', em: b.at('pedir')},
+					{titulo: 'Mãe', texto: 'e aquele empréstimo?', em: b.at('emprestado.')},
 				],
 				y: 300,
 				esconderLegenda: true,
@@ -309,6 +318,7 @@ export const entrevistaPista: Edit = {
 				chip: 'IA',
 				emChip: b.say('trabalhar com IA no TikTok', 2).inicio + 0.4,
 				y: 380,
+				esconderLegenda: true,
 				som: 'tick',
 			},
 			// 11. As duas liberdades, uma por vez
