@@ -253,7 +253,7 @@ export const entrevista3V7: Edit = {
 				tipo: 'peca',
 				nome: 'v7Suplemento',
 				de: b.at('produtos') - 0.1,
-				ate: b.at('Peguei') - 0.02,
+				ate: b.at('comecei.') + 0.75,
 				dados: {
 					linhas: [
 						{texto: 'PRODUTO EM CASA', em: b.at('produtos')},

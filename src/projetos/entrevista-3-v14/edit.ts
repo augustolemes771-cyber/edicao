@@ -28,9 +28,9 @@ const fim = (b: Busca, k: keyof typeof F) => b.say(F[k][1]).fim;
 // Janelas de tela inteira (o rosto não aparece): sem zoom de câmera dentro delas.
 const cheias = (b: Busca): Trecho[] => [
 	[0, b.at('Mais') - 0.05],
-	[b.at('próximo', 2) - 0.3, b.say('em conhecimento', 2).fim + 0.1],
+	[b.at('próximo', 2) - 0.1, b.say('dar um passo').fim + 0.45],
 	[b.at('quer') - 0.1, b.at('Investe') + 0.85],
-	[b.say('Para você não errar').inicio - 0.05, b.say('direcionamento maior').fim + 0.15],
+	[b.say('você ter um direcionamento').inicio - 0.05, b.at('maior') + 0.75],
 	[b.at('expandir') - 0.35, b.say('volta ao normal novamente').fim + 0.2],
 ];
 
@@ -98,12 +98,12 @@ export const entrevista3V14: Edit = {
 	camera: (b) => [
 		...punches(b),
 		{tipo: 'chicote', em: b.at('Mais')},
-		{tipo: 'flash', em: b.at('mil') - 0.04},
+		{tipo: 'flash', em: b.at('mentores') - 0.04},
 		{tipo: 'chicote', em: ini(b, 'abertura')},
 		{tipo: 'chicote', em: ini(b, 'porque')},
 		{tipo: 'chicote', em: ini(b, 'resposta')},
 		{tipo: 'chicote', em: ini(b, 'fecho')},
-		{tipo: 'flash', em: b.at('muda') - 0.04},
+		{tipo: 'flash', em: b.say('não volta').inicio - 0.04},
 	],
 	cenas: (b) => {
 		const fimFala = fim(b, 'fecho');
@@ -183,8 +183,8 @@ export const entrevista3V14: Edit = {
 			{
 				tipo: 'peca',
 				nome: 'v14Pegadas',
-				de: b.at('próximo', 2) - 0.3,
-				ate: b.say('em conhecimento', 2).fim + 0.1,
+				de: b.at('próximo', 2) - 0.1,
+				ate: b.say('dar um passo').fim + 0.45,
 				modo: 'cheia',
 				esconderLegenda: true,
 				som: 'pro_whoosh',
@@ -193,14 +193,25 @@ export const entrevista3V14: Edit = {
 					linhas: [
 						{texto: 'PRÓXIMO NÍVEL', em: b.at('próximo', 2), metal: 'branco'},
 						{texto: 'UM PASSO', em: b.at('passo'), metal: 'ouro'},
-						{texto: 'INVISTA EM VOCÊ', em: b.say('investir em você').inicio, metal: 'branco'},
-						{texto: 'CONHECIMENTO', em: b.at('conhecimento', 2), metal: 'ouro'},
 					],
 				},
-				sons: [
-					{em: b.at('passo'), som: 'pro_pouso', ganho: 0.8},
-					{em: b.at('conhecimento', 2), som: 'pro_pop', ganho: 0.6},
-				],
+				sons: [{em: b.at('passo'), som: 'pro_pouso', ganho: 0.8}],
+			},
+			// 6b. "Investir em você, investir em conhecimento": seta de ouro apontando para o Rogério
+			{
+				tipo: 'peca',
+				nome: 'v14Seta',
+				de: b.say('dar um passo').fim + 0.45,
+				ate: b.say('em conhecimento', 2).fim + 0.15,
+				esconderLegenda: true,
+				som: 'pro_whoosh_curto',
+				dados: {
+					itens: [
+						{texto: 'INVISTA EM VOCÊ', em: b.say('investir em você').inicio},
+						{texto: 'EM CONHECIMENTO', em: b.at('conhecimento', 2)},
+					],
+				},
+				sons: [{em: b.at('conhecimento', 2), som: 'pro_pop', ganho: 0.6}],
 			},
 			// 7. Ponto A → ponto B: rota no mapa e "INVESTE." em 3D
 			{
@@ -241,12 +252,12 @@ export const entrevista3V14: Edit = {
 			{
 				tipo: 'peca',
 				nome: 'v14Caminho',
-				de: b.say('Para você não errar').inicio - 0.05,
-				ate: b.say('direcionamento maior').fim + 0.15,
+				de: b.say('você ter um direcionamento').inicio - 0.05,
+				ate: b.at('maior') + 0.75,
 				modo: 'cheia',
 				esconderLegenda: true,
 				som: 'pro_whoosh',
-				dados: {marcos: [b.at('errar'), b.at('direcionamento')]},
+				dados: {marcos: [b.say('você ter um direcionamento').inicio, b.at('direcionamento')]},
 				sons: [{em: b.at('direcionamento'), som: 'pro_pulso', ganho: 0.6}],
 			},
 			// 10. "O mentor já errou antes": os erros riscados um a um
@@ -275,7 +286,7 @@ export const entrevista3V14: Edit = {
 				tipo: 'peca',
 				nome: 'v14Rede',
 				de: b.at('contato') - 0.2,
-				ate: b.say('muda vidas').fim + 0.5,
+				ate: Math.min(b.say('muda vidas').fim + 0.5, b.at('costumo') - 0.12),
 				esconderLegenda: true,
 				som: 'pro_swipe',
 				dados: {marcos: [b.at('contato'), b.at('muda')]},
