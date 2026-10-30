@@ -65,7 +65,7 @@
  {
   "text": " de",
   "startMs": 2980,
-  "endMs": 3020,
+  "endMs": 3010,
   "timestampMs": null,
   "confidence": 0.998706
  },
@@ -303,7 +303,7 @@
  {
   "text": " gente",
   "startMs": 14880,
-  "endMs": 14920,
+  "endMs": 14900,
   "timestampMs": null,
   "confidence": 0.99999
  },
@@ -324,7 +324,7 @@
  {
   "text": " o",
   "startMs": 15680,
-  "endMs": 15720,
+  "endMs": 15690,
   "timestampMs": null,
   "confidence": 0.83071
  },
@@ -709,27 +709,27 @@
  {
   "text": " A",
   "startMs": 37360,
-  "endMs": 37400,
+  "endMs": 37450,
   "timestampMs": null,
   "confidence": 0.99987
  },
  {
   "text": " e",
-  "startMs": 37370,
-  "endMs": 37410,
+  "startMs": 37450,
+  "endMs": 37540,
   "timestampMs": null,
   "confidence": 0.750795
  },
  {
   "text": " ir",
-  "startMs": 37380,
-  "endMs": 37510,
+  "startMs": 37540,
+  "endMs": 37630,
   "timestampMs": null,
   "confidence": 0.996953
  },
  {
   "text": " para",
-  "startMs": 37510,
+  "startMs": 37630,
   "endMs": 37900,
   "timestampMs": null,
   "confidence": 0.998877
@@ -1003,7 +1003,7 @@
  {
   "text": " é",
   "startMs": 57900,
-  "endMs": 57940,
+  "endMs": 57920,
   "timestampMs": null,
   "confidence": 0.999987
  },
@@ -1101,7 +1101,7 @@
  {
   "text": " a",
   "startMs": 61970,
-  "endMs": 62010,
+  "endMs": 61990,
   "timestampMs": null,
   "confidence": 0.654861
  },
@@ -1325,7 +1325,7 @@
  {
   "text": " a",
   "startMs": 74670,
-  "endMs": 74710,
+  "endMs": 74690,
   "timestampMs": null,
   "confidence": 0.992332
  },
@@ -1759,13 +1759,13 @@
  {
   "text": " vai",
   "startMs": 94710,
-  "endMs": 94750,
+  "endMs": 94800,
   "timestampMs": null,
   "confidence": 0.999979
  },
  {
   "text": " expandir",
-  "startMs": 94720,
+  "startMs": 94800,
   "endMs": 95100,
   "timestampMs": null,
   "confidence": 0.999834
@@ -1773,13 +1773,13 @@
  {
   "text": " a",
   "startMs": 95100,
-  "endMs": 95160,
+  "endMs": 95190,
   "timestampMs": null,
   "confidence": 0.999989
  },
  {
   "text": " sua",
-  "startMs": 95160,
+  "startMs": 95190,
   "endMs": 95350,
   "timestampMs": null,
   "confidence": 0.999962
@@ -2025,13 +2025,13 @@
  {
   "text": " meu",
   "startMs": 107410,
-  "endMs": 107450,
+  "endMs": 107500,
   "timestampMs": null,
   "confidence": 0.996124
  },
  {
   "text": " irmão.",
-  "startMs": 107420,
+  "startMs": 107500,
   "endMs": 108080,
   "timestampMs": null,
   "confidence": 0.999924
