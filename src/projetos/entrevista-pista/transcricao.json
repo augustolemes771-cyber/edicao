@@ -1,15 +1,15 @@
 [
  {
   "text": "Eu",
-  "startMs": 0,
-  "endMs": 160,
+  "startMs": 450,
+  "endMs": 480,
   "timestampMs": null,
   "confidence": 0.987863
  },
  {
   "text": " estou",
-  "startMs": 160,
-  "endMs": 450,
+  "startMs": 480,
+  "endMs": 510,
   "timestampMs": null,
   "confidence": 0.680029
  },
@@ -225,7 +225,7 @@
  },
  {
   "text": " qual",
-  "startMs": 10150,
+  "startMs": 10550,
   "endMs": 10590,
   "timestampMs": null,
   "confidence": 0.99751
@@ -498,8 +498,8 @@
  },
  {
   "text": " Zero",
-  "startMs": 22140,
-  "endMs": 22490,
+  "startMs": 22500,
+  "endMs": 22530,
   "timestampMs": null,
   "confidence": 0.997754
  },
@@ -526,15 +526,15 @@
  },
  {
   "text": " E",
-  "startMs": 23560,
-  "endMs": 23610,
+  "startMs": 24150,
+  "endMs": 24180,
   "timestampMs": null,
   "confidence": 0.999983
  },
  {
   "text": " você,",
-  "startMs": 23610,
-  "endMs": 24180,
+  "startMs": 24180,
+  "endMs": 24210,
   "timestampMs": null,
   "confidence": 0.999947
  },
@@ -701,8 +701,8 @@
  },
  {
   "text": " você,",
-  "startMs": 33060,
-  "endMs": 33220,
+  "startMs": 33200,
+  "endMs": 33230,
   "timestampMs": null,
   "confidence": 0.999968
  },
@@ -841,8 +841,8 @@
  },
  {
   "text": " Agora,",
-  "startMs": 38560,
-  "endMs": 38990,
+  "startMs": 39000,
+  "endMs": 39030,
   "timestampMs": null,
   "confidence": 0.794387
  },
@@ -1744,15 +1744,15 @@
  },
  {
   "text": " você,",
-  "startMs": 74340,
-  "endMs": 75000,
+  "startMs": 75800,
+  "endMs": 75830,
   "timestampMs": null,
   "confidence": 0.997895
  },
  {
   "text": " Danilow,",
-  "startMs": 75000,
-  "endMs": 75760,
+  "startMs": 75830,
+  "endMs": 75860,
   "timestampMs": null,
   "confidence": 0.999348
  },
@@ -1779,15 +1779,15 @@
  },
  {
   "text": " dizer",
-  "startMs": 76710,
-  "endMs": 77390,
+  "startMs": 77400,
+  "endMs": 77430,
   "timestampMs": null,
   "confidence": 0.999762
  },
  {
   "text": " se",
-  "startMs": 77390,
-  "endMs": 77410,
+  "startMs": 77430,
+  "endMs": 77460,
   "timestampMs": null,
   "confidence": 0.949227
  },
@@ -1933,8 +1933,8 @@
  },
  {
   "text": " E,",
-  "startMs": 86300,
-  "endMs": 86490,
+  "startMs": 86700,
+  "endMs": 86730,
   "timestampMs": null,
   "confidence": 0.982318
  },
@@ -1947,15 +1947,15 @@
  },
  {
   "text": " agora",
-  "startMs": 86990,
-  "endMs": 87320,
+  "startMs": 87750,
+  "endMs": 87780,
   "timestampMs": null,
   "confidence": 0.999165
  },
  {
   "text": " você",
-  "startMs": 87320,
-  "endMs": 87750,
+  "startMs": 87780,
+  "endMs": 87810,
   "timestampMs": null,
   "confidence": 0.996976
  },
@@ -2318,15 +2318,15 @@
  },
  {
   "text": " Vai",
-  "startMs": 103480,
-  "endMs": 103680,
+  "startMs": 103850,
+  "endMs": 103880,
   "timestampMs": null,
   "confidence": 0.949389
  },
  {
   "text": " me",
-  "startMs": 103680,
-  "endMs": 103860,
+  "startMs": 103880,
+  "endMs": 103910,
   "timestampMs": null,
   "confidence": 0.99922
  },
@@ -2976,8 +2976,8 @@
  },
  {
   "text": " o",
-  "startMs": 129570,
-  "endMs": 129790,
+  "startMs": 129800,
+  "endMs": 129830,
   "timestampMs": null,
   "confidence": 0.99995
  },
@@ -3025,8 +3025,8 @@
  },
  {
   "text": " o",
-  "startMs": 131710,
-  "endMs": 131770,
+  "startMs": 132200,
+  "endMs": 132230,
   "timestampMs": null,
   "confidence": 0.999918
  },
@@ -3718,8 +3718,8 @@
  },
  {
   "text": " lá,",
-  "startMs": 162230,
-  "endMs": 162430,
+  "startMs": 163100,
+  "endMs": 163130,
   "timestampMs": null,
   "confidence": 0.989559
  },
@@ -3732,22 +3732,22 @@
  },
  {
   "text": " Então,",
-  "startMs": 163360,
-  "endMs": 163800,
+  "startMs": 164400,
+  "endMs": 164430,
   "timestampMs": null,
   "confidence": 0.947153
  },
  {
   "text": " se",
-  "startMs": 163800,
-  "endMs": 163910,
+  "startMs": 164430,
+  "endMs": 164460,
   "timestampMs": null,
   "confidence": 0.999905
  },
  {
   "text": " você",
-  "startMs": 163910,
-  "endMs": 164410,
+  "startMs": 164460,
+  "endMs": 164490,
   "timestampMs": null,
   "confidence": 0.999987
  },
@@ -3816,15 +3816,15 @@
  },
  {
   "text": " quer",
-  "startMs": 167360,
-  "endMs": 167830,
+  "startMs": 168550,
+  "endMs": 168580,
   "timestampMs": null,
   "confidence": 0.99903
  },
  {
   "text": " aprender",
-  "startMs": 167830,
-  "endMs": 168550,
+  "startMs": 168580,
+  "endMs": 168610,
   "timestampMs": null,
   "confidence": 0.999222
  },
