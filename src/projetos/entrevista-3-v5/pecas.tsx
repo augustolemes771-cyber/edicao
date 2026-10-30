@@ -122,11 +122,11 @@ const TopCreator: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const bloco = (x: number, h: number, k: number, ouro: boolean) => (
 		<group position={[x, 0, 0]}>
 			<mesh position={[0, (h * k) / 2, 0]}>
-				<boxGeometry args={[1.05, Math.max(0.01, h * k), 0.9]} />
+				<boxGeometry args={[1.05, Math.max(0.01, h * k), 0.55]} />
 				<meshStandardMaterial color={ouro ? '#4a2a86' : '#2c1752'} metalness={0.6} roughness={0.3} />
 			</mesh>
 			<mesh position={[0, h * k + 0.03, 0]}>
-				<boxGeometry args={[1.08, 0.06, 0.93]} />
+				<boxGeometry args={[1.08, 0.05, 0.58]} />
 				<meshStandardMaterial {...ouroMat} />
 			</mesh>
 		</group>
@@ -138,7 +138,7 @@ const TopCreator: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			<ThreeCanvas width={width} height={height} gl={GL} camera={CAMERA} style={{position: 'absolute', inset: 0}}>
 				<Luzes quadro={frame} batidas={[bTop]} />
 				<pointLight position={[0, yM(1150), 3]} intensity={40 * facho} distance={8} color="#ffe2a0" />
-				<group position={[0, yM(1700), 0]} rotation={[0.18, giro, 0]}>
+				<group position={[0, yM(1700), 0]} rotation={[0.07, giro, 0]}>
 					{bloco(-1.15, 0.7, p2, false)}
 					{bloco(0, 1.25, p1, true)}
 					{bloco(1.15, 0.45, p3, false)}
