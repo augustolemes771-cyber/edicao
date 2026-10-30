@@ -83,7 +83,7 @@ export const entrevista3V7: Edit = {
 		falantes: (b) => [
 			{de: ini(b, 'pergunta') - 0.1, ate: fim(b, 'pergunta') + 0.1, nome: 'PERGUNTA'},
 			{de: ini(b, 'resposta1') - 0.1, ate: fim(b, 'resposta3') + 0.1, nome: 'NEWTEX'},
-			{de: ini(b, 'recorde') - 0.1, ate: b.at('De') - 0.1, nome: 'PERGUNTA'},
+			{de: ini(b, 'recorde') - 0.1, ate: b.say('De um mês').inicio - 0.1, nome: 'PERGUNTA'},
 		],
 	},
 	camera: (b) => {
@@ -109,8 +109,8 @@ export const entrevista3V7: Edit = {
 			{tipo: 'chicote', em: ini(b, 'recorde')},
 			z(ini(b, 'recorde'), 1),
 			z(b.at('recorde'), 1.12),
-			{tipo: 'chicote', em: b.at('De')},
-			z(b.at('De'), 1.2),
+			{tipo: 'chicote', em: b.say('De um mês').inicio},
+			z(b.say('De um mês').inicio, 1.2),
 			z(ini(b, 'lucro'), 1.06),
 			z(b.at('140'), 1.26),
 			{tipo: 'chicote', em: ini(b, 'compensa')},
@@ -233,7 +233,7 @@ export const entrevista3V7: Edit = {
 			{
 				tipo: 'notificacoes',
 				de: b.at('várias') - 0.1,
-				ate: b.at('fácil') + 0.3,
+				ate: b.at('resultado') + 0.2,
 				itens: [
 					{titulo: 'Rafa', texto: 'qual whey você usa?', em: b.at('várias')},
 					{titulo: 'Bruna', texto: 'onde compro esse?', em: b.at('perguntando')},
@@ -247,7 +247,7 @@ export const entrevista3V7: Edit = {
 			// 8. Recorde: faturamento em prata, lucro em ouro
 			{
 				tipo: 'numero3d',
-				de: b.at('De') - 0.05,
+				de: b.say('De um mês').inicio - 0.05,
 				ate: fim(b, 'recorde') + 0.1,
 				texto: 'R$ 1,4 MI',
 				rotulo: 'RECORDE EM 1 MÊS',
@@ -294,10 +294,10 @@ export const entrevista3V7: Edit = {
 			{
 				tipo: 'frase',
 				de: ini(b, 'sintese') - 0.05,
-				ate: fim(b, 'sintese') + 0.25,
+				ate: ini(b, 'siga') - 0.1,
 				palavras: [
 					{texto: 'NÃO É FÁCIL', em: ini(b, 'sintese')},
-					{texto: 'É MUITO SIMPLES', em: b.at('muito'), destaque: true},
+					{texto: 'É MUITO SIMPLES', em: b.say('muito simples').inicio, destaque: true},
 				],
 				som: 'pro_frase',
 			},
