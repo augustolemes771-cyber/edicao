@@ -56,10 +56,11 @@ export const palavrasEditadas = (legendas: Caption[], mantidos: Trecho[]): Palav
 		// A palavra entra em cada trecho mantido que cobre a maior parte dela (o tempo do Whisper erra ~0,3 s e a borda de
 		// um corte pode pegar o fim da palavra). Menos da metade dentro: a palavra saiu no corte. Um trecho reaproveitado
 		// (ex.: o resultado usado como gancho e de novo no meio) repete as palavras dele.
-		const dur = Math.max(0.01, fimOriginal - ini);
+		// Palavra sem duração (o Whisper às vezes dá início = fim): entra se o início cai dentro do trecho.
+		const dur = fimOriginal - ini;
 		mantidos.forEach((t, i) => {
 			const sobra = Math.min(fimOriginal, t[1]) - Math.max(ini, t[0]);
-			if (sobra / dur < 0.5) return;
+			if (dur < 0.01 ? ini < t[0] || ini > t[1] : sobra / dur < 0.5) return;
 			const inicio = inicios[i] + (Math.max(ini, t[0]) - t[0]);
 			const fim = inicios[i] + (Math.min(fimOriginal, t[1]) - t[0]);
 			saida.push({texto, inicio, fim, indice: saida.length});
