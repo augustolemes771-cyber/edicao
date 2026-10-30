@@ -35,7 +35,7 @@ const F = {
 // A última tomada do CTA é a 2ª vez que ele fala "Se você quer aprender como funciona todo esse ecossistema".
 const OCORRENCIA: Partial<Record<keyof typeof F, number>> = {cta: 2};
 const ini = (b: Busca, k: keyof typeof F) => b.say(F[k][0], OCORRENCIA[k] ?? 1).inicio;
-const fim = (b: Busca, k: keyof typeof F) => b.say(F[k][1], k === 'cta' ? 1 : 1).fim;
+const fim = (b: Busca, k: keyof typeof F) => b.say(F[k][1]).fim;
 
 // Ritmo frenético (preferência do painel: evento a cada 0,3–0,6 s): punch-in nas palavras do trecho, uma a cada ≥ 0,45 s,
 // em ciclo médio → close → aberto, sem passar de 1,45 (a fonte é 4K: folga de sobra).
