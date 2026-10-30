@@ -48,9 +48,9 @@ export const lifestyle1: Edit = {
 		{tipo: 'zoom', em: DROP + 1 / 30, escala: 1.02, suave: 4 * B},
 		...DESLIZES.map(([n, direcao]): EfeitoCamera => ({tipo: 'deslize', em: n * B, direcao})),
 		...CORTES.flatMap((n, i) => deriva(n, CORTES[i + 1] ?? 57)),
-		// Punchline: entra em foco; fecho em corte seco.
+		// Punchline: entra em foco; fecho em corte seco. +2,17 s (4,45 batidas) pela pergunta inserida do Danilo.
 		{tipo: 'foco', em: 57 * B, duracao: 0.35},
-		...deriva(64, 69, 1.08),
+		...deriva(64 + 2.17 / B, 69 + 2.17 / B, 1.08),
 	],
 	cenas: () => [
 		{tipo: 'textoLife', de: 0.15, ate: 1.85, principal: 'isso é hoje.', y: 620, som: 'pop'},
@@ -73,7 +73,7 @@ export const lifestyle1: Edit = {
 			ate: 29 * B - 0.12,
 			kicker: 'MAIS DE',
 			prefixo: 'R$',
-			numero: '2',
+			numero: '10',
 			palavra: 'milhões',
 			sub: 'faturados com o TikTok Shop',
 			pousa: 26 * B,
@@ -85,8 +85,11 @@ export const lifestyle1: Edit = {
 		},
 		{tipo: 'textoLife', de: 31 * B + 0.05, ate: 35 * B - 0.05, principal: 'o escritório mudou', y: 620},
 		// Punchline falada: o texto do início no lugar da legenda, com brilho para ler.
-		{tipo: 'textoLife', de: 27.8, ate: 28.8, principal: 'ô, como que tá?', y: 960, brilho: true},
-		{tipo: 'textoLife', de: 28.78, ate: 31.1, principal: 'tá muito ruim aqui, hein, velho', y: 960, brilho: true},
+		// Pergunta do Danilo pra Paloma, inserida antes da resposta (2,17 s a mais no vídeo: os dois textos abaixo
+		// deslocam +2,17 s e o drift final da câmera também, pra não sair do ponto).
+		{tipo: 'textoLife', de: 27.8, ate: 29.9, principal: 'fala, Paloma, tá curtindo aqui o evento?', y: 960, brilho: true},
+		{tipo: 'textoLife', de: 29.97, ate: 30.97, principal: 'ô, como que tá?', y: 960, brilho: true},
+		{tipo: 'textoLife', de: 30.95, ate: 33.27, principal: 'tá muito ruim aqui, hein, velho', y: 960, brilho: true},
 		{tipo: 'textoLife', de: 64 * B + 0.1, ate: 69 * B - 0.1, kicker: 'TUDO COMEÇOU COM O', principal: 'TikTok Shop', sub: '@danilowtts', y: 540},
 	],
 };

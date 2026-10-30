@@ -48,7 +48,7 @@
    "de": 0.5,
    "vel": 1,
    "cor": "depois",
-   "nota": "DROP (11,7 s): R$ 2 MILHÕES",
+   "nota": "DROP (11,7 s): R$ 10 MILHÕES",
    "dur": 2.438
   },
   {
@@ -119,6 +119,15 @@
    "vel": 1,
    "cor": "depois",
    "dur": 0.9752
+  },
+  {
+   "arquivo": "brutos/IMG_5246.MOV",
+   "de": 0.0,
+   "vel": 1,
+   "cor": "depois",
+   "voz": true,
+   "nota": "pergunta do Danilo pra Paloma: Fala, Paloma, tá curtindo aqui o evento?",
+   "dur": 2.17
   },
   {
    "arquivo": "brutos/IMG_5246.MOV",
