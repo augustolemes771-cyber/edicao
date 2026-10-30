@@ -104,10 +104,6 @@ export const CelularReal: React.FC<{segundos: number}> = ({segundos}) => {
 				<capsuleGeometry args={[0.055, 0.24, 4, 12]} />
 				<meshStandardMaterial color="#020203" roughness={0.2} />
 			</mesh>
-			<mesh position={[(reflexo - 0.5) * 1.6, 0, 0.09]} rotation={[0, 0, 0.5]}>
-				<planeGeometry args={[0.28, 4.2]} />
-				<meshBasicMaterial color="#ffffff" transparent opacity={0.09} depthWrite={false} />
-			</mesh>
 			{/* Botões laterais */}
 			<mesh position={[0.765, 0.6, 0]} material={m.titanio}>
 				<boxGeometry args={[0.04, 0.42, 0.07]} />
