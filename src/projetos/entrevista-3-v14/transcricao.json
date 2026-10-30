@@ -65,7 +65,7 @@
  {
   "text": " de",
   "startMs": 2980,
-  "endMs": 3010,
+  "endMs": 3020,
   "timestampMs": null,
   "confidence": 0.998706
  },
@@ -303,7 +303,7 @@
  {
   "text": " gente",
   "startMs": 14880,
-  "endMs": 14900,
+  "endMs": 14920,
   "timestampMs": null,
   "confidence": 0.99999
  },
@@ -324,7 +324,7 @@
  {
   "text": " o",
   "startMs": 15680,
-  "endMs": 15690,
+  "endMs": 15720,
   "timestampMs": null,
   "confidence": 0.83071
  },
@@ -498,7 +498,7 @@
  },
  {
   "text": " Cara,",
-  "startMs": 25580,
+  "startMs": 25810,
   "endMs": 26160,
   "timestampMs": null,
   "confidence": 0.994602
@@ -702,27 +702,27 @@
  {
   "text": " ponto",
   "startMs": 36660,
-  "endMs": 37140,
+  "endMs": 36990,
   "timestampMs": null,
   "confidence": 0.999969
  },
  {
   "text": " A",
-  "startMs": 37140,
-  "endMs": 37320,
+  "startMs": 37360,
+  "endMs": 37400,
   "timestampMs": null,
   "confidence": 0.99987
  },
  {
   "text": " e",
-  "startMs": 37320,
-  "endMs": 37320,
+  "startMs": 37370,
+  "endMs": 37410,
   "timestampMs": null,
   "confidence": 0.750795
  },
  {
   "text": " ir",
-  "startMs": 37320,
+  "startMs": 37380,
   "endMs": 37510,
   "timestampMs": null,
   "confidence": 0.996953
@@ -779,13 +779,13 @@
  {
   "text": " conhecimento,",
   "startMs": 40690,
-  "endMs": 41740,
+  "endMs": 41490,
   "timestampMs": null,
   "confidence": 0.999956
  },
  {
   "text": " investe",
-  "startMs": 41740,
+  "startMs": 41760,
   "endMs": 42270,
   "timestampMs": null,
   "confidence": 0.998654
@@ -883,7 +883,7 @@
  },
  {
   "text": " Então,",
-  "startMs": 50980,
+  "startMs": 51260,
   "endMs": 51570,
   "timestampMs": null,
   "confidence": 0.999682
@@ -1003,7 +1003,7 @@
  {
   "text": " é",
   "startMs": 57900,
-  "endMs": 57920,
+  "endMs": 57940,
   "timestampMs": null,
   "confidence": 0.999987
  },
@@ -1101,13 +1101,13 @@
  {
   "text": " a",
   "startMs": 61970,
-  "endMs": 62200,
+  "endMs": 62010,
   "timestampMs": null,
   "confidence": 0.654861
  },
  {
   "text": " gente",
-  "startMs": 62200,
+  "startMs": 62260,
   "endMs": 62480,
   "timestampMs": null,
   "confidence": 0.999998
@@ -1122,13 +1122,13 @@
  {
   "text": " aqui,",
   "startMs": 62910,
-  "endMs": 63430,
+  "endMs": 63390,
   "timestampMs": null,
   "confidence": 0.999859
  },
  {
   "text": " nesse",
-  "startMs": 63430,
+  "startMs": 63610,
   "endMs": 63860,
   "timestampMs": null,
   "confidence": 0.997436
@@ -1325,7 +1325,7 @@
  {
   "text": " a",
   "startMs": 74670,
-  "endMs": 74690,
+  "endMs": 74710,
   "timestampMs": null,
   "confidence": 0.992332
  },
@@ -1436,7 +1436,7 @@
  },
  {
   "text": " Faz",
-  "startMs": 78620,
+  "startMs": 78660,
   "endMs": 78820,
   "timestampMs": null,
   "confidence": 0.627223
@@ -1752,20 +1752,20 @@
  {
   "text": " você",
   "startMs": 94100,
-  "endMs": 94410,
+  "endMs": 94340,
   "timestampMs": null,
   "confidence": 0.999979
  },
  {
   "text": " vai",
-  "startMs": 94410,
-  "endMs": 94600,
+  "startMs": 94710,
+  "endMs": 94750,
   "timestampMs": null,
   "confidence": 0.999979
  },
  {
   "text": " expandir",
-  "startMs": 94600,
+  "startMs": 94720,
   "endMs": 95100,
   "timestampMs": null,
   "confidence": 0.999834
@@ -2018,20 +2018,20 @@
  {
   "text": " Valeu,",
   "startMs": 106480,
-  "endMs": 107070,
+  "endMs": 106690,
   "timestampMs": null,
   "confidence": 0.999335
  },
  {
   "text": " meu",
-  "startMs": 107070,
-  "endMs": 107300,
+  "startMs": 107410,
+  "endMs": 107450,
   "timestampMs": null,
   "confidence": 0.996124
  },
  {
   "text": " irmão.",
-  "startMs": 107300,
+  "startMs": 107420,
   "endMs": 108080,
   "timestampMs": null,
   "confidence": 0.999924
