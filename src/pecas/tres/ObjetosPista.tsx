@@ -246,21 +246,16 @@ export const ChipIa: React.FC<{q: number; entra: number}> = ({q, entra}) => {
 	const mais = useSinal(true, 0.62, 0.12);
 	const base = useMemo(() => new RoundedBoxGeometry(1.7, 1.7, 0.24, 4, 0.08), []);
 	const topo = useMemo(() => new RoundedBoxGeometry(1.15, 1.15, 0.08, 4, 0.06), []);
+	const pinos = [-0.6, -0.36, -0.12, 0.12, 0.36, 0.6];
+	const trilhas = useMemo(
+		() =>
+			Array.from({length: 12}, (_, i) => ({lado: i % 4, k: [-0.36, 0.12, 0.6][Math.floor(i / 4)], comp: 0.5 + random(`tr${i}`) * 0.6})),
+		[],
+	);
 	const l = q - entra;
 	if (l < 0) return null;
 	const p = spring({frame: l, fps, config: {damping: 14, stiffness: 110}});
 	const t = l / fps;
-	const pinos = [-0.6, -0.36, -0.12, 0.12, 0.36, 0.6];
-	const trilhas = useMemo(
-		() =>
-			Array.from({length: 12}, (_, i) => {
-				const lado = i % 4;
-				const k = pinos[Math.floor(i / 4) * 2 + 1] ?? 0;
-				const comp = 0.5 + random(`tr${i}`) * 0.6;
-				return {lado, k, comp};
-			}),
-		[],
-	);
 	return (
 		<group position={[0, -1.4 * (1 - p), 0]} rotation={[-0.55 + 0.1 * Math.sin(t * 1.3), (1 - p) * 1.4 + Math.sin(t * 0.9) * 0.25, 0]}>
 			<mesh geometry={base} material={m.roxoEscuro} />
@@ -575,16 +570,16 @@ export const Relogio24: React.FC<{q: number; entra: number}> = ({q, entra}) => {
 					<boxGeometry args={[0.04, 0.1, 0.02]} />
 				</mesh>
 			))}
-			<mesh rotation={[0, 0, -t * 2.2]} position={[0, 0, 0.09]}>
+			<group rotation={[0, 0, -t * 2.2]} position={[0, 0, 0.09]}>
 				<mesh position={[0, 0.16, 0]} material={m.ouroBrilho}>
 					<boxGeometry args={[0.06, 0.32, 0.02]} />
 				</mesh>
-			</mesh>
-			<mesh rotation={[0, 0, -t * 26]} position={[0, 0, 0.1]}>
+			</group>
+			<group rotation={[0, 0, -t * 26]} position={[0, 0, 0.1]}>
 				<mesh position={[0, 0.22, 0]} material={m.branco}>
 					<boxGeometry args={[0.035, 0.44, 0.02]} />
 				</mesh>
-			</mesh>
+			</group>
 			<mesh position={[0, 0, 0.12]} material={m.ouroBrilho}>
 				<sphereGeometry args={[0.05, 12, 8]} />
 			</mesh>
