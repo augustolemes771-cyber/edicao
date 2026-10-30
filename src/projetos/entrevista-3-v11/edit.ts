@@ -30,6 +30,13 @@ const F = {
 	duvida: ['Tá com alguma dúvida', 'Deixa nos comentários'],
 	siga: ['Me siga Danilow', 'tem mudado vidas'],
 } as const;
+// Bordas medidas na energia da voz (o Whisper erra ~0,2 s aqui): segundos a somar ao começo e ao fim de cada trecho.
+const BORDA: Partial<Record<keyof typeof F, [number, number]>> = {
+	pergunta: [0, 0.06],
+	sintese: [-0.13, 0],
+	duvida: [0.03, 0.05],
+	siga: [-0.04, 0],
+};
 const ini = (b: Busca, k: keyof typeof F) => b.say(F[k][0]).inicio;
 const fim = (b: Busca, k: keyof typeof F) => b.say(F[k][1]).fim;
 
@@ -56,7 +63,7 @@ export const entrevista3V11: Edit = {
 	silencios: silencios as Trecho[],
 	transcricao,
 	trechos: (o) => {
-		const lista: Trecho[] = (Object.keys(F) as (keyof typeof F)[]).map((k) => [o.say(F[k][0]).inicio - 0.06, o.say(F[k][1]).fim + 0.08]);
+		const lista: Trecho[] = (Object.keys(F) as (keyof typeof F)[]).map((k) => [o.say(F[k][0]).inicio - 0.06 + (BORDA[k]?.[0] ?? 0), o.say(F[k][1]).fim + 0.08 + (BORDA[k]?.[1] ?? 0)]);
 		// Trechos colados ou sobrepostos no original (na ordem) viram um só: não repete palavra.
 		for (let i = lista.length - 1; i > 0; i--) {
 			const vao = lista[i][0] - lista[i - 1][1];
