@@ -9,6 +9,7 @@ import {AbsoluteFill, interpolate, random, spring, useCurrentFrame, useVideoConf
 import {ThreeCanvas} from '@remotion/three';
 import * as THREE from 'three';
 import type {CenaNoPlano} from '../motor/plano';
+import {GradeReta} from './FundoMotion';
 import {playfair, poppins} from '../motor/tema';
 import {Checklist} from './modelo/motion5157a';
 import {CommentBubble, FollowPills, FullPhrase} from './modelo/motion5157b';
@@ -254,6 +255,7 @@ export const Celular3D: React.FC<{cena: De<'celular3d'>}> = ({cena}) => {
 		<AbsoluteFill style={{pointerEvents: 'none', opacity: entrada * saida}}>
 			<AbsoluteFill style={{background: `radial-gradient(circle at 50% 36%, #4a2a86 0%, ${ROXO} 55%, #0d0620 100%)`}} />
 			<AbsoluteFill style={{background: `radial-gradient(circle at 50% 36%, rgba(232,194,122,${0.16 + Math.sin(t * 3) * 0.04}) 0%, rgba(232,194,122,0) 40%)`}} />
+			<GradeReta />
 			<AbsoluteFill style={{filter: 'drop-shadow(0 26px 34px rgba(8,2,20,0.7))'}}>
 				<ThreeCanvas
 					width={width}
