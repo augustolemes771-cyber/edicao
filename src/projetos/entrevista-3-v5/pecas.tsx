@@ -313,28 +313,27 @@ const Engrenagem: React.FC<{quadro: number; entra: number}> = ({quadro, entra}) 
 	// Tenta girar, emperra, volta um pouco: nunca completa.
 	const tenta = Math.sin(l / 6) * 0.12 + Math.min(l, 18) * 0.01;
 	return (
-		<group rotation={[0.3, 0.25, tenta]}>
-			<mesh>
-				<cylinderGeometry args={[0.95, 0.95, 0.35, 48]} />
-				<meshStandardMaterial color="#8d8a99" metalness={0.85} roughness={0.38} />
-			</mesh>
-			<mesh rotation={[Math.PI / 2, 0, 0]}>
-				<cylinderGeometry args={[0.3, 0.3, 0.4, 32]} />
-				<meshStandardMaterial color="#1E0F3A" metalness={0.4} roughness={0.5} />
-			</mesh>
-			{Array.from({length: 12}, (_, i) => {
-				const a = (i / 12) * Math.PI * 2;
-				return (
-					<mesh key={i} position={[Math.cos(a) * 1.05, Math.sin(a) * 1.05, 0]} rotation={[0, 0, a]}>
-						<boxGeometry args={[0.32, 0.26, 0.35]} />
-						<meshStandardMaterial color="#8d8a99" metalness={0.85} roughness={0.38} />
-					</mesh>
-				);
-			}).map((m, i) => (
-				<group key={i} rotation={[Math.PI / 2, 0, 0]}>
-					{m}
-				</group>
-			))}
+		// Eixo do cilindro em Y: deitado de frente para a câmera e girando (tentando) em torno dele.
+		<group rotation={[Math.PI / 2 - 0.35, 0, 0.2]}>
+			<group rotation={[0, tenta, 0]}>
+				<mesh>
+					<cylinderGeometry args={[0.95, 0.95, 0.35, 48]} />
+					<meshStandardMaterial color="#8d8a99" metalness={0.85} roughness={0.38} />
+				</mesh>
+				<mesh>
+					<cylinderGeometry args={[0.3, 0.3, 0.4, 32]} />
+					<meshStandardMaterial color="#1E0F3A" metalness={0.4} roughness={0.5} />
+				</mesh>
+				{Array.from({length: 12}, (_, i) => {
+					const a = (i / 12) * Math.PI * 2;
+					return (
+						<mesh key={i} position={[Math.cos(a) * 1.05, 0, Math.sin(a) * 1.05]} rotation={[0, -a, 0]}>
+							<boxGeometry args={[0.3, 0.35, 0.26]} />
+							<meshStandardMaterial color="#8d8a99" metalness={0.85} roughness={0.38} />
+						</mesh>
+					);
+				})}
+			</group>
 		</group>
 	);
 };
