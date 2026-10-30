@@ -129,10 +129,12 @@ export const Linha3D: React.FC<{
 	);
 };
 
-// Onda de choque: anel que abre e some, em aditivo.
+// Onda de choque: anel que abre e some, em aditivo. DESLIGADA (com as Faíscas): o usuário não quer o círculo com
+// partículas em nenhum vídeo (30/10/2026, entrevista-3). Os componentes ficam para não quebrar as peças que os usam.
+const SEM_ANEL = true;
 export const Onda: React.FC<{quadro: number; inicio: number; y: number; cor: string; tamanho?: number}> = ({quadro, inicio, y, cor, tamanho = 9}) => {
 	const l = quadro - inicio;
-	if (l < 0 || l > 24) return null;
+	if (SEM_ANEL || l < 0 || l > 24) return null;
 	const p = interpolate(l, [0, 24], [0, 1], lim);
 	const r = 0.3 + (1 - (1 - p) ** 3) * tamanho;
 	return (
@@ -166,7 +168,7 @@ export const Faiscas: React.FC<{quadro: number; inicio: number; y: number; cor: 
 			})),
 		[n, inicio, largura],
 	);
-	if (l < 0 || l > 1.3) return null;
+	if (SEM_ANEL || l < 0 || l > 1.3) return null;
 	return (
 		<group>
 			{dados.map((d, i) => {
