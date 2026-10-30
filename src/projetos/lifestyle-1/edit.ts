@@ -22,6 +22,11 @@ const DESLIZES: [number, 'cima' | 'baixo' | 'esquerda' | 'direita'][] = [
 // Cortes da montagem depois do drop (em batidas): lancha, carros, jet ski, festa e punchline. Os que não estão em DESLIZES são secos.
 const CORTES = [29, 31, 35, B19, 43, 45, 48, 52, 55];
 
+// A trilha atual (montagem.json, musica.pronto) saiu do render da tarde e já tem pop, ticks, whooshes, shimmer e subida mixados:
+// os sons daqui ficam desligados para não tocarem duas vezes. Com o remix_v6.mp3 de volta, voltar para false.
+const SONS_NO_AUDIO = true;
+const sons = <T,>(s: T[]): T[] => (SONS_NO_AUDIO ? [] : s);
+
 // Dentro de cada plano a câmera só avança devagar (sem soco na batida): o ritmo vem dos cortes na batida.
 const deriva = (de: number, ate: number, escala = 1.06): EfeitoCamera[] => [
 	{tipo: 'zoom', em: de * B, escala: 1},
@@ -53,7 +58,7 @@ export const lifestyle1: Edit = {
 		...deriva(64 + 2.17 / B, 69 + 2.17 / B, 1.08),
 	],
 	cenas: () => [
-		{tipo: 'textoLife', de: 0.15, ate: 1.85, principal: 'isso é hoje.', y: 620, som: 'pop'},
+		{tipo: 'textoLife', de: 0.15, ate: 1.85, principal: 'isso é hoje.', y: 620, som: SONS_NO_AUDIO ? null : 'pop'},
 		{tipo: 'textoLife', de: 4 * B + 0.1, ate: 10 * B - 0.1, kicker: '2 ANOS ATRÁS', principal: 'noites no quintal com notebook', y: 640},
 		{tipo: 'textoLife', de: 10 * B + 0.1, ate: 16 * B - 0.1, principal: 'um escritório improvisado', y: 640},
 		{
@@ -61,10 +66,10 @@ export const lifestyle1: Edit = {
 			de: 16 * B,
 			ate: DROP - 0.1,
 			itens: [16, 18, 20, 22].map((n) => n * B).map((em) => ({titulo: 'TikTok Shop', texto: 'Nova venda realizada 🛍️', em})),
-			sons: [
+			sons: sons([
 				...[16, 18, 20, 22].map((n) => n * B).map((em) => ({em, som: 'tick' as const})),
 				...DESLIZES.map(([n]) => ({em: n * B - 0.12, som: 'whoosh' as const, ganho: 0.45})),
-			],
+			]),
 		},
 		// Valor minimalista: o 2 chega por desfoque no drop e o brilho estoura 2 batidas depois (sons da montagem vão aqui também).
 		{
@@ -78,10 +83,10 @@ export const lifestyle1: Edit = {
 			sub: 'faturados com o TikTok Shop',
 			pousa: 26 * B,
 			y: 470,
-			sons: [
-				{em: 26 * B, som: 'shimmer', ganho: 0.8},
+			sons: sons([
+				{em: 26 * B, som: 'shimmer' as const, ganho: 0.8},
 				{em: 52 * B - 0.25, som: 'subida' as const, ganho: 0.6},
-			],
+			]),
 		},
 		{tipo: 'textoLife', de: 31 * B + 0.05, ate: 35 * B - 0.05, principal: 'o escritório mudou', y: 620},
 		// Punchline falada: o texto do início no lugar da legenda, com brilho para ler.
