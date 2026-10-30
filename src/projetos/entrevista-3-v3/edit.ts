@@ -97,6 +97,7 @@ export const entrevista3V3: Edit = {
 			z(b.at('Floripa'), 1.12),
 			{tipo: 'chicote', em: ini(b, 'resposta1')},
 			...punches(b, 'O que eu acho que eu levo de mais importante', 0.55),
+			z(b.at('fico'), 1.18),
 			...punches(b, 'sair do modo caverna', 0.55),
 			...punches(b, 'dentro de casa, fazendo live', 0.55),
 			{tipo: 'foco', em: b.at('poder')},
