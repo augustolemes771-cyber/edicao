@@ -27,7 +27,7 @@ const F = {
 	resposta2: ['Você não precisa aparecer, você', 'também não precisa ter estoque'],
 	pergunta3: ['Agora, para o Danilow', 'negativos de fazer live shopping no TikTok Shop'],
 	resposta3: ['Um ponto negativo', 'pedir dinheiro emprestado'],
-	pergunta4: ['Agora você, Ferreto', 'principais pontos negativos de trabalhar com IA'],
+	pergunta4: ['Agora você, Ferreto', 'negativos de trabalhar com IA no TikTok Shop'],
 	resposta4: ['Você vai querer ficar só viajando', 'Essa é a vantagem negativa'],
 	obrigado: ['Obrigado, TikTok Shop', 'Siga o Ferreto para aprender com IA'],
 	// O CTA foi gravado várias vezes: só a tomada boa segue com "Ganhar dinheiro".
@@ -62,10 +62,10 @@ export const entrevistaPista: Edit = {
 	trechos: (o) => {
 		const fala = (k: keyof typeof F, folga = 0.08): Trecho => [o.say(F[k][0]).inicio - 0.06, o.say(F[k][1]).fim + folga];
 		const lista: Trecho[] = (Object.keys(F) as (keyof typeof F)[]).map((k) => fala(k));
-		// Trechos quase colados no original (< 1 s) viram um só: as pausas de dentro saem logo abaixo.
+		// Trechos colados ou quase colados no original (< 1 s) viram um só: as pausas de dentro saem logo abaixo.
 		for (let i = lista.length - 1; i > 0; i--) {
 			const vao = lista[i][0] - lista[i - 1][1];
-			if (vao >= 0 && vao < 1) lista.splice(i - 1, 2, [lista[i - 1][0], lista[i][1]]);
+			if (vao < 1 && lista[i][1] > lista[i - 1][1]) lista.splice(i - 1, 2, [lista[i - 1][0], lista[i][1]]);
 		}
 		// Trechos vizinhos que se sobrepõem no original repetem quadros e palavras: divide a sobreposição ao meio.
 		for (let i = 1; i < lista.length; i++) {
@@ -140,7 +140,7 @@ export const entrevistaPista: Edit = {
 			z(ini(b, 'pergunta3'), 1, HOST),
 			z(b.at('negativos'), 1.18, HOST),
 			{tipo: 'chicote', em: ini(b, 'resposta3')},
-			...punches(b, 'Um ponto negativo a partir do momento que você começar em live shopping no TikTok', DANILOW),
+			...punches(b, 'Um ponto negativo a partir do momento que você começar em live shopping no TikTok os seus familiares vão começar a te pedir dinheiro emprestado', DANILOW),
 			// Pergunta 4 e a "vantagem negativa" do Ferreto
 			{tipo: 'chicote', em: ini(b, 'pergunta4')},
 			z(ini(b, 'pergunta4'), 1, HOST),
@@ -160,7 +160,7 @@ export const entrevistaPista: Edit = {
 			z(b.at('Siga'), 1.2, DANILOW),
 			z(b.at('Siga', 2), 1.2, FERRETO),
 			{tipo: 'chicote', em: ini(b, 'cta')},
-			...punches(b, 'Se você quer aprender como funciona todo esse ecossistema', HOST, 1, 0.55),
+			...punches(b, 'Se você quer aprender como funciona todo esse ecossistema Ganhar dinheiro sem aparecer Sem investir no tráfego De qualquer lugar do mundo', HOST, 1, 0.55),
 			z(b.at('Segue'), 1.3, HOST),
 		];
 	},
