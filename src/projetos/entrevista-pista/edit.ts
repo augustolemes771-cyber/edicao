@@ -60,7 +60,9 @@ export const entrevistaPista: Edit = {
 	silencios: silencios as Trecho[],
 	transcricao,
 	trechos: (o) => {
-		const fala = (k: keyof typeof F, folga = 0.08): Trecho => [o.say(F[k][0]).inicio - 0.06, o.say(F[k][1]).fim + folga];
+		// Ar antes da 1ª palavra; a resposta 4 vem logo depois de uma tomada falsa ("Você não vai querer..."), sem pausa.
+		const ANTES: Partial<Record<keyof typeof F, number>> = {resposta4: 0.01};
+		const fala = (k: keyof typeof F, folga = 0.08): Trecho => [o.say(F[k][0]).inicio - (ANTES[k] ?? 0.06), o.say(F[k][1]).fim + folga];
 		const lista: Trecho[] = (Object.keys(F) as (keyof typeof F)[]).map((k) => fala(k));
 		// Trechos colados ou quase colados no original (< 1 s) viram um só: as pausas de dentro saem logo abaixo.
 		for (let i = lista.length - 1; i > 0; i--) {
