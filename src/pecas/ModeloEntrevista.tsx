@@ -150,6 +150,9 @@ export const Selo: React.FC<{cena: De<'selo'>}> = ({cena}) => {
 // Número em ouro 3D (three.js, letras extrudadas com bisel) acima da cabeça, com o rótulo pequeno em cima (ex.: GMV)
 // e uma linha embaixo. O topo do vídeo escurece em roxo para o ouro ler sobre qualquer fundo.
 // Sem anel de choque nem faíscas: o usuário não gosta (30/10/2026, entrevista-pista).
+// Profundidade e brilho (pedido de 30/10/2026, entrevista-3: o título simples ficou fraco): letras mais fundas que balançam
+// devagar mostrando a espessura, luz de recorte atrás, feixe de luz que varre o metal de tempos em tempos, halo dourado que
+// pulsa atrás do número e brilho que corre na linha de baixo.
 export const Numero3D: React.FC<{cena: De<'numero3d'>}> = ({cena}) => {
 	const frame = useCurrentFrame();
 	const {fps, width, height} = useVideoConfig();
@@ -163,9 +166,19 @@ export const Numero3D: React.FC<{cena: De<'numero3d'>}> = ({cena}) => {
 	const saida = interpolate(frame, [fim - 7, fim], [1, 0], lim);
 	const sombra = interpolate(frame, [0, 8], [0, 1], lim) * saida;
 	const rot = interpolate(frame, [batida + 2, batida + 10], [0, 1], lim);
+	const pousou = Math.max(0, frame - batida - 10);
+	const giro = Math.sin((pousou / fps) * 1.7) * 0.2 * interpolate(pousou, [0, 12], [0, 1], lim);
+	const inclina = Math.sin((pousou / fps) * 1.1 + 1) * 0.06 * interpolate(pousou, [0, 12], [0, 1], lim);
+	// Feixe que varre a cada 1,6 s depois da batida, na altura do texto.
+	const ciclo = (pousou / fps) % 1.6;
+	const feixe = pousou > 0 ? interpolate(ciclo, [0, 0.9], [-8, 8], lim) : -20;
+	const halo = interpolate(frame, [batida, batida + 5, batida + 26], [0, 1, 0.5], lim) * (0.85 + 0.15 * Math.sin(frame / 7)) * saida;
+	const corre = interpolate(frame, [batida + 8, batida + 34], [-60, 160], lim);
+	const metalOuro = (cena.metal ?? 'ouro') === 'ouro';
 	return (
 		<AbsoluteFill style={{pointerEvents: 'none'}}>
 			<AbsoluteFill style={{opacity: sombra, background: `linear-gradient(180deg, rgba(30,15,58,0.82) 0%, rgba(30,15,58,0.55) ${((yPx + 170) / height) * 100}%, rgba(30,15,58,0) ${((yPx + 380) / height) * 100}%)`}} />
+			<AbsoluteFill style={{opacity: halo, background: `radial-gradient(ellipse 46% 9% at 50% ${(yPx / height) * 100}%, ${metalOuro ? 'rgba(255,214,140,0.55)' : 'rgba(225,230,255,0.45)'} 0%, rgba(150,90,220,0.2) 55%, rgba(0,0,0,0) 100%)`}} />
 			{cena.rotulo ? (
 				<div style={{position: 'absolute', top: yPx - 175, width: '100%', textAlign: 'center', opacity: rot * saida, transform: `translateY(${(1 - rot) * 14}px)`}}>
 					<span style={{fontFamily: poppins, fontWeight: 800, fontSize: 40, letterSpacing: '0.42em', marginRight: '-0.42em', background: OURO_TEXTO, WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent'}}>
@@ -182,12 +195,16 @@ export const Numero3D: React.FC<{cena: De<'numero3d'>}> = ({cena}) => {
 					style={{position: 'absolute', inset: 0}}
 				>
 					<Luzes quadro={frame} batidas={[batida]} />
-					<Linha3D texto={cena.texto} metal={cena.metal ?? 'ouro'} largura={cena.largura ?? 4.4} y={yMundo} quadro={frame} batida={batida} profundidade={0.26} />
+					<pointLight position={[feixe, yMundo + 0.6, 3.5]} intensity={feixe > -9 ? 45 : 0} distance={10} color="#fff6e0" />
+					<pointLight position={[0, yMundo + 0.4, -3]} intensity={30 * interpolate(frame, [batida, batida + 8], [0, 1], lim)} distance={9} color={metalOuro ? '#ffcf7a' : '#c9d4ff'} />
+					<group position={[0, yMundo, 0]} rotation={[inclina, giro, 0]}>
+						<Linha3D texto={cena.texto} metal={cena.metal ?? 'ouro'} largura={cena.largura ?? 4.4} y={0} quadro={frame} batida={batida} profundidade={0.62} />
+					</group>
 				</ThreeCanvas>
 			</AbsoluteFill>
 			{cena.abaixo ? (
 				<div style={{position: 'absolute', top: yPx + 150, width: '100%', display: 'flex', justifyContent: 'center', opacity: rot * saida}}>
-					<div style={cena.nomeOuro ? {fontFamily: playfair, fontStyle: 'italic', fontWeight: 800, fontSize: 92, lineHeight: 1.2, padding: '0 0.08em', background: OURO_TEXTO, WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent', filter: 'drop-shadow(0 6px 10px rgba(12,4,28,0.6))', transform: `translateY(${(1 - rot) * 16}px)`} : {...VIDRO, padding: '14px 32px', borderRadius: 999, fontFamily: poppins, fontWeight: 700, fontSize: 34, letterSpacing: '0.1em', color: '#fff', boxShadow: 'inset 0 0 0 1.5px rgba(232,194,122,0.5)', transform: `translateY(${(1 - rot) * 16}px)`}}>
+					<div style={cena.nomeOuro ? {fontFamily: playfair, fontStyle: 'italic', fontWeight: 800, fontSize: 92, lineHeight: 1.2, padding: '0 0.08em', background: OURO_TEXTO, WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent', filter: 'drop-shadow(0 6px 10px rgba(12,4,28,0.6)) drop-shadow(0 0 18px rgba(255,210,130,0.45))', transform: `translateY(${(1 - rot) * 16}px)`} : {...VIDRO, backgroundImage: `linear-gradient(100deg, rgba(255,255,255,0) ${corre - 30}%, rgba(255,236,190,0.38) ${corre}%, rgba(255,255,255,0) ${corre + 30}%), ${VIDRO.background}`, padding: '14px 32px', borderRadius: 999, fontFamily: poppins, fontWeight: 700, fontSize: 34, letterSpacing: '0.1em', color: '#fff', boxShadow: 'inset 0 0 0 1.5px rgba(232,194,122,0.7), 0 0 28px rgba(232,194,122,0.35)', textShadow: '0 0 14px rgba(255,220,150,0.55)', transform: `translateY(${(1 - rot) * 16}px)`}}>
 						{cena.abaixo}
 					</div>
 				</div>
