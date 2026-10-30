@@ -10,10 +10,25 @@ import transcricao from './transcricao.json';
 // siga cada um → CTA do MVM Creators → cartão final.
 // Duração: o usuário liberou passar de 59 s neste vídeo (30/10/2026); corta só pausas e tomadas repetidas.
 // Pausas medidas pela energia da voz (gravação ao ar livre, ver aprendizado do tema).
-// Pontos de zoom = posição do rosto de quem fala (fração do quadro).
-const HOST = {x: 0.5, y: 0.4};
-const DANILOW = {x: 0.5, y: 0.4};
-const FERRETO = {x: 0.5, y: 0.4};
+// Pontos de zoom = rosto de quem fala (fração do quadro), medidos numa folha de quadros: câmera na mão, cada trecho tem o seu.
+// Danilow de camiseta branca, Ferreto de preto com boné, entrevistador de bege.
+const POS = {
+	ganchoDanilow: {x: 0.25, y: 0.29}, // 0–4 s do original
+	ganchoFerreto: {x: 0.66, y: 0.28}, // 4–8 s
+	pergunta1: {x: 0.85, y: 0.22}, // 10–15 s
+	resposta1: {x: 0.33, y: 0.27}, // 16–23 s
+	pergunta2: {x: 0.2, y: 0.3}, // 39–44 s
+	resposta2: {x: 0.55, y: 0.23}, // 44–48 s
+	pergunta3: {x: 0.66, y: 0.31}, // 49–54 s
+	resposta3: {x: 0.42, y: 0.29}, // 94–101 s
+	pergunta4: {x: 0.4, y: 0.3}, // 102–108 s: o entrevistador fica na borda, plano entre os dois
+	resposta4: {x: 0.6, y: 0.23}, // 110–113 s
+	resposta4b: {x: 0.52, y: 0.33}, // 113–124 s: a câmera abre
+	todos: {x: 0.48, y: 0.32}, // 126–134 s, os três lado a lado
+	sigaDanilow: {x: 0.32, y: 0.32},
+	sigaFerreto: {x: 0.66, y: 0.31},
+	cta: {x: 0.46, y: 0.26}, // 167–176 s
+};
 // Câmera alta: o rosto desce e abre espaço para o 3D no topo.
 const baixo = (p: {x: number; y: number}) => ({x: p.x, y: Math.max(0.18, p.y - 0.18)});
 
@@ -116,54 +131,54 @@ export const entrevistaPista: Edit = {
 		const z = (em: number, escala: number, p: {x: number; y: number}): EfeitoCamera => ({tipo: 'zoom', em, escala, ...p});
 		return [
 			// Gancho: câmera alta para o 10 MILHÕES, clarão na batida do primeiro número
-			z(0, 1.2, baixo(HOST)),
+			z(0, 1.2, baixo(POS.ganchoDanilow)),
 			{tipo: 'flash', em: b.at('10') - 0.04},
-			z(b.at('milhões'), 1.34, baixo(HOST)),
-			z(b.at('live.'), 1.12, baixo(HOST)),
+			z(b.at('milhões'), 1.34, baixo(POS.ganchoDanilow)),
+			z(b.at('live.'), 1.12, baixo(POS.ganchoDanilow)),
 			{tipo: 'chicote', em: ini(b, 'gancho2')},
-			z(ini(b, 'gancho2'), 1.14, baixo(FERRETO)),
-			z(b.at('milhões', 2), 1.36, baixo(FERRETO)),
-			z(b.at('IA.'), 1.2, baixo(FERRETO)),
+			z(ini(b, 'gancho2'), 1.14, baixo(POS.ganchoFerreto)),
+			z(b.at('milhões', 2), 1.36, baixo(POS.ganchoFerreto)),
+			z(b.at('IA.'), 1.2, baixo(POS.ganchoFerreto)),
 			// Pergunta 1 em plano aberto; resposta do Danilow em punches (os motions de tela cheia cobrem parte dela)
 			{tipo: 'chicote', em: ini(b, 'pergunta1')},
-			z(ini(b, 'pergunta1'), 1, HOST),
-			z(b.at('considera'), 1.08, HOST),
-			z(b.at('positivos'), 1.15, HOST),
+			z(ini(b, 'pergunta1'), 1, POS.pergunta1),
+			z(b.at('considera'), 1.08, POS.pergunta1),
+			z(b.at('positivos'), 1.15, POS.pergunta1),
 			{tipo: 'chicote', em: ini(b, 'resposta1')},
-			...punches(b, 'Duas horas por dia vai te render 10 mil reais de lucro no seu bolso Zero barreira de entrada', baixo(DANILOW)),
+			...punches(b, 'Duas horas por dia vai te render 10 mil reais de lucro no seu bolso Zero barreira de entrada', baixo(POS.resposta1)),
 			// Pergunta 2 e resposta do Ferreto
 			{tipo: 'chicote', em: ini(b, 'pergunta2')},
-			z(ini(b, 'pergunta2'), 1, HOST),
-			z(b.at('positivos', 2), 1.15, HOST),
+			z(ini(b, 'pergunta2'), 1, POS.pergunta2),
+			z(b.at('positivos', 2), 1.15, POS.pergunta2),
 			{tipo: 'chicote', em: ini(b, 'resposta2')},
-			z(ini(b, 'resposta2'), 1.1, FERRETO),
+			z(ini(b, 'resposta2'), 1.1, POS.resposta2),
 			// Pergunta 3 e a família do Danilow
 			{tipo: 'chicote', em: ini(b, 'pergunta3')},
-			z(ini(b, 'pergunta3'), 1, HOST),
-			z(b.at('negativos'), 1.18, HOST),
+			z(ini(b, 'pergunta3'), 1, POS.pergunta3),
+			z(b.at('negativos'), 1.18, POS.pergunta3),
 			{tipo: 'chicote', em: ini(b, 'resposta3')},
-			...punches(b, 'Um ponto negativo a partir do momento que você começar em live shopping no TikTok os seus familiares vão começar a te pedir dinheiro emprestado', DANILOW),
+			...punches(b, 'Um ponto negativo a partir do momento que você começar em live shopping no TikTok os seus familiares vão começar a te pedir dinheiro emprestado', POS.resposta3),
 			// Pergunta 4 e a "vantagem negativa" do Ferreto
 			{tipo: 'chicote', em: ini(b, 'pergunta4')},
-			z(ini(b, 'pergunta4'), 1, HOST),
-			z(b.say('principais pontos negativos de trabalhar com IA').inicio, 1.18, HOST),
+			z(ini(b, 'pergunta4'), 1, POS.pergunta4),
+			z(b.say('principais pontos negativos de trabalhar com IA').inicio, 1.12, POS.pergunta4),
 			{tipo: 'chicote', em: ini(b, 'resposta4')},
-			...punches(b, 'Você vai querer ficar só viajando', FERRETO),
+			...punches(b, 'Você vai querer ficar só viajando', POS.resposta4),
 			// "Olha isso aqui que a gente está vivendo": abre o plano para mostrar o lugar
 			{tipo: 'foco', em: b.at('Olha')},
-			z(b.at('Olha'), 1, FERRETO),
-			z(b.at('vivendo.'), 1.1, FERRETO),
-			...punches(b, 'Eu estou aqui curtindo e as minhas IAs estão trabalhando para mim', FERRETO, 1, 0.5),
+			z(b.at('Olha'), 1, POS.resposta4b),
+			z(b.at('vivendo.'), 1.1, POS.resposta4b),
+			...punches(b, 'Eu estou aqui curtindo e as minhas IAs estão trabalhando para mim', POS.resposta4b, 1, 0.5),
 			{tipo: 'flash', em: b.at('vantagem') - 0.04},
 			// Fecho: aberto com todos, punch no nome de cada um
 			{tipo: 'chicote', em: ini(b, 'obrigado')},
-			z(ini(b, 'obrigado'), 1, HOST),
-			z(b.at('MVM.'), 1.12, HOST),
-			z(b.at('Siga'), 1.2, DANILOW),
-			z(b.at('Siga', 2), 1.2, FERRETO),
+			z(ini(b, 'obrigado'), 1, POS.todos),
+			z(b.at('MVM.'), 1.12, POS.todos),
+			z(b.at('Siga'), 1.2, POS.sigaDanilow),
+			z(b.at('Siga', 2), 1.2, POS.sigaFerreto),
 			{tipo: 'chicote', em: ini(b, 'cta')},
-			...punches(b, 'Se você quer aprender como funciona todo esse ecossistema Ganhar dinheiro sem aparecer Sem investir no tráfego De qualquer lugar do mundo', HOST, 1, 0.55),
-			z(b.at('Segue'), 1.3, HOST),
+			...punches(b, 'Se você quer aprender como funciona todo esse ecossistema Ganhar dinheiro sem aparecer Sem investir no tráfego De qualquer lugar do mundo', POS.cta, 1, 0.55),
+			z(b.at('Segue'), 1.3, POS.cta),
 		];
 	},
 	cenas: (b) => {
