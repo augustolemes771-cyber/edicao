@@ -609,6 +609,36 @@ const v14Calendario: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	);
 };
 
+// 6b. "Investir em você, em conhecimento": seta de ouro 3D apontando para a cabeça de quem fala, quicando; a etiqueta
+// acima troca de uma ideia para a outra.
+const v14Seta: React.FC<{cena: CenaPeca}> = ({cena}) => {
+	const {frame, fps, q, entra, sai, d} = useCena(cena);
+	const itens = d.itens ?? [];
+	const p = mola(frame, 0, fps, 9);
+	const quica = Math.abs(Math.sin(frame / 6)) * 0.18;
+	const atual = [...itens].reverse().find((it) => frame >= q(it.em));
+	const iAtual = atual ? itens.indexOf(atual) : -1;
+	const k = atual ? interpolate(frame, [q(atual.em), q(atual.em) + 6], [0, 1], lim) : 0;
+	const y = wy(420);
+	return (
+		<AbsoluteFill style={{pointerEvents: 'none', opacity: sai}}>
+			<Topo k={entra} ate={560} />
+			<Canvas>
+				<Luzes quadro={frame} batidas={[2, ...itens.map((it) => q(it.em))]} />
+				<group position={[0, y + (1 - p) * 3 - quica, 0]} rotation={[0, frame * 0.06, 0]}>
+					<mesh position={[0, 0.45, 0]} material={matOuro}>
+						<cylinderGeometry args={[0.16, 0.16, 0.8, 32]} />
+					</mesh>
+					<mesh position={[0, -0.18, 0]} rotation={[Math.PI, 0, 0]} material={matOuro}>
+						<coneGeometry args={[0.42, 0.6, 40]} />
+					</mesh>
+				</group>
+			</Canvas>
+			{atual ? <Pilula key={iAtual} texto={atual.texto} k={k} y={205} ouro={iAtual === itens.length - 1} tamanho={42} /> : null}
+		</AbsoluteFill>
+	);
+};
+
 // 15. Mentalidade expandida: esfera de luz presa numa caixa de vidro; ela cresce, a caixa se abre em quatro e voa, e
 // quando tenta encolher bate e volta grande: "NÃO VOLTA / AO NORMAL" em texto 3D.
 const v14Mente: React.FC<{cena: CenaPeca}> = ({cena}) => {
@@ -660,6 +690,7 @@ export const pecas: Pecas = {
 	v14Degraus,
 	v14Interroga,
 	v14Pegadas,
+	v14Seta,
 	v14Rota,
 	v14Tres,
 	v14Caminho,

@@ -87,7 +87,7 @@ export const entrevista3V7: Edit = {
 			{de: b.at('Qual') - 0.1, ate: b.at('CLT?') + 0.4, nome: 'PERGUNTA'},
 			{de: b.at('Então,') - 0.05, ate: b.say('começo.').fim + 0.1, nome: 'NEWTEX'},
 			{de: b.say('E qual foi').inicio - 0.05, ate: b.at('bolso?') + 0.4, nome: 'PERGUNTA'},
-			{de: b.at('De') - 0.05, ate: b.at('400.') + 0.3, nome: 'NEWTEX'},
+			{de: b.say('De um mês').inicio - 0.05, ate: b.at('400.') + 0.3, nome: 'NEWTEX'},
 			{de: b.at('Será') - 0.05, ate: b.at('mês?') + 0.3, nome: 'PERGUNTA'},
 			{de: b.at('Amigo,') - 0.05, ate: b.at('horas.') + 0.3, nome: 'NEWTEX'},
 		],
@@ -116,8 +116,8 @@ export const entrevista3V7: Edit = {
 			z(b.say('E qual foi').inicio, 1),
 			z(b.at('recorde'), 1.12),
 			z(b.at('lucro'), 1.2),
-			{tipo: 'chicote', em: b.at('De')},
-			z(b.at('De'), 1.08),
+			{tipo: 'chicote', em: b.say('De um mês').inicio},
+			z(b.say('De um mês').inicio, 1.08),
 			{tipo: 'chicote', em: b.at('1', 2)},
 			z(b.at('1', 2), 1.02),
 			z(b.at('faturamento', 2), 1.14),
@@ -134,7 +134,7 @@ export const entrevista3V7: Edit = {
 			z(b.at('Não'), 1),
 			{tipo: 'flash', em: b.at('simples,') - 0.04},
 			z(b.at('simples,'), 1.25),
-			z(b.at('Quer'), 1.08),
+			z(b.at('Quer', 2), 1.08),
 			z(b.at('TikTok', 4), 1.18),
 			z(b.at('Segue'), 1.04),
 			z(b.at('Newtags,'), 1.16),
@@ -273,7 +273,7 @@ export const entrevista3V7: Edit = {
 			{
 				tipo: 'chips',
 				de: b.at('mesa') - 0.1,
-				ate: b.at('área.') + 0.25,
+				ate: b.at('área.', 2) + 0.25,
 				itens: [
 					{texto: 'NA MESA MESMO', em: b.at('mesa')},
 					{texto: 'DICAS DO PESSOAL', em: b.at('dicas')},
@@ -302,7 +302,7 @@ export const entrevista3V7: Edit = {
 			{
 				tipo: 'peca',
 				nome: 'v7Recorde',
-				de: b.at('De') - 0.05,
+				de: b.say('De um mês').inicio - 0.05,
 				ate: b.at('400.') + 0.85,
 				dados: {sobe: b.at('1'), trava: b.at('400.') + 0.1},
 				esconderLegenda: true,
@@ -335,7 +335,7 @@ export const entrevista3V7: Edit = {
 			{
 				tipo: 'frase',
 				de: relogioAte,
-				ate: b.at('Quer') + 0.15,
+				ate: b.at('Quer', 2) + 0.15,
 				palavras: [
 					{texto: 'NÃO É FÁCIL', em: b.at('Não')},
 					{texto: 'É MUITO SIMPLES', em: b.say('muito simples').inicio, destaque: true},
