@@ -374,16 +374,16 @@ export const entrevistaPista: Edit = {
 				modelo: 'robos',
 				cheia: true,
 				de: b.at('IAs') - 0.1,
-				ate: b.at('Essa') - 0.08,
+				ate: b.at('Essa') + 0.3,
 				linhas: [
 					{texto: 'MINHAS IAs', em: b.at('IAs'), metal: 'branco'},
 					{texto: 'FUNCIONÁRIA', em: b.at('funcionária')},
 					{texto: 'SEM SALÁRIO', em: b.at('salário,'), metal: 'branco'},
 					{texto: '24 HORAS', em: b.at('24')},
-					{texto: 'NÃO RECLAMA', em: b.at('reclama.'), metal: 'branco'},
+					{texto: 'NÃO RECLAMA', em: b.say('e não reclama').inicio, metal: 'branco'},
 				],
 				troca: true,
-				marcos: [b.at('funcionária'), b.at('salário,'), b.at('24'), b.at('reclama.')],
+				marcos: [b.at('funcionária'), b.at('salário,'), b.at('24'), b.say('e não reclama').inicio],
 				som: 'pro_robo',
 				sons: [
 					{em: b.at('24'), som: 'pro_tick', ganho: 0.8},
@@ -393,10 +393,10 @@ export const entrevistaPista: Edit = {
 			// 14. A síntese: clarão + frase
 			{
 				tipo: 'frase',
-				de: b.at('Essa') - 0.05,
+				de: b.at('Essa') + 0.3,
 				ate: fim(b, 'resposta4') + 0.15,
 				palavras: [
-					{texto: 'A VANTAGEM', em: b.at('Essa')},
+					{texto: 'A VANTAGEM', em: b.at('Essa') + 0.3},
 					{texto: 'NEGATIVA', em: b.at('negativa.'), destaque: true},
 				],
 				som: 'pro_frase',

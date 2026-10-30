@@ -75,7 +75,7 @@ const CenaIas: React.FC<{q: number; marcos: number[]}> = ({q, marcos}) => {
 							key={i}
 							q={q}
 							nasce={3 + i * 4}
-							de={[robosX[r] + 0.3, -0.7]}
+							de={[robosX[r] + 0.3, -0.4]}
 							para={[colunas[i % 5], i < 5 ? 2.55 : 1.35]}
 							giro={(random(`cv${i}`) - 0.5) * 0.12}
 							indice={i}
@@ -85,13 +85,13 @@ const CenaIas: React.FC<{q: number; marcos: number[]}> = ({q, marcos}) => {
 			</group>
 			<SolLua q={q} entra={m24 - 2} />
 			{/* Robôs dos lados saem; o do meio vem para a frente e cresce. */}
-			<group position={[-1.6 - pF * 2.6, -1.1, -0.4]} scale={0.85} rotation={[0, 0.35, 0]}>
+			<group position={[-1.6 - pF * 2.6, -0.75, -0.4]} scale={0.8} rotation={[0, 0.35, 0]}>
 				<Robo segundos={t} fase={1.3} />
 			</group>
-			<group position={[1.6 + pF * 2.6, -1.1, -0.4]} scale={0.85} rotation={[0, -0.35, 0]}>
+			<group position={[1.6 + pF * 2.6, -0.75, -0.4]} scale={0.8} rotation={[0, -0.35, 0]}>
 				<Robo segundos={t} fase={2.6} />
 			</group>
-			<group position={[0, -1.0 - pF * 0.2, pF * 0.6]} scale={1.05 + pF * 0.45}>
+			<group position={[0, -0.55 + pF * 0.15, pF * 0.5]} scale={1.0 + pF * 0.25}>
 				<Robo segundos={t} fase={0} aceno={pR} filma={pF < 0.5} />
 				<group position={[0, -0.5, 0.42]} scale={0.5}>
 					<Cracha q={q} entra={mF + 4} />
