@@ -92,7 +92,16 @@ export const lifestyle1: Edit = {
 		// Punchline falada: o texto do início no lugar da legenda, com brilho para ler.
 		// Pergunta do Danilo pra Paloma, inserida antes da resposta (2,17 s a mais no vídeo: os dois textos abaixo
 		// deslocam +2,17 s e o drift final da câmera também, pra não sair do ponto).
-		{tipo: 'textoLife', de: 27.8, ate: 29.9, principal: 'fala, Paloma, tá curtindo aqui o evento?', y: 960, brilho: true},
+		// A pergunta entra palavra por palavra no tempo da fala (whisper só do IMG_5246 0–2,17 s, que começa em 27,793 s no vídeo).
+		{
+			tipo: 'textoLife',
+			de: 27.8,
+			ate: 29.9,
+			principal: 'fala, Paloma, tá curtindo aqui o evento?',
+			palavras: [0, 0.32, 0.75, 0.91, 1.35, 1.64, 1.74].map((s) => 27.793 + s),
+			y: 960,
+			brilho: true,
+		},
 		{tipo: 'textoLife', de: 29.97, ate: 30.97, principal: 'ô, como que tá?', y: 960, brilho: true},
 		{tipo: 'textoLife', de: 30.95, ate: 33.27, principal: 'tá muito ruim aqui, hein, velho', y: 960, brilho: true},
 		{tipo: 'textoLife', de: 64 * B + 0.1, ate: 69 * B - 0.1, kicker: 'TUDO COMEÇOU COM O', principal: 'TikTok Shop', sub: '@danilowtts', y: 540},

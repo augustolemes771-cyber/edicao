@@ -247,7 +247,8 @@ export type Cena =
 	| (Base & {tipo: 'notificacoes'; itens: {titulo: string; texto: string; em: number}[]; y?: number})
 	// Tipografia de lifestyle sem caixa: kicker em caixa alta, frase em Playfair itálico branco e sub; entra com fade + desfoque + subida.
 	// brilho: halo claro em volta das letras para ler sobre imagem clara (ex.: fala no lugar da legenda).
-	| (Base & {tipo: 'textoLife'; kicker?: string; principal: string; sub?: string; em?: number; y?: number; alinhamento?: 'centro' | 'esquerda' | 'direita'; brilho?: boolean})
+	// palavras: segundo (vídeo editado) em que cada palavra da frase principal é dita; com ele a frase entra palavra por palavra.
+	| (Base & {tipo: 'textoLife'; kicker?: string; principal: string; sub?: string; em?: number; y?: number; alinhamento?: 'centro' | 'esquerda' | 'direita'; brilho?: boolean; palavras?: number[]})
 	// Resultado premium: louros dourados em volta de um dígito gigante em ouro que gira e para em "pousa" (segundo do vídeo),
 	// com prefixo pequeno (R$), palavra embaixo (MILHÕES), fio dourado e sub. y = centro do número em px.
 	| (Base & {tipo: 'vitoria'; numero: string; prefixo?: string; palavra: string; kicker?: string; sub?: string; pousa?: number; y?: number})

@@ -116,6 +116,33 @@ export const TextoLife: React.FC<{cena: De<'textoLife'>}> = ({cena}) => {
 	const bloco = (v: number, filho: React.ReactNode) => (
 		<div style={{opacity: v, filter: `blur(${(1 - v / Math.max(s, 0.001)) * 8}px)`, transform: `translateY(${(1 - v / Math.max(s, 0.001)) * 20}px)`}}>{filho}</div>
 	);
+	// palavras: cada palavra salta no tempo da fala (mola, desfoque 10→0 px, subida de 28 px) e acende em dourado claro enquanto
+	// é dita. As que ainda não vieram já ocupam o lugar (invisíveis): a linha não pula.
+	const frase = cena.palavras
+		? cena.principal.split(' ').map((p, i, todas) => {
+				const em = (cena.palavras![i] ?? cena.palavras![cena.palavras!.length - 1]) - cena.de;
+				const m = spring({frame: frame - Math.round(em * fps), fps, config: {damping: 12, stiffness: 210, mass: 0.7}});
+				const fimFala = (cena.palavras![i + 1] ?? em + cena.de + 0.5) - cena.de;
+				const acesa = interpolate(t, [em, em + 0.05, fimFala, fimFala + 0.25], [0, 1, 1, 0], lim);
+				const entrou = interpolate(t, [em, em + 0.12], [0, 1], lim);
+				return (
+					<React.Fragment key={i}>
+						<span
+							style={{
+								display: 'inline-block',
+								opacity: entrou,
+								filter: `blur(${(1 - entrou) * 10}px)`,
+								transform: `translateY(${(1 - m) * 28}px) scale(${0.82 + 0.18 * m})`,
+								color: `rgb(255, ${255 - acesa * 21}, ${255 - acesa * 85})`,
+							}}
+						>
+							{p}
+						</span>
+						{i < todas.length - 1 ? ' ' : null}
+					</React.Fragment>
+				);
+			})
+		: cena.principal;
 	return (
 		<AbsoluteFill style={{pointerEvents: 'none'}}>
 			<div
@@ -139,11 +166,19 @@ export const TextoLife: React.FC<{cena: De<'textoLife'>}> = ({cena}) => {
 							</span>,
 						)
 					: null}
-				{bloco(
-					a(cena.kicker ? 0.12 : 0),
-					<span style={{fontFamily: playfair, fontStyle: 'italic', fontWeight: 700, fontSize: tam, lineHeight: 1.12, color: '#fff', textShadow: sombra, padding: '0 0.05em'}}>
-						{cena.principal}
-					</span>,
+				{cena.palavras ? (
+					<div style={{opacity: s}}>
+						<span style={{fontFamily: playfair, fontStyle: 'italic', fontWeight: 700, fontSize: tam, lineHeight: 1.12, color: '#fff', textShadow: sombra, padding: '0 0.05em'}}>
+							{frase}
+						</span>
+					</div>
+				) : (
+					bloco(
+						a(cena.kicker ? 0.12 : 0),
+						<span style={{fontFamily: playfair, fontStyle: 'italic', fontWeight: 700, fontSize: tam, lineHeight: 1.12, color: '#fff', textShadow: sombra, padding: '0 0.05em'}}>
+							{cena.principal}
+						</span>,
+					)
 				)}
 				{cena.sub
 					? bloco(
