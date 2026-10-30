@@ -305,8 +305,9 @@ try {
 		codec: 'h264',
 		outputLocation: path.join(raiz, brutoRel),
 		overwrite: true,
-		scale: tipo === 'final' ? 2 : res / 1080,
-		videoBitrate: tipo === 'final' ? '50M' : '6M',
+		// ESCALA_FINAL=1: final em 1080x1920 (entrega rápida); o padrão é 4K.
+		scale: tipo === 'final' ? Number(process.env.ESCALA_FINAL) || 2 : res / 1080,
+		videoBitrate: tipo === 'final' ? (Number(process.env.ESCALA_FINAL) === 1 ? '20M' : '50M') : '6M',
 		...(tipo === 'final' ? {audioCodec: 'aac', audioBitrate: '320k'} : {}),
 		imageFormat: 'jpeg',
 		jpegQuality: 95,

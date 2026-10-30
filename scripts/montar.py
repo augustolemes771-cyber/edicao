@@ -34,6 +34,18 @@ def run(cmd):
         raise SystemExit(f"ffmpeg falhou: {' '.join(cmd[:6])}...")
 
 
+# Tudo sai em SDR bt709 faixa de vídeo: os clipes do iPhone vêm em HLG (bt2020) e as fotos em faixa cheia (bt470bg); misturar
+# as duas marcações no mesmo arquivo faz o compositor do Remotion falhar no render final ("Generic error in an external library").
+HDR = "zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p,"
+SDR = ["-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709", "-color_range", "tv"]
+
+
+def transferencia(arq):
+    r = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=color_transfer", "-of", "default=nw=1:nk=1", arq],
+                       capture_output=True, text=True)
+    return r.stdout.strip()
+
+
 clipes = []
 voz = None
 t = 0.0
@@ -47,19 +59,21 @@ for i, s in enumerate(cfg["segmentos"]):
         z0, z1 = s.get("zoom", [1.0, 1.0])
         # cobre 9:16, amplia 2x para o zoompan não tremer e anima o zoom do começo ao fim do clipe
         vf = (f"scale=-2:{H * 2},crop={W * 2}:{H * 2},"
-              f"zoompan=z='{z0}+({z1}-{z0})*on/{q}':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d={q}:s={W}x{H}:fps={FPS},{grade},format=yuv420p")
+              f"zoompan=z='{z0}+({z1}-{z0})*on/{q}':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d={q}:s={W}x{H}:fps={FPS},{grade},scale=out_range=tv:out_color_matrix=bt709,format=yuv420p")
         entrada = ["-loop", "1", "-i", os.path.join(pub, s["foto"])]
         extra = []
     else:
         vel = s.get("vel", 1)
         # vel 0,5 = câmera lenta: lê dur*vel s da origem e estica pelo mesmo fator
-        vf = (f"setpts=PTS/{vel},fps={FPS},scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},{grade},format=yuv420p")
+        hdr = HDR if transferencia(os.path.join(pub, s["arquivo"])) in ("arib-std-b67", "smpte2084") else ""
+        vf = (f"{hdr}setpts=PTS/{vel},fps={FPS},scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},{grade},format=yuv420p")
         entrada = ["-ss", str(s.get("de", 0)), "-t", f"{dur * vel:.4f}", "-i", os.path.join(pub, s["arquivo"])]
         extra = []
         if s.get("voz"):
             voz = (os.path.join(pub, s["arquivo"]), s.get("de", 0), dur, t)
+    vf += ",setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709:range=tv"
     run(["ffmpeg", "-y", "-v", "error", *entrada, "-vf", vf, "-frames:v", str(q), "-r", str(FPS), "-an",
-         "-c:v", "libx264", "-preset", "fast", "-crf", "15", *extra, out])
+         "-c:v", "libx264", "-preset", "fast", "-crf", "15", *SDR, *extra, out])
     clipes.append(out)
     t += dur
     print(f"clipe {i + 1}/{len(cfg['segmentos'])} ok ({dur:.2f}s)", flush=True)
