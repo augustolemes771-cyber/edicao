@@ -205,14 +205,14 @@ export const FullPhrase: React.FC<FullPhraseProps> = ({ t0, end, words, top = 76
   );
 };
 
-// Caixa centrada no quadro (x 40–1040). Palavra que não cabe em 960 px encolhe (largura estimada por letra: Playfair
-// itálico ~0,6 em, Montserrat Black ~0,74 em): "MODO CAVERNA" vazava pela esquerda (30/10/2026, entrevista-3).
-const cabe = (texto: string, tamanho: number, porLetra: number) => Math.min(tamanho, Math.floor(960 / Math.max(1, texto.length * porLetra)));
+// Caixa centrada no quadro (x 40–1040). Palavra que não cabe em 920 px encolhe (largura estimada por letra: Playfair
+// itálico maiúsculo ~0,78 em, Montserrat Black ~0,82 em): "MODO CAVERNA" vazava pela esquerda (30/10/2026, entrevista-3).
+const cabe = (texto: string, tamanho: number, porLetra: number) => Math.min(tamanho, Math.floor(920 / Math.max(1, texto.length * porLetra)));
 const wordStyle = (w: PhraseWord, o: number): CSSProperties => ({
   display: "inline-block", opacity: o, lineHeight: 1.08, whiteSpace: "nowrap",
   ...(w.accent
-    ? { fontFamily: PLAY, fontStyle: "italic", fontWeight: 800, fontSize: cabe(w.text, 128, 0.6), padding: "0 0.06em", ...goldText }
-    : { fontFamily: MONT, fontWeight: 900, fontSize: cabe(w.text, 112, 0.74), color: "#FFFFFF", letterSpacing: "-0.005em", textShadow: "0 8px 30px rgba(12,4,28,0.42)" }),
+    ? { fontFamily: PLAY, fontStyle: "italic", fontWeight: 800, fontSize: cabe(w.text, 128, 0.78), padding: "0 0.06em", ...goldText }
+    : { fontFamily: MONT, fontWeight: 900, fontSize: cabe(w.text, 112, 0.82), color: "#FFFFFF", letterSpacing: "-0.005em", textShadow: "0 8px 30px rgba(12,4,28,0.42)" }),
 });
 
 // ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────
