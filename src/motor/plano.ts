@@ -261,7 +261,7 @@ export type Cena =
 	// Banners de notificação de celular (vidro escuro, ícone de sacola) que descem do topo e empurram os anteriores (pilha de até 4).
 	// icone 'mensagem': balão de app de mensagens no lugar da sacola; som: toca em cada item que chega (ganho baixo).
 	| (Base & {tipo: 'notificacoes'; itens: {titulo: string; texto: string; em: number}[]; y?: number; icone?: 'sacola' | 'mensagem'; somItem?: Som; ganhoItem?: number})
-	// Motion de meia tela (src/pecas/MotionPista.tsx): a metade de baixo vira o roxo do tema com grade em perspectiva andando,
+	// Motion de meia tela (src/pecas/MotionPista.tsx): a metade de baixo ganha um véu roxo translúcido (o vídeo aparece) com grade reta,
 	// um objeto 3D com movimento curto ligado à fala e texto 3D (sem anel nem faíscas); o rosto fica livre em cima. Esconde a legenda.
 	// linhas: texto 3D no seu tempo; com `troca`, cada linha substitui a anterior no mesmo lugar. marcos: tempos de ações do objeto
 	// (ex.: a parede quebra no marco 0). chip: pílula pequena no topo do painel (ex.: LIVE, IA).
@@ -272,6 +272,8 @@ export type Cena =
 			troca?: boolean;
 			marcos?: number[];
 			chip?: string;
+			// Tela inteira de motion (fundo roxo com grade) em vez de meia tela sobre o vídeo.
+			cheia?: boolean;
 	  })
 	// Avião 3D que cruza o céu acima da pessoa deixando rastro (y = altura do voo em px).
 	| (Base & {tipo: 'aviao'; y?: number})
