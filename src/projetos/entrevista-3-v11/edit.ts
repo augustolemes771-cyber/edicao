@@ -26,7 +26,7 @@ const F = {
 	certo: ['sempre deu certo, muito certo', 'sempre deu certo, muito certo'],
 	sintese: ['não é fácil, mas é muito simples', 'não é fácil, mas é muito simples'],
 	duvida: ['Tá com alguma dúvida', 'Deixa nos comentários'],
-	siga: ['Me siga Danilo', 'e vamos que vamos'],
+	siga: ['Me siga Danilo', 'siga o MVM'],
 } as const;
 const ini = (b: Busca, k: keyof typeof F) => b.say(F[k][0]).inicio;
 const fim = (b: Busca, k: keyof typeof F) => b.say(F[k][1]).fim;
@@ -129,7 +129,6 @@ export const entrevista3V11: Edit = {
 			z(ini(b, 'siga'), 1.08),
 			z(b.say('siga o Raposão').inicio, 1.18),
 			z(b.say('siga o MVM').inicio, 1.26),
-			z(b.say('vamos que vamos').inicio, 1.12),
 		];
 	},
 	cenas: (b) => {
@@ -331,6 +330,7 @@ export const entrevista3V11: Edit = {
 				de: ini(b, 'certo') - 0.05,
 				ate: fim(b, 'certo') + 0.1,
 				texto: 'SEMPRE DEU CERTO',
+				esconderLegenda: true,
 				som: 'pro_pulso',
 			},
 			// 18. Síntese

@@ -53,9 +53,9 @@ export const entrevista3V12: Edit = {
 	transcricao,
 	trechos: (o) => {
 		const lista: Trecho[] = (Object.keys(F) as (keyof typeof F)[]).map((k) => [o.say(F[k][0]).inicio - 0.06, o.say(F[k][1]).fim + 0.08]);
-		// Trecho que começa dentro de outro já usado (a síntese logo depois do gancho, fora de ordem) começa no fim dele.
-		for (let i = 0; i < lista.length; i++) {
-			for (let j = 0; j < lista.length; j++) if (j !== i && lista[i][0] > lista[j][0] && lista[i][0] < lista[j][1]) lista[i][0] = lista[j][1];
+		// Trecho que começa dentro de outro (a síntese logo depois do gancho, fora de ordem): divide a sobreposição ao meio.
+		for (const t of lista) {
+			for (const u of lista) if (u !== t && t[0] > u[0] && t[0] < u[1]) t[0] = u[1] = (t[0] + u[1]) / 2;
 		}
 		// Trechos colados ou sobrepostos no original (na ordem) viram um só: não repete palavra.
 		for (let i = lista.length - 1; i > 0; i--) {
