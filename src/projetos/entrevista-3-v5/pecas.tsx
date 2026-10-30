@@ -183,7 +183,7 @@ const Rota: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			</svg>
 			<Pino x={150} k={pinoA} nome="FLORIPA" />
 			<Pino x={930} k={pinoB} nome="RIO DE JANEIRO" ouro />
-			<AviaoCena cena={{tipo: 'aviao', de: cena.de, ate: cena.ate, y: Y - 110}} />
+			<AviaoCena cena={{...cena, tipo: 'aviao', y: Y - 110} as unknown as React.ComponentProps<typeof AviaoCena>['cena']} />
 		</AbsoluteFill>
 	);
 };
