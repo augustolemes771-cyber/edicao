@@ -48,9 +48,9 @@ export const lifestyle1: Edit = {
 		{tipo: 'zoom', em: DROP + 1 / 30, escala: 1.02, suave: 4 * B},
 		...DESLIZES.map(([n, direcao]): EfeitoCamera => ({tipo: 'deslize', em: n * B, direcao})),
 		...CORTES.flatMap((n, i) => deriva(n, CORTES[i + 1] ?? 57)),
-		// Punchline: entra em foco; fecho em corte seco.
+		// Punchline: entra em foco; fecho em corte seco. +2,17 s (4,45 batidas) pela pergunta inserida do Danilo.
 		{tipo: 'foco', em: 57 * B, duracao: 0.35},
-		...deriva(64, 69, 1.08),
+		...deriva(64 + 2.17 / B, 69 + 2.17 / B, 1.08),
 	],
 	cenas: () => [
 		{tipo: 'textoLife', de: 0.15, ate: 1.85, principal: 'isso é hoje.', y: 620, som: 'pop'},
