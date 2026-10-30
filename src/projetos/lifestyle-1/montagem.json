@@ -150,7 +150,7 @@
  "musica": {
   "arquivo": "brutos/musicas/audio-render-tarde-parada.wav",
   "pronto": true,
-  "nota": "remix_v6.mp3 se perdeu: trilha tirada do render da tarde (Drive, lifestyle-1-final.mp4), com a pergunta do Danilo sem música inserida em 27,793 s. A versão -parada tem a música desacelerando até parar (fita parando) de 26,95 s até a fala. Já tem os efeitos do edit.ts mixados (SONS_NO_AUDIO). Com o remix de volta: arquivo remix_v6.mp3, sem pronto, saida 1.4, volume 0.95.",
+  "nota": "remix_v6.mp3 se perdeu: trilha tirada do render da tarde (Drive, lifestyle-1-final.mp4), com a pergunta do Danilo sem música inserida em 27,793 s. A versão -parada tem a música desacelerando até parar (fita parando, contínua) nos 0,5 s antes da fala (27,29 a 27,79 s). Já tem os efeitos do edit.ts mixados (SONS_NO_AUDIO). Com o remix de volta: arquivo remix_v6.mp3, sem pronto, saida 1.4, volume 0.95.",
   "entrada": 0.0,
   "saida": 1.4,
   "volume": 1,
