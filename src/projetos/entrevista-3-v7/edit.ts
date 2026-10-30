@@ -26,8 +26,8 @@ const TRECHOS: Trecho[] = [
 	[24.52, 31.38], // Então, galera, hoje eu indico... TikTok Shopping, né? Porque zero barreira de entrada aí, porque eu tiro por mim.
 	[31.88, 36.42], // Tipo, todo mundo tem produtos em casa que vendem no TikTok Shopping, às vezes você tem um suplemento.
 	[36.7, 44.72], // Eu que sou da área fitness... foi assim que eu comecei. Peguei meus suplementos... como sou da área.
-	[45.38, 50.06], // E aí várias pessoas foram perguntando... comecei a ter resultado no começo.
-	[50.62, 52.98], // E qual foi o seu recorde de faturamento em um mês de lucro no bolso?
+	[45.38, 50.14], // E aí várias pessoas foram perguntando... comecei a ter resultado no começo.
+	[50.54, 53.06], // E qual foi o seu recorde de faturamento em um mês de lucro no bolso?
 	[53.32, 55.06], // De um mês, 1 milhão e 400.
 	[55.72, 60.04], // 1 milhão de faturamento deu 140 mil de lucro? Isso, eu vou aproximar de um mês.
 	[60.32, 63.84], // Será que compensa ficar 8 horas em live para lucrar 140 mil no mês?
@@ -109,7 +109,7 @@ export const entrevista3V7: Edit = {
 			{tipo: 'chicote', em: b.at('Então,')},
 			...punches(b, 'Então, galera, hoje eu indico para você procurar o TikTok Shopping', 0.55),
 			...punches(b, 'Porque zero barreira de entrada aí, porque eu tiro por mim', 0.5),
-			...punches(b, 'Tipo, todo mundo tem produtos em casa', 0.55),
+			...punches(b, 'Todo mundo tem produtos em casa', 0.55),
 			...punches(b, 'Peguei meus suplementos com o suplemento na mesa mesmo, comecei a falar, tirar dicas do pessoal como sou da área', 0.55),
 			...punches(b, 'E aí várias pessoas foram perguntando e eu entrei muito fácil no TikTok Shopping e comecei a ter resultado no começo', 0.55),
 			{tipo: 'chicote', em: b.say('E qual foi').inicio},
