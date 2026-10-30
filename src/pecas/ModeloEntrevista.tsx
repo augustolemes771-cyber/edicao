@@ -148,6 +148,7 @@ export const Selo: React.FC<{cena: De<'selo'>}> = ({cena}) => {
 
 // Número em ouro 3D (three.js, letras extrudadas com bisel) acima da cabeça, com o rótulo pequeno em cima (ex.: GMV)
 // e uma linha embaixo. O topo do vídeo escurece em roxo para o ouro ler sobre qualquer fundo.
+// Sem anel de choque nem faíscas: o usuário não gosta (30/10/2026, entrevista-pista).
 export const Numero3D: React.FC<{cena: De<'numero3d'>}> = ({cena}) => {
 	const frame = useCurrentFrame();
 	const {fps, width, height} = useVideoConfig();
@@ -181,8 +182,6 @@ export const Numero3D: React.FC<{cena: De<'numero3d'>}> = ({cena}) => {
 				>
 					<Luzes quadro={frame} batidas={[batida]} />
 					<Linha3D texto={cena.texto} metal={cena.metal ?? 'ouro'} largura={cena.largura ?? 4.4} y={yMundo} quadro={frame} batida={batida} profundidade={0.26} />
-					<Onda quadro={frame} inicio={batida} y={yMundo} cor="#ffd27a" tamanho={2.6} />
-					<Faiscas quadro={frame} inicio={batida} y={yMundo} cor="#ffd27a" largura={4} />
 				</ThreeCanvas>
 			</AbsoluteFill>
 			{cena.abaixo ? (

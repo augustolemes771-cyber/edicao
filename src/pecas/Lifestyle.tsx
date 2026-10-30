@@ -29,6 +29,18 @@ const IconeSacola: React.FC = () => (
 	</div>
 );
 
+// Ícone de app de mensagens (balão verde com três pontinhos, sem logo oficial), entrevista-pista.
+const IconeMensagem: React.FC = () => (
+	<div style={{width: 92, height: 92, borderRadius: 24, flexShrink: 0, background: 'linear-gradient(145deg,#5ef08a 0%,#25c45a 55%,#128c3e 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.4)'}}>
+		<svg width={60} height={60} viewBox="0 0 60 60" fill="none">
+			<path d="M30 9C17.3 9 7 17.6 7 28.2c0 6 3.3 11.4 8.5 14.9L13.6 52l9.6-5.3c2.2.5 4.5.8 6.8.8 12.7 0 23-8.6 23-19.3S42.7 9 30 9z" fill="#fff" />
+			<circle cx={20.5} cy={28.5} r={3.3} fill="#1fae50" />
+			<circle cx={30} cy={28.5} r={3.3} fill="#1fae50" />
+			<circle cx={39.5} cy={28.5} r={3.3} fill="#1fae50" />
+		</svg>
+	</div>
+);
+
 export const Notificacoes: React.FC<{cena: De<'notificacoes'>}> = ({cena}) => {
 	const frame = useCurrentFrame();
 	const {fps} = useVideoConfig();
@@ -83,7 +95,7 @@ export const Notificacoes: React.FC<{cena: De<'notificacoes'>}> = ({cena}) => {
 							boxShadow: 'inset 0 0 0 1.5px rgba(255,255,255,0.14), 0 18px 44px rgba(0,0,0,0.38)',
 						}}
 					>
-						<IconeSacola />
+						{cena.icone === 'mensagem' ? <IconeMensagem /> : <IconeSacola />}
 						<div style={{flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 6}}>
 							<div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'baseline'}}>
 								<span style={{fontFamily: poppins, fontWeight: 700, fontSize: 32, color: '#fff', letterSpacing: '0.01em'}}>{it.titulo}</span>
