@@ -7,3 +7,4 @@ Regras aprendidas nos vídeos deste tema. O Claude lê isto antes de editar e ac
 - Texto dos cenários monta inteiro em ~0,3 s no começo da cena; não sincronizar letra por letra com a fala.
 - O 3D precisa de WebGL; na nuvem, renderizar stills para revisar e só depois o vídeo.
 - Antes de animar um estilo novo de texto, mandar a prova estática (`npx remotion still prova-texto`) para aprovação.
+- 2026-10-31 (referencias-ig-1): vídeo explicativo 100% motion no estilo das referências do Instagram (3D low-poly + narração "Se você… então… Esse é o X"): narração grátis com voz neural (`scripts/narrar.py`, edge-tts, pt-BR-AntonioNeural +12%) que dá o tempo EXATO de cada palavra (sem Whisper); o vídeo-base é fundo liso + narração e cada cena é peça de tela cheia. Avião/cenário low-poly comum em `src/projetos/referencias-ig-1/aviao.tsx`. Não clonar a voz do narrador das referências (pessoa real).

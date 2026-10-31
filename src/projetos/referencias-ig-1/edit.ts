@@ -12,7 +12,12 @@ export const referenciasIg1: Edit = {
 	verificarCurva: false,
 	regraCamera: false,
 	escalaFinal: 1,
-	legenda: {estilo: 'palavra', enfase: []},
+	legenda: {
+		estilo: 'palavra',
+		altura: 0.66,
+		// Nome de cada peça em destaque (como os rótulos amarelos das referências).
+		enfase: ['sustentação.', 'tração.', 'flaps.', 'ailerons.', 'profundor.', 'pressurização.', 'spoilers.', 'pouso.'].map((palavra) => ({palavra, estilo: 'cor' as const, cor: '#ffcf3a'})),
+	},
 	camera: (b) => [{tipo: 'foco', em: 0}],
 	transcricao,
 	// Notas faladas para a IA, no tempo original. Ex.: (o) => [[o.say('abre nota').inicio, o.say('fecha nota').fim]]
