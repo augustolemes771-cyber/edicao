@@ -1079,7 +1079,6 @@ export const Gradeamento: React.FC<EstadoGrade> = ({rastelo = 0, lixo = 1}) => {
 			<Bc a={[x0, fl, zA + 0.3]} b={[x1 + 0.6, nivel, ZF - 0.02]} m={mt.aguaSuja} />
 			{/* barras da grade (inclinadas) e a viga que as segura */}
 			<Inst geo={GEO.caixa} m={mt.ferro} itens={barras} />
-			<Bc a={[10.1, 2.4, zA]} b={[10.3, 2.52, ZF]} m={mt.ferro} />
 			{/* lixo preso do lado de cá da grade */}
 			{lixo > 0 ? (
 				<group scale={lixo}>
@@ -1095,7 +1094,7 @@ export const Gradeamento: React.FC<EstadoGrade> = ({rastelo = 0, lixo = 1}) => {
 				<Bc a={[-0.15, -0.1, zA + 0.35]} b={[0.15, 0.1, ZF - 0.1]} m={mt.amarelo} />
 				{rastelo > 0.05 && rastelo < 0.95 ? <Bx p={[-0.15, 0.15, 28.4]} s={[0.25, 0.25, 0.9]} m={mt.vermelho} /> : null}
 			</group>
-			<Bc a={[10.4, 2.5, zA - 0.4]} b={[11.0, 3.6, zA + 0.2]} m={mt.amarelo} />
+			<Bc a={[10.5, 2.5, zA - 0.3]} b={[10.9, 3.1, zA + 0.1]} m={mt.amarelo} />
 			{/* caçamba com lixo atrás do canal */}
 			<group position={[10.1, CHAO, 24.9]}>
 				<Bc a={[-1.1, 0, -0.7]} b={[1.1, 1.0, 0.7]} m={mt.verde} />
