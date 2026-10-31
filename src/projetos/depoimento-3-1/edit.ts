@@ -5,6 +5,8 @@ export const depoimento31: Edit = {
 	pasta: 'projetos/depoimento-3-1',
 	video: 'video.mp4',
 	formato: 'vertical',
+	// Fonte do celular em ~470x840: final em 540x960 (render na qualidade do vídeo).
+	escalaFinal: 0.5,
 	verificarCurva: false,
 	regraCamera: false,
 	legenda: {estilo: 'palavra', enfase: []},
