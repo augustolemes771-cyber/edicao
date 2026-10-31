@@ -87,7 +87,9 @@ export const Linha3D: React.FC<{
 	queda?: number;
 	profundidade?: number;
 	distancia?: number;
-}> = ({texto, metal, largura, y, quadro, batida, queda, profundidade = 0.28, distancia = 11}) => {
+	// quadros entre uma letra e a seguinte (2 = padrão; 1 em linha longa com pouco tempo de tela, para a entrada concluir)
+	intervalo?: number;
+}> = ({texto, metal, largura, y, quadro, batida, queda, profundidade = 0.28, distancia = 11, intervalo = 2}) => {
 	const {fps} = useVideoConfig();
 	const {letras, total} = useMemo(() => montar(texto, profundidade), [texto, profundidade]);
 	const mats = useMemo(() => materiais(metal), [metal]);
@@ -95,11 +97,11 @@ export const Linha3D: React.FC<{
 	// Auditoria (scripts/auditar-texto3d.ts, inputProps {auditarTexto3d: true}): registra cada quadro em que a linha aparece,
 	// para conferir se a entrada termina antes de a cena sair.
 	const absoluto = Internals.Timeline.useTimelinePosition();
-	if ((getInputProps() as {auditarTexto3d?: boolean}).auditarTexto3d) console.log(`T3D|${absoluto}|${quadro}|${batida}|${letras.length}|${texto}`);
+	if ((getInputProps() as {auditarTexto3d?: boolean}).auditarTexto3d) console.log(`T3D|${absoluto}|${quadro}|${batida}|${letras.length}|${intervalo}|${texto}`);
 	return (
 		<group position={[0, y, 0]} scale={k}>
 			{letras.map((l, i) => {
-				const local = quadro - batida - i * 2;
+				const local = quadro - batida - i * intervalo;
 				if (local < 0) return null;
 				const p = spring({frame: local, fps, config: {damping: 9, stiffness: 150, mass: 0.75}});
 				const lado = i % 2 ? 1 : -1;
