@@ -20,7 +20,7 @@ const BLOCOS: Trecho[] = [
 	[60.62, 93.7], // e eu estou escalando ... só façam.
 ];
 
-// Tira as pausas medidas (≥ 0,25 s) dentro de cada bloco, com 0,06 s de ar de cada lado.
+// Tira as pausas medidas (≥ 0,25 s) dentro de cada bloco, com 0,06 s de ar no fim e 0,1 s antes de a fala voltar.
 const TRECHOS: Trecho[] = (() => {
 	const out: Trecho[] = [];
 	for (const [a, z] of BLOCOS) {
@@ -28,7 +28,7 @@ const TRECHOS: Trecho[] = (() => {
 		for (const [s0, s1] of silencios as Trecho[]) {
 			if (s0 <= ini + 0.1 || s1 >= z - 0.1 || s1 - s0 < 0.25) continue;
 			out.push([ini, s0 + 0.06]);
-			ini = s1 - 0.06;
+			ini = s1 - 0.1;
 		}
 		out.push([ini, z]);
 	}
@@ -225,8 +225,7 @@ export const depoimento34: Edit = {
 				de: b.at('muito') - 0.08,
 				ate: aprendi,
 				palavras: [
-					{texto: 'É MUITO', em: b.at('muito')},
-					{texto: 'BOM', em: b.at('bom.'), destaque: true},
+					{texto: 'MUITO BOM', em: b.at('muito'), destaque: true},
 				],
 				esconderLegenda: true,
 				som: 'pro_pop',
