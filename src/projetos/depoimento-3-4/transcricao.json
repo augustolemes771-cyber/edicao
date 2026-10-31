@@ -1296,21 +1296,21 @@
 	},
 	{
 		"text": " segredo,",
-		"startMs": 70520,
-		"endMs": 71000,
+		"startMs": 70900,
+		"endMs": 71250,
 		"timestampMs": null,
 		"confidence": 0.999693
 	},
 	{
 		"text": " não",
-		"startMs": 71000,
-		"endMs": 71240,
+		"startMs": 71260,
+		"endMs": 71400,
 		"timestampMs": null,
 		"confidence": 0.999973
 	},
 	{
 		"text": " existe",
-		"startMs": 71240,
+		"startMs": 71400,
 		"endMs": 71600,
 		"timestampMs": null,
 		"confidence": 0.999962
