@@ -155,19 +155,20 @@ export const depoimento34: Edit = {
 					{em: pf.sobe, som: 'pro_tick', ganho: 0.7},
 				],
 			},
+			// Outros nichos de lado (tela cheia): cartões de outros nichos varridos para o lado e o alvo do propósito no centro
 			{
-				tipo: 'frase',
-				dor: true,
+				tipo: 'peca',
+				nome: 'd34Nichos',
 				de: b.at('deixei') - 0.04,
-				ate: b.at('vim') - 0.05,
-				palavras: [
-					{texto: 'OUTROS NICHOS', em: b.at('nicho')},
-					{texto: 'DE LADO', em: b.at('lado'), destaque: true},
-				],
+				ate: b.say('os caras ensinam').inicio - 0.05,
+				dados: {nichos: b.at('outros') - 0.05, lado: b.at('lado'), vim: b.at('vim') - 0.03, proposito: b.at('propósito.') - 0.05, marcos: [b.at('outros'), b.at('lado'), b.at('vim'), b.at('propósito.')]},
 				esconderLegenda: true,
-				som: 'pro_whoosh',
+				sons: [
+					{em: b.at('outros') - 0.05, som: 'pro_pop', ganho: 0.6},
+					{em: b.at('lado'), som: 'pro_whoosh', ganho: 0.7},
+					{em: b.at('propósito.') - 0.05, som: 'pro_tick', ganho: 0.7},
+				],
 			},
-			{tipo: 'selo', de: b.at('como', 2) - 0.05, ate: b.say('os caras ensinam').inicio - 0.05, texto: 'PROPÓSITO', y: 380, esconderLegenda: true, som: 'pro_tick'},
 			// 5. Pega pela mão (tela cheia): a mão de ouro pega a mão dela e guia pelo caminho até a estrela
 			{
 				tipo: 'peca',

@@ -135,8 +135,8 @@ const d34Flopado: React.FC<{cena: CenaPeca}> = ({cena}) => {
 				<Canvas width={width} height={height}>
 					<Luzes quadro={frame} batidas={[cem, produto]} />
 					<pointLight position={[0, yMundo(820), -3]} intensity={30} distance={9} color="#ffcf7a" />
-					<Linha3D texto="100%" metal="ouro" largura={6.4} y={yMundo(820)} quadro={frame} batida={cem} profundidade={0.6} ate={fim - 8} />
-					{frame >= produto ? <Linha3D texto="PRODUTO" metal="branco" largura={5.6} y={yMundo(1150)} quadro={frame} batida={produto} profundidade={0.4} intervalo={1} ate={fim - 8} /> : null}
+					<Linha3D texto="100%" metal="ouro" largura={4.2} y={yMundo(820)} quadro={frame} batida={cem} profundidade={0.6} ate={fim - 8} />
+					{frame >= produto ? <Linha3D texto="PRODUTO" metal="branco" largura={4.4} y={yMundo(1150)} quadro={frame} batida={produto} profundidade={0.4} intervalo={1} ate={fim - 8} /> : null}
 				</Canvas>
 			) : null}
 		</AbsoluteFill>
@@ -538,4 +538,54 @@ const d34SemSegredo: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	);
 };
 
-export const pecas: Pecas = {d34Flopado, d34Mineracao, d34Perfil, d34Mao, d34Suporte, d34Campeao, d34SemSegredo};
+
+// ---------------------------------------------------------------- nichos de lado: cartões de outros nichos são varridos para o lado e o propósito fica no centro
+// dados: {nichos, lado, vim, proposito}
+const NICHOS = ['MODA', 'CASA', 'ELETRÔNICOS'];
+const d34Nichos: React.FC<{cena: CenaPeca}> = ({cena}) => {
+	const {frame, fim, q, entrada, saida, mola, width, height, d} = useCena(cena);
+	const nichos = q(d.nichos);
+	const lado = q(d.lado);
+	const vim = q(d.vim);
+	const proposito = q(d.proposito);
+	const varre = interpolate(frame, [lado, lado + 9], [0, 1], {...lim, easing: (x) => x * x});
+	const pAlvo = mola(vim, 170);
+	const pulso = frame >= proposito ? 1 + 0.06 * Math.sin((frame - proposito) / 3) * Math.max(0, 1 - (frame - proposito) / 20) : 1;
+	return (
+		<AbsoluteFill style={{opacity: saida}}>
+			<AbsoluteFill style={{opacity: entrada}}>
+				<FundoMotion />
+			</AbsoluteFill>
+			{varre < 1
+				? NICHOS.map((n, i) => {
+						const p = mola(nichos + i * 4, 200);
+						const x = (i - 1) * 300 - varre * (1500 + i * 120);
+						const rot = (i - 1) * 9 - varre * 35;
+						return (
+							<div key={n} style={{position: 'absolute', left: width / 2 - 140 + x, top: 700 + Math.abs(i - 1) * 40, width: 280, height: 360, borderRadius: 28, background: 'rgba(233,230,242,0.10)', border: '3px solid rgba(233,230,242,0.35)', boxShadow: '0 20px 40px rgba(8,3,20,0.5)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 22, opacity: Math.min(1, p * 1.5) * (1 - varre * 0.6), transform: `rotate(${rot}deg) scale(${0.6 + 0.4 * p})`}}>
+								<div style={{width: 120, height: 120, borderRadius: 24, background: 'rgba(189,182,204,0.25)'}} />
+								<span style={{fontFamily: poppins, fontWeight: 900, fontSize: n.length > 6 ? 34 : 46, color: '#bdb6cc', letterSpacing: '0.04em'}}>{n}</span>
+							</div>
+						);
+					})
+				: null}
+			{frame < lado ? <Kicker texto="OUTROS NICHOS" y={520} p={mola(nichos, 170)} /> : null}
+			{frame >= vim ? (
+				<div style={{position: 'absolute', left: width / 2, top: 860, transform: `translate(-50%,-50%) scale(${pAlvo * pulso})`}}>
+					{[300, 210, 120].map((r, i) => (
+						<div key={r} style={{position: 'absolute', left: -r / 2, top: -r / 2, width: r, height: r, borderRadius: '50%', border: `${i === 2 ? 0 : 14}px solid ${i === 1 ? '#fff1c9' : OURO}`, background: i === 2 ? OURO : 'transparent', boxShadow: '0 0 40px rgba(232,194,122,0.55)'}} />
+					))}
+				</div>
+			) : null}
+			{frame >= vim && frame < proposito ? <Kicker texto="FOCO NO" y={1080} p={mola(vim + 4, 170)} /> : null}
+			{frame >= proposito ? (
+				<Canvas width={width} height={height}>
+					<Luzes quadro={frame} batidas={[proposito]} />
+					<Linha3D texto="PROPÓSITO" metal="ouro" largura={4.6} y={yMundo(1160)} quadro={frame} batida={proposito} profundidade={0.45} ate={fim - 8} />
+				</Canvas>
+			) : null}
+		</AbsoluteFill>
+	);
+};
+
+export const pecas: Pecas = {d34Nichos, d34Flopado, d34Mineracao, d34Perfil, d34Mao, d34Suporte, d34Campeao, d34SemSegredo};
