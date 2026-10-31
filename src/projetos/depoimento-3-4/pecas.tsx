@@ -230,7 +230,8 @@ const d34Perfil: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const valor = Math.round(1240 * (1 - Math.pow(1 - k, 2.4)));
 	const seguidores = valor >= 1000 ? `${(valor / 1000).toFixed(1).replace('.', ',')} mil` : String(valor);
 	const vendas = String(Math.round(86 * (1 - Math.pow(1 - k, 2.4))));
-	const pulso = frame >= zerado && frame < zerado + 10 ? 1 + 0.08 * Math.sin(((frame - zerado) / 10) * Math.PI) : 1;
+	let pulso = 1;
+	for (const pq of [zerado, ...((d.pulsos as number[]) ?? []).map(q)]) if (frame >= pq && frame < pq + 10) pulso = 1 + 0.08 * Math.sin(((frame - pq) / 10) * Math.PI);
 	const pIni = mola(iniciante, 230);
 	const pTit = mola(zerado, 180);
 	const titSai = interpolate(frame, [sobe - 5, sobe], [1, 0], lim);
@@ -283,7 +284,7 @@ const d34Mao: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	// caminho: curva de baixo à esquerda até a estrela no alto à direita
 	const ponto = (u: number) => ({x: 200 + 640 * u, y: 1480 - 760 * u + Math.sin(u * Math.PI) * -160});
 	const pos = ponto(e);
-	const pMao = mola(pega, 200);
+	const pMao = mola(0, 200);
 	const pegou = mola(mao, 220);
 	const passos = 9;
 	return (
@@ -326,6 +327,7 @@ const d34Suporte: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const grupo = q(d.grupo);
 	const individual2 = q(d.individual2);
 	const duvidas = q(d.duvidas);
+	const tirar = q(d.tirar);
 	const fase = frame < grupo ? 0 : frame < individual2 ? 1 : 2;
 	const titulos = [
 		{t: 'SUPORTE', dz: 'individual', de: individual},
@@ -340,7 +342,7 @@ const d34Suporte: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			<AbsoluteFill style={{opacity: entrada}}>
 				<FundoMotion />
 			</AbsoluteFill>
-			<Titulo texto={tit.t} destaque={tit.dz} y={250} p={fase === 0 ? mola(0, 200) : mola(tit.de, 200)} />
+			<Titulo texto={tit.t} destaque={tit.dz} y={250} tam={80} p={fase === 0 ? mola(0, 200) : mola(tit.de, 200)} />
 			{/* tela de conversa */}
 			<div style={{position: 'absolute', left: 120, right: 120, top: 520, bottom: 330, borderRadius: 50, background: 'rgba(20,9,42,0.6)', boxShadow: 'inset 0 0 0 3px rgba(232,194,122,0.4)', padding: 40, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', gap: 22, overflow: 'hidden'}}>
 				{fase === 0 ? (
@@ -357,8 +359,9 @@ const d34Suporte: React.FC<{cena: CenaPeca}> = ({cena}) => {
 						</div>
 						{fase === 2 ? (
 							<div style={{position: 'absolute', left: 40, right: 40, bottom: 40, display: 'flex', flexDirection: 'column', gap: 22}}>
-								<Balao texto="Respondo só você" ouro tam={46} p={mola(individual2, 200)} />
-								{frame >= duvidas ? <Balao texto="Tirei todas as dúvidas ✓" lado="d" tam={42} p={mola(duvidas, 220)} /> : null}
+								<Balao texto="Aqui é só você e eu" ouro tam={44} p={mola(individual2, 200)} />
+								{frame >= tirar ? <Balao texto="como escolho o produto?" lado="d" tam={40} p={mola(tirar, 220)} /> : null}
+								{frame >= duvidas ? <Balao texto="Te mostro passo a passo ✓" ouro tam={44} p={mola(duvidas, 220)} /> : null}
 							</div>
 						) : null}
 					</>

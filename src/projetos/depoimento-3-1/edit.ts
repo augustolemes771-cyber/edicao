@@ -201,7 +201,7 @@ export const depoimento31: Edit = {
 				nome: 'd31Demissao',
 				modo: 'cheia',
 				de: b.say('Eu resolvi pedir').inicio - 0.03,
-				ate: b.say('do CLT').fim + 0.05,
+				ate: b.say('há pouco').inicio - 0.06,
 				dados: {emCarimbo: b.say('demissão').inicio, emSai: b.say('do CLT').inicio},
 				esconderLegenda: true,
 				som: 'pro_swipe',
