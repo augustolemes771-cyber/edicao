@@ -2,13 +2,13 @@
 	{
 		"text": "É,",
 		"startMs": 400,
-		"endMs": 410,
+		"endMs": 480,
 		"timestampMs": null,
 		"confidence": 0.97969
 	},
 	{
 		"text": " realmente",
-		"startMs": 410,
+		"startMs": 480,
 		"endMs": 920,
 		"timestampMs": null,
 		"confidence": 0.999846
@@ -44,13 +44,13 @@
 	{
 		"text": " e",
 		"startMs": 2370,
-		"endMs": 2400,
+		"endMs": 2450,
 		"timestampMs": null,
 		"confidence": 0.995383
 	},
 	{
 		"text": " da",
-		"startMs": 2400,
+		"startMs": 2450,
 		"endMs": 2540,
 		"timestampMs": null,
 		"confidence": 0.999321
@@ -86,13 +86,13 @@
 	{
 		"text": " o",
 		"startMs": 4100,
-		"endMs": 4170,
+		"endMs": 4180,
 		"timestampMs": null,
 		"confidence": 0.858666
 	},
 	{
 		"text": " Matheus,",
-		"startMs": 4170,
+		"startMs": 4180,
 		"endMs": 4820,
 		"timestampMs": null,
 		"confidence": 0.859065
@@ -211,14 +211,14 @@
 	},
 	{
 		"text": " o",
-		"startMs": 11660,
-		"endMs": 11740,
+		"startMs": 11740,
+		"endMs": 11820,
 		"timestampMs": null,
 		"confidence": 0.998563
 	},
 	{
 		"text": " formato,",
-		"startMs": 11740,
+		"startMs": 11820,
 		"endMs": 12720,
 		"timestampMs": null,
 		"confidence": 0.999792
@@ -233,13 +233,13 @@
 	{
 		"text": " a",
 		"startMs": 13120,
-		"endMs": 13160,
+		"endMs": 13200,
 		"timestampMs": null,
 		"confidence": 0.999249
 	},
 	{
 		"text": " mineração,",
-		"startMs": 13160,
+		"startMs": 13200,
 		"endMs": 14160,
 		"timestampMs": null,
 		"confidence": 0.999112
@@ -345,13 +345,13 @@
 	{
 		"text": " o",
 		"startMs": 17670,
-		"endMs": 17730,
+		"endMs": 17750,
 		"timestampMs": null,
 		"confidence": 0.999985
 	},
 	{
 		"text": " meu",
-		"startMs": 17730,
+		"startMs": 17750,
 		"endMs": 17920,
 		"timestampMs": null,
 		"confidence": 0.999968
@@ -449,21 +449,21 @@
 	},
 	{
 		"text": " deixei",
-		"startMs": 22620,
-		"endMs": 23250,
+		"startMs": 23260,
+		"endMs": 23500,
 		"timestampMs": null,
 		"confidence": 0.795407
 	},
 	{
 		"text": " o",
-		"startMs": 23250,
-		"endMs": 23270,
+		"startMs": 23500,
+		"endMs": 23560,
 		"timestampMs": null,
 		"confidence": 0.993443
 	},
 	{
 		"text": " nicho",
-		"startMs": 23270,
+		"startMs": 23330,
 		"endMs": 23720,
 		"timestampMs": null,
 		"confidence": 0.998323
@@ -569,13 +569,13 @@
 	{
 		"text": " E",
 		"startMs": 30010,
-		"endMs": 30070,
+		"endMs": 30090,
 		"timestampMs": null,
 		"confidence": 0.372981
 	},
 	{
 		"text": " os",
-		"startMs": 30070,
+		"startMs": 30090,
 		"endMs": 30410,
 		"timestampMs": null,
 		"confidence": 0.843629
@@ -596,7 +596,7 @@
 	},
 	{
 		"text": " literalmente,",
-		"startMs": 31050,
+		"startMs": 31520,
 		"endMs": 32040,
 		"timestampMs": null,
 		"confidence": 0.973229
@@ -625,13 +625,13 @@
 	{
 		"text": " o",
 		"startMs": 33090,
-		"endMs": 33120,
+		"endMs": 33170,
 		"timestampMs": null,
 		"confidence": 0.984266
 	},
 	{
 		"text": " suporte",
-		"startMs": 33120,
+		"startMs": 33170,
 		"endMs": 33570,
 		"timestampMs": null,
 		"confidence": 0.999813
@@ -680,49 +680,49 @@
 	},
 	{
 		"text": " tem",
-		"startMs": 35970,
-		"endMs": 36180,
+		"startMs": 36840,
+		"endMs": 36920,
 		"timestampMs": null,
 		"confidence": 0.999983
 	},
 	{
 		"text": " um",
-		"startMs": 36180,
-		"endMs": 36340,
+		"startMs": 36920,
+		"endMs": 37000,
 		"timestampMs": null,
 		"confidence": 0.441661
 	},
 	{
 		"text": " grupo",
-		"startMs": 36340,
-		"endMs": 36670,
+		"startMs": 37000,
+		"endMs": 37080,
 		"timestampMs": null,
 		"confidence": 0.999924
 	},
 	{
 		"text": " ali,",
-		"startMs": 36670,
-		"endMs": 37020,
+		"startMs": 37080,
+		"endMs": 37160,
 		"timestampMs": null,
 		"confidence": 0.999971
 	},
 	{
 		"text": " mas",
-		"startMs": 37020,
-		"endMs": 37230,
+		"startMs": 37160,
+		"endMs": 37240,
 		"timestampMs": null,
 		"confidence": 0.999712
 	},
 	{
 		"text": " o",
-		"startMs": 37230,
-		"endMs": 37300,
+		"startMs": 37240,
+		"endMs": 37320,
 		"timestampMs": null,
 		"confidence": 0.999992
 	},
 	{
 		"text": " suporte",
-		"startMs": 37300,
+		"startMs": 37320,
 		"endMs": 37660,
 		"timestampMs": null,
 		"confidence": 0.999971
@@ -785,7 +785,7 @@
 	},
 	{
 		"text": " dúvidas",
-		"startMs": 40920,
+		"startMs": 41080,
 		"endMs": 41370,
 		"timestampMs": null,
 		"confidence": 0.999842
@@ -800,13 +800,13 @@
 	{
 		"text": " daqui",
 		"startMs": 41730,
-		"endMs": 41800,
+		"endMs": 41810,
 		"timestampMs": null,
 		"confidence": 0.999828
 	},
 	{
 		"text": " pra",
-		"startMs": 41800,
+		"startMs": 41810,
 		"endMs": 42060,
 		"timestampMs": null,
 		"confidence": 0.998346
@@ -842,13 +842,13 @@
 	{
 		"text": " a",
 		"startMs": 43410,
-		"endMs": 43480,
+		"endMs": 43490,
 		"timestampMs": null,
 		"confidence": 0.999428
 	},
 	{
 		"text": " turma",
-		"startMs": 43480,
+		"startMs": 43490,
 		"endMs": 43830,
 		"timestampMs": null,
 		"confidence": 0.7956
@@ -953,14 +953,14 @@
 	},
 	{
 		"text": " do",
-		"startMs": 49300,
-		"endMs": 49440,
+		"startMs": 49660,
+		"endMs": 49740,
 		"timestampMs": null,
 		"confidence": 0.99999
 	},
 	{
 		"text": " Danilow",
-		"startMs": 49440,
+		"startMs": 49740,
 		"endMs": 49930,
 		"timestampMs": null,
 		"confidence": 0.999853
@@ -968,20 +968,20 @@
 	{
 		"text": " e",
 		"startMs": 49930,
-		"endMs": 49960,
+		"endMs": 50010,
 		"timestampMs": null,
 		"confidence": 0.999954
 	},
 	{
 		"text": " da",
-		"startMs": 49960,
-		"endMs": 50070,
+		"startMs": 50010,
+		"endMs": 50090,
 		"timestampMs": null,
 		"confidence": 0.999989
 	},
 	{
 		"text": " sua",
-		"startMs": 50070,
+		"startMs": 50090,
 		"endMs": 50280,
 		"timestampMs": null,
 		"confidence": 0.999977
@@ -995,21 +995,21 @@
 	},
 	{
 		"text": " é",
-		"startMs": 50840,
-		"endMs": 50980,
+		"startMs": 51180,
+		"endMs": 51260,
 		"timestampMs": null,
 		"confidence": 0.99999
 	},
 	{
 		"text": " muito",
-		"startMs": 50980,
-		"endMs": 51320,
+		"startMs": 51260,
+		"endMs": 51340,
 		"timestampMs": null,
 		"confidence": 0.999979
 	},
 	{
 		"text": " bom.",
-		"startMs": 51320,
+		"startMs": 51340,
 		"endMs": 51860,
 		"timestampMs": null,
 		"confidence": 0.999727
@@ -1128,7 +1128,7 @@
 	},
 	{
 		"text": " eu",
-		"startMs": 60660,
+		"startMs": 60760,
 		"endMs": 60840,
 		"timestampMs": null,
 		"confidence": 0.997699
@@ -1177,14 +1177,14 @@
 	},
 	{
 		"text": " de",
-		"startMs": 63970,
-		"endMs": 63990,
+		"startMs": 64180,
+		"endMs": 64260,
 		"timestampMs": null,
 		"confidence": 0.995984
 	},
 	{
 		"text": " gigante,",
-		"startMs": 63990,
+		"startMs": 64260,
 		"endMs": 64940,
 		"timestampMs": null,
 		"confidence": 0.999438
@@ -1199,13 +1199,13 @@
 	{
 		"text": " a",
 		"startMs": 65640,
-		"endMs": 65710,
+		"endMs": 65720,
 		"timestampMs": null,
 		"confidence": 0.999891
 	},
 	{
 		"text": " minerar,",
-		"startMs": 65710,
+		"startMs": 65720,
 		"endMs": 66340,
 		"timestampMs": null,
 		"confidence": 0.997411
@@ -1213,27 +1213,27 @@
 	{
 		"text": " a",
 		"startMs": 66340,
-		"endMs": 66410,
+		"endMs": 66420,
 		"timestampMs": null,
 		"confidence": 0.991068
 	},
 	{
 		"text": " escalar",
-		"startMs": 66410,
-		"endMs": 66970,
+		"startMs": 66900,
+		"endMs": 66980,
 		"timestampMs": null,
 		"confidence": 0.999024
 	},
 	{
 		"text": " o",
-		"startMs": 66970,
-		"endMs": 67020,
+		"startMs": 66980,
+		"endMs": 67060,
 		"timestampMs": null,
 		"confidence": 0.999884
 	},
 	{
 		"text": " produto,",
-		"startMs": 67020,
+		"startMs": 67060,
 		"endMs": 67600,
 		"timestampMs": null,
 		"confidence": 0.999949
@@ -1241,13 +1241,13 @@
 	{
 		"text": " a",
 		"startMs": 67600,
-		"endMs": 67670,
+		"endMs": 67680,
 		"timestampMs": null,
 		"confidence": 0.9967
 	},
 	{
 		"text": " escolher",
-		"startMs": 67670,
+		"startMs": 67680,
 		"endMs": 68240,
 		"timestampMs": null,
 		"confidence": 0.999933
@@ -1255,13 +1255,13 @@
 	{
 		"text": " o",
 		"startMs": 68240,
-		"endMs": 68300,
+		"endMs": 68320,
 		"timestampMs": null,
 		"confidence": 0.999899
 	},
 	{
 		"text": " meu",
-		"startMs": 68300,
+		"startMs": 68320,
 		"endMs": 68510,
 		"timestampMs": null,
 		"confidence": 0.999935
@@ -1282,21 +1282,21 @@
 	},
 	{
 		"text": " Não",
-		"startMs": 69860,
-		"endMs": 70270,
+		"startMs": 70440,
+		"endMs": 70600,
 		"timestampMs": null,
 		"confidence": 0.976029
 	},
 	{
 		"text": " existe",
-		"startMs": 70270,
-		"endMs": 70460,
+		"startMs": 70600,
+		"endMs": 70900,
 		"timestampMs": null,
 		"confidence": 0.999928
 	},
 	{
 		"text": " segredo,",
-		"startMs": 70460,
+		"startMs": 70520,
 		"endMs": 71000,
 		"timestampMs": null,
 		"confidence": 0.999693
@@ -1367,20 +1367,20 @@
 	{
 		"text": " e",
 		"startMs": 74460,
-		"endMs": 74480,
+		"endMs": 74540,
 		"timestampMs": null,
 		"confidence": 0.99995
 	},
 	{
 		"text": " o",
-		"startMs": 74480,
-		"endMs": 74540,
+		"startMs": 74540,
+		"endMs": 74620,
 		"timestampMs": null,
 		"confidence": 0.999884
 	},
 	{
 		"text": " produto",
-		"startMs": 74540,
+		"startMs": 74620,
 		"endMs": 74960,
 		"timestampMs": null,
 		"confidence": 0.999956
@@ -1394,21 +1394,21 @@
 	},
 	{
 		"text": " O",
-		"startMs": 75870,
-		"endMs": 76220,
+		"startMs": 76340,
+		"endMs": 76420,
 		"timestampMs": null,
 		"confidence": 0.798246
 	},
 	{
 		"text": " Danilow",
-		"startMs": 76220,
-		"endMs": 76490,
+		"startMs": 76420,
+		"endMs": 76500,
 		"timestampMs": null,
 		"confidence": 0.99631
 	},
 	{
 		"text": " deixou",
-		"startMs": 76490,
+		"startMs": 76500,
 		"endMs": 77120,
 		"timestampMs": null,
 		"confidence": 0.997879
@@ -1584,13 +1584,13 @@
 	{
 		"text": " sobre",
 		"startMs": 87560,
-		"endMs": 87600,
+		"endMs": 87640,
 		"timestampMs": null,
 		"confidence": 0.996276
 	},
 	{
 		"text": " live",
-		"startMs": 87600,
+		"startMs": 87640,
 		"endMs": 87920,
 		"timestampMs": null,
 		"confidence": 0.925191
@@ -1612,48 +1612,48 @@
 	{
 		"text": " E",
 		"startMs": 89640,
-		"endMs": 89690,
+		"endMs": 89720,
 		"timestampMs": null,
 		"confidence": 0.999357
 	},
 	{
 		"text": " eu",
-		"startMs": 89690,
-		"endMs": 90020,
+		"startMs": 90620,
+		"endMs": 90700,
 		"timestampMs": null,
 		"confidence": 0.999985
 	},
 	{
 		"text": " deixo",
-		"startMs": 90020,
-		"endMs": 90070,
+		"startMs": 90700,
+		"endMs": 90780,
 		"timestampMs": null,
 		"confidence": 0.999626
 	},
 	{
 		"text": " aqui",
-		"startMs": 90070,
-		"endMs": 90290,
+		"startMs": 90780,
+		"endMs": 90860,
 		"timestampMs": null,
 		"confidence": 0.999979
 	},
 	{
 		"text": " a",
-		"startMs": 90290,
-		"endMs": 90340,
+		"startMs": 90860,
+		"endMs": 90940,
 		"timestampMs": null,
 		"confidence": 0.999424
 	},
 	{
 		"text": " indicação",
-		"startMs": 90340,
-		"endMs": 90940,
+		"startMs": 90940,
+		"endMs": 91020,
 		"timestampMs": null,
 		"confidence": 0.999792
 	},
 	{
 		"text": " pra",
-		"startMs": 90940,
+		"startMs": 91020,
 		"endMs": 91100,
 		"timestampMs": null,
 		"confidence": 0.996018
@@ -1682,13 +1682,13 @@
 	{
 		"text": " a",
 		"startMs": 92030,
-		"endMs": 92080,
+		"endMs": 92110,
 		"timestampMs": null,
 		"confidence": 0.948375
 	},
 	{
 		"text": " oportunidade,",
-		"startMs": 92080,
+		"startMs": 92110,
 		"endMs": 92840,
 		"timestampMs": null,
 		"confidence": 0.999903
