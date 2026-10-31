@@ -45,12 +45,12 @@ export const depoimento31: Edit = {
 	silencios: silencios as Trecho[],
 	transcricao,
 	trechos: () => {
-		// Tira todas as pausas medidas (≥ 0,13 s) que caem dentro de um trecho, com 0,04 s de ar de cada lado.
+		// Tira todas as pausas medidas (≥ 0,19 s; as de 0,15 s podem ser a oclusão de uma consoante) que caem dentro de um trecho, com 0,04 s de ar de cada lado.
 		const cortado: Trecho[] = [];
 		for (const [a, z] of TRECHOS) {
 			let ini = a;
 			for (const [s0, s1] of silencios as Trecho[]) {
-				if (s0 <= ini + 0.1 || s1 >= z - 0.1 || s1 - s0 < 0.13) continue;
+				if (s0 <= ini + 0.1 || s1 >= z - 0.1 || s1 - s0 < 0.19) continue;
 				cortado.push([ini, s0 + 0.04]);
 				ini = s1 - 0.04;
 			}
