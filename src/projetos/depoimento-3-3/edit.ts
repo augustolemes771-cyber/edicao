@@ -197,7 +197,7 @@ export const depoimento33: Edit = {
 			// 10. A mentoria
 			{
 				tipo: 'selo',
-				de: b.at('bons') - 0.1,
+				de: b.say('Esses caras são muito bons').inicio - 0.05,
 				ate: b.at('bons') + 0.9,
 				texto: 'MUITO BONS',
 				chip: 'A MENTORIA',
@@ -307,6 +307,7 @@ export const depoimento33: Edit = {
 				],
 				y: 300,
 				icone: 'mensagem',
+				esconderLegenda: true,
 				somItem: 'pro_msg',
 				ganhoItem: 0.5,
 			},

@@ -100,15 +100,14 @@ export const depoimento32: Edit = {
 		return [
 			// 1. Gancho: ORAÇÃO em ouro 3D acima da cabeça
 			{
-				tipo: 'numero3d',
+				tipo: 'peca',
+				nome: 'd32Luz',
 				de: 0,
-				ate: b.at('vida,') + 0.35,
-				texto: 'ORAÇÃO',
-				rotulo: 'RESPOSTA DE',
-				abaixo: 'NA MINHA VIDA',
-				em: b.at('resposta') - 0.1,
+				ate: b.at('Falar') - 0.02,
+				dados: {resposta: b.at('resposta'), oracao: b.at('oração,')},
 				esconderLegenda: true,
-				som: 'pro_pop',
+				som: 'pro_whoosh',
+				sons: [{em: b.at('oração,'), som: 'pro_pop', ganho: 0.8}],
 			},
 			// 2. "Falar dos mentores é muito fácil"
 			{
@@ -159,39 +158,19 @@ export const depoimento32: Edit = {
 				som: 'pro_whoosh',
 				sons: [{em: b.at('aprender.') - 0.1, som: 'pro_swipe', ganho: 0.7}],
 			},
-			// 6. Outras mentorias...
+			// 6–8. Outras mentorias não entregam nem 1/3 do que esses meninos entregam: tubos de prata (1/3) × ouro (cheio)
 			{
-				tipo: 'chips',
-				de: b.at('outras') - 0.05,
-				ate: b.at('não', 1) - 0.05,
-				itens: [{texto: 'OUTRAS MENTORIAS DE TIKTOK', em: b.at('outras')}],
-				y: 1060,
+				tipo: 'peca',
+				nome: 'd32Terco',
+				de: b.at('outras') - 0.1,
+				ate: b.at('entregam.') + 0.55,
+				dados: {outras: b.at('outras'), terco: b.at('nem'), meninos: b.at('meninos'), entregam: b.at('entregam.')},
 				esconderLegenda: true,
-				som: 'pro_tick',
-			},
-			// 7. ...não entregam nem 1/3 (prata: o lado fraco da comparação)
-			{
-				tipo: 'numero3d',
-				de: b.at('nem') - 0.2,
-				ate: b.at('meninos') - 0.05,
-				texto: '1/3',
-				rotulo: 'NEM UM TERÇO',
-				metal: 'branco',
-				em: b.at('nem') - 0.15,
-				esconderLegenda: true,
-				som: 'pro_pop',
-			},
-			// 8. ...do que esses meninos entregam (ouro: o lado forte)
-			{
-				tipo: 'selo',
-				de: b.at('meninos') - 0.05,
-				ate: b.at('entregam.') + 0.45,
-				texto: 'ENTREGAM',
-				chip: 'ESSES MENINOS',
-				emChip: b.at('meninos'),
-				y: 380,
-				esconderLegenda: true,
-				som: 'pro_swipe',
+				som: 'pro_whoosh',
+				sons: [
+					{em: b.at('nem'), som: 'pro_tick', ganho: 0.8},
+					{em: b.at('meninos'), som: 'pro_pop', ganho: 0.8},
+				],
 			},
 			// 9. Conteúdo + pessoas: cartas 3D
 			{
@@ -220,14 +199,14 @@ export const depoimento32: Edit = {
 			},
 			// 11. Prosperidade dos mentorados antes da deles
 			{
-				tipo: 'frase',
-				de: b.at('prosperidade') - 0.1,
-				ate: b.at('deles.') + 0.4,
-				palavras: [
-					{texto: 'A PROSPERIDADE', em: b.at('prosperidade')},
-					{texto: 'DOS MENTORADOS', em: b.at('mentorados'), destaque: true},
-				],
-				som: 'pro_frase',
+				tipo: 'peca',
+				nome: 'd32Sobem',
+				de: b.at('prosperidade') - 0.15,
+				ate: b.at('deles.') + 0.45,
+				dados: {prosperidade: b.at('prosperidade'), mentorados: b.at('mentorados')},
+				esconderLegenda: true,
+				som: 'pro_whoosh',
+				sons: [{em: b.at('mentorados'), som: 'pro_swipe', ganho: 0.7}],
 			},
 			// 12. Tanto sucesso
 			{
