@@ -240,11 +240,11 @@ export const depoimento31: Edit = {
 			// 12. Muito humanos
 			{
 				tipo: 'frase',
-				de: b.say('são muito humanos').inicio - 0.05,
+				de: b.say('muito humanos').inicio - 0.03,
 				ate: b.say('ligam').inicio - 0.06,
 				palavras: [
-					{texto: 'MUITO', em: b.say('muito humanos').inicio},
-					{texto: 'HUMANOS', em: b.say('humanos').inicio, destaque: true},
+					{texto: 'MUITO', em: b.say('muito humanos').inicio + 0.04},
+					{texto: 'HUMANOS', em: b.say('humanos').inicio + 0.05, destaque: true},
 				],
 				som: 'pro_whoosh_curto',
 			},
@@ -255,9 +255,9 @@ export const depoimento31: Edit = {
 				ate: b.say('a gente conseguir').fim + 0.1,
 				icone: 'mensagem',
 				itens: [
-					{titulo: 'Matheus', texto: 'Ligação de voz', em: b.say('ligam').inicio},
-					{titulo: 'Felipe', texto: 'Como foi a live hoje?', em: b.say('mandam mensagem').inicio},
-					{titulo: 'Danilow', texto: 'O que não deu certo? Bora ajustar', em: b.say('não tá dando certo').inicio},
+					{titulo: 'Matheus', texto: 'Ligação de voz', em: b.say('ligam').inicio + 0.03},
+					{titulo: 'Felipe', texto: 'Como foi a live hoje?', em: b.say('o que é que tá acontecendo').inicio},
+					{titulo: 'Danilow', texto: 'O que não deu certo? Bora ajustar', em: b.say('o que é que não tá dando certo').inicio},
 				],
 				esconderLegenda: true,
 				somItem: 'pro_msg',
@@ -277,17 +277,23 @@ export const depoimento31: Edit = {
 				som: 'tick',
 				sons: [{em: b.say('avançadíssima').inicio, som: 'pro_tick'}],
 			},
-			// 15. O teste de hoje
+			// 15. O teste de hoje: GMV R$ 1.286 e 12 itens vendidos (o print do celular não dá para ler na fonte baixa)
 			{
-				tipo: 'selo',
-				de: b.say('um dos testes').inicio - 0.08,
-				ate: b.say('muito expressivo').fim + 0.02,
-				texto: 'TESTE DE HOJE',
-				chip: 'LIVE',
-				emChip: b.say('testes').inicio,
-				y: 380,
-				esconderLegenda: true,
+				tipo: 'peca',
+				nome: 'd31Gmv',
+				de: b.say('esse aqui foi').inicio - 0.05,
+				ate: b.say('muito expressivo').fim + 0.35,
+				dados: {
+					conta: b.say('um dos testes').inicio,
+					trava: b.say('de hoje').fim,
+					itens: b.say('nada muito').inicio,
+					marcos: [b.say('um dos testes').inicio, b.say('de hoje').fim, b.say('nada muito').inicio],
+				},
 				som: 'swish',
+				sons: [
+					{em: b.say('de hoje').fim, som: 'pro_tick', ganho: 0.7},
+					{em: b.say('nada muito').inicio, som: 'pro_pop', ganho: 0.6},
+				],
 			},
 			// 16. Só o início
 			{

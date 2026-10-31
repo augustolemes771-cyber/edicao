@@ -288,4 +288,35 @@ const d31Curva: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	);
 };
 
-export const pecas: Pecas = {d31Zero, d31Metade, d31Demissao, d31Curva};
+// ---------------------------------------------------------------- teste de hoje: GMV e itens vendidos legíveis
+// O print do celular dela não dá para ler na fonte baixa: cartão de vidro no topo (acima do rosto) com o GMV contando até
+// R$ 1.286 e o chip "12 itens vendidos". Sobre o vídeo (não é tela cheia).
+// dados: {conta, trava, itens}
+const d31Gmv: React.FC<{cena: CenaPeca}> = ({cena}) => {
+	const {frame, fps, fim, q, op} = useCena(cena);
+	const d = (cena.dados ?? {}) as Record<string, number>;
+	const conta = q(d.conta);
+	const trava = Math.max(conta + 10, q(d.trava));
+	const itens = q(d.itens);
+	const pCard = mola(frame, fps, 0, 190);
+	const f = interpolate(frame, [conta, trava], [0, 1], {...lim, easing: Easing.out(Easing.cubic)});
+	const valor = Math.round(1286 * f);
+	const travou = frame >= trava;
+	const pulso = travou ? 1 + 0.12 * Math.max(0, 1 - (frame - trava) / 8) : 1;
+	const pItens = frame >= itens ? mola(frame, fps, itens, 240) : 0;
+	return (
+		<AbsoluteFill style={{opacity: op}}>
+			<div style={{position: 'absolute', left: 140, right: 140, top: 200, padding: '22px 0 26px', borderRadius: 34, background: 'rgba(30,15,58,0.82)', border: `3px solid ${travou ? OURO : 'rgba(233,230,242,0.35)'}`, boxShadow: travou ? '0 0 40px rgba(232,194,122,0.45)' : '0 18px 40px rgba(8,3,20,0.55)', textAlign: 'center', transform: `translateY(${(1 - pCard) * -60}px) scale(${0.9 + 0.1 * pCard})`, opacity: Math.min(1, pCard * 1.4)}}>
+				<div style={{fontFamily: poppins, fontWeight: 800, fontSize: 32, letterSpacing: '0.24em', marginRight: '-0.24em', color: '#e9e6f2'}}>GMV · TESTE DE HOJE</div>
+				<div style={{fontFamily: poppins, fontWeight: 900, fontSize: 112, lineHeight: 1.1, color: OURO, transform: `scale(${pulso})`, textShadow: '0 0 30px rgba(232,194,122,0.45)', fontVariantNumeric: 'tabular-nums'}}>
+					R$ {valor.toLocaleString('pt-BR')}
+				</div>
+				<div style={{display: 'inline-block', marginTop: 6, padding: '8px 26px', borderRadius: 40, background: OURO, color: '#2a1552', fontFamily: poppins, fontWeight: 900, fontSize: 38, opacity: pItens, transform: `scale(${0.6 + 0.4 * pItens})`}}>
+					12 itens vendidos
+				</div>
+			</div>
+		</AbsoluteFill>
+	);
+};
+
+export const pecas: Pecas = {d31Zero, d31Metade, d31Demissao, d31Curva, d31Gmv};
