@@ -94,7 +94,7 @@ const Asa: React.FC<{lado: 1 | -1; m: Materiais; pose: PoseAviao}> = ({lado, m, 
 			<mesh geometry={geo} material={m.cinza} position={[0, 0.08, 0]} />
 			{/* flap: sai para trás e gira para baixo */}
 			<group position={[F.x - flap * 0.55, 0.0, F.z]} rotation={[0, ang * -1, 0]}>
-				<group rotation={[0, 0, -flap * 0.55]}>
+				<group rotation={[0, 0, flap * 0.55]}>
 					<mesh material={pose.flaps !== undefined && flap > 0 ? m.amarelo : m.cinzaEscuro} position={[-0.32, -0.02, 0]}>
 						<boxGeometry args={[0.65, 0.09, F.larg]} />
 					</mesh>
@@ -111,7 +111,7 @@ const Asa: React.FC<{lado: 1 | -1; m: Materiais; pose: PoseAviao}> = ({lado, m, 
 			{/* spoilers: placas no dorso da asa que levantam */}
 			{[1.6, 2.5].map((z) => (
 				<group key={z} position={[fuga(z) + 0.75, 0.1, z]} rotation={[0, -ang, 0]}>
-					<group rotation={[0, 0, spo * 0.8]}>
+					<group rotation={[0, 0, -spo * 0.8]}>
 						<mesh material={spo > 0.02 ? m.amarelo : m.cinza} position={[-0.3, 0.02, 0]}>
 							<boxGeometry args={[0.6, 0.05, 0.8]} />
 						</mesh>
