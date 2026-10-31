@@ -41,6 +41,7 @@ const Indice: React.FC<{n: number; invertido?: boolean}> = ({n, invertido}) => (
 	</div>
 );
 
+// Palavra longa encolhe para caber entre as bordas ("MENTORIA" e "INVESTIMENTO" vazavam, 30/10/2026).
 const Frente: React.FC<{texto: string; n: number; brilho: number; reflexo: number}> = ({texto, n, brilho, reflexo}) => {
 	const palavras = texto.split(' ');
 	return (
@@ -65,7 +66,7 @@ const Frente: React.FC<{texto: string; n: number; brilho: number; reflexo: numbe
 			</div>
 			<div style={{position: 'absolute', top: 240, left: 20, right: 20, textAlign: 'center', fontFamily: poppins, fontWeight: 900, color: '#fff', lineHeight: 1.05, textShadow: '0 4px 12px rgba(8,2,20,0.6)'}}>
 				{palavras.map((p, i) => (
-					<div key={i} style={{fontSize: palavras.length > 1 ? 44 : 50, letterSpacing: '0.03em'}}>
+					<div key={i} style={{fontSize: Math.min(palavras.length > 1 ? 44 : 50, Math.floor((L - 56) / Math.max(1, p.length * 0.78))), letterSpacing: '0.03em', whiteSpace: 'nowrap'}}>
 						{p}
 					</div>
 				))}
