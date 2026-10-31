@@ -153,7 +153,7 @@ const d32Terco: React.FC<{cena: CenaPeca}> = ({cena}) => {
 						{tubo(-1.25, nivelA, m.prata, outras)}
 						<group scale={1 + 0.06 * cheio}>{tubo(1.25, nivelB, m.ouroBrilho, meninos)}</group>
 					</group>
-					{frame >= terco && frame < meninos ? <Linha3D ate={meninos - 6} texto="NEM 1/3" metal="branco" largura={3.8} y={yMundo(420)} quadro={frame} batida={terco} profundidade={0.4} /> : null}
+					{frame >= terco && frame < meninos ? <Linha3D ate={meninos - 9} texto="NEM 1/3" metal="branco" largura={3.8} y={yMundo(420)} quadro={frame} batida={terco} profundidade={0.4} /> : null}
 					{frame >= meninos ? <Linha3D ate={fim - 8} texto="ENTREGAM" metal="ouro" largura={4} y={yMundo(420)} quadro={frame} batida={meninos} profundidade={0.45} /> : null}
 				</ThreeCanvas>
 			</AbsoluteFill>
