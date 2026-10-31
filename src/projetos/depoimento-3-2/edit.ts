@@ -24,7 +24,7 @@ const TRECHOS: Trecho[] = [
 	[31.5, 35.3], // E além da entrega de conteúdo deles, é pelas
 	[35.4, 35.9], // pessoas
 	[35.93, 37.98], // que eles são, tá? Assim,
-	[38.07, 39.62], // é de coração,
+	[38.07, 39.95], // é de coração, (fim no vale depois do "-ção": 39,62 cortava a palavra)
 	[43.96, 44.7], // porque de longe,
 	[45.66, 50.68], // gente, é a melhor mentoria que eu já participei. Eles não estão preocupados
 	[50.73, 53.35], // só em prosperar, eles preocupam
