@@ -73,26 +73,27 @@ export const CAMERA: ChaveCam[] = [
 	[25.2, [15.0, 5.4, 37.0], [15.2, 1.5, 27.6], 42],
 	[31.6, [15.3, 4.8, 35.8], [15.2, 1.5, 27.6], 42],
 	// decantador
-	[33.0, [20.6, 3.4, 38.0], [21.0, 1.9, 28.6], 42],
-	[40.2, [21.0, 3.8, 37.2], [21.2, 2.2, 28.6], 42],
+	[33.0, [20.4, 3.8, 40.0], [21.4, 1.8, 28.6], 46],
+	[40.2, [20.8, 4.2, 39.4], [21.6, 2.1, 28.6], 46],
 	// sobe, segue o canal até o rio e desce o rio até a captação
 	[41.6, [33, 12, -12], [21, -0.5, -24], 48],
 	// desce o rio: câmera atrás da gota olhando rio abaixo (o rio atravessa a tela de baixo para cima)
-	[42.6, [9, 4.5, 2.5], [-7, -0.5, -0.5], 50, 'g'],
-	[44.2, [8, 4.5, 2.5], [-6, -0.5, -0.5], 50, 'g'],
-	// captação: de frente-esquerda, por cima do filtro
-	[45.6, [-27.5, 9, -9.5], [-17, 0.8, -20.5], 44],
-	[48.0, [-26.5, 8, -11], [-17, 1.2, -20], 42],
+	[42.6, [10, 8, 3], [-8, -1, -0.5], 50, 'g'],
+	[44.2, [9, 7, 3], [-7, -1, -0.5], 50, 'g'],
+	// captação: de frente-esquerda, por baixo da cobertura
+	[45.6, [-26, 3.6, -12.5], [-17, 1.0, -20.0], 44],
+	[48.0, [-25, 2.8, -13.5], [-17, 1.2, -19.5], 42],
 	// filtro de areia e cloração
-	[49.4, [-18.3, 5.0, 1.0], [-18.3, 2.0, -10.5], 42],
-	[51.0, [-17.8, 4.2, -1.0], [-18.0, 1.5, -10.0], 42],
+	[49.4, [-18.3, 3.4, 1.4], [-18.3, 1.9, -10.0], 42],
+	[51.0, [-17.8, 3.2, 0.0], [-18.0, 1.6, -10.0], 42],
 	[52.2, [-12.4, 4.8, -1.4], [-12.5, 1.5, -11.0], 42],
 	[55.4, [-12.6, 4.4, -2.4], [-12.5, 1.5, -11.0], 42],
 	// caixa d'água, rede pela face esquerda, cozinha
-	[56.8, [-10.5, 14, 15], [-20.5, 10.4, 3.6], 44],
+	[56.0, [6, 2.5, 10], [0, 0.5, 0], 44, 'g'],
+	[56.8, [6, 1.5, 10], [0, -0.5, 0], 44, 'g'],
 	[57.9, [-36, 3.0, 36], [-22.5, -0.2, 22], 44],
-	[58.8, [-19.6, 3.6, 33.8], [-20.7, 2.4, 28.8], 40],
-	[60.2, [-19.4, 3.8, 34.4], [-20.7, 2.4, 28.8], 40],
+	[58.8, [-18.4, 3.9, 33.6], [-20.6, 2.4, 28.8], 40],
+	[60.2, [-18.2, 4.1, 34.2], [-20.6, 2.4, 28.8], 40],
 	// volta para o mapa: é a mesma casa
 	[62.8, MAPA_POS, MAPA_ALVO, 42],
 ];
@@ -207,20 +208,20 @@ const MAPA_PILULAS = (de: number, ate: number): Pilula[] => [
 ];
 export const PLANOS: Plano[] = [
 	{n: 1, nome: 'Mapa: o caminho inteiro', de: 0, ate: 2.3, chave: 1.25, pilulas: MAPA_PILULAS(0.25, 2.1)},
-	{n: 2, nome: 'Descarga', de: 2.3, ate: 5.0, chave: 3.9, pilulas: [{texto: 'VOCÊ', de: 2.5, ate: 4.9, ponto: 'gota', cor: '#2f8fe0'}]},
+	{n: 2, nome: 'Descarga', de: 2.3, ate: 5.0, chave: 3.0, pilulas: [{texto: 'VOCÊ', de: 2.5, ate: 4.9, ponto: 'gota', cor: '#2f8fe0'}]},
 	{
 		n: 3,
 		nome: 'Cano da casa → esgoto sob a rua',
 		de: 5.0,
 		ate: 12.7,
-		chave: 10.6,
+		chave: 7.4,
 		titulo: {texto: 'ESGOTO', de: 11.5},
 		pilulas: [
 			{texto: 'CANO DA CASA', de: 5.6, ate: 8.4, ponto: [-16.5, 2.4, 29.5], cor: '#a8712f'},
 			{texto: 'RUA', de: 9.6, ate: 11.4, ponto: 'gota+rua', cor: '#555'},
 		],
 	},
-	{n: 4, nome: 'Quilômetros no escuro → chega na estação', de: 12.8, ate: 16.8, chave: 16.3, titulo: {texto: 'ESTAÇÃO DE TRATAMENTO\nDE ESGOTO', de: 15.1}},
+	{n: 4, nome: 'Quilômetros no escuro → chega na estação', de: 12.8, ate: 16.8, chave: 16.4, titulo: {texto: 'ESTAÇÃO DE TRATAMENTO\nDE ESGOTO', de: 15.1}},
 	{
 		n: 5,
 		nome: 'Gradeamento',
@@ -264,7 +265,7 @@ export const PLANOS: Plano[] = [
 		nome: 'Rio → captação (bomba)',
 		de: 40.6,
 		ate: 48.1,
-		chave: 43.2,
+		chave: 42.7,
 		titulo: {texto: 'CAPTAÇÃO', de: 46.8},
 		pilulas: [
 			{texto: 'RIO', de: 41.9, ate: 43.8, ponto: 'gota', cor: '#2f8fe0'},
@@ -276,7 +277,7 @@ export const PLANOS: Plano[] = [
 		nome: 'Estação de água: filtro de areia → cloro',
 		de: 48.2,
 		ate: 55.6,
-		chave: 50.3,
+		chave: 50.0,
 		titulo: {texto: 'TRATAMENTO', de: 54.3},
 		pilulas: [
 			{texto: 'AREIA', de: 50.2, ate: 51.4, ponto: [-20.2, 1.8, -9], cor: '#c9a85e'},
