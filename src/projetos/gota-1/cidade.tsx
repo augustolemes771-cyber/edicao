@@ -1299,7 +1299,7 @@ export const Captacao: React.FC<{q?: number; bomba?: number}> = ({q = 0, bomba =
 			{/* casa de bombas (aberta na frente) */}
 			<Bc a={[-19.4, CHAO, -21.0]} b={[-14.4, CHAO + 0.15, -17.0]} m={mt.corteConcreto} />
 			{/* cobertura aberta sobre a bomba (dá para ver de qualquer lado) */}
-			{[-19.2, -14.6].flatMap((xx) => [-20.8, -17.2].map((zz) => <Bc key={`${xx}${zz}`} a={[xx - 0.1, CHAO, zz - 0.1]} b={[xx + 0.1, 3.0, zz + 0.1]} m={mt.ferro} />))}
+			{[-19.2, -14.6].map((xx) => <Bc key={xx} a={[xx - 0.1, CHAO, -20.9]} b={[xx + 0.1, 3.0, -20.7]} m={mt.ferro} />)}
 			<Bc a={[-19.6, 3.0, -21.2]} b={[-14.2, 3.2, -16.8]} m={mt.azul} />
 			{/* bomba: motor azul + caracol vermelho com rotor que gira */}
 			<group position={[x, 1.2, -19.0]}>
