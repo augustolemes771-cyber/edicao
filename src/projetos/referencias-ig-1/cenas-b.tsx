@@ -18,7 +18,8 @@ const useCena = (cena: CenaPeca) => {
 	// origem: começo da cena original quando ela foi dividida em partes contínuas (ver dividir).
 	const d = (cena.dados ?? {}) as Record<string, number>;
 	const origem = d.origem ?? cena.de;
-	const {frame, fps, q} = useQ(origem);
+	const {frame: local, fps, q} = useQ(origem);
+	const frame = local + Math.round((cena.de - origem) * fps);
 	const fim = Math.round((cena.ate - origem) * fps);
 	// q de um tempo dos dados
 	const k = (nome: string) => q(d[nome]);
@@ -343,9 +344,9 @@ const igBDevagar: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const m = useMatsB(0);
 	const [decolagem, devagar, asa, sozinha, segura, peso] = ['decolagem', 'devagar', 'asa', 'sozinha', 'segura', 'peso'].map(k);
 	const cam = trilha(frame, [
-		[0, [11, 1.2, 12.5]],
-		[decolagem, [11, 1.2, 12.5]],
-		[asa - 4, [9, 2.2, 13]],
+		[0, [15, 1.6, 17]],
+		[decolagem, [14.5, 1.6, 16.5]],
+		[asa - 4, [10, 2.4, 14]],
 		[asa + 16, [3.2, 6.8, 11.5]],
 		[asa + 90, [1.6, 7.6, 10.2]],
 	]);
