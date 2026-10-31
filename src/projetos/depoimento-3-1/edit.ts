@@ -241,21 +241,21 @@ export const depoimento31: Edit = {
 			{
 				tipo: 'frase',
 				de: b.say('eles são muito humanos').inicio - 0.03,
-				ate: b.say('ligam').inicio - 0.06,
+				ate: b.say('ligam').inicio + 0.12,
 				palavras: [
 					{texto: 'MUITO', em: b.say('eles são muito humanos').inicio + 0.05},
-					{texto: 'HUMANOS', em: b.say('humanos').inicio + 0.05, destaque: true},
+					{texto: 'HUMANOS', em: b.say('humanos').inicio - 0.08, destaque: true},
 				],
 				som: 'pro_whoosh_curto',
 			},
 			// 13. Ligam e mandam mensagem: notificações dos mentores chegando no celular
 			{
 				tipo: 'notificacoes',
-				de: b.say('ligam').inicio - 0.05,
+				de: b.say('ligam').inicio + 0.12,
 				ate: b.say('a gente conseguir').fim + 0.1,
 				icone: 'mensagem',
 				itens: [
-					{titulo: 'Matheus', texto: 'Ligação de voz', em: b.say('ligam').inicio + 0.03},
+					{titulo: 'Matheus', texto: 'Ligação de voz', em: b.say('ligam').inicio + 0.16},
 					{titulo: 'Felipe', texto: 'Como foi a live hoje?', em: b.say('o que é que tá acontecendo').inicio},
 					{titulo: 'Danilow', texto: 'O que não deu certo? Bora ajustar', em: b.say('o que é que não tá dando certo').inicio},
 				],
