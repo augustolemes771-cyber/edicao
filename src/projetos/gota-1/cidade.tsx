@@ -835,9 +835,9 @@ const Cerca: React.FC<{a: V2; b: V2}> = ({a, b}) => {
 	);
 };
 
-const Bairro: React.FC<{q: number}> = ({q}) => {
+// Parte fixa do bairro (não muda com o tempo: desenhada uma vez pelo React).
+const BairroFixo = React.memo(() => {
 	const mt = M();
-	const ida = ((q * 0.1) % 30) - 15;
 	return (
 		<group>
 			<Ruas />
@@ -851,13 +851,6 @@ const Bairro: React.FC<{q: number}> = ({q}) => {
 			<Bc a={[-6.2, CHAO, -14.0]} b={[-4.4, CHAO + 0.07, -10.6]} m={mt.calcada} />
 			<Cy p={[-5.3, CHAO + 0.3, -12.3]} r={0.9} h={0.5} m={mt.concreto} />
 			<Cy p={[-5.3, CHAO + 0.5, -12.3]} r={0.75} h={0.1} m={mt.aguaLimpa} />
-			{/* carros */}
-			<Carro p={[-3 + ((q * 0.09) % 18) - 9, CHAO + 0.12, 27.2]} cor="#e5484d" />
-			<Carro p={[3 - ((q * 0.07) % 18) + 3, CHAO + 0.12, 25.6]} cor="#ffcf3a" giro={Math.PI} />
-			<Carro p={[ida, CHAO + 0.12, 15.4]} cor="#2f6fd6" />
-			<Carro p={[-ida + 4, CHAO + 0.12, 16.8]} cor="#ffffff" giro={Math.PI} />
-			<Carro p={[0.7, CHAO + 0.12, ((q * 0.08) % 36) - 20]} cor="#2fa36b" giro={-Math.PI / 2} />
-			<Carro p={[12 - ((q * 0.06) % 20), CHAO + 0.12, -2.2]} cor="#ff8a3d" giro={Math.PI} />
 			{/* postes */}
 			{[-11, -3.5, 4.6].map((x) => (
 				<Poste key={x} p={[x, CHAO + 0.2, 23.8]} giro={-Math.PI / 2} />
@@ -865,6 +858,22 @@ const Bairro: React.FC<{q: number}> = ({q}) => {
 			{[-10, 4, 18].map((x) => (
 				<Poste key={'a' + x} p={[x, CHAO + 0.2, 18.0]} giro={-Math.PI / 2} />
 			))}
+		</group>
+	);
+});
+const Bairro: React.FC<{q: number}> = ({q}) => {
+	const mt = M();
+	const ida = ((q * 0.1) % 30) - 15;
+	return (
+		<group>
+			<BairroFixo />
+			{/* carros */}
+			<Carro p={[-3 + ((q * 0.09) % 18) - 9, CHAO + 0.12, 27.2]} cor="#e5484d" />
+			<Carro p={[3 - ((q * 0.07) % 18) + 3, CHAO + 0.12, 25.6]} cor="#ffcf3a" giro={Math.PI} />
+			<Carro p={[ida, CHAO + 0.12, 15.4]} cor="#2f6fd6" />
+			<Carro p={[-ida + 4, CHAO + 0.12, 16.8]} cor="#ffffff" giro={Math.PI} />
+			<Carro p={[0.7, CHAO + 0.12, ((q * 0.08) % 36) - 20]} cor="#2fa36b" giro={-Math.PI / 2} />
+			<Carro p={[12 - ((q * 0.06) % 20), CHAO + 0.12, -2.2]} cor="#ff8a3d" giro={Math.PI} />
 			{/* nuvens */}
 			{(
 				[
@@ -1586,19 +1595,26 @@ export type EstadoCidade = {
 };
 export const Cidade: React.FC<EstadoCidade> = ({q, casa, grade, aeracao, decantador, bomba = 1, filtro, cloro, caixa}) => (
 	<group>
-		<Terreno />
+		<TerrenoM />
 		<RioVivo q={q} />
 		<Bairro q={q} />
-		<Casa {...casa} q={q} />
-		<Esgoto q={q} />
-		<Gradeamento q={q} {...grade} />
+		<CasaM {...casa} />
+		<EsgotoM />
+		<GradeamentoM {...grade} />
 		<TanqueAeracao q={q} {...aeracao} />
 		<Decantador q={q} {...decantador} />
 		<CanalEfluente q={q} />
 		<Captacao q={q} bomba={bomba} />
 		<FiltroAreia q={q} {...filtro} />
 		<Cloracao q={q} {...cloro} />
-		<CaixaDagua nivel={caixa} />
-		<RedeAgua />
+		<CaixaDaguaM nivel={caixa} />
+		<RedeAguaM />
 	</group>
 );
+// Versões memorizadas (só redesenham quando o estado delas muda).
+const TerrenoM = React.memo(Terreno);
+const CasaM = React.memo(Casa);
+const EsgotoM = React.memo(Esgoto);
+const GradeamentoM = React.memo(Gradeamento);
+const CaixaDaguaM = React.memo(CaixaDagua);
+const RedeAguaM = React.memo(RedeAgua);
