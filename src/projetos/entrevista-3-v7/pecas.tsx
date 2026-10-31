@@ -101,7 +101,7 @@ const Halter: React.FC = () => {
 // e o faturamento conta de R$ 1 a R$ 8 MILHÕES em ouro 3D (saltos que desaceleram), trava com clarão e ganha "SÓ FAZENDO LIVE".
 // dados: {conta: segundo em que começa a contar; trava: segundo em que trava em 8; live: segundo do "live"}.
 const v7Gancho: React.FC<{cena: CenaPeca}> = ({cena}) => {
-	const {frame, fps, width, height, q, entrada, saida, t} = useCena(cena);
+	const {fim, frame, fps, width, height, q, entrada, saida, t} = useCena(cena);
 	const d = cena.dados ?? {};
 	const conta = q(d.conta);
 	const trava = Math.max(conta + 12, q(d.trava));
@@ -493,7 +493,7 @@ const v7Suplemento: React.FC<{cena: CenaPeca}> = ({cena}) => {
 // Meia tela: cinco barras 3D sobem mês a mês (a última em ouro, bem mais alta) e o valor conta junto até "R$ 1,4 MI".
 // dados: {sobe: segundo em que as barras começam; trava: segundo em que o valor trava}.
 const v7Recorde: React.FC<{cena: CenaPeca}> = ({cena}) => {
-	const {frame, fps, width, height, q, entrada, saida, t} = useCena(cena);
+	const {fim, frame, fps, width, height, q, entrada, saida, t} = useCena(cena);
 	const m = useMats();
 	const sobe = q(cena.dados?.sobe);
 	const trava = Math.max(sobe + 15, q(cena.dados?.trava));
@@ -539,7 +539,7 @@ const v7Recorde: React.FC<{cena: CenaPeca}> = ({cena}) => {
 // Relógio de ouro acima da cabeça com os ponteiros voando; embaixo, "8 HORAS?" em prata e, no "24", "24 HORAS" em ouro.
 // dados: {oito: segundo do "8 horas"; vinte4: segundo do "24"}.
 const v7Relogio: React.FC<{cena: CenaPeca}> = ({cena}) => {
-	const {frame, width, height, q, entrada, saida, t} = useCena(cena);
+	const {fim, frame, width, height, q, entrada, saida, t} = useCena(cena);
 	const oito = q(cena.dados?.oito);
 	const v24 = Math.max(oito + 8, q(cena.dados?.vinte4));
 	const virou = frame >= v24;

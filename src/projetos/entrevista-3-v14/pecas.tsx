@@ -110,7 +110,7 @@ const mola = (frame: number, ini: number, fps: number, damping = 12) => (frame <
 
 // 1. Gancho, pergunta: interrogação de ouro gigante girando na tela inteira e a pergunta em texto 3D.
 const v14Pergunta: React.FC<{cena: CenaPeca}> = ({cena}) => {
-	const {frame, fps, q, entra, sai, d, dur} = useCena(cena);
+	const {fim, frame, fps, q, entra, sai, d, dur} = useCena(cena);
 	const linhas = d.linhas ?? [];
 	const p = mola(frame, 0, fps, 10);
 	return (
@@ -134,7 +134,7 @@ const v14Pergunta: React.FC<{cena: CenaPeca}> = ({cena}) => {
 // 2. Gancho, resposta: contador em ouro 3D que corre com ease-out até travar (com clarão) e moedas caindo dos lados.
 const MOEDAS = Array.from({length: 14}, (_, i) => ({x: (i % 2 ? 1 : -1) * (1.55 + ((i * 37) % 9) / 10), atraso: i * 2.2, giro: 0.12 + ((i * 13) % 7) / 40}));
 const v14Contador: React.FC<{cena: CenaPeca}> = ({cena}) => {
-	const {frame, fps, q, entra, sai, d} = useCena(cena);
+	const {fim, frame, fps, q, entra, sai, d} = useCena(cena);
 	const [ini = cena.de, trava = cena.de + 1.2, rot = trava] = d.marcos ?? [];
 	const f0 = q(ini);
 	const f1 = q(trava);
@@ -254,7 +254,7 @@ const v14Degraus: React.FC<{cena: CenaPeca}> = ({cena}) => {
 
 // 5. Pergunta: interrogação de ouro girando acima da cabeça.
 const v14Interroga: React.FC<{cena: CenaPeca}> = ({cena}) => {
-	const {frame, fps, entra, sai} = useCena(cena);
+	const {fim, frame, fps, entra, sai} = useCena(cena);
 	const p = mola(frame, 0, fps, 9);
 	return (
 		<AbsoluteFill style={{pointerEvents: 'none', opacity: sai}}>
@@ -284,7 +284,7 @@ const Pegada: React.FC<{x: number; y: number; k: number; esq: boolean; escala?: 
 	</svg>
 );
 const v14Pegadas: React.FC<{cena: CenaPeca}> = ({cena}) => {
-	const {frame, fps, q, entra, sai, d} = useCena(cena);
+	const {fim, frame, fps, q, entra, sai, d} = useCena(cena);
 	const [passo = cena.de + 0.5] = d.marcos ?? [];
 	const linhas = d.linhas ?? [];
 	const fp = q(passo);
@@ -309,7 +309,7 @@ const v14Pegadas: React.FC<{cena: CenaPeca}> = ({cena}) => {
 // 7. Ponto A → ponto B: dois pinos no mapa, a rota tracejada se desenha de A até B com um ponto andando e, no "Investe",
 // o texto 3D bate no meio.
 const v14Rota: React.FC<{cena: CenaPeca}> = ({cena}) => {
-	const {frame, fps, q, entra, sai, d} = useCena(cena);
+	const {fim, frame, fps, q, entra, sai, d} = useCena(cena);
 	const [emA = cena.de + 0.3, emB = cena.de + 1.2, emInveste = cena.de + 1.8] = d.marcos ?? [];
 	const fa = q(emA);
 	const fb = q(emB);
@@ -642,7 +642,7 @@ const v14Seta: React.FC<{cena: CenaPeca}> = ({cena}) => {
 // 15. Mentalidade expandida: esfera de luz presa numa caixa de vidro; ela cresce, a caixa se abre em quatro e voa, e
 // quando tenta encolher bate e volta grande: "NÃO VOLTA / AO NORMAL" em texto 3D.
 const v14Mente: React.FC<{cena: CenaPeca}> = ({cena}) => {
-	const {frame, fps, q, entra, sai, d} = useCena(cena);
+	const {fim, frame, fps, q, entra, sai, d} = useCena(cena);
 	const [emExpande = cena.de + 0.5, emTenta = cena.de + 2] = d.marcos ?? [];
 	const linhas = d.linhas ?? [];
 	const fe = q(emExpande);

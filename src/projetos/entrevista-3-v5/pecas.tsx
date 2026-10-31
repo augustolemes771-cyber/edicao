@@ -57,7 +57,7 @@ const ouroMat = {color: '#E8C27A', metalness: 0.9, roughness: 0.22};
 // 1. Gancho: "2 anos de MVM, mais de 500 milhões faturados na comunidade". O contador sobe com ease-out enquanto um gráfico
 // de barras de ouro cresce na metade de baixo; no "500" o valor vira texto 3D de verdade, as barras acendem e entra a pílula.
 const Gancho: React.FC<{cena: CenaPeca}> = ({cena}) => {
-	const {frame, fps, width, height, q, saida, entrada, d} = useCena(cena);
+	const {fim, frame, fps, width, height, q, saida, entrada, d} = useCena(cena);
 	const bAnos = q(d.anos);
 	const b500 = q(d.quinhentos);
 	const bCom = q(d.comunidade);
@@ -109,7 +109,7 @@ const Gancho: React.FC<{cena: CenaPeca}> = ({cena}) => {
 // 2. "é um top creator aqui do TikTok Shop": meia tela com pódio 3D, o bloco do 1º lugar sobe com um facho de luz e
 // "TOP CREATOR" em ouro 3D pousa sobre ele; a pílula diz de onde.
 const TopCreator: React.FC<{cena: CenaPeca}> = ({cena}) => {
-	const {frame, fps, width, height, q, saida, entrada, d} = useCena(cena);
+	const {fim, frame, fps, width, height, q, saida, entrada, d} = useCena(cena);
 	const bTop = q(d.top);
 	const bTk = q(d.tiktok);
 	const sobe = (atraso: number) => spring({frame: frame - atraso, fps, config: {damping: 13, stiffness: 110}});
@@ -234,7 +234,7 @@ const Bateria: React.FC<{cena: CenaPeca}> = ({cena}) => {
 // tela inteira. GASTO e SUPÉRFLUO entram em grafite, são riscados e desabam; INVESTIMENTO bate em ouro com clarão e os
 // ganhos entram embaixo, um por um.
 const Investimento: React.FC<{cena: CenaPeca}> = ({cena}) => {
-	const {frame, fps, width, height, q, saida, entrada, d} = useCena(cena);
+	const {fim, frame, fps, width, height, q, saida, entrada, d} = useCena(cena);
 	const bG = q(d.gasto);
 	const bS = q(d.superfluo);
 	const bI = q(d.investimento);
@@ -341,7 +341,7 @@ const Engrenagem: React.FC<{quadro: number; entra: number}> = ({quadro, entra}) 
 // 6. "se tornar um obeso intelectual e não praticar, não vai adiantar nada": tela inteira. Um cérebro gordo e lento incha
 // enquanto a barra do raciocínio se arrasta; no "praticar" ele apaga e entra a engrenagem que emperra com "SEM PRÁTICA".
 const Obeso: React.FC<{cena: CenaPeca}> = ({cena}) => {
-	const {frame, fps, width, height, q, saida, entrada, d} = useCena(cena);
+	const {fim, frame, fps, width, height, q, saida, entrada, d} = useCena(cena);
 	const bO = q(d.obeso);
 	const bI = q(d.intelectual);
 	const bP = q(d.praticar);
