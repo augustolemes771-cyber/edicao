@@ -89,6 +89,8 @@ export const depoimento32: Edit = {
 			...punches(b, 'E além da entrega de conteúdo deles', 0.5),
 			...punches(b, 'Assim, é de coração', 0.4),
 			...punches(b, 'Eles não estão preocupados só em prosperar', 0.5),
+			...punches(b, 'mais com a prosperidade dos mentorados do que deles', 0.5),
+			...punches(b, 'gostam de pessoas de verdade', 0.4),
 			...punches(b, 'Eu acho que é por isso que vocês têm tanto sucesso', 0.5),
 			...punches(b, 'eu tô querendo até chorar de verdade', 0.5),
 			{tipo: 'flash', em: b.at('parabéns!') - 0.04},
@@ -163,8 +165,8 @@ export const depoimento32: Edit = {
 				tipo: 'peca',
 				nome: 'd32Terco',
 				de: b.at('outras') - 0.1,
-				ate: b.at('entregam.') + 0.55,
-				dados: {outras: b.at('outras'), terco: b.at('nem'), meninos: b.at('meninos'), entregam: b.at('entregam.')},
+				ate: b.say('meninos entregam').fim + 0.55,
+				dados: {outras: b.at('outras'), terco: b.at('nem'), meninos: b.at('meninos'), entregam: b.say('meninos entregam').fim - 0.25},
 				esconderLegenda: true,
 				som: 'pro_whoosh',
 				sons: [
@@ -188,21 +190,31 @@ export const depoimento32: Edit = {
 			// 10. De coração, de longe a melhor: Nº 1 em ouro 3D
 			{
 				tipo: 'numero3d',
-				de: b.at('porque') - 0.1,
-				ate: b.at('participei.') + 0.4,
+				de: b.say('porque de longe').inicio - 0.1,
+				ate: b.say('que eu já participei').fim + 0.4,
 				texto: 'Nº 1',
 				rotulo: 'DE LONGE',
 				abaixo: 'A MELHOR MENTORIA',
-				em: b.at('porque'),
+				em: b.say('porque de longe').inicio,
 				esconderLegenda: true,
 				som: 'pro_pop',
+			},
+			// 10b. Não só em prosperar
+			{
+				tipo: 'chips',
+				de: b.at('preocupados') - 0.05,
+				ate: b.at('prosperar,') + 0.5,
+				itens: [{texto: 'NÃO SÓ EM PROSPERAR', em: b.at('preocupados')}],
+				y: 380,
+				esconderLegenda: true,
+				som: 'pro_tick',
 			},
 			// 11. Prosperidade dos mentorados antes da deles
 			{
 				tipo: 'peca',
 				nome: 'd32Sobem',
 				de: b.at('prosperidade') - 0.15,
-				ate: b.at('deles.') + 0.45,
+				ate: b.say('do que deles').fim + 0.45,
 				dados: {prosperidade: b.at('prosperidade'), mentorados: b.at('mentorados')},
 				esconderLegenda: true,
 				som: 'pro_whoosh',
@@ -211,8 +223,8 @@ export const depoimento32: Edit = {
 			// 12. Tanto sucesso
 			{
 				tipo: 'selo',
-				de: b.at('tanto') - 0.05,
-				ate: b.at('porque', 2) - 0.05,
+				de: b.at('isso') - 0.05,
+				ate: b.say('porque vocês gostam').inicio - 0.05,
 				texto: 'TANTO SUCESSO',
 				chip: 'POR ISSO',
 				emChip: b.at('isso'),
@@ -224,7 +236,7 @@ export const depoimento32: Edit = {
 			{
 				tipo: 'frase',
 				de: b.at('gostam') - 0.05,
-				ate: b.at('verdade.') + 0.45,
+				ate: b.at('Então,') - 0.03,
 				palavras: [
 					{texto: 'GOSTAM DE PESSOAS', em: b.at('gostam')},
 					{texto: 'DE VERDADE', em: b.at('verdade.') - 0.1, destaque: true},
