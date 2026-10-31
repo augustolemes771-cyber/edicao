@@ -932,6 +932,8 @@ export const Casa: React.FC<EstadoCasa> = ({descarga = 0, redemoinho = 0, tornei
 				{/* botão da descarga (afunda e brilha) */}
 				<Cy p={[xb - 1.05, andar2 + 1.93 - botao * 0.05, zb]} r={0.13} h={0.08} m={botao > 0.1 ? mt.amarelo : mt.cinza} />
 				<Cy p={[xb - 0.2, andar2 + 0.3, zb]} r={0.32} h={0.6} m={mt.louca} />
+				{/* tampa aberta encostada na caixa */}
+				<mesh geometry={GEO.cil} material={mt.louca} position={[xb - 0.62, andar2 + 1.35, zb]} rotation={[0, 0, -0.18]} scale={[0.08, 0.95, 0.5]} />
 				<mesh geometry={GEO.cilAberto} material={mt.loucaDupla} position={[xb, andar2 + 0.65, zb]} scale={[0.6, 0.35, 0.5]} />
 				<mesh geometry={GEO.disco} material={mt.louca} position={[xb, andar2 + 0.5, zb]} rotation={[-Math.PI / 2, 0, 0]} scale={[0.48, 0.4, 1]} />
 				{/* água do vaso: gira e baixa com a descarga */}

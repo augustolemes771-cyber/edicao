@@ -49,14 +49,14 @@ const rampa = (s: number, a: number, b: number) => Math.max(0, Math.min(1, (s - 
 
 // ---------------------------------------------------------------- câmera (linha do tempo única)
 type ChaveCam = [number, V3, V3, number]; // segundo, posição, alvo, fov
-const MAPA_POS: V3 = [-62, 100, 70];
-const MAPA_ALVO: V3 = [0, -6, -2];
+const MAPA_POS: V3 = [0, 118, 96];
+const MAPA_ALVO: V3 = [0, -6, 1];
 export const CAMERA: ChaveCam[] = [
-	[0.0, MAPA_POS, MAPA_ALVO, 44],
-	[1.3, [-58, 94, 68], [-1, -6, -1], 44],
+	[0.0, MAPA_POS, MAPA_ALVO, 42],
+	[1.3, [-2, 108, 90], [-1, -6, 2], 42],
 	// mergulho até o banheiro
-	[2.6, [-14.8, 8.6, 38.5], [-16.4, 4.9, 28.3], 40],
-	[5.0, [-15.2, 6.8, 35.6], [-16.4, 4.4, 28.4], 40],
+	[2.6, [-15.0, 8.4, 44.0], [-16.2, 4.3, 28.4], 40],
+	[5.0, [-15.4, 7.2, 40.5], [-16.2, 4.0, 28.4], 40],
 	// desce junto com o cano até o esgoto embaixo da rua
 	[7.2, [-15.6, 2.8, 38.5], [-16.3, 1.2, 29.2], 42],
 	[9.2, [-13.6, 0.2, 40.5], [-13.8, -2.2, 29.2], 44],
@@ -89,7 +89,7 @@ export const CAMERA: ChaveCam[] = [
 	[58.8, [-19.6, 3.6, 33.8], [-20.7, 2.4, 28.8], 40],
 	[60.2, [-19.4, 3.8, 34.4], [-20.7, 2.4, 28.8], 40],
 	// volta para o mapa: é a mesma casa
-	[62.8, MAPA_POS, MAPA_ALVO, 44],
+	[62.8, MAPA_POS, MAPA_ALVO, 42],
 ];
 const camEm = (s: number) => {
 	const pos = hermite3(CAMERA.map((c) => [c[0], c[1]]), s);
