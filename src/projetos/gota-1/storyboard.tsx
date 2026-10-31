@@ -48,7 +48,8 @@ const degrau = <T,>(ks: [number, T][], s: number): T => {
 const rampa = (s: number, a: number, b: number) => Math.max(0, Math.min(1, (s - a) / (b - a)));
 
 // ---------------------------------------------------------------- câmera (linha do tempo única)
-type ChaveCam = [number, V3, V3, number]; // segundo, posição, alvo, fov
+// segundo, posição, alvo, fov e 'g' = posição e alvo relativos à gota (a câmera acompanha a gota nesse trecho).
+type ChaveCam = [number, V3, V3, number] | [number, V3, V3, number, 'g'];
 const MAPA_POS: V3 = [0, 118, 96];
 const MAPA_ALVO: V3 = [0, -6, 1];
 export const CAMERA: ChaveCam[] = [
@@ -56,13 +57,14 @@ export const CAMERA: ChaveCam[] = [
 	[1.3, [-2, 108, 90], [-1, -6, 2], 42],
 	// mergulho até o banheiro
 	[2.6, [-15.0, 8.4, 44.0], [-16.2, 4.3, 28.4], 40],
-	[5.0, [-15.4, 7.2, 40.5], [-16.2, 4.0, 28.4], 40],
-	// desce junto com o cano até o esgoto embaixo da rua
-	[7.2, [-15.6, 2.8, 38.5], [-16.3, 1.2, 29.2], 42],
-	[9.2, [-13.6, 0.2, 40.5], [-13.8, -2.2, 29.2], 44],
-	[12.6, [-8.6, -0.6, 40.5], [-8.6, -2.8, 29.2], 44],
+	[4.6, [-15.6, 6.0, 37.0], [-16.3, 4.3, 28.4], 40],
+	// desce junto com o cano até o esgoto embaixo da rua (câmera presa na gota)
+	[6.2, [0.8, 1.6, 10.5], [0, -0.6, 0], 42, 'g'],
+	[8.3, [0.8, 1.6, 10.5], [0, -0.6, 0], 42, 'g'],
+	[9.6, [1.6, 3.2, 11.5], [1.0, 2.0, 0], 44, 'g'],
+	[12.6, [1.6, 3.2, 11.5], [1.0, 2.0, 0], 44, 'g'],
 	// "quilômetros no escuro": anda pelo coletor e sobe para ver a estação
-	[14.8, [1.0, -1.8, 38.0], [1.0, -3.6, 29.2], 44],
+	[14.6, [1.2, 1.6, 9.0], [0.8, 1.2, 0], 44, 'g'],
 	[16.6, [5.4, 9.0, 42.0], [11.5, 1.2, 26.0], 46],
 	// gradeamento
 	[18.2, [8.2, 5.2, 35.6], [9.9, 1.6, 28.2], 40],
@@ -91,12 +93,16 @@ export const CAMERA: ChaveCam[] = [
 	// volta para o mapa: é a mesma casa
 	[62.8, MAPA_POS, MAPA_ALVO, 42],
 ];
+const somar = (a: V3, b: V3): V3 => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
 const camEm = (s: number) => {
-	const pos = hermite3(CAMERA.map((c) => [c[0], c[1]]), s);
-	const alvo = hermite3(CAMERA.map((c) => [c[0], c[2]]), s);
+	const g = gotaEm(s);
+	const abs = CAMERA.map((c) => (c[4] === 'g' ? ([c[0], somar(g, c[1]), somar(g, c[2]), c[3]] as const) : c));
+	const pos = hermite3(abs.map((c) => [c[0], c[1]]), s);
+	const alvo = hermite3(abs.map((c) => [c[0], c[2]]), s);
 	const fov = hermite(CAMERA.map((c) => [c[0], c[3]]), s);
 	return {pos, alvo, fov};
 };
+const gotaEm = (s: number): V3 => trajeto(hermite(GOTA_T, s));
 
 // ---------------------------------------------------------------- a gota
 const GOTA_T: [number, number][] = [
@@ -133,6 +139,10 @@ const GOTA_T: [number, number][] = [
 ];
 const GOTA_ESCALA: [number, number][] = [
 	[0, ESCALA_GOTA],
+	[8.2, ESCALA_GOTA],
+	[9.2, 0.3],
+	[16.0, 0.3],
+	[17.0, ESCALA_GOTA],
 	[40.8, ESCALA_GOTA],
 	[42.0, 0.7],
 	[44.4, 0.7],
@@ -181,7 +191,7 @@ const estadoEm = (s: number, q: number): EstadoCidade => ({
 });
 
 // ---------------------------------------------------------------- planos (para o storyboard e para os rótulos)
-type Pilula = {texto: string; de: number; ate: number; ponto: V3 | 'gota'; cor?: string};
+type Pilula = {texto: string; de: number; ate: number; ponto: V3 | 'gota' | 'gota+rua'; cor?: string};
 export type Plano = {n: number; nome: string; de: number; ate: number; chave: number; titulo?: {texto: string; de: number}; pilulas?: Pilula[]};
 const MAPA_PILULAS = (de: number, ate: number): Pilula[] => [
 	{texto: 'CASA', de, ate, ponto: [-17.9, 9.5, 25], cor: '#e5484d'},
@@ -189,8 +199,8 @@ const MAPA_PILULAS = (de: number, ate: number): Pilula[] => [
 	{texto: 'ESTAÇÃO DE ESGOTO', de: de + 0.3, ate, ponto: [16, 5, 25], cor: '#a8712f'},
 	{texto: 'RIO', de: de + 0.45, ate, ponto: [8, 0, -26], cor: '#2f8fe0'},
 	{texto: 'CAPTAÇÃO', de: de + 0.6, ate, ponto: [-15, 3.5, -22], cor: '#2f8fe0'},
-	{texto: 'ESTAÇÃO DE ÁGUA', de: de + 0.75, ate, ponto: [-15, 5, -11], cor: '#2f8fe0'},
-	{texto: "CAIXA D'ÁGUA", de: de + 0.9, ate, ponto: [-20.5, 16, 4], cor: '#2f8fe0'},
+	{texto: 'ESTAÇÃO DE ÁGUA', de: de + 0.75, ate, ponto: [-12, 5, -9], cor: '#2f8fe0'},
+	{texto: "CAIXA D'ÁGUA", de: de + 0.9, ate, ponto: [-19, 10, 8], cor: '#2f8fe0'},
 ];
 export const PLANOS: Plano[] = [
 	{n: 1, nome: 'Mapa: o caminho inteiro', de: 0, ate: 2.3, chave: 1.25, pilulas: MAPA_PILULAS(0.25, 2.1)},
@@ -204,7 +214,7 @@ export const PLANOS: Plano[] = [
 		titulo: {texto: 'ESGOTO', de: 11.5},
 		pilulas: [
 			{texto: 'CANO DA CASA', de: 5.6, ate: 8.4, ponto: [-16.5, 2.4, 29.5], cor: '#a8712f'},
-			{texto: 'RUA', de: 9.6, ate: 11.4, ponto: [-9.5, 1.0, 27], cor: '#555'},
+			{texto: 'RUA', de: 9.6, ate: 11.4, ponto: 'gota+rua', cor: '#555'},
 		],
 	},
 	{n: 4, nome: 'Quilômetros no escuro → chega na estação', de: 12.8, ate: 16.8, chave: 16.3, titulo: {texto: 'ESTAÇÃO DE TRATAMENTO\nDE ESGOTO', de: 15.1}},
@@ -361,8 +371,7 @@ const PilulaTela: React.FC<{texto: string; x: number; y: number; p: number; cor:
 export const MundoNoTempo: React.FC<{s: number; q: number}> = ({s, q}) => {
 	const {width, height} = useVideoConfig();
 	const {pos, alvo, fov} = camEm(s);
-	const t = hermite(GOTA_T, s);
-	const g = trajeto(t);
+	const g = gotaEm(s);
 	const escala = hermite(GOTA_ESCALA, s);
 	const giro = Math.atan2(pos[0] - g[0], pos[2] - g[2]);
 	const estado = estadoEm(s, q);
@@ -392,7 +401,7 @@ export const MundoNoTempo: React.FC<{s: number; q: number}> = ({s, q}) => {
 			{pilulas
 				.filter((p) => s >= p.de && s <= p.ate)
 				.map((p, i) => {
-					const ponto: V3 = p.ponto === 'gota' ? [g[0], g[1] + escala * 2.4, g[2]] : p.ponto;
+					const ponto: V3 = p.ponto === 'gota' ? [g[0], g[1] + escala * 2.4, g[2]] : p.ponto === 'gota+rua' ? [g[0] + 0.5, 1.0, 27.5] : p.ponto;
 					const [x, y, vis] = projetar(ponto, pos, alvo, fov, width, height);
 					const e = Math.min(rampa(s, p.de, p.de + 0.3), 1 - rampa(s, p.ate - 0.2, p.ate));
 					if (!vis) return null;

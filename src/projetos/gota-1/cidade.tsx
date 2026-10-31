@@ -573,6 +573,10 @@ const Terreno: React.FC = () => {
 			{placasE.map((g, i) => (
 				<mesh key={'e' + i} geometry={g} material={[mt.terra, mt.terraEsc]} position={[XL + PLACA, 0, 0]} rotation={[0, -Math.PI / 2, 0]} />
 			))}
+			{/* faixas de solo (camadas) nas faces cortadas */}
+			<Bc a={[XL, -6.5, ZF]} b={[XR, -5.6, ZF + 0.015]} m={mt.terraEsc} />
+			<Bc a={[XL - 0.015, -6.5, RIO.z1]} b={[XL, -5.6, ZF]} m={mt.terraEsc} />
+			<Bc a={[XL, -6.5, ZB - 0.015]} b={[XR, -5.6, ZB]} m={mt.terraEsc} />
 			<Inst geo={GEO.esf} m={mt.instancia} itens={PEDRAS_FRENTE} />
 			<Inst geo={GEO.esf} m={mt.instancia} itens={PEDRAS_ESQ} />
 			{/* grama por cima das placas (o corte mostra a faixa verde no topo, como na ref5) */}
