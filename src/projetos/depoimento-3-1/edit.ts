@@ -240,10 +240,10 @@ export const depoimento31: Edit = {
 			// 12. Muito humanos
 			{
 				tipo: 'frase',
-				de: b.say('muito humanos').inicio - 0.03,
+				de: b.say('eles são muito humanos').inicio - 0.03,
 				ate: b.say('ligam').inicio - 0.06,
 				palavras: [
-					{texto: 'MUITO', em: b.say('muito humanos').inicio + 0.04},
+					{texto: 'MUITO', em: b.say('eles são muito humanos').inicio},
 					{texto: 'HUMANOS', em: b.say('humanos').inicio + 0.05, destaque: true},
 				],
 				som: 'pro_whoosh_curto',
