@@ -15,9 +15,9 @@ const P = {x: 0.32, y: 0.36};
 const TRECHOS: Trecho[] = [
 	[74.3, 77.4], // Semana passada, em 2 dias, eu fiz quase 2K.
 	[0.0, 3.3], // Fala, pessoal, Felipe aqui na área.
-	[34.5, 74.0], // Eu vou falar uma coisa pra vocês... desanimado... Danilow... cartão... 500 reais... Foi muito top, entendeu?
-	[3.3, 34.5], // Cara, falar da mentoria... não escondem o ouro... Porque realmente vale muito a pena.
-	[79.4, 110.25], // Ah, é caro e não sei o quê... não ficava de fora dessa mentoria, não.
+	[34.51, 74.0], // Eu vou falar uma coisa pra vocês... desanimado... Danilow... cartão... 500 reais... Foi muito top, entendeu?
+	[3.3, 34.51], // Cara, falar da mentoria... não escondem o ouro... Porque realmente vale muito a pena.
+	[79.42, 110.25], // Ah, é caro e não sei o quê... não ficava de fora dessa mentoria, não.
 ];
 
 // Frenético: punch-in a cada ~0,45 s, ciclo aberto → médio → close, zoom ≤ 1,25 (fonte baixa).
