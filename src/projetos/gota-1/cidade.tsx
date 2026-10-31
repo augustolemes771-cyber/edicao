@@ -338,7 +338,7 @@ const ROTA: [string | null, number, number, number][] = [
 	[null, -16.9, -0.6, -23.6],
 	[null, -16.9, 1.2, -21.4],
 	['bomba', -16.9, 1.2, -19.0],
-	[null, -16.9, 1.2, -16.4],
+	['bombaSaida', -16.9, 1.2, -16.4],
 	[null, -18.3, 4.0, -15.2],
 	[null, -18.3, 3.4, -9.6],
 	['filtro', -18.3, 2.85, -8.95],
@@ -453,6 +453,7 @@ export type NomePonto =
 	| 'rio'
 	| 'captacao'
 	| 'bomba'
+	| 'bombaSaida'
 	| 'filtro'
 	| 'filtroFundo'
 	| 'cloro'
@@ -1115,9 +1116,9 @@ export const Gradeamento: React.FC<EstadoGrade> = ({rastelo = 0, lixo = 1}) => {
 				</group>
 			) : null}
 			{/* rastelo mecânico: sobe pela grade com o lixo e despeja na caçamba atrás */}
-			<group position={[9.75 + rastelo * 0.9, 1.0 + rastelo * 1.9, 0]}>
+			<group position={rastelo < 0.3 ? [10.65 - (rastelo / 0.3) * 0.9, 2.9 - (rastelo / 0.3) * 1.9, 0] : [9.75 + ((rastelo - 0.3) / 0.7) * 0.9, 1.0 + ((rastelo - 0.3) / 0.7) * 1.9, 0]}>
 				<Bc a={[-0.15, -0.1, zA + 0.35]} b={[0.15, 0.1, ZF - 0.1]} m={mt.amarelo} />
-				{rastelo > 0.05 && rastelo < 0.95 ? <Bx p={[-0.15, 0.15, 28.4]} s={[0.25, 0.25, 0.9]} m={mt.vermelho} /> : null}
+				{rastelo > 0.32 && rastelo < 0.95 ? <Bx p={[-0.15, 0.15, 28.4]} s={[0.25, 0.25, 0.9]} m={mt.vermelho} /> : null}
 			</group>
 			<Bc a={[10.5, 2.5, zA - 0.3]} b={[10.9, 3.1, zA + 0.1]} m={mt.amarelo} />
 			{/* caçamba com lixo atrás do canal */}
@@ -1322,9 +1323,10 @@ export const Captacao: React.FC<{q?: number; bomba?: number}> = ({q = 0, bomba =
 			<Canos pts={[[x, -0.6, -23.6], [x, 1.2, -21.4], [x, 1.2, -19.6]]} r={0.25} m={mt.vidro} juntas={mt.canoLimpo} />
 			{/* casa de bombas (aberta na frente) */}
 			<Bc a={[-19.4, CHAO, -21.0]} b={[-14.4, CHAO + 0.15, -17.0]} m={mt.corteConcreto} />
-			{/* cobertura aberta sobre a bomba (dá para ver de qualquer lado) */}
-			{[-19.2, -14.6].map((xx) => <Bc key={xx} a={[xx - 0.1, CHAO, -20.9]} b={[xx + 0.1, 3.0, -20.7]} m={mt.ferro} />)}
-			<Bc a={[-19.6, 3.0, -21.2]} b={[-14.2, 3.2, -16.8]} m={mt.azul} />
+			{/* guarda-corpo em volta da base (a bomba fica à vista) */}
+			<Bc a={[-19.4, CHAO + 0.9, -21.0]} b={[-14.4, CHAO + 0.96, -20.94]} m={mt.amarelo} />
+			<Bc a={[-19.4, CHAO + 0.9, -21.0]} b={[-19.34, CHAO + 0.96, -17.0]} m={mt.amarelo} />
+			{[-19.37, -14.43].flatMap((xx) => [-20.97, -17.0].map((zz) => <Bc key={`${xx}${zz}`} a={[xx - 0.04, CHAO, zz - 0.04]} b={[xx + 0.04, CHAO + 0.96, zz + 0.04]} m={mt.amarelo} />))}
 			{/* bomba: motor azul + caracol vermelho com rotor que gira */}
 			<group position={[x, 1.2, -19.0]}>
 				<Cy p={[0, 0, 0]} r={0.6} h={0.5} m={mt.vermelho} rot={[Math.PI / 2, 0, 0]} />
@@ -1560,7 +1562,7 @@ export const LinhaTrajeto: React.FC<{p: number; opacidade?: number}> = ({p, opac
 	);
 };
 // Partículas andando pelo trajeto entre t0 e t1 (mostram direção do fluxo): marrom antes do rio, azul depois.
-export const Fluxo: React.FC<{t0: number; t1: number; q: number; n?: number; vel?: number}> = ({t0, t1, q, n = 60, vel = 1}) => {
+export const Fluxo: React.FC<{t0: number; t1: number; q: number; n?: number; vel?: number; cam?: V3}> = ({t0, t1, q, n = 60, vel = 1, cam}) => {
 	const mt = M();
 	const L = COMPRIMENTO_TRAJETO * (t1 - t0);
 	const corte = PONTOS.rio.t;
@@ -1570,7 +1572,9 @@ export const Fluxo: React.FC<{t0: number; t1: number; q: number; n?: number; vel
 		const f = (i / n + (q * 0.03 * vel) / Math.max(1, L)) % 1;
 		const t = t0 + f * (t1 - t0);
 		const p = trajeto(t);
-		const it = {p: [p[0] + (rnd(i, 1) - 0.5) * 0.15, p[1] + (rnd(i, 2) - 0.5) * 0.15, p[2] + (rnd(i, 3) - 0.5) * 0.15] as V3, s: 0.06 + rnd(i, 4) * 0.04};
+		// perto demais da câmera vira bola gigante na tela: some
+		const perto = cam ? Math.hypot(p[0] - cam[0], p[1] - cam[1], p[2] - cam[2]) < 3.2 : false;
+		const it = {p: [p[0] + (rnd(i, 1) - 0.5) * 0.15, p[1] + (rnd(i, 2) - 0.5) * 0.15, p[2] + (rnd(i, 3) - 0.5) * 0.15] as V3, s: perto ? 0.0001 : 0.06 + rnd(i, 4) * 0.04};
 		(t < corte ? sujos : limpos).push(it);
 	}
 	return (
