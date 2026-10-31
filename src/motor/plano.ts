@@ -372,6 +372,8 @@ export type Edit = {
 	pasta: string;
 	// horizontal = YouTube 1920x1080; vertical = Reels/Shorts/TikTok 1080x1920.
 	formato?: 'horizontal' | 'vertical';
+	// Escala do render final sobre 1080 (padrão 2 = 4K). Fonte de baixa resolução: 0.5 sai em 540x960, sem inflar o arquivo.
+	escalaFinal?: number;
 	// Legenda queimada palavra por palavra (ref. 1, 2 e 3). Sem isso, não há legenda.
 	legenda?: Legenda;
 	camera?: (b: Busca) => EfeitoCamera[];
