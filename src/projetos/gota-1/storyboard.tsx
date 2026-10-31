@@ -49,11 +49,11 @@ const rampa = (s: number, a: number, b: number) => Math.max(0, Math.min(1, (s - 
 
 // ---------------------------------------------------------------- câmera (linha do tempo única)
 type ChaveCam = [number, V3, V3, number]; // segundo, posição, alvo, fov
-const MAPA_POS: V3 = [-4, 92, 86];
-const MAPA_ALVO: V3 = [0, -4, -3];
+const MAPA_POS: V3 = [-62, 100, 70];
+const MAPA_ALVO: V3 = [0, -6, -2];
 export const CAMERA: ChaveCam[] = [
 	[0.0, MAPA_POS, MAPA_ALVO, 44],
-	[1.3, [-6, 82, 80], [-1, -4, -1], 44],
+	[1.3, [-58, 94, 68], [-1, -6, -1], 44],
 	// mergulho até o banheiro
 	[2.6, [-14.8, 8.6, 38.5], [-16.4, 4.9, 28.3], 40],
 	[5.0, [-15.2, 6.8, 35.6], [-16.4, 4.4, 28.4], 40],
@@ -396,7 +396,8 @@ export const MundoNoTempo: React.FC<{s: number; q: number}> = ({s, q}) => {
 					const [x, y, vis] = projetar(ponto, pos, alvo, fov, width, height);
 					const e = Math.min(rampa(s, p.de, p.de + 0.3), 1 - rampa(s, p.ate - 0.2, p.ate));
 					if (!vis) return null;
-					return <PilulaTela key={i} texto={p.texto} x={Math.max(150, Math.min(width - 150, x))} y={y} p={e} cor={p.cor ?? '#2f8fe0'} />;
+					const meia = (p.texto.length * 25 + 80) / 2 + 16;
+					return <PilulaTela key={i} texto={p.texto} x={Math.max(meia, Math.min(width - meia, x))} y={y} p={e} cor={p.cor ?? '#2f8fe0'} />;
 				})}
 			{plano.titulo && s >= plano.titulo.de ? <Titulo texto={plano.titulo.texto} p={rampa(s, plano.titulo.de, plano.titulo.de + 0.35) * (1 - rampa(s, plano.ate - 0.15, plano.ate + 0.1))} /> : null}
 		</AbsoluteFill>
