@@ -347,13 +347,13 @@ const igBDevagar: React.FC<{cena: CenaPeca}> = ({cena}) => {
 		[0, [15, 1.6, 17]],
 		[decolagem, [14.5, 1.6, 16.5]],
 		[asa - 4, [10, 2.4, 14]],
-		[asa + 16, [3.2, 6.8, 11.5]],
-		[asa + 90, [1.6, 7.6, 10.2]],
+		[asa + 16, [3.4, 10.5, 13.5]],
+		[asa + 90, [2.2, 11.2, 12.6]],
 	]);
 	const alvo = trilha(frame, [
 		[0, [1.5, 0.1, 0]],
 		[asa - 4, [1, 0.2, 0.5]],
-		[asa + 16, [-0.6, 0.6, 2.8]],
+		[asa + 16, [-0.7, 0.2, 2.2]],
 	]);
 	// velocidade baixa: pista anda devagar (acelera um pouco depois de "decolagem")
 	const vel = interpolate(frame, [0, decolagem, decolagem + 30], [1.2, 1.2, 2.4], lim);
@@ -377,9 +377,9 @@ const igBDevagar: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					<Seta mat={m.sustenta} comp={1.2} raio={0.1} position={[-0.75, 0.0, 3.3]} escala={pSob} />
 					{/* peso grande (vermelho, para baixo) */}
 					{[1.9, 4.5].map((z, i) => (
-						<Seta key={z} mat={m.seta} comp={2.6} raio={0.15} position={[-0.5 - z * 0.2, 2.75 * forca, z]} rotation={[0, 0, Math.PI]} escala={mola(segura + i * 4, 150) * forca} />
+						<Seta key={z} mat={m.seta} comp={2.0} raio={0.15} position={[-0.5 - z * 0.2, 2.15 * forca, z]} rotation={[0, 0, Math.PI]} escala={mola(segura + i * 4, 150) * forca} />
 					))}
-					<Seta mat={m.seta} comp={2.0} raio={0.13} position={[-0.3, 2.2 * forca, -2.6]} rotation={[0, 0, Math.PI]} escala={pPeso * forca} />
+					<Seta mat={m.seta} comp={1.7} raio={0.13} position={[-0.3, 1.85 * forca, -2.6]} rotation={[0, 0, Math.PI]} escala={pPeso * forca} />
 				</group>
 			</PalcoB>
 			{frame >= devagar && saiVel < 1 ? <Velocimetro p={pVel} agulha={agulha} sai={saiVel} /> : null}

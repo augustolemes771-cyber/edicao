@@ -378,33 +378,40 @@ const Velocimetro: React.FC<{v: number; p: number}> = ({v, p}) => {
 	);
 };
 
-// ---------------------------------------------------------------- 1. peso: avião de 400 toneladas desce na pista
-const igAPeso: React.FC<{cena: CenaPeca}> = ({cena}) => {
+// ---------------------------------------------------------------- 1. peso: avião de 400 toneladas paira, pesa e desce na pista
+// fase 1: paira e o contador sobe até 400 (afunda com o peso); fase 2: câmera baixa, ele cai na pista e levanta poeira.
+const CenaPeso: React.FC<{cena: CenaPeca; fase: 1 | 2}> = ({cena, fase}) => {
 	const {frame, fps, k, fim, mola} = useCena(cena);
 	const m = useMateriais();
 	const mats = useMatsA();
-	const qT = k('toneladas');
-	const qP = k('pista');
+	const qT = fase === 1 ? k('toneladas') : -999;
+	const qP = fase === 2 ? k('pista') : 99999;
 	const conta = interpolate(frame, [qT, qT + 0.8 * fps], [0, 400], {...lim, easing: Easing.out(Easing.cubic)});
-	const peso = conta / 400;
+	const peso = fase === 1 ? conta / 400 : 1;
 	const queda = interpolate(frame, [qP - 9, qP], [0, 1], {...lim, easing: Easing.in(Easing.quad)});
 	const imp = frame - qP;
 	const pousou = imp >= 0;
 	const comp = pousou ? Math.min(1, 0.6 + 0.5 * Math.exp(-imp / 6) * Math.cos(imp * 0.8)) : 0;
-	const alto = (3.6 - 1.1 * peso + Math.sin(frame / 8) * 0.12 * (1 - peso)) * (1 - queda);
+	const alto = (3.6 - 1.2 * peso + Math.sin(frame / 8) * 0.12) * (1 - queda);
 	const y = pousou ? -0.25 * comp : alto;
 	const tr = tremor(frame, qP, 0.35, 6);
-	const cam = trilha(frame, [
-		[0, [11, 6.5, 16]],
-		[fim, [13.5, 4.5, 12]],
-	]);
-	const entrada = mola(0, 120, 14);
+	const cam =
+		fase === 1
+			? trilha(frame, [
+					[0, [11, 7.5, 17]],
+					[fim, [13, 6, 14]],
+				])
+			: trilha(frame, [
+					[0, [15, 2.2, 7]],
+					[fim, [13.5, 1.8, 8.5]],
+				]);
+	const entrada = fase === 1 ? mola(0, 120, 14) : 1;
 	return (
 		<PalcoA
 			camera={[cam[0] + tr * 0.5, cam[1] + tr, cam[2]]}
-			alvo={[0.4, 0.4, 0]}
+			alvo={fase === 1 ? [0.4, 1.6, 0] : [0, 0.6, 0]}
 			fov={40}
-			sobre={<Contador valor={conta} p={mola(qT - 3, 160, 12)} tremer={tr} />}
+			sobre={fase === 1 ? <Contador valor={conta} p={mola(qT - 3, 160, 12)} tremer={0} /> : null}
 		>
 			<Chao m={m} />
 			<group position={[0, y, 0]} scale={0.6 + 0.4 * entrada} rotation={[pousou ? 0 : Math.sin(frame / 10) * 0.03, 0, 0]}>
@@ -415,6 +422,8 @@ const igAPeso: React.FC<{cena: CenaPeca}> = ({cena}) => {
 		</PalcoA>
 	);
 };
+const igAPeso: React.FC<{cena: CenaPeca}> = ({cena}) => <CenaPeso cena={cena} fase={1} />;
+const igAPista: React.FC<{cena: CenaPeca}> = ({cena}) => <CenaPeso cena={cena} fase={2} />;
 
 // ---------------------------------------------------------------- 2. não sai do chão: corre na pista e o nariz não sobe
 const igAChao: React.FC<{cena: CenaPeca}> = ({cena}) => {
@@ -869,12 +878,13 @@ const igATracao: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	);
 };
 
-export const pecasA: Pecas = {igAPeso, igAChao, igAMotor, igAAsas, igAPerfil, igAInclina, igAEmpurra, igASobe, igASustentacao, igAVento, igAPendura, igATurbina, igATracao};
+export const pecasA: Pecas = {igAPeso, igAPista, igAChao, igAMotor, igAAsas, igAPerfil, igAInclina, igAEmpurra, igASobe, igASustentacao, igAVento, igAPendura, igATurbina, igATracao};
 
 // ---------------------------------------------------------------- lista de cenas do bloco A
 export const cenasA = (b: Busca): Cena[] => {
 	const fimBloco = b.say('Só que na decolagem').inicio;
 	const c = {
+		pesa: b.at('colocar') - 0.08,
 		peso: b.at('não') - 0.05,
 		chao: b.at('Só') - 0.05,
 		motor: b.at('Então') - 0.1,
@@ -924,12 +934,13 @@ export const cenasA = (b: Busca): Cena[] => {
 	};
 	const peca = (nome: string, de: number, ate: number, dados: Record<string, unknown>, sons: Cena['sons'] = []): Cena => ({tipo: 'peca', nome, modo: 'cheia', de, ate, dados, sons});
 	return [
-		// 1. "400 toneladas ... numa pista": a fuselagem paira, o contador pesa e ela cai na pista levantando poeira
-		peca('igAPeso', 0, c.peso, {toneladas: t.toneladas, pista: t.pista, marcos: [t.toneladas, t.pista]}, [
+		// 1. "um avião de 400 toneladas": a fuselagem paira e o contador sobe até 400 (ela afunda com o peso)
+		peca('igAPeso', 0, c.pesa, {toneladas: t.toneladas, marcos: [t.toneladas]}, [
 			{em: 0, som: 'pro_whoosh', ganho: 0.6},
 			{em: t.toneladas, som: 'pro_pop', ganho: 0.6},
-			{em: t.pista, som: 'boom', ganho: 0.55},
 		]),
+		// 1b. "colocar numa pista": câmera baixa, ela cai na pista e levanta poeira
+		peca('igAPista', c.pesa, c.peso, {pista: t.pista, marcos: [t.pista]}, [{em: t.pista, som: 'boom', ganho: 0.55}]),
 		// 2. "não sai do chão": corre, o nariz tenta subir e bate de volta; X vermelho
 		peca('igAChao', c.peso, c.chao, {sai: t.sai, chao: t.chao, marcos: [t.sai, t.chao]}, [{em: t.chao, som: 'pro_pouso', ganho: 0.7}]),
 		// 3. "Só o motor não levanta esse peso": turbina liga embaixo, fumaça, e a seta vermelha do peso esmaga
