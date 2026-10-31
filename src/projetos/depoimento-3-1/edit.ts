@@ -241,7 +241,7 @@ export const depoimento31: Edit = {
 			{
 				tipo: 'frase',
 				de: b.say('são muito humanos').inicio - 0.05,
-				ate: b.say('humanos').fim + 0.08,
+				ate: b.say('ligam').inicio - 0.06,
 				palavras: [
 					{texto: 'MUITO', em: b.say('muito humanos').inicio},
 					{texto: 'HUMANOS', em: b.say('humanos').inicio, destaque: true},
@@ -281,7 +281,7 @@ export const depoimento31: Edit = {
 			{
 				tipo: 'selo',
 				de: b.say('um dos testes').inicio - 0.08,
-				ate: b.say('de hoje').fim + 0.05,
+				ate: b.say('muito expressivo').fim + 0.02,
 				texto: 'TESTE DE HOJE',
 				chip: 'LIVE',
 				emChip: b.say('testes').inicio,

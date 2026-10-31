@@ -13,23 +13,23 @@ const P = {x: 0.54, y: 0.48};
 // Trechos no tempo original, bordas nos vales de energia da voz (banda 250–3500 Hz, janelas de 10–20 ms). Fora: o
 // silêncio do começo, as pausas e, no corpo, "eu falo pra eles, é vocês são resposta de oração na minha vida" (vai para o gancho).
 const TRECHOS: Trecho[] = [
-	[40.49, 43.94], // GANCHO: (é) vocês são resposta de oração na minha vida
-	[2.22, 4.65], // Falar dos mentores
-	[4.95, 11.32], // é muito fácil, gente, assim, de longe foi a melhor mentoria que eu participei, que eu estou participando, tá?
-	[11.55, 14.43], // Eu cheguei no TikTok Shop agora,
-	[14.78, 18.03], // eu sou totalmente leiga ainda,
-	[18.2, 19.98], // mas tudo que eles me ensinaram,
-	[20.7, 24.03], // eu tenho certeza que eu demoraria muito tempo pra aprender.
-	[24.25, 31.32], // Por quê? Porque eu já comprei outras mentorias... nem um terço do que esses meninos entregam.
-	[31.55, 35.12], // E além da entrega de conteúdo deles, é pelas
-	[35.45, 35.8], // pessoas
-	[35.96, 37.88], // que eles são, tá? Assim,
-	[38.11, 39.58], // é de coração,
-	[43.94, 44.58], // porque de longe,
-	[45.72, 50.6], // gente, é a melhor mentoria que eu já participei. Eles não estão preocupados
-	[50.75, 53.22], // só em prosperar, eles preocupam
-	[53.48, 62.02], // mais com a prosperidade dos mentorados... gostam de pessoas de verdade.
-	[62.32, 69.5], // Então, assim, é só gratidão... vocês são fora da curva, parabéns!
+	[40.5, 43.96], // GANCHO: (é) vocês são resposta de oração na minha vida
+	[2.1, 4.78], // Falar dos mentores
+	[4.88, 11.38], // é muito fácil, gente, assim, de longe foi a melhor mentoria que eu participei, que eu estou participando, tá?
+	[11.5, 14.52], // Eu cheguei no TikTok Shop agora,
+	[14.72, 18.08], // eu sou totalmente leiga ainda,
+	[18.16, 20.1], // mas tudo que eles me ensinaram,
+	[20.62, 24.1], // eu tenho certeza que eu demoraria muito tempo pra aprender.
+	[24.2, 31.45], // Por quê? Porque eu já comprei outras mentorias... nem um terço do que esses meninos entregam.
+	[31.5, 35.3], // E além da entrega de conteúdo deles, é pelas
+	[35.4, 35.9], // pessoas
+	[35.93, 37.98], // que eles são, tá? Assim,
+	[38.07, 39.62], // é de coração,
+	[43.96, 44.7], // porque de longe,
+	[45.66, 50.68], // gente, é a melhor mentoria que eu já participei. Eles não estão preocupados
+	[50.73, 53.35], // só em prosperar, eles preocupam
+	[53.44, 62.12], // mais com a prosperidade dos mentorados... gostam de pessoas de verdade.
+	[62.28, 69.62], // Então, assim, é só gratidão... vocês são fora da curva, parabéns!
 ];
 
 // Ritmo frenético (evento a cada 0,3–0,6 s): punch-in nas palavras, ciclo médio → close → aberto, zoom ≤ 1,25 (fonte baixa).
