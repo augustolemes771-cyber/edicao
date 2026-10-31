@@ -1,7 +1,7 @@
 [
 	{
 		"text": "É,",
-		"startMs": 10,
+		"startMs": 400,
 		"endMs": 410,
 		"timestampMs": null,
 		"confidence": 0.97969
@@ -1044,8 +1044,8 @@
 	},
 	{
 		"text": " que",
-		"startMs": 55300,
-		"endMs": 55510,
+		"startMs": 55460,
+		"endMs": 55740,
 		"timestampMs": null,
 		"confidence": 0.992271
 	},
