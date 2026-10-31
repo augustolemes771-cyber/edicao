@@ -118,3 +118,25 @@ e deixe o pedido em `docs/agentes/NOTAS.md`. Conferir `duracaoEditada <= duraç�
 - O `preparar-video` grava com quadro-chave a cada 0,5 s (`-g 15 -bf 0`): com GOP longo o render final caía ("No frame found at
   position", busca de quadro > 28 s). Vídeo preparado antes disso: recodificar com esses parâmetros antes do final.
 - No PC de 16 GB, rodar o final com o paralelismo padrão; `CONC=6` (cache de 40% da RAM) estourou a memória do Chrome.
+
+## Sincronia da fala (31/10/2026, depoimento-3-1 a 3-4; vale para todo vídeo, de qualquer tema)
+
+- O tempo de palavra do Whisper erra até ~1 s em áudio comprimido (WhatsApp, celular) e os efeitos e a legenda saem antes ou
+  depois da fala. Todo render final já roda a conferência sozinho (`render-job` chama `scripts/sincronia.ts`; `SEM_SINCRONIA=1`
+  desliga) e o aviso lista os segundos em que fala e efeitos/legenda podem estar mais de 0,6 s fora. À mão:
+  `npx tsx scripts/sincronia.ts <projeto> [--video out/x.mp4] [--limite 0.6]`.
+- Antes de entregar, olhar cada ponto apontado: tirar quadros do render no segundo (`ffmpeg -ss <s> -i <final> -frames:v 1`) e
+  conferir a palavra. O Whisper comum e o DTW às vezes discordam até na direção do erro: não corrigir em lote sem confirmar.
+  Quando o usuário diz que um efeito está fora, confiar nele (ele ouve) e usar o DTW para achar o ponto exato.
+- Correção: `sincronia.ts --aplicar` (move as palavras pelo desvio medido, dentro do mesmo trecho; cortes em números fixos não
+  mudam) ou mover só as palavras do ponto na `transcricao.json`. Depois `qualidade.ts` e render de novo.
+- Card ou texto que ilustra uma frase entra na primeira palavra dela e sai depois do fim da última; o card seguinte entra depois
+  que a frase termina, nunca por cima dela.
+
+## Textos e 3D nos motions (31/10/2026)
+
+- A tela vertical mostra ~5,1 unidades de largura no plano do texto 3D (câmera fov 35, z 14,5): `Linha3D` com `largura` ≤ 4,4.
+  Texto 3D nunca no caminho de objeto 3D que sobe ou cai (caixa, troféu): conferir no quadro final da animação.
+- `remotion still` copia a `public` inteira (~8 GB) para o temporário e não apaga: um still por vez e apagar a pasta
+  `remotion-webpack-bundle-*` depois. Para conferir um render pronto, tirar quadros do mp4 com o ffmpeg (1 s, sem bundle).
+- Peça nova de projeto (`src/projetos/<p>/pecas.tsx`) só aparece depois de entrar em `src/pecas/registro.ts`.

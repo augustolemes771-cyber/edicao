@@ -4,7 +4,7 @@
 // poluído, zoom acima do que a resolução aguenta, corte no meio da fala, efeito repetido, início sem gancho e texto fora
 // da área segura. Sai com 1 se houver erro (✗); avisos (⚠) não bloqueiam.
 import {execFileSync} from 'node:child_process';
-import {existsSync, readFileSync} from 'node:fs';
+import {existsSync, readdirSync, readFileSync} from 'node:fs';
 import path from 'node:path';
 import {montar, type CenaNoPlano} from '../src/motor/plano';
 import {projetos} from '../src/projetos';
@@ -45,7 +45,8 @@ m.problemas.forEach((p) => (p.gravidade === 'erro' ? erros : avisos).push(p.text
 
 // Texto que cada cena põe na tela (para leitura, repetição com a legenda e "um texto por vez").
 const textoDa = (c: CenaNoPlano): string => {
-	const x = c as Record<string, unknown>;
+	// Peça própria: o texto está em dados (o `nome` é a chave do componente, não vai para a tela).
+	const x = (c.tipo === 'peca' ? (c.dados ?? {}) : c) as Record<string, unknown>;
 	const partes: string[] = [];
 	for (const k of ['texto', 'grande', 'pequeno', 'abaixo', 'rotulo', 'nome', 'titulo', 'linha1', 'linha2', 'valor', 'legenda', 'chip', 'marca']) {
 		if (typeof x[k] === 'string' || typeof x[k] === 'number') partes.push(String(x[k]));
@@ -131,7 +132,8 @@ if (edit.trechos || edit.cortes) {
 }
 
 // 7. Repetição: o mesmo tipo de efeito 3 vezes seguidas cansa; variedade conta como novidade.
-const tipos = cenas.map((c) => c.tipo);
+// Peças próprias contam pelo nome (cada uma é um efeito diferente).
+const tipos = cenas.map((c) => (c.tipo === 'peca' ? `peca:${c.nome}` : c.tipo));
 for (let i = 2; i < tipos.length; i++) {
 	if (tipos[i] === tipos[i - 1] && tipos[i] === tipos[i - 2]) {
 		avisos.push(`${fmt(cenas[i].de)}: ${tipos[i]} três vezes seguidas: varie o efeito`);
@@ -143,6 +145,26 @@ for (let i = 2; i < tipos.length; i++) {
 for (const c of cenas) {
 	const y = (c as {y?: number}).y;
 	if (typeof y === 'number' && y > 1 && (y < 200 || y > 1550)) avisos.push(`${fmt(c.de)}: ${c.tipo} em y=${y}px, fora da área segura (200–1550)`);
+}
+
+// 10. Efeito que acaba antes de concluir: o último momento marcado dentro da cena (palavra, item, carta, marco) precisa de
+// pelo menos 0,6 s de tela antes do fim dela. Peça própria precisa estar registrada (src/pecas/registro.ts).
+const tempos = (v: unknown, chave = ''): number[] => {
+	if (typeof v === 'number') return /^(em|emChip|emCadeado|emGrande|em2|pousa|apaga|marcos|t)$/.test(chave) ? [v] : [];
+	if (Array.isArray(v)) return v.flatMap((i) => tempos(i, chave));
+	if (v && typeof v === 'object') return Object.entries(v).flatMap(([k, x]) => (k === 'sons' ? [] : tempos(x, k)));
+	return [];
+};
+for (const c of cenas) {
+	const marcados = tempos(c).filter((t) => t > c.de && t < c.ate + 5);
+	const ultimo = Math.max(...marcados, -Infinity);
+	if (ultimo > c.ate - 0.6) avisos.push(`${fmt(c.de)}: ${c.tipo === 'peca' ? `peça ${c.nome}` : c.tipo} acaba ${(c.ate - ultimo).toFixed(2)} s depois do último momento (${fmt(ultimo)}): o efeito não conclui`);
+}
+for (const c of cenas) {
+	if (c.tipo !== 'peca') continue;
+	// Uma peça pode vir de outro projeto (o registro junta todas): procura em todos os pecas.tsx.
+	const arqs = readdirSync(path.join('src', 'projetos')).map((d) => path.join('src', 'projetos', d, 'pecas.tsx')).filter((a) => existsSync(a));
+	if (!arqs.some((a) => new RegExp(`\\b${c.nome}\\s*[:(,]`).test(readFileSync(a, 'utf8')))) erros.push(`${fmt(c.de)}: peça "${c.nome}" não está em nenhum src/projetos/*/pecas.tsx`);
 }
 
 // 9. Duração de Reels/Shorts.

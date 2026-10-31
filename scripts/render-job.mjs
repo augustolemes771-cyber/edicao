@@ -297,6 +297,9 @@ try {
 		brutoRel = brutoRel.replace(/\.mp4$/, `-${new Date().toTimeString().slice(0, 5).replace(':', 'h')}.mp4`);
 		emitir({aviso: `O vídeo anterior está aberto em outro programa; esta versão sai como ${brutoRel}.`});
 	}
+	// escalaFinal no edit.ts do projeto (ex.: 0.5 para fonte de celular em baixa) vale quando ESCALA_FINAL não é dado.
+	const escalaDoEdit = Number((readFileSync(path.join(raiz, 'src/projetos', projeto, 'edit.ts'), 'utf8').match(/^\s*escalaFinal:\s*([\d.]+)/m) ?? [])[1]);
+	const escalaFinal = Number(process.env.ESCALA_FINAL) || escalaDoEdit || 2;
 	const opcoes = {
 		serveUrl,
 		composition,
@@ -306,8 +309,8 @@ try {
 		outputLocation: path.join(raiz, brutoRel),
 		overwrite: true,
 		// ESCALA_FINAL=1: final em 1080x1920 (entrega rápida); o padrão é 4K.
-		scale: tipo === 'final' ? Number(process.env.ESCALA_FINAL) || 2 : res / 1080,
-		videoBitrate: tipo === 'final' ? (Number(process.env.ESCALA_FINAL) === 1 ? '20M' : '50M') : '6M',
+		scale: tipo === 'final' ? escalaFinal : res / 1080,
+		videoBitrate: tipo === 'final' ? (escalaFinal <= 0.5 ? '8M' : escalaFinal === 1 ? '20M' : '50M') : '6M',
 		...(tipo === 'final' ? {audioCodec: 'aac', audioBitrate: '320k'} : {}),
 		imageFormat: 'jpeg',
 		jpegQuality: 95,
@@ -376,7 +379,14 @@ try {
 
 	// 4. Final: loudness em duas passadas (-14 LUFS, -1,5 dBTP) sem mexer no vídeo.
 	if (tipo === 'final') {
-		const finalRel = `out/${projeto}-final.mp4`;
+		let finalRel = `out/${projeto}-final.mp4`;
+		// O final anterior aberto num player (Windows trava o arquivo): esta versão sai com a hora no nome, em vez de falhar na mixagem.
+		try {
+			if (existsSync(path.join(raiz, finalRel))) rmSync(path.join(raiz, finalRel), {force: true});
+		} catch {
+			finalRel = finalRel.replace(/\.mp4$/, `-${new Date().toTimeString().slice(0, 5).replace(':', 'h')}.mp4`);
+			emitir({aviso: `O vídeo final anterior está aberto em outro programa; esta versão sai como ${finalRel}.`});
+		}
 		if (!temFfmpeg) {
 			renameSync(brutoRel, finalRel);
 			emitir({aviso: 'ffmpeg não encontrado: o áudio ficou sem a normalização de -14 LUFS.'});
@@ -396,6 +406,17 @@ try {
 				f.on('error', erro);
 			});
 			rmSync(brutoRel, {force: true});
+		}
+		// Conferência de sincronia (padrão em todo final; SEM_SINCRONIA=1 desliga): transcreve o áudio do render com DTW e lista os
+		// pontos em que fala e efeitos/legenda podem estar mais de 0,6 s fora. Só avisa: a correção (sincronia.ts --aplicar ou ajuste
+		// à mão) vem depois de alguém ouvir o ponto, porque o Whisper sozinho às vezes erra a direção.
+		if (!process.env.SEM_SINCRONIA) {
+			etapa('sincronia');
+			emitir({fase: 'conferindo a sincronia da fala', pct: 98});
+			const s = spawnSync('npx', ['tsx', 'scripts/sincronia.ts', projeto, '--video', finalRel], {cwd: raiz, shell: true, encoding: 'utf8', timeout: 300000});
+			const linhas = (s.stdout ?? '').trim().split('\n').filter(Boolean);
+			if (s.status === 0 && linhas.length) emitir({aviso: `Sincronia: ${linhas.slice(0, 12).join('\n')}`});
+			else emitir({aviso: 'Não consegui conferir a sincronia da fala (scripts/sincronia.ts).'});
 		}
 		// Com o Drive vinculado (scripts/drive.mjs config), o vídeo final também vai para a pasta do Drive.
 		if (existsSync(path.join(raiz, '.painel/drive.json'))) {
