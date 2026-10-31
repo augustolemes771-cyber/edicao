@@ -293,10 +293,10 @@ const ROTA: [string | null, number, number, number][] = [
 	['vaso', -16.45, 4.78, 28.3],
 	[null, -16.45, 4.35, 28.3],
 	['canoCasa', -16.5, 3.6, 29.5],
-	[null, -16.5, -1.45, 29.5],
+	['canoFim', -16.5, -1.45, 29.5],
 	[null, -13.6, -2.5, 29.5],
 	['esgoto', -12.6, -4.15, 29.35],
-	[null, 1.0, -4.15, 29.35],
+	['meioEsgoto', 1.0, -4.15, 29.35],
 	['poco', 6.6, -4.15, 29.35],
 	[null, 7.2, -3.6, 29.35],
 	[null, 7.2, 1.0, 29.35],
@@ -308,10 +308,10 @@ const ROTA: [string | null, number, number, number][] = [
 	['aeracao', 13.4, 1.6, 28.4],
 	[null, 15.0, 0.9, 28.6],
 	[null, 16.6, 1.8, 28.4],
-	[null, 17.7, 2.9, 28.4],
+	['aeracaoFim', 17.7, 2.9, 28.4],
 	[null, 19.6, 2.9, 28.9],
 	['decantador', 20.4, 2.5, 29.0],
-	[null, 21.4, 1.8, 29.0],
+	['fundoDecantador', 21.4, 1.8, 29.0],
 	[null, 22.6, 2.6, 29.0],
 	['vertedor', 23.3, 3.15, 28.7],
 	[null, 23.8, 3.1, 28.7],
@@ -423,6 +423,10 @@ export const COMPRIMENTO_TRAJETO = CURVA.total;
 export type NomePonto =
 	| 'vaso'
 	| 'canoCasa'
+	| 'canoFim'
+	| 'meioEsgoto'
+	| 'aeracaoFim'
+	| 'fundoDecantador'
 	| 'esgoto'
 	| 'poco'
 	| 'chegada'
