@@ -81,7 +81,9 @@ const criar = () => ({
 	areia: std('#ecd49a'),
 	areiaEsc: std('#d2b676'),
 	cascalho: std('#9c9a92'),
-	lodo: std('#5e4627'),
+	lodo: std('#4a3119'),
+	lodoClaro: std('#6b4a22'),
+	turvo: transp('#7a5a2a', 0.5),
 	sujeira: std('#6b5025'),
 	bacteria: std('#8ddc4f', {flatShading: false, roughness: 0.5}),
 	bacteriaEsc: std('#4f9a2a'),
@@ -360,7 +362,9 @@ const ROTA: [string | null, number, number, number][] = [
 	[null, -23.65, -1.2, 3.4],
 	[null, -23.65, -1.2, 29.7],
 	['casaVolta', -20.8, -1.2, 29.7],
-	[null, -20.8, 3.0, 29.6],
+	[null, -20.8, 1.75, 29.62],
+	[null, -20.8, 1.75, 29.35],
+	[null, -20.8, 3.0, 29.35],
 	[null, -20.8, 3.0, 28.95],
 	['torneira', -20.8, 2.75, 28.78],
 	['copo', -20.8, 2.25, 28.75],
@@ -990,7 +994,7 @@ export const Casa: React.FC<EstadoCasa> = ({descarga = 0, redemoinho = 0, tornei
 			<Bc a={[-22.3, piso + 1.35, 27.85]} b={[-19.0, piso + 1.5, 29.65]} m={mt.calcada} />
 			{/* cuba e torneira */}
 			<Bc a={[-21.5, piso + 1.1, 28.3]} b={[-20.1, piso + 1.5, 29.3]} m={mt.cinza} />
-			<Cy p={[-20.8, piso + 2.0, 29.35]} r={0.07} h={1.0} m={mt.cinza} />
+			<Cy p={[-20.8, piso + 1.85, 29.35]} r={0.07} h={1.3} m={mt.cinza} />
 			<Tubo a={[-20.8, piso + 2.45, 29.35]} b={[-20.8, piso + 2.45, 28.75]} r={0.07} m={mt.cinza} />
 			<Cy p={[-20.8, piso + 2.38, 28.78]} r={0.09} h={0.12} m={mt.cinza} />
 			<Bx p={[-20.8, piso + 2.62, 29.35]} s={[0.35, 0.08, 0.1]} r={[0, torneira * 1.2, 0]} m={mt.vermelho} />
@@ -998,7 +1002,8 @@ export const Casa: React.FC<EstadoCasa> = ({descarga = 0, redemoinho = 0, tornei
 			<mesh geometry={GEO.cil} material={mt.vidro} position={[-20.8, piso + 1.7, 28.75]} scale={[0.22, 0.42, 0.22]} />
 			<mesh geometry={GEO.cil} material={mt.aguaLimpa} position={[-20.8, piso + 1.53 + torneira * 0.08, 28.75]} scale={[0.2, 0.02 + torneira * 0.16, 0.2]} />
 			{/* cano limpo que sobe dentro da bancada (cortado) */}
-			<TuboCorte a={[-20.8, piso]} b={[-20.8, piso + 2.0]} r={0.18} zc={29.7} m={mt.canoLimpo} borda={0.06} />
+			<TuboCorte a={[-20.8, piso]} b={[-20.8, piso + 1.2]} r={0.16} zc={29.7} m={mt.canoLimpo} borda={0.05} />
+			<Tubo a={[-20.8, piso + 1.2, 29.6]} b={[-20.8, piso + 1.2, 29.35]} r={0.1} m={mt.canoLimpo} />
 			{/* mesa */}
 			<Bc a={[-21.2, piso + 1.0, 24.0]} b={[-19.2, piso + 1.1, 25.6]} m={mt.madeira} />
 			{[-21, -19.4].flatMap((x) => [24.2, 25.4].map((z) => <Bc key={`${x}${z}`} a={[x - 0.06, piso, z - 0.06]} b={[x + 0.06, piso + 1.0, z + 0.06]} m={mt.madeiraEsc} />))}
@@ -1205,6 +1210,13 @@ export const TanqueAeracao: React.FC<EstadoAeracao> = ({q = 0, limpeza = 0}) => 
 };
 
 export type EstadoDecantador = {q?: number; separa?: number};
+// grumos de lodo no fundo do funil (fixos; o funil enche com 'separa')
+const GRUMOS: ItemInst[] = Array.from({length: 26}, (_, i) => {
+	const a = Math.PI * (1 + rnd(i, 1));
+	const h = 0.15 + rnd(i, 2) * 0.55;
+	const rr = (2.6 * h) / 0.8 * 0.8 * Math.sqrt(rnd(i, 3));
+	return {p: [21.0 + Math.cos(a) * rr, MUNDO.CHAO + 0.1 + h, ZF - 0.02 + Math.sin(a) * rr * 0.9 - 0.05] as V3, s: [0.14 + rnd(i, 4) * 0.12, 0.08, 0.14 + rnd(i, 5) * 0.12] as V3, r: [0, rnd(i, 6) * 3, 0] as V3, c: ['#3e2914', '#5a3b1c', '#6b4a22'][i % 3]};
+});
 // Decantador circular cortado ao meio: a sujeira (lodo) afunda para o cone do fundo; a água limpa sai pela canaleta da borda.
 export const Decantador: React.FC<EstadoDecantador> = ({q = 0, separa = 1}) => {
 	const mt = M();
@@ -1242,7 +1254,10 @@ export const Decantador: React.FC<EstadoDecantador> = ({q = 0, separa = 1}) => {
 			{/* água: meio cilindro + face cortada */}
 			<mesh geometry={GEO.meioCil} material={separa > 0.6 ? mt.aguaMedia : mt.aguaSuja} position={[cx, (yb + nivel) / 2, cz]} scale={[R - 0.05, nivel - yb, R - 0.05]} />
 			<Bc a={[cx - R + 0.05, yb, cz - 0.01]} b={[cx + R - 0.05, nivel, cz]} m={separa > 0.6 ? mt.aguaMedia : mt.aguaSuja} />
-			<InstVivo geo={GEO.pedra} m={mt.lodo} max={40} itens={caindo} />
+			<InstVivo geo={GEO.pedra} m={mt.lodoClaro} max={40} itens={caindo} />
+			{/* zona turva perto do fundo (a sujeira descendo) e grumos em cima do lodo */}
+			{separa > 0.02 ? <Bc a={[cx - R + 0.1, yb, cz - 0.004]} b={[cx + R - 0.1, yb + 0.25 + 0.5 * (1 - separa), cz]} m={mt.turvo} /> : null}
+			<InstVivo geo={GEO.pedra} m={mt.instancia} max={GRUMOS.length} itens={GRUMOS.filter((g) => g.p[1] - (CHAO + 0.1) < lodoH - 0.04)} />
 			{/* poço central de entrada */}
 			<mesh geometry={GEO.meioTubo} material={mt.cinza} position={[cx, 2.9, cz]} scale={[0.45, 1.2, 0.45]} />
 			{/* canaleta (vertedor) na borda: a água limpa transborda por cima */}
