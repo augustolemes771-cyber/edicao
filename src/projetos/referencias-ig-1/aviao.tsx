@@ -3,6 +3,7 @@
 import React, {useMemo} from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
 import {ThreeCanvas} from '@remotion/three';
+import {useThree} from '@react-three/fiber';
 import * as THREE from 'three';
 
 export const lim = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
@@ -310,7 +311,6 @@ export const Palco: React.FC<{children: React.ReactNode; camera: [number, number
 };
 
 // Aponta a câmera para o alvo a cada quadro (a câmera do ThreeCanvas é a padrão do r3f).
-import {useThree} from '@react-three/fiber';
 const OlharPara: React.FC<{alvo: [number, number, number]}> = ({alvo}) => {
 	const {camera} = useThree();
 	camera.lookAt(alvo[0], alvo[1], alvo[2]);

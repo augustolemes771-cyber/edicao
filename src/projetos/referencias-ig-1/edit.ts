@@ -13,5 +13,5 @@ export const referenciasIg1: Edit = {
 	transcricao,
 	// Notas faladas para a IA, no tempo original. Ex.: (o) => [[o.say('abre nota').inicio, o.say('fecha nota').fim]]
 	cortes: [],
-	cenas: (b) => [],
+	cenas: (b) => [{tipo: 'peca', nome: 'igTeste', de: 0, ate: 3, dados: {}}],
 };
