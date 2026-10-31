@@ -129,7 +129,8 @@ const d33Cartao: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					{frame >= louca ? <Linha3D ate={fim - 8} texto="FIZ LOUCURA" metal="ouro" largura={4.4} y={yMundo(340)} quadro={frame} batida={louca} profundidade={0.45} /> : null}
 				</ThreeCanvas>
 			</AbsoluteFill>
-			<div style={{position: 'absolute', top: 760, left: 540 - W / 2, width: W, height: H, perspective: 1600, transform: `translateX(${treme}px)`}}>
+			<div style={{position: 'absolute', top: 760, left: 540 - W / 2, width: W, height: H, perspective: 1600}}>
+			<div style={{position: 'absolute', inset: 0, transformStyle: 'preserve-3d', transform: `translateX(${treme}px) rotateY(${(1 - pe) * 160 + Math.sin(t * 1.5) * 6}deg) rotateX(${8 + (1 - pe) * 30}deg) scale(${0.6 + 0.4 * pe})`}}>
 				{Array.from({length: FATIAS}, (_, i) => {
 					const w = W / FATIAS;
 					const desloca = (i - (FATIAS - 1) / 2) * 34 * abre;
@@ -144,8 +145,7 @@ const d33Cartao: React.FC<{cena: CenaPeca}> = ({cena}) => {
 								width: w,
 								height: H,
 								overflow: 'hidden',
-								transform: `translate(${desloca}px, ${cai}px) rotateY(${(1 - pe) * 160 + Math.sin(t * 1.5) * 6}deg) rotateX(${8 + (1 - pe) * 30}deg) scale(${0.6 + 0.4 * pe})`,
-								transformOrigin: `${W / 2 - i * w}px 50%`,
+								transform: `translate(${desloca}px, ${cai}px)`,
 							}}
 						>
 							<div
@@ -160,7 +160,7 @@ const d33Cartao: React.FC<{cena: CenaPeca}> = ({cena}) => {
 								}}
 							>
 								<div style={{position: 'absolute', left: 60, top: 150, width: 110, height: 84, borderRadius: 14, background: 'linear-gradient(135deg, #ffe3a3, #b98a3a)'}} />
-								<div style={{position: 'absolute', left: 60, top: 300, fontFamily: poppins, fontWeight: 700, fontSize: 50, letterSpacing: '0.12em', color: '#fff'}}>•••• •••• •••• 4821</div>
+								<div style={{position: 'absolute', left: 60, top: 300, fontFamily: poppins, fontWeight: 700, fontSize: 42, letterSpacing: '0.08em', whiteSpace: 'nowrap', color: '#fff'}}>•••• •••• •••• 4821</div>
 								<div style={{position: 'absolute', left: 60, top: 390, fontFamily: poppins, fontWeight: 600, fontSize: 30, letterSpacing: '0.2em', color: OURO}}>FELIPE</div>
 								<div style={{position: 'absolute', right: 56, top: 52, fontFamily: poppins, fontWeight: 900, fontSize: 40, fontStyle: 'italic', color: OURO}}>CRÉDITO</div>
 							</div>
@@ -170,6 +170,7 @@ const d33Cartao: React.FC<{cena: CenaPeca}> = ({cena}) => {
 						</div>
 					);
 				})}
+			</div>
 			</div>
 		</AbsoluteFill>
 	);
