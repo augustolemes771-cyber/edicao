@@ -287,7 +287,7 @@ export const depoimento34: Edit = {
 			// 13. Danilow deixou claro desde o início; especialistas
 			{tipo: 'pilula', de: b.say('O Danilow deixou').inicio - 0.03, ate: b.at('claro') + 0.3, rotulo: 'MENTOR', nome: 'Danilow', y: 0.56, esconderLegenda: true, som: 'pro_swipe'},
 			{tipo: 'selo', de: b.at('desde') - 0.05, ate: b.at('com', 2) - 0.05, texto: 'DESDE O INÍCIO', y: 380, esconderLegenda: true, som: 'pro_tick'},
-			{tipo: 'selo', de: b.at('são', 3) - 0.05, ate: b.at('cada') - 0.05, texto: 'INCRÍVEIS', y: 380, esconderLegenda: true, som: 'pro_tick'},
+			{tipo: 'frase', de: b.at('são', 3) - 0.05, ate: b.at('cada') - 0.05, palavras: [{texto: 'SÃO', em: b.at('são', 3)}, {texto: 'INCRÍVEIS', em: b.at('incríveis,'), destaque: true}], esconderLegenda: true, som: 'pro_whoosh_curto'},
 			{tipo: 'selo', de: b.at('excelência') - 0.05, ate: b.at('sobre') - 0.05, texto: 'ESPECIALISTAS', y: 380, esconderLegenda: true, som: 'pro_tick'},
 			// 14. Equipe de especialistas em live TikTok Shop
 			{
