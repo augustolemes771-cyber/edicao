@@ -581,7 +581,7 @@ const d34Nichos: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			{frame >= proposito ? (
 				<Canvas width={width} height={height}>
 					<Luzes quadro={frame} batidas={[proposito]} />
-					<Linha3D texto="PROPÓSITO" metal="ouro" largura={4.6} y={yMundo(1160)} quadro={frame} batida={proposito} profundidade={0.45} ate={fim - 8} />
+					<Linha3D texto="PROPÓSITO" metal="ouro" largura={4.1} y={yMundo(1160)} quadro={frame} batida={proposito} profundidade={0.45} ate={fim - 8} />
 				</Canvas>
 			) : null}
 		</AbsoluteFill>

@@ -161,7 +161,7 @@ export const depoimento34: Edit = {
 				nome: 'd34Nichos',
 				de: b.at('deixei') - 0.04,
 				ate: b.say('os caras ensinam').inicio - 0.05,
-				dados: {nichos: b.at('outros') - 0.05, lado: b.at('lado'), vim: b.at('vim') - 0.03, proposito: b.at('propósito.') - 0.05, marcos: [b.at('outros'), b.at('lado'), b.at('vim'), b.at('propósito.')]},
+				dados: {nichos: b.at('outros') - 0.05, lado: b.at('lado'), vim: b.at('lado') + 0.35, proposito: b.at('propósito.') - 0.05, marcos: [b.at('outros'), b.at('lado'), b.at('vim'), b.at('propósito.')]},
 				esconderLegenda: true,
 				sons: [
 					{em: b.at('outros') - 0.05, som: 'pro_pop', ganho: 0.6},
