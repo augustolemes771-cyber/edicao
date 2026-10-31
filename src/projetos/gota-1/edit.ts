@@ -1,9 +1,6 @@
 import type {Edit} from '../../motor/plano';
 import transcricao from './transcricao.json';
-import {cenasA} from './cenas-a';
-import {cenasB} from './cenas-b';
-import {cenasC} from './cenas-c';
-import {cenasD} from './cenas-d';
+import {cenasStoryboard} from './storyboard';
 
 // Vídeo 100% motion: "Você é uma gota de água" (narração neural com tempo exato por palavra, scripts/narrar.py).
 export const gota1: Edit = {
@@ -22,5 +19,6 @@ export const gota1: Edit = {
 	camera: () => [{tipo: 'foco', em: 0}],
 	transcricao,
 	cortes: [],
-	cenas: (b) => [...cenasA(b), ...cenasB(b), ...cenasC(b), ...cenasD(b)],
+	// Storyboard/animatic: uma peça só com a câmera contínua pela cidade (storyboard.tsx).
+	cenas: (b) => cenasStoryboard(b),
 };

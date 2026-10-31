@@ -1,8 +1,6 @@
-// Peças do gota-1 ("Você é uma gota de água"). Cada bloco de cenas no seu arquivo (cenas-a/b/c/d.tsx); base em gota.tsx.
+// Peças do gota-1 ("Você é uma gota de água"). Cenário único em cidade.tsx; a gota em gota.tsx; o storyboard/animatic
+// (câmera contínua pela cidade) em storyboard.tsx.
 import type {Pecas} from '../../pecas/peca';
-import {pecasA} from './cenas-a';
-import {pecasB} from './cenas-b';
-import {pecasC} from './cenas-c';
-import {pecasD} from './cenas-d';
+import {pecasStoryboard} from './storyboard';
 
-export const pecas: Pecas = {...pecasA, ...pecasB, ...pecasC, ...pecasD};
+export const pecas: Pecas = {...pecasStoryboard};
