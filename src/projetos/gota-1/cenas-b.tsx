@@ -169,7 +169,7 @@ const gBGrade: React.FC<{cena: CenaPeca}> = ({cena}) => {
 		const quica = p >= 1 ? Math.abs(Math.sin((frame - qi) * 0.5)) * 0.2 * Math.exp(-(frame - qi) / 6) : 0;
 		return [xi, 1.6 + (1 - p * p) * 6 + quica, 0.6] as V3;
 	};
-	const gx = interpolate(frame, [0, fim], [-9, -1], lim);
+	const gx = interpolate(frame, [0, fim], [-5, 0.5], lim);
 	return (
 		<AbsoluteFill>
 			<Palco camera={cam} alvo={[0, 1.8, 0]} fov={44} ceu={['#5aa8e8', '#cdeaff']}>
@@ -180,20 +180,20 @@ const gBGrade: React.FC<{cena: CenaPeca}> = ({cena}) => {
 				<Grade />
 				<Caixa p={[0, 3.9, 2.5]} s={[22, 0.15, 0.15]} c="#e8c33a" />
 				<Caixa p={[0, 3.4, 2.5]} s={[22, 0.15, 0.15]} c="#e8c33a" />
-				<group position={queda(q[0], -1.8)} rotation={[0, 0, 0.5]}>
+				<group position={queda(q[0], -1.5)} rotation={[0, 0, 0.5]}>
 					<Cil p={[0, 0, 0]} r={0.35} h={1} c="#bfe9ff" />
 					<Cil p={[0, 0.65, 0]} r={0.14} h={0.3} c="#bfe9ff" seg={8} />
 					<Cil p={[0, 0.85, 0]} r={0.16} h={0.1} c="#e5484d" seg={8} />
 				</group>
-				<group position={queda(q[1], 0.3)} rotation={[0.2, 0, 0.3]}>
+				<group position={queda(q[1], 0.1)} rotation={[0.2, 0, 0.3]}>
 					<Caixa p={[0, 0, 0]} s={[1.3, 1.0, 0.1]} c="#e0587a" />
 					<Caixa p={[0.2, -0.2, 0.06]} s={[0.7, 0.5, 0.05]} c="#f4a3b8" />
 				</group>
-				<group position={queda(q[2], 2.2)} rotation={[0, 0, -0.35]}>
+				<group position={queda(q[2], 1.6)} rotation={[0, 0, -0.35]}>
 					<Caixa p={[0, 0, 0]} s={[0.7, 1.3, 0.12]} c="#1d1f24" />
 					<Caixa p={[0, 0, 0.07]} s={[0.58, 1.1, 0.02]} c="#4fb3ff" />
 				</group>
-				<Gota mats={mats} humor="enjoada" suja={0.8} quadro={frame} position={[gx, 1.5 + Math.sin(frame / 10) * 0.2, 1.2]} escala={0.75} />
+				<Gota mats={mats} humor="enjoada" suja={0.8} quadro={frame} position={[gx, 1.5 + Math.sin(frame / 10) * 0.2, 1.2]} escala={0.6} />
 			</Palco>
 			<Rotulo texto="GRADEAMENTO" y={330} p={mola(k('rotulo'))} />
 		</AbsoluteFill>
@@ -260,7 +260,7 @@ const gBBio: React.FC<{cena: CenaPeca}> = ({cena}) => {
 						</group>
 					);
 				})}
-				<Gota mats={mats} humor={frame > qs + 30 ? 'aliviada' : 'enjoada'} suja={suja} quadro={frame} position={[gx, 2.1 + Math.sin(frame / 9) * 0.15, 3.6]} escala={0.8} />
+				<Gota mats={mats} humor={frame > qs + 30 ? 'aliviada' : 'enjoada'} suja={suja} quadro={frame} position={[gx * 0.6, 2.8 + Math.sin(frame / 9) * 0.15, 2.4]} escala={0.55} />
 			</Palco>
 			<Rotulo texto="TRATAMENTO BIOLÓGICO" y={330} p={mola(qr)} tam={50} />
 		</AbsoluteFill>

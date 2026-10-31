@@ -159,21 +159,21 @@ const Cena3D: React.FC<{cena: CenaPeca; fase: 1 | 2 | 3 | 4}> = ({cena, fase}) =
 	} else if (fase === 3) {
 		const s = fim - 8;
 		cam = trilha(frame, [[0, [4, 0, 11]], [s * 0.4, [2, -5, 14]], [s, [4, -11, 12]]]);
-		alvo = trilha(frame, [[0, [3, -0.5, 0]], [s * 0.4, [3, -5, 0]], [s, [3, -12, 0]]]);
-		gp = trilha(frame, [[0, [3.6, -0.3, 0.1]], [10, [4, -1.2, 0.5]], [s, [4, -12.6, 0.5]]]);
+		alvo = trilha(frame, [[0, [3.5, -0.8, 0]], [s * 0.4, [3.5, -4.5, 0]], [s, [3.5, -12, 0]]]);
+		gp = trilha(frame, [[0, [3.6, -0.3, 0.1]], [10, [4, -1.5, 1.2]], [s, [4, -12.2, 1.2]]]);
 		rot = [0, 0, frame * 0.15];
 		humor = 'assustada';
 		suja = interpolate(frame, [0, s], [0.3, 0.7], lim);
 		esc = 0.4;
 	} else {
-		cam = trilha(frame, [[0, [4, -9, 10]], [fim, [-1, -12, 9]]]);
+		cam = trilha(frame, [[0, [4, -9, 15]], [fim, [-1, -12, 13]]]);
 		alvo = trilha(frame, [[0, [4, -12, 0]], [fim, [-2, -13.2, 0]]]);
 		const gy = frame < 14 ? interpolate(frame, [0, 14], [-9, -12.8], lim) : -12.8 + Math.sin(frame / 8) * 0.15;
 		gp = [interpolate(frame, [0, fim], [4, -2], lim) + Math.sin(frame / 20) * 0.2, gy, 0.8];
 		rot = [0, 0, Math.sin(frame / 10) * 0.2];
 		humor = 'enjoada';
 		suja = 0.9;
-		esc = 0.8;
+		esc = 0.45;
 		agua = Math.sin(frame / 12) * 0.05;
 	}
 	return (
