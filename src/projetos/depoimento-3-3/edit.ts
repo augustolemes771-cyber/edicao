@@ -13,13 +13,11 @@ const P = {x: 0.32, y: 0.36};
 // Trechos no tempo original, bordas em vale de energia da voz. Fica de fora só "Então assim, pessoal, vale muito a pena"
 // (77,3–79,2), que repetiria colado o "realmente vale muito a pena" do fim do bloco anterior; o 2K vai para o gancho.
 const TRECHOS: Trecho[] = [
-	[74.3, 77.22], // Semana passada, em 2 dias, eu fiz quase 2K.
+	[74.3, 77.4], // Semana passada, em 2 dias, eu fiz quase 2K.
 	[0.0, 3.3], // Fala, pessoal, Felipe aqui na área.
-	[34.58, 52.72], // Eu vou falar uma coisa pra vocês... Tava super desanimado mesmo.
-	[52.72, 65.36], // Foi onde eu conheci o Danilow... paguei a mentoria dele.
-	[65.36, 73.95], // E assim, na outra semana, questão de 3 dias... 500 reais... Foi muito top, entendeu?
-	[3.3, 34.58], // Cara, falar da mentoria... não escondem o ouro... Porque realmente vale muito a pena.
-	[79.45, 110.25], // Ah, é caro e não sei o quê... não ficava de fora dessa mentoria, não.
+	[34.5, 74.0], // Eu vou falar uma coisa pra vocês... desanimado... Danilow... cartão... 500 reais... Foi muito top, entendeu?
+	[3.3, 34.5], // Cara, falar da mentoria... não escondem o ouro... Porque realmente vale muito a pena.
+	[79.4, 110.25], // Ah, é caro e não sei o quê... não ficava de fora dessa mentoria, não.
 ];
 
 // Frenético: punch-in a cada ~0,45 s, ciclo aberto → médio → close, zoom ≤ 1,25 (fonte baixa).
@@ -50,12 +48,12 @@ export const depoimento33: Edit = {
 	silencios: silencios as Trecho[],
 	transcricao,
 	trechos: () => {
-		// Tira as pausas medidas (≥ 0,15 s) que caem dentro de um trecho, com 0,04 s de ar de cada lado.
+		// Tira as pausas medidas (≥ 0,12 s) que caem dentro de um trecho, com 0,04 s de ar de cada lado.
 		const cortado: Trecho[] = [];
 		for (const [a, z] of TRECHOS) {
 			let ini = a;
 			for (const [s0, s1] of silencios as Trecho[]) {
-				if (s0 <= ini + 0.25 || s1 >= z - 0.25 || s1 - s0 < 0.15) continue;
+				if (s0 <= ini + 0.25 || s1 >= z - 0.25 || s1 - s0 < 0.12) continue;
 				cortado.push([ini, s0 + 0.04]);
 				ini = s1 - 0.04;
 			}
@@ -85,8 +83,6 @@ export const depoimento33: Edit = {
 			...punches(b, 0.4, fimFala, [[dor.inicio - 0.1, dorFim]]),
 			// Frase de dor: estática, sem zoom
 			z(dor.inicio - 0.1, 1.0),
-			{tipo: 'flash', em: b.at('500') - 0.04},
-			{tipo: 'flash', em: b.say('não escondem o ouro').inicio - 0.04},
 		];
 	},
 	cenas: (b) => {
@@ -133,34 +129,31 @@ export const depoimento33: Edit = {
 				],
 				som: 'pro_frase',
 			},
-			// 5. 3, 4, 5 vídeos por dia: cartas numeradas a partir do 3, uma por número falado
+			// 5. 3, 4, 5 vídeos por dia e zero venda: cartões de vídeo empilham, painel de vendas travado em 0
 			{
-				tipo: 'cards3d',
-				de: b.at('3') - 0.08,
-				ate: b.say('por dia e postava').fim + 0.15,
-				itens: [
-					{texto: 'VÍDEOS', em: b.at('3')},
-					{texto: 'VÍDEOS', em: b.at('4')},
-					{texto: 'VÍDEOS POR DIA', em: b.at('5')},
-				],
-				inicio: 3,
-				y: 1010,
-				som: 'pro_tick',
+				tipo: 'peca',
+				nome: 'd33Videos',
+				de: b.at('Gravava') - 0.08,
+				ate: b.say('não tinha vendido nada ainda').fim + 0.15,
+				dados: {marcos: [b.at('3'), b.at('4'), b.at('5')], nada: b.say('não tinha vendido nada ainda').inicio + 0.3},
+				esconderLegenda: true,
+				som: 'pro_whoosh_curto',
 				sons: [
-					{em: b.at('4'), som: 'pro_tick', ganho: 0.7},
-					{em: b.at('5'), som: 'pro_tick', ganho: 0.7},
+					{em: b.at('3'), som: 'pro_tick', ganho: 0.7},
+					{em: b.at('5'), som: 'pro_pop', ganho: 0.6},
+					{em: b.say('não tinha vendido nada ainda').inicio + 0.3, som: 'pro_pulso', ganho: 0.5},
 				],
 			},
-			// 6. Zero vendas, desanimado: pessoa presa na sombra + texto 3D sombrio
+			// 6. Desanimado: pessoa presa na sombra + texto 3D sombrio
 			{
 				tipo: 'medo3d',
-				de: b.say('E não tinha vendido nada ainda').inicio - 0.08,
-				ate: b.say('super desanimado mesmo').fim + 0.1,
+				de: b.at('Tava') - 0.05,
+				ate: b.say('super desanimado mesmo').fim + 0.12,
 				pessoa: true,
 				y: 330,
 				linhas: [
-					{texto: 'ZERO VENDAS', em: b.say('E não tinha vendido nada ainda').inicio + 0.1, metal: 'cinza'},
-					{texto: 'DESANIMADO', em: b.at('super'), metal: 'sangue'},
+					{texto: 'SUPER', em: b.at('super'), metal: 'cinza'},
+					{texto: 'DESANIMADO', em: b.at('desanimado'), metal: 'sangue'},
 				],
 				som: 'pro_whoosh',
 			},
@@ -176,35 +169,30 @@ export const depoimento33: Edit = {
 				esconderLegenda: true,
 				som: 'pro_tick',
 			},
-			// 8. Sem dinheiro → parcelou no cartão → fiz loucura
+			// 8. Sem dinheiro → cartão de crédito se fatia em parcelas → fiz loucura
 			{
-				tipo: 'chips',
-				de: b.say('não tinha o dinheiro').inicio - 0.08,
-				ate: b.at('loucura') + 0.6,
-				itens: [
-					{texto: 'SEM DINHEIRO', em: b.say('não tinha o dinheiro').inicio},
-					{texto: 'PARCELEI NO CARTÃO', em: b.at('parcelei')},
-					{texto: 'FIZ LOUCURA', em: b.at('fiz', 2)},
-				],
-				y: 1080,
+				tipo: 'peca',
+				nome: 'd33Cartao',
+				de: b.say('não tinha o dinheiro').inicio - 0.1,
+				ate: b.at('loucura') + 0.7,
+				dados: {sem: b.say('não tinha o dinheiro').inicio, parcelei: b.at('parcelei'), loucura: b.at('fiz', 2)},
 				esconderLegenda: true,
-				som: 'pro_tick',
+				som: 'pro_swipe',
 				sons: [
-					{em: b.at('parcelei'), som: 'pro_tick', ganho: 0.7},
-					{em: b.at('fiz', 2), som: 'pro_tick', ganho: 0.7},
+					{em: b.at('parcelei'), som: 'pro_whoosh_curto', ganho: 0.7},
+					{em: b.at('fiz', 2), som: 'pro_pop', ganho: 0.7},
 				],
 			},
-			// 9. Resultado: R$ 500 em 3 dias de comissão (ouro)
+			// 9. Resultado: contador corre até R$ 500 e trava no "reais"
 			{
-				tipo: 'numero3d',
-				de: b.at('500') - 0.25,
+				tipo: 'peca',
+				nome: 'v14Contador',
+				de: b.say('questão de 3 dias').inicio - 0.1,
 				ate: b.at('comissão') + 0.6,
-				texto: 'R$ 500',
-				rotulo: 'EM 3 DIAS',
-				abaixo: 'DE COMISSÃO',
-				em: b.at('500') - 0.2,
 				esconderLegenda: true,
-				som: 'pro_pop',
+				som: 'pro_swipe',
+				dados: {marcos: [b.say('questão de 3 dias').inicio, b.at('500') + 0.2, b.at('500') + 0.3], valor: 500, prefixo: 'R$ ', sufixo: '', rotulo: 'EM 3 DIAS · COMISSÃO'},
+				sons: [{em: b.at('500') + 0.2, som: 'pro_pop', ganho: 0.8}],
 			},
 			// 10. A mentoria
 			{
@@ -245,16 +233,16 @@ export const depoimento33: Edit = {
 				],
 				som: 'pro_whoosh',
 			},
-			// 13. Não escondem o ouro: O OURO em 3D
+			// 13. Não escondem o ouro: baú abre, luz e moedas de ouro saltam
 			{
-				tipo: 'numero3d',
+				tipo: 'peca',
+				nome: 'd33Bau',
 				de: b.say('não escondem o ouro').inicio - 0.1,
 				ate: b.say('Eles não escondem o ouro').fim + 0.15,
-				texto: 'O OURO',
-				rotulo: 'NÃO ESCONDEM',
-				em: b.at('ouro') - 0.1,
+				dados: {abre: b.at('ouro') - 0.1, ouro: b.at('ouro')},
 				esconderLegenda: true,
-				som: 'pro_pop',
+				som: 'pro_whoosh',
+				sons: [{em: b.at('ouro') - 0.1, som: 'pro_quebra', ganho: 0.45}],
 			},
 			// 14. Objeção: é caro? → vale muito a pena
 			{

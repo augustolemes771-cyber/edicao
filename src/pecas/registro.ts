@@ -6,6 +6,7 @@ import {pecas as e3v7} from '../projetos/entrevista-3-v7/pecas';
 import {pecas as e3v11} from '../projetos/entrevista-3-v11/pecas';
 import {pecas as e3v12} from '../projetos/entrevista-3-v12/pecas';
 import {pecas as e3v14} from '../projetos/entrevista-3-v14/pecas';
+import {pecas as d32} from '../projetos/depoimento-3-2/pecas';
 
 import {pecas as d33} from '../projetos/depoimento-3-3/pecas';
-export const PECAS: Pecas = {...e3v3, ...e3v5, ...e3v7, ...e3v11, ...e3v12, ...e3v14, ...d33};
+export const PECAS: Pecas = {...e3v3, ...e3v5, ...e3v7, ...e3v11, ...e3v12, ...e3v14, ...d33, ...d32};

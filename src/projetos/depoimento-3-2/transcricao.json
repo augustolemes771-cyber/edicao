@@ -232,15 +232,15 @@
 	},
 	{
 		"text": " mas",
-		"startMs": 17620,
-		"endMs": 17900,
+		"startMs": 18210,
+		"endMs": 18350,
 		"timestampMs": null,
 		"confidence": 0.954596
 	},
 	{
 		"text": " tudo",
-		"startMs": 17900,
-		"endMs": 18270,
+		"startMs": 18350,
+		"endMs": 18390,
 		"timestampMs": null,
 		"confidence": 0.995687
 	},
@@ -344,21 +344,21 @@
 	},
 	{
 		"text": " Por",
-		"startMs": 23820,
-		"endMs": 24010,
+		"startMs": 24270,
+		"endMs": 24400,
 		"timestampMs": null,
 		"confidence": 0.989895
 	},
 	{
 		"text": " quê?",
-		"startMs": 24010,
-		"endMs": 24460,
+		"startMs": 24400,
+		"endMs": 24600,
 		"timestampMs": null,
 		"confidence": 0.958442
 	},
 	{
 		"text": " Porque",
-		"startMs": 24460,
+		"startMs": 24620,
 		"endMs": 24850,
 		"timestampMs": null,
 		"confidence": 0.99851
@@ -596,36 +596,36 @@
 	},
 	{
 		"text": " Assim,",
-		"startMs": 37760,
-		"endMs": 38290,
+		"startMs": 38120,
+		"endMs": 38360,
 		"timestampMs": null,
 		"confidence": 0.614236
 	},
 	{
 		"text": " é",
-		"startMs": 38290,
-		"endMs": 38440,
+		"startMs": 38380,
+		"endMs": 38500,
 		"timestampMs": null,
 		"confidence": 0.998801
 	},
 	{
 		"text": " de",
-		"startMs": 38440,
-		"endMs": 38590,
+		"startMs": 38500,
+		"endMs": 38600,
 		"timestampMs": null,
 		"confidence": 0.999971
 	},
 	{
 		"text": " coração,",
-		"startMs": 38590,
-		"endMs": 39420,
+		"startMs": 38600,
+		"endMs": 39550,
 		"timestampMs": null,
 		"confidence": 0.999865
 	},
 	{
 		"text": " eu",
-		"startMs": 39420,
-		"endMs": 39580,
+		"startMs": 39620,
+		"endMs": 39660,
 		"timestampMs": null,
 		"confidence": 0.999989
 	},
@@ -1051,7 +1051,7 @@
 	},
 	{
 		"text": " Então,",
-		"startMs": 61960,
+		"startMs": 62340,
 		"endMs": 62560,
 		"timestampMs": null,
 		"confidence": 0.999966
