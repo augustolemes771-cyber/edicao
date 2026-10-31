@@ -117,8 +117,9 @@ const d32Terco: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const tubo = (x: number, nivel: number, mat: THREE.Material, entra: number) => {
 		const p = spring({frame: frame - entra, fps, config: {damping: 14, stiffness: 140}});
 		const a = Math.max(0.02, H * Math.min(1, nivel));
+		if (frame < entra) return null;
 		return (
-			<group position={[x, -1.2 - (1 - p) * 6, 0]}>
+			<group position={[x, -1.2 - (1 - p) * 6, 0]} scale={0.85}>
 				<mesh position={[0, H / 2, 0]} material={m.vidro}>
 					<cylinderGeometry args={[0.72, 0.72, H, 40, 1, true]} />
 				</mesh>
@@ -129,7 +130,7 @@ const d32Terco: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					<cylinderGeometry args={[0.9, 0.9, 0.16, 40]} />
 				</mesh>
 				{[1 / 3, 2 / 3].map((f) => (
-					<mesh key={f} position={[0, H * f, 0]} material={m.roxoClaro}>
+					<mesh key={f} position={[0, H * f, 0]} rotation={[Math.PI / 2, 0, 0]} material={m.roxoClaro}>
 						<torusGeometry args={[0.74, 0.025, 8, 40]} />
 					</mesh>
 				))}
@@ -137,7 +138,7 @@ const d32Terco: React.FC<{cena: CenaPeca}> = ({cena}) => {
 		);
 	};
 	const rot = (lado: number, texto: string, cor: string, entra: number) => (
-		<div style={{position: 'absolute', top: 1500, left: lado < 0 ? 140 : 580, width: 360, textAlign: 'center', opacity: interpolate(frame, [entra, entra + 6], [0, 1], lim), fontFamily: poppins, fontWeight: 800, fontSize: 34, letterSpacing: '0.12em', color: cor}}>
+		<div style={{position: 'absolute', top: 1580, left: lado < 0 ? 130 : 590, width: 360, textAlign: 'center', opacity: interpolate(frame, [entra, entra + 6], [0, 1], lim), fontFamily: poppins, fontWeight: 800, fontSize: 34, letterSpacing: '0.12em', color: cor}}>
 			{texto}
 		</div>
 	);
@@ -186,7 +187,7 @@ const d32Sobem: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<AbsoluteFill style={{pointerEvents: 'none', opacity: Math.min(entrada, saida)}}>
 			<FundoMotion />
-			<Kicker texto="DOS MENTORADOS" y={1530} p={kick} />
+			<Kicker texto="DOS MENTORADOS" y={560} p={kick} />
 			<AbsoluteFill style={{filter: 'drop-shadow(0 22px 30px rgba(8,2,20,0.65))'}}>
 				<ThreeCanvas width={width} height={height} gl={GL} camera={CAMERA} style={{position: 'absolute', inset: 0}}>
 					<Luzes quadro={frame} batidas={[pros, ment]} />
