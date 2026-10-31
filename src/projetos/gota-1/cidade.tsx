@@ -94,6 +94,7 @@ const criar = () => ({
 	piso: std('#c99b6a'),
 	pisoBanh: std('#b9d7df'),
 	louca: std('#ffffff', {flatShading: false, roughness: 0.3}),
+	loucaDupla: std('#ffffff', {flatShading: false, roughness: 0.3, side: THREE.DoubleSide}),
 	instancia: std('#ffffff'),
 	linhaSuja: new THREE.MeshBasicMaterial({color: '#e0892a', depthTest: false, transparent: true}),
 	linhaLimpa: new THREE.MeshBasicMaterial({color: '#2fa8ff', depthTest: false, transparent: true}),
@@ -129,6 +130,9 @@ export const GEO = {
 	meioTubo: new THREE.CylinderGeometry(1, 1, 1, 22, 1, true, Math.PI / 2, Math.PI), // metade de trás (z < 0), eixo y
 	meioCil: new THREE.CylinderGeometry(1, 1, 1, 26, 1, false, Math.PI / 2, Math.PI), // meio cilindro sólido (tampa em cima/baixo)
 	meioCone: new THREE.ConeGeometry(1, 1, 26, 1, false, Math.PI / 2, Math.PI),
+	meioConeAberto: new THREE.ConeGeometry(1, 1, 26, 1, true, Math.PI / 2, Math.PI),
+	cilAberto: new THREE.CylinderGeometry(1, 0.8, 1, 20, 1, true),
+	toro: new THREE.TorusGeometry(1, 0.1, 6, 24),
 	meioToro: new THREE.TorusGeometry(1, 0.06, 6, 30, Math.PI),
 	disco: new THREE.CircleGeometry(1, 20),
 	plano: new THREE.PlaneGeometry(1, 1),
@@ -288,9 +292,9 @@ const R0 = ESCALA_GOTA;
 const ROTA: [string | null, number, number, number][] = [
 	['vaso', -16.45, 4.78, 28.3],
 	[null, -16.45, 4.35, 28.3],
-	['canoCasa', -16.5, 3.6, 29.35],
-	[null, -16.5, -1.45, 29.35],
-	[null, -13.6, -2.5, 29.35],
+	['canoCasa', -16.5, 3.6, 29.5],
+	[null, -16.5, -1.45, 29.5],
+	[null, -13.6, -2.5, 29.5],
 	['esgoto', -12.6, -4.15, 29.35],
 	[null, 1.0, -4.15, 29.35],
 	['poco', 6.6, -4.15, 29.35],
@@ -309,15 +313,16 @@ const ROTA: [string | null, number, number, number][] = [
 	['decantador', 20.4, 2.5, 29.0],
 	[null, 21.4, 1.8, 29.0],
 	[null, 22.6, 2.6, 29.0],
-	['vertedor', 23.1, 3.05, 28.7],
-	[null, 23.2, 1.0, 27.4],
-	['canal', 22.9, 0.75, 26.2],
-	[null, 22.9, 0.75, -20.5],
-	['rio', 21.5, -1.0, -24.2],
-	[null, 12, -1.0, -26.4],
-	[null, 2, -1.0, -25.2],
-	[null, -9, -1.0, -26.2],
-	['captacao', -15.6, -1.1, -24.6],
+	['vertedor', 23.3, 3.15, 28.7],
+	[null, 23.8, 3.1, 28.7],
+	[null, 23.8, 1.0, 27.4],
+	['canal', 22.9, 0.6, 26.4],
+	[null, 22.9, 0.6, -20.5],
+	['rio', 21.5, -0.85, -24.2],
+	[null, 12, -0.85, -26.4],
+	[null, 2, -0.85, -25.2],
+	[null, -9, -0.85, -26.2],
+	['captacao', -15.6, -0.9, -24.6],
 	[null, -16.9, -0.6, -23.6],
 	[null, -16.9, 1.2, -21.4],
 	['bomba', -16.9, 1.2, -19.0],
@@ -326,8 +331,8 @@ const ROTA: [string | null, number, number, number][] = [
 	['filtro', -18.3, 2.85, -9.6],
 	[null, -18.3, 1.7, -9.6],
 	[null, -18.3, 0.5, -9.6],
-	['filtroFundo', -16.0, 0.5, -9.6],
-	[null, -14.2, 0.5, -9.6],
+	['filtroFundo', -16.0, 0.55, -9.3],
+	[null, -14.2, 0.55, -9.3],
 	['cloro', -13.6, 1.55, -9.6],
 	[null, -12.0, 1.55, -9.7],
 	[null, -11.0, 1.55, -9.6],
@@ -336,18 +341,18 @@ const ROTA: [string | null, number, number, number][] = [
 	[null, -20.5, 1.2, -1.0],
 	['torre', -20.5, 1.2, 4.0],
 	[null, -20.5, 10.6, 4.0],
-	['caixa', -20.5, 12.2, 4.6],
-	[null, -21.4, 10.7, 5.6],
-	[null, -21.4, 10.4, 6.0],
-	[null, -23.65, 10.4, 6.0],
-	['rede', -23.65, 0.0, 6.0],
-	[null, -23.65, -1.2, 6.0],
+	['caixa', -20.5, 12.0, 3.4],
+	[null, -21.5, 10.5, 3.4],
+	[null, -21.5, 9.5, 3.4],
+	[null, -23.65, 9.5, 3.4],
+	['rede', -23.65, 0.0, 3.4],
+	[null, -23.65, -1.2, 3.4],
 	[null, -23.65, -1.2, 29.7],
 	['casaVolta', -20.8, -1.2, 29.7],
-	[null, -20.8, 2.75, 29.7],
-	[null, -20.8, 2.85, 29.0],
-	['torneira', -20.8, 2.6, 28.75],
-	['copo', -20.8, 1.95, 28.75],
+	[null, -20.8, 3.0, 29.6],
+	[null, -20.8, 3.0, 28.95],
+	['torneira', -20.8, 2.75, 28.78],
+	['copo', -20.8, 2.25, 28.75],
 ];
 
 // Polilinha com curvas arredondadas nos cantos e parâmetro por comprimento (velocidade constante em t).
@@ -515,13 +520,13 @@ const PECAS_ESQ: V2[][] = [
 		[RIO.z1, -6.5],
 		[ZP, -6.5],
 		[ZP, -1.6],
-		[5.6, -1.6],
-		[5.6, CHAO],
+		[3.0, -1.6],
+		[3.0, CHAO],
 		[RIO.z1, CHAO],
 	],
 	[
-		[6.4, CHAO],
-		[6.4, -0.8],
+		[3.8, CHAO],
+		[3.8, -0.8],
 		[ZP, -0.8],
 		[ZP, CHAO],
 	],
@@ -544,7 +549,7 @@ const PEDRAS_FRENTE: ItemInst[] = Array.from({length: 120})
 	.map(({x, y, i}) => ({p: [x, y, ZF + 0.02] as V3, s: [0.12 + rnd(i, 3) * 0.22, 0.08 + rnd(i, 4) * 0.12, 0.05] as V3, r: [0, 0, rnd(i, 5) * 3] as V3, c: ['#8d5a33', '#d39a62', '#6d4529', '#a8a29a'][i % 4]}));
 const PEDRAS_ESQ: ItemInst[] = Array.from({length: 70})
 	.map((_, i) => ({z: RIO.z1 + 0.6 + rnd(i, 7) * (ZP - RIO.z1 - 1), y: -6.2 + rnd(i, 8) * 5.6, i}))
-	.filter(({z, y}) => !(z > 5 && y > -2.0))
+	.filter(({z, y}) => !(z > 2.6 && y > -2.0))
 	.map(({z, y, i}) => ({p: [XL - 0.02, y, z] as V3, s: [0.05, 0.08 + rnd(i, 4) * 0.12, 0.12 + rnd(i, 3) * 0.22] as V3, r: [rnd(i, 5) * 3, 0, 0] as V3, c: ['#8d5a33', '#d39a62', '#6d4529', '#a8a29a'][i % 4]}));
 
 const Terreno: React.FC = () => {
@@ -673,14 +678,12 @@ const PREDIOS: Predio[] = [
 	[15.5, -13, 3.4, 3.2, 2.6, '#f2d6a2', true],
 	[11, -18.5, 3.4, 3, 2.6, '#efd9b5', true],
 	[15.5, -18.5, 3.4, 3, 2.6, '#cfe3f5', true],
-	// esquerda (entre a caixa d'água e a casa)
-	[-16, 12.6, 3, 2.6, 2.4, '#f2d6a2', true],
 	// margem do fundo
 	[-12, -32.2, 3, 2.6, 2.4, '#f7c6c0', true],
 	[8, -32.2, 3, 2.6, 2.4, '#cfe3f5', true],
 	[14, -32.2, 3, 2.6, 2.4, '#f2d6a2', true],
 ];
-const PREDIOS_SEM_REPETIR = PREDIOS.filter((p, i) => !(i === 6 || i === 7)); // dois foram trocados pela casinha da esquerda
+const PREDIOS_SEM_REPETIR = PREDIOS;
 const CORPOS: ItemInst[] = PREDIOS_SEM_REPETIR.map(([x, z, l, p, h, c]) => ({p: [x, CHAO + h / 2, z] as V3, s: [l, h, p] as V3, c}));
 const TELHADOS: ItemInst[] = PREDIOS_SEM_REPETIR.filter((p) => p[6]).map(([x, z, l, p, h], i) => ({
 	p: [x, CHAO + h, z] as V3,
@@ -921,12 +924,12 @@ export const Casa: React.FC<EstadoCasa> = ({descarga = 0, redemoinho = 0, tornei
 
 			{/* BANHEIRO: vaso de lado (caixa encostada na divisória), pia, espelho, box */}
 			<group>
-				<Bc a={[xb - 1.45, andar2 + 0.75, zb - 0.55]} b={[xb - 0.95, andar2 + 1.9, zb + 0.55]} m={mt.louca} />
+				<Bc a={[xb - 1.3, andar2 + 0.75, zb - 0.55]} b={[xb - 0.8, andar2 + 1.9, zb + 0.55]} m={mt.louca} />
 				{/* botão da descarga (afunda e brilha) */}
-				<Cy p={[xb - 1.2, andar2 + 1.93 - botao * 0.05, zb]} r={0.13} h={0.08} m={botao > 0.1 ? mt.amarelo : mt.cinza} />
+				<Cy p={[xb - 1.05, andar2 + 1.93 - botao * 0.05, zb]} r={0.13} h={0.08} m={botao > 0.1 ? mt.amarelo : mt.cinza} />
 				<Cy p={[xb - 0.2, andar2 + 0.3, zb]} r={0.32} h={0.6} m={mt.louca} />
-				<mesh geometry={GEO.cil} material={mt.louca} position={[xb, andar2 + 0.65, zb]} scale={[0.6, 0.3, 0.5]} />
-				<mesh geometry={GEO.cil} material={mt.vidro} position={[xb, andar2 + 0.66, zb]} scale={[0.5, 0.28, 0.4]} />
+				<mesh geometry={GEO.cilAberto} material={mt.loucaDupla} position={[xb, andar2 + 0.65, zb]} scale={[0.6, 0.35, 0.5]} />
+				<mesh geometry={GEO.disco} material={mt.louca} position={[xb, andar2 + 0.5, zb]} rotation={[-Math.PI / 2, 0, 0]} scale={[0.48, 0.4, 1]} />
 				{/* água do vaso: gira e baixa com a descarga */}
 				<group position={[xb, andar2 + 0.72 - descarga * 0.12, zb]} rotation={[0, redemoinho * 12, 0]}>
 					<mesh geometry={GEO.disco} material={mt.aguaCorte} rotation={[-Math.PI / 2, 0, 0]} scale={[0.5, 0.4, 1]} />
@@ -936,7 +939,7 @@ export const Casa: React.FC<EstadoCasa> = ({descarga = 0, redemoinho = 0, tornei
 							))
 						: null}
 				</group>
-				<mesh geometry={GEO.meioToro} material={mt.louca} position={[xb, andar2 + 0.82, zb]} rotation={[-Math.PI / 2, 0, 0]} scale={[0.55, 0.45, 1.6]} />
+				<mesh geometry={GEO.toro} material={mt.louca} position={[xb, andar2 + 0.84, zb]} rotation={[-Math.PI / 2, 0, 0]} scale={[0.6, 0.5, 0.8]} />
 				{/* pia + espelho */}
 				<Bc a={[-15.6, andar2, z0 + 0.3]} b={[-14.6, andar2 + 1.1, z0 + 1.0]} m={mt.branco} />
 				<Bc a={[-15.7, andar2 + 1.1, z0 + 0.3]} b={[-14.5, andar2 + 1.22, z0 + 1.1]} m={mt.louca} />
@@ -974,7 +977,7 @@ export const Casa: React.FC<EstadoCasa> = ({descarga = 0, redemoinho = 0, tornei
 			<mesh geometry={GEO.cil} material={mt.vidro} position={[-20.8, piso + 1.7, 28.75]} scale={[0.22, 0.42, 0.22]} />
 			<mesh geometry={GEO.cil} material={mt.aguaLimpa} position={[-20.8, piso + 1.53 + torneira * 0.08, 28.75]} scale={[0.2, 0.02 + torneira * 0.16, 0.2]} />
 			{/* cano limpo que sobe dentro da bancada (cortado) */}
-			<TuboCorte a={[-20.8, piso - 0.3]} b={[-20.8, piso + 2.0]} r={0.12} zc={29.7} m={mt.canoLimpo} borda={0.05} />
+			<TuboCorte a={[-20.8, piso]} b={[-20.8, piso + 2.0]} r={0.18} zc={29.7} m={mt.canoLimpo} borda={0.06} />
 			{/* mesa */}
 			<Bc a={[-21.2, piso + 1.0, 24.0]} b={[-19.2, piso + 1.1, 25.6]} m={mt.madeira} />
 			{[-21, -19.4].flatMap((x) => [24.2, 25.4].map((z) => <Bc key={`${x}${z}`} a={[x - 0.06, piso, z - 0.06]} b={[x + 0.06, piso + 1.0, z + 0.06]} m={mt.madeiraEsc} />))}
@@ -1092,8 +1095,6 @@ export const Gradeamento: React.FC<EstadoGrade> = ({rastelo = 0, lixo = 1}) => {
 			</group>
 			{/* corrimão */}
 			<Bc a={[x0, 2.5, zA - 0.05]} b={[x1 + 0.6, 2.56, zA + 0.05]} m={mt.amarelo} />
-			{/* passagem para o tanque */}
-			<Bc a={[x1 + 0.6, CHAO, 27.4]} b={[12.6, 2.1, 27.6]} m={mt.concreto} />
 		</group>
 	);
 };
@@ -1203,13 +1204,15 @@ export const Decantador: React.FC<EstadoDecantador> = ({q = 0, separa = 1}) => {
 	});
 	return (
 		<group>
-			{/* pés e parede (meio cilindro aberto na frente) */}
-			<Bc a={[cx - R - 0.2, CHAO, cz - R - 0.2]} b={[cx + R + 0.2, yb - 0.2, cz]} m={mt.corteConcreto} />
+			{/* pilares e parede (meio cilindro aberto na frente) */}
+			{[-0.75, -0.25, 0.25, 0.75].map((f) => (
+				<Bc key={f} a={[cx + Math.sin(f * Math.PI) * (R - 0.3) - 0.15, CHAO, cz - Math.cos(f * Math.PI) * (R - 0.3) - 0.15]} b={[cx + Math.sin(f * Math.PI) * (R - 0.3) + 0.15, yb, cz - Math.cos(f * Math.PI) * (R - 0.3) + 0.15]} m={mt.concretoEsc} />
+			))}
 			<mesh geometry={GEO.meioTubo} material={mt.concreto} position={[cx, (yb + topo) / 2, cz]} scale={[R, topo - yb, R]} />
-			<mesh geometry={GEO.meioToro} material={mt.concretoEsc} position={[cx, topo, cz]} rotation={[-Math.PI / 2, 0, Math.PI]} scale={[R + 0.06, R + 0.06, 2]} />
-			{/* fundo em cone (funil) com o lodo */}
-			<mesh geometry={GEO.meioCone} material={mt.concretoEsc} position={[cx, yb - 0.1, cz]} rotation={[Math.PI, 0, 0]} scale={[R, 1.2, R]} />
-			<mesh geometry={GEO.meioCone} material={mt.lodo} position={[cx, yb - 0.6 + lodoH / 2 + 0.05, cz]} rotation={[Math.PI, Math.PI, 0]} scale={[R * (0.25 + lodoH * 0.6), lodoH + 0.1, R * (0.25 + lodoH * 0.6)]} />
+			<mesh geometry={GEO.meioToro} material={mt.concretoEsc} position={[cx, topo, cz]} rotation={[-Math.PI / 2, 0, 0]} scale={[R + 0.06, R + 0.06, 2]} />
+			{/* fundo em cone (funil, ponta em yb − 0.8) com o lodo acumulado */}
+			<mesh geometry={GEO.meioConeAberto} material={mt.canoInt} position={[cx, yb - 0.4, cz]} rotation={[0, 0, Math.PI]} scale={[R, 0.8, R]} />
+			<mesh geometry={GEO.meioCone} material={mt.lodo} position={[cx, yb - 0.8 + lodoH / 2, cz - 0.01]} rotation={[0, 0, Math.PI]} scale={[R * (lodoH / 0.8) * 0.95, lodoH, R * (lodoH / 0.8) * 0.95]} />
 			{/* água: meio cilindro + face cortada */}
 			<mesh geometry={GEO.meioCil} material={separa > 0.6 ? mt.aguaMedia : mt.aguaSuja} position={[cx, (yb + nivel) / 2, cz]} scale={[R - 0.05, nivel - yb, R - 0.05]} />
 			<Bc a={[cx - R + 0.05, yb, cz - 0.01]} b={[cx + R - 0.05, nivel, cz]} m={separa > 0.6 ? mt.aguaMedia : mt.aguaSuja} />
@@ -1217,12 +1220,12 @@ export const Decantador: React.FC<EstadoDecantador> = ({q = 0, separa = 1}) => {
 			{/* poço central de entrada */}
 			<mesh geometry={GEO.meioTubo} material={mt.cinza} position={[cx, 2.9, cz]} scale={[0.45, 1.2, 0.45]} />
 			{/* canaleta (vertedor) na borda: a água limpa transborda por cima */}
-			<mesh geometry={GEO.meioToro} material={mt.amarelo} position={[cx, nivel + 0.05, cz]} rotation={[-Math.PI / 2, 0, Math.PI]} scale={[R - 0.3, R - 0.3, 2.5]} />
+			<mesh geometry={GEO.meioToro} material={mt.amarelo} position={[cx, nivel + 0.05, cz]} rotation={[-Math.PI / 2, 0, 0]} scale={[R - 0.3, R - 0.3, 2.5]} />
 			{/* ponte raspadora */}
 			<Bc a={[cx - 0.2, topo + 0.05, cz - R - 0.1]} b={[cx + 0.2, topo + 0.25, cz]} m={mt.ferro} />
 			<Bc a={[cx - 0.05, topo + 0.25, cz - R]} b={[cx + 0.05, topo + 0.7, cz]} m={mt.amarelo} />
 			{/* saída: cano que desce para o canal da lateral */}
-			<Canos pts={[[cx + R, 3.0, 28.7], [23.2, 3.0, 28.7], [23.2, 1.0, 27.4], [22.9, 0.9, 26.6]]} r={0.2} m={mt.vidro} />
+			<Canos pts={[[23.3, 3.1, 28.7], [23.8, 3.1, 28.7], [23.8, 1.0, 27.4], [22.9, 0.7, 26.6]]} r={0.2} m={mt.vidro} juntas={mt.canoLimpo} />
 		</group>
 	);
 };
@@ -1322,12 +1325,13 @@ export const FiltroAreia: React.FC<EstadoFiltro> = ({q = 0, retido = 0.5}) => {
 			<Bc a={[x0 - 0.3, y0, z0 - 0.3]} b={[x1 + 0.3, camadas.topo, z0]} m={mt.concreto} />
 			<Bc a={[x0 - 0.3, y0, z0]} b={[x0, camadas.topo, z1]} m={mt.concreto} />
 			<Bc a={[x1, y0, z0]} b={[x1 + 0.3, camadas.topo, z1]} m={mt.concreto} />
-			<Bc a={[x0, y0, z0]} b={[x1, camadas.fundo, z1]} m={mt.concretoEsc} />
-			{/* drenos do fundo */}
-			{[0.25, 0.5, 0.75].map((f) => (
-				<Tubo key={f} a={[x0, y0 + 0.25, z0 + 0.3]} b={[x0, y0 + 0.25, z1]} r={0.001} m={mt.cinza} />
+			<Bc a={[x0, y0 - 0.05, z0]} b={[x1, y0 + 0.05, z1]} m={mt.concretoEsc} />
+			{/* fundo: vão com drenos (a água filtrada junta aqui e sai pelo cano) */}
+			<Bc a={[x0, y0 + 0.05, z0]} b={[x1, camadas.fundo, z1]} m={mt.aguaLimpa} />
+			{[-20.5, -19.0, -17.5, -16.0].map((x) => (
+				<Bx key={x} p={[x, y0 + 0.2, (z0 + z1) / 2]} s={[0.12, 0.3, z1 - z0]} m={mt.concretoEsc} />
 			))}
-			<Tubo a={[x0 + 0.2, y0 + 0.25, z1 - 0.3]} b={[x1 + 0.6, y0 + 0.25, z1 - 0.3]} r={0.14} m={mt.canoLimpo} />
+			<Tubo a={[x0 + 0.2, y0 + 0.25, -9.3]} b={[x1 + 0.6, y0 + 0.25, -9.3]} r={0.2} m={mt.vidro} />
 			<Bc a={[x0, camadas.fundo, z0]} b={[x1, camadas.cascalho, z1]} m={mt.cascalho} />
 			<Bc a={[x0, camadas.cascalho, z0]} b={[x1, camadas.areia, z1]} m={mt.areia} />
 			<Bc a={[x0, camadas.areia - 0.12, z0]} b={[x1, camadas.areia, z1]} m={mt.areiaEsc} />
@@ -1437,10 +1441,10 @@ export const CaixaDagua: React.FC<{q?: number; nivel?: number}> = ({nivel = 0.75
 			<mesh geometry={GEO.meioCil} material={mt.aguaLimpa} position={[cx, y0 + (H * nivel) / 2, cz]} scale={[R - 0.05, H * nivel, R - 0.05]} />
 			<Bc a={[cx - R + 0.05, y0, cz - 0.01]} b={[cx + R - 0.05, y0 + H * nivel, cz]} m={mt.aguaCorte} />
 			<mesh geometry={GEO.meioCone} material={mt.azul} position={[cx, y0 + H + 0.6, cz]} scale={[R + 0.2, 1.2, R + 0.2]} />
-			<mesh geometry={GEO.meioToro} material={mt.azul} position={[cx, y0 + H * 0.55, cz]} rotation={[-Math.PI / 2, 0, Math.PI]} scale={[R + 0.05, R + 0.05, 2]} />
+			<mesh geometry={GEO.meioToro} material={mt.azul} position={[cx, y0 + H * 0.55, cz]} rotation={[-Math.PI / 2, 0, 0]} scale={[R + 0.05, R + 0.05, 2]} />
 			{/* cano que sobe (vidro: a gota aparece) e cano que desce até a rede enterrada */}
 			<Tubo a={[cx, 1.2, cz]} b={[cx, y0, cz]} r={0.24} m={mt.vidro} />
-			<Canos pts={[[cx - 0.9, y0 + 0.4, 5.6], [-21.4, 10.4, 6.0], [-23.65, 10.4, 6.0], [-23.65, CHAO, 6.0]]} r={0.22} m={mt.vidro} juntas={mt.canoLimpo} />
+			<Canos pts={[[-21.5, y0 + 0.2, 3.4], [-21.5, 9.5, 3.4], [-23.65, 9.5, 3.4], [-23.65, CHAO, 3.4]]} r={0.22} m={mt.vidro} juntas={mt.canoLimpo} />
 			{/* escada */}
 			<Bc a={[cx + 1.9, CHAO, cz + 0.8]} b={[cx + 1.95, y0, cz + 0.85]} m={mt.ferro} />
 			<Bc a={[cx + 1.9, CHAO, cz + 1.3]} b={[cx + 1.95, y0, cz + 1.35]} m={mt.ferro} />
@@ -1452,8 +1456,8 @@ export const RedeAgua: React.FC = () => {
 	const mt = M();
 	return (
 		<group>
-			<TuboCorte a={[6.0, CHAO]} b={[6.0, -1.2]} r={0.24} zc={XL + 0.25} esq m={mt.canoLimpo} borda={0.08} />
-			<TuboCorte a={[6.0, -1.2]} b={[ZF - 0.3, -1.2]} r={0.24} zc={XL + 0.25} esq m={mt.canoLimpo} borda={0.08} />
+			<TuboCorte a={[3.4, CHAO]} b={[3.4, -1.2]} r={0.24} zc={XL + 0.25} esq m={mt.canoLimpo} borda={0.08} />
+			<TuboCorte a={[3.4, -1.2]} b={[ZF - 0.3, -1.2]} r={0.24} zc={XL + 0.25} esq m={mt.canoLimpo} borda={0.08} />
 			<TuboCorte a={[XL + 0.1, -1.2]} b={[-20.8, -1.2]} r={0.24} zc={ZF - 0.3} m={mt.canoLimpo} borda={0.08} />
 			<TuboCorte a={[-20.8, -1.2]} b={[-20.8, CASA.piso]} r={0.24} zc={ZF - 0.3} m={mt.canoLimpo} borda={0.08} />
 		</group>
