@@ -7,10 +7,10 @@ import {ThreeCanvas} from '@remotion/three';
 import {useThree} from '@react-three/fiber';
 import * as THREE from 'three';
 import type {Busca} from '../../motor/palavras';
-import type {Cena} from '../../motor/plano';
+import type {Cena, Som} from '../../motor/plano';
 import type {CenaPeca, Pecas} from '../../pecas/peca';
 import {poppins} from '../../motor/tema';
-import {Gota, type Humor} from './gota';
+import {Gota, type Bracos, type Humor} from './gota';
 import {Cidade, ESCALA_GOTA, Fluxo, LinhaTrajeto, LUGARES, tDe, trajeto, type EstadoCidade, type V3} from './cidade';
 
 // ---------------------------------------------------------------- interpolação suave sem passar do ponto
@@ -57,7 +57,10 @@ export const CAMERA: ChaveCam[] = [
 	[1.3, [-2, 108, 90], [-1, -6, 2], 42],
 	// mergulho até o banheiro
 	[2.6, [-15.0, 8.4, 44.0], [-16.2, 4.3, 28.4], 40],
-	[4.6, [-15.6, 6.0, 37.0], [-16.3, 4.3, 28.4], 40],
+	[3.3, [-15.3, 7.4, 39.5], [-16.3, 4.5, 28.4], 40],
+	// empurra até o vaso na descarga
+	[4.3, [-15.9, 5.9, 33.0], [-16.4, 4.7, 28.3], 38],
+	[4.9, [-15.9, 5.5, 33.4], [-16.4, 4.3, 28.5], 40],
 	// desce junto com o cano até o esgoto embaixo da rua (câmera presa na gota)
 	[6.2, [0.8, 1.6, 10.5], [0, -0.6, 0], 42, 'g'],
 	[8.3, [0.8, 1.6, 10.5], [0, -0.6, 0], 42, 'g'],
@@ -65,7 +68,8 @@ export const CAMERA: ChaveCam[] = [
 	[12.6, [1.6, 2.0, 11.5], [1.0, 0.5, 0], 50, 'g'],
 	// "quilômetros no escuro": anda pelo coletor e sobe para ver a estação
 	[14.6, [1.2, 1.6, 9.0], [0.8, 0.8, 0], 48, 'g'],
-	[16.6, [2.0, 12.0, 38.0], [15.0, 1.0, 26.0], 50],
+	[16.2, [4.0, 19.0, 41.0], [15.0, 0.6, 25.0], 46],
+	[17.0, [4.6, 18.0, 40.0], [15.0, 0.6, 25.0], 46],
 	// gradeamento (de frente-esquerda: as barras aparecem como um pente)
 	[18.2, [6.0, 4.4, 31.8], [9.8, 1.5, 28.3], 44],
 	[23.6, [6.4, 4.6, 32.4], [10.0, 1.6, 28.2], 44],
@@ -92,18 +96,38 @@ export const CAMERA: ChaveCam[] = [
 	[56.0, [7, 5, 7], [0, 0.5, 0], 46, 'g'],
 	[56.8, [7, 3, 7], [0, -0.5, 0], 46, 'g'],
 	[57.9, [-36, 3.0, 36], [-22.5, -0.2, 22], 44],
-	[58.8, [-18.4, 3.9, 33.6], [-20.6, 2.4, 28.8], 40],
-	[60.2, [-18.2, 4.1, 34.2], [-20.6, 2.4, 28.8], 40],
+	[58.8, [-19.2, 3.7, 33.2], [-20.7, 2.6, 28.8], 38],
+	[60.2, [-19.0, 3.9, 33.8], [-20.7, 2.6, 28.8], 38],
 	// volta para o mapa: é a mesma casa
 	[62.8, MAPA_POS, MAPA_ALVO, 42],
 ];
+// Empurrões de câmera (fecha o fov) nos momentos-chave: [segundo, graus, até quando segura].
+const EMPURROES: [number, number, number][] = [
+	[8.8, 5, 10.8],
+	[11.5, 4, 12.6],
+	[18.4, 5, 21.0],
+	[22.7, 4, 24.0],
+	[27.6, 5, 29.8],
+	[30.2, 3, 31.8],
+	[34.0, 4, 36.0],
+	[37.4, 4, 38.8],
+	[39.1, 3, 40.3],
+	[44.2, 5, 45.4],
+	[46.8, 4, 47.9],
+	[50.0, 4, 51.0],
+	[52.5, 5, 54.0],
+	[54.3, 3, 55.4],
+	[58.6, 5, 60.2],
+];
+const suave = (x: number) => x * x * (3 - 2 * x);
+const empurrao = (s: number) => EMPURROES.reduce((acc, [t, a, fim]) => acc + a * suave(rampa(s, t, t + 0.45)) * (1 - suave(rampa(s, fim - 0.5, fim))), 0);
 const somar = (a: V3, b: V3): V3 => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
 const camEm = (s: number) => {
 	const g = gotaEm(s);
 	const abs = CAMERA.map((c) => (c[4] === 'g' ? ([c[0], somar(g, c[1]), somar(g, c[2]), c[3]] as const) : c));
 	const pos = hermite3(abs.map((c) => [c[0], c[1]]), s);
 	const alvo = hermite3(abs.map((c) => [c[0], c[2]]), s);
-	const fov = hermite(CAMERA.map((c) => [c[0], c[3]]), s);
+	const fov = hermite(CAMERA.map((c) => [c[0], c[3]]), s) - empurrao(s);
 	return {pos, alvo, fov};
 };
 const gotaEm = (s: number): V3 => trajeto(hermite(GOTA_T, s));
@@ -159,16 +183,87 @@ const GOTA_ESCALA: [number, number][] = [
 const HUMOR: [number, Humor][] = [
 	[0, 'feliz'],
 	[3.4, 'assustada'],
-	[9.4, 'enjoada'],
+	[9.2, 'enjoada'],
 	[17.4, 'assustada'],
 	[23.0, 'enjoada'],
 	[29.0, 'feliz'],
 	[36.4, 'aliviada'],
+	[41.0, 'feliz'],
 	[44.0, 'assustada'],
+	[46.0, 'tonta'],
 	[48.4, 'feliz'],
-	[52.4, 'aliviada'],
-	[56.0, 'feliz'],
+	[52.6, 'aliviada'],
+	[55.8, 'feliz'],
 ];
+// Gestos: bracinhos, esticar/achatar (queda, sucção, impacto) e movimentos extras.
+const BRACOS: [number, Bracos][] = [
+	[0, 'acena'],
+	[3.35, 'cima'],
+	[9.2, 'abraca'],
+	[12.8, 'baixo'],
+	[17.4, 'cima'],
+	[23.0, 'abraca'],
+	[24.3, 'baixo'],
+	[29.2, 'cima'],
+	[31.0, 'baixo'],
+	[36.4, 'cima'],
+	[39.6, 'baixo'],
+	[41.6, 'rema'],
+	[44.0, 'cima'],
+	[45.8, 'baixo'],
+	[52.6, 'cima'],
+	[53.8, 'baixo'],
+	[55.8, 'cima'],
+	[58.0, 'baixo'],
+	[59.0, 'acena'],
+];
+const ESTICA: [number, number][] = [
+	[0, 0],
+	[5.4, 0],
+	[5.8, 0.45],
+	[8.4, 0.45],
+	[8.9, -0.45],
+	[9.3, 0.12],
+	[9.6, 0],
+	[15.4, 0],
+	[15.8, 0.35],
+	[16.6, 0.35],
+	[17.0, 0],
+	[44.2, 0],
+	[44.6, 0.5],
+	[45.3, 0.5],
+	[45.7, 0],
+	[49.5, 0],
+	[49.9, 0.45],
+	[50.6, 0.45],
+	[50.9, 0],
+	[55.8, 0],
+	[56.1, 0.35],
+	[56.6, 0.35],
+	[56.9, 0],
+	[57.3, 0],
+	[57.5, 0.4],
+	[57.9, 0.4],
+	[58.1, 0],
+	[58.5, 0],
+	[58.7, 0.5],
+	[58.95, -0.4],
+	[59.25, 0.12],
+	[59.5, 0],
+];
+// Giro/tremor/balanço extras da gota (rotação y, z e deslocamento x).
+const extrasGota = (s: number, q: number) => {
+	let giro = 0;
+	let incl = 0;
+	let dx = 0;
+	if (s > 3.4 && s < 5.6) giro = (s - 3.4) * (s - 3.4) * 5; // rodando no redemoinho
+	if (s > 18.4 && s < 22.6) dx = Math.sin(q * 2.1) * 0.025; // tremendo presa na grade
+	if (s > 29.2 && s < 31.6) incl = Math.sin(q * 0.4) * 0.18; // dancinha de alívio
+	if (s > 41.6 && s < 44.2) incl = Math.sin(q * 0.18) * 0.22; // surfando no rio
+	if (s > 46.0 && s < 48.2) incl = Math.sin(q * 0.25) * 0.12; // tonta depois da bomba
+	if (s > 59.0 && s < 60.6) incl = Math.sin(q * 0.3) * 0.1;
+	return {giro, incl, dx};
+};
 const SUJA: [number, number][] = [
 	[0, 0],
 	[5.2, 0],
@@ -384,6 +479,7 @@ export const MundoNoTempo: React.FC<{s: number; q: number}> = ({s, q}) => {
 	const plano = PLANOS.find((p) => s >= p.de && s < p.ate + 0.1) ?? PLANOS[PLANOS.length - 1];
 	// a gota "flutua" levemente; no mapa ela some (fica minúscula)
 	const bob = Math.sin(q * 0.15) * 0.03 * escala * 5;
+	const ex = extrasGota(s, q);
 	const mostraGota = s > 1.9 && s < 60.6;
 	const pilulas = useMemo(() => PLANOS.flatMap((p) => p.pilulas ?? []), []);
 	const ceu: [string, string] = ['#4f9fe6', '#dff0fb'];
@@ -399,7 +495,16 @@ export const MundoNoTempo: React.FC<{s: number; q: number}> = ({s, q}) => {
 				<Fluxo t0={0.004} t1={0.996} q={q} n={420} vel={2.2} />
 				{lo > 0.01 ? <LinhaTrajeto p={lp} opacidade={lo} /> : null}
 				{mostraGota ? (
-					<Gota humor={degrau(HUMOR, s)} suja={hermite(SUJA, s)} quadro={q} escala={escala} position={[g[0], g[1] + bob, g[2]]} rotation={[0, giro, 0]} />
+					<Gota
+						humor={degrau(HUMOR, s)}
+						bracos={degrau(BRACOS, s)}
+						estica={hermite(ESTICA, s)}
+						suja={hermite(SUJA, s)}
+						quadro={q}
+						escala={escala}
+						position={[g[0] + ex.dx, g[1] + bob, g[2]]}
+						rotation={[0, giro + ex.giro, ex.incl]}
+					/>
 				) : null}
 			</ThreeCanvas>
 			{pilulas
@@ -428,7 +533,43 @@ export const pecasStoryboard: Pecas = {gotaStoryboard};
 
 export const cenasStoryboard = (b: Busca): Cena[] => {
 	const fim = b.say('Talvez a sua').fim + 2.3;
-	return [{tipo: 'peca', nome: 'gotaStoryboard', modo: 'cheia', de: 0, ate: fim, dados: {}} as Cena];
+	// Sons do kit: no máximo um a cada ~1,5 s, ganho 0,5–0,8, nada grave.
+	const sons: [number, Som, number][] = [
+		[0.15, 'shimmer', 0.5],
+		[1.9, 'pro_whoosh', 0.6],
+		[3.35, 'pro_pop', 0.65],
+		[5.2, 'pro_whoosh_curto', 0.55],
+		[8.9, 'pro_pouso', 0.6],
+		[11.5, 'pro_pop', 0.55],
+		[13.0, 'pro_whoosh', 0.5],
+		[15.0, 'subida', 0.55],
+		[17.6, 'pro_tick', 0.5],
+		[19.8, 'pro_pop', 0.5],
+		[22.7, 'pro_pop', 0.6],
+		[24.4, 'pro_whoosh_curto', 0.55],
+		[26.0, 'pro_pop', 0.5],
+		[27.8, 'pro_pulso', 0.5],
+		[30.2, 'pro_pop', 0.6],
+		[32.4, 'pro_whoosh_curto', 0.5],
+		[33.8, 'pro_tick', 0.5],
+		[36.6, 'shimmer', 0.5],
+		[39.1, 'pro_pop', 0.6],
+		[40.8, 'pro_whoosh', 0.6],
+		[42.6, 'swish', 0.5],
+		[44.2, 'subida', 0.55],
+		[46.8, 'pro_pop', 0.6],
+		[48.3, 'pro_whoosh_curto', 0.5],
+		[49.8, 'pro_tick', 0.5],
+		[51.6, 'pro_pop', 0.5],
+		[53.0, 'pop', 0.55],
+		[54.3, 'pro_pop', 0.6],
+		[55.8, 'subida', 0.55],
+		[57.3, 'pro_whoosh', 0.55],
+		[58.6, 'shimmer', 0.55],
+		[60.4, 'pro_whoosh', 0.55],
+		[61.6, 'pro_logo', 0.6],
+	];
+	return [{tipo: 'peca', nome: 'gotaStoryboard', modo: 'cheia', de: 0, ate: fim, dados: {}, sons: sons.map(([em, som, ganho]) => ({em, som, ganho}))} as Cena];
 };
 
 // Lugares úteis (reexporta para quem for animar os planos finais).
