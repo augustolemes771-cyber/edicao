@@ -9,4 +9,5 @@ import {pecas as e3v14} from '../projetos/entrevista-3-v14/pecas';
 import {pecas as d32} from '../projetos/depoimento-3-2/pecas';
 
 import {pecas as d33} from '../projetos/depoimento-3-3/pecas';
-export const PECAS: Pecas = {...e3v3, ...e3v5, ...e3v7, ...e3v11, ...e3v12, ...e3v14, ...d33, ...d32};
+import {pecas as d34} from '../projetos/depoimento-3-4/pecas';
+export const PECAS: Pecas = {...e3v3, ...e3v5, ...e3v7, ...e3v11, ...e3v12, ...e3v14, ...d33, ...d34, ...d32};
