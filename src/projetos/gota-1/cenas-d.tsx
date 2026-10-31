@@ -281,7 +281,8 @@ export const pecasD: Pecas = {gDFiltro, gDCloro, gDTrat, gDCozinha, gDOlhar, gDF
 export const cenasD = (b: Busca): Cena[] => {
 	const t0 = b.say('Na estação de água').inicio;
 	const tCloro = b.say('e recebe um pouco de cloro').inicio;
-	const tTrat = b.say('Esse é o tratamento').inicio;
+	const apos = (f: string) => [2, 1].map((o) => b.say(f, o)).find((x) => x.inicio >= tCloro) ?? b.say(f, 2);
+	const tTrat = apos('Esse é o tratamento').inicio;
 	const tCoz = b.say('E daqui a alguns dias').inicio;
 	const tTalvez = b.say('Talvez a sua').inicio;
 	const fimFala = b.say('Talvez a sua').fim;
