@@ -70,11 +70,11 @@ const gDFiltro: Peca = ({cena}) => {
 	const vidro = React.useMemo(() => new THREE.MeshStandardMaterial({color: '#bfe6ff', transparent: true, opacity: 0.25, flatShading: true}), []);
 	const cascalho = React.useMemo(() => new THREE.MeshStandardMaterial({color: '#8d8a82', flatShading: true}), []);
 	const areiaFina = React.useMemo(() => new THREE.MeshStandardMaterial({color: '#f1dca6', flatShading: true}), []);
-	const t = vai(8, fim - 20, Easing.inOut(Easing.quad));
+	const t = vai(8, fim - 8, Easing.inOut(Easing.quad));
 	const y = 4.4 - t * 8.4;
 	const suja = 0.9 * (1 - vai(fim * 0.25, fim * 0.75));
 	const ang = interpolate(frame, [0, fim], [-0.5, 0.5]);
-	const cam: V3 = [Math.sin(ang) * 15, 2 + Math.sin(frame / 40), Math.cos(ang) * 15];
+	const cam: V3 = [Math.sin(ang) * 24, 2 + Math.sin(frame / 40), Math.cos(ang) * 24];
 	const camadas: [number, number, THREE.Material][] = [
 		[-3.5, 1.2, cascalho],
 		[-2.0, 1.8, m.areia],
@@ -98,7 +98,7 @@ const gDFiltro: Peca = ({cena}) => {
 					const yy = 4 - ((frame * 0.05 + i * 1.3) % 8);
 					return <Esf key={i} mat={m.aguaSuja} p={[Math.sin(i * 2) * 1.5, yy, 0.6]} r={0.14} />;
 				})}
-				<Gota mats={m} humor={suja > 0.4 ? 'enjoada' : 'aliviada'} suja={suja} quadro={frame} escala={0.8} position={[0, y, 1.2]} rotation={[0, Math.sin(frame / 12) * 0.2, 0]} />
+				<Gota mats={m} humor={suja > 0.4 ? 'enjoada' : 'aliviada'} suja={suja} quadro={frame} escala={0.9} position={[0, y, 2.4]} rotation={[0, Math.sin(frame / 12) * 0.2, 0]} />
 				{t > 0.97 ? Array.from({length: 8}).map((_, i) => <Esf key={i} mat={m.aguaLimpa} p={[Math.sin(i * 0.8) * 1.2, -3.6 + ((frame * 0.1 + i) % 1.2), 1.6]} r={0.1} />) : null}
 			</Cena3D>
 			<Rotulo texto="FILTRO DE AREIA" y={330} p={vai(4, 16)} />
