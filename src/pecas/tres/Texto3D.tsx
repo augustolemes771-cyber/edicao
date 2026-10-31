@@ -89,21 +89,35 @@ export const Linha3D: React.FC<{
 	distancia?: number;
 	// quadros entre uma letra e a seguinte (2 = padrão; 1 em linha longa com pouco tempo de tela, para a entrada concluir)
 	intervalo?: number;
-}> = ({texto, metal, largura, y, quadro, batida, queda, profundidade = 0.28, distancia = 11, intervalo = 2}) => {
+	// quadro até o qual a última letra precisa ter assentado (a linha sai da tela ou começa a esmaecer). Sem tempo, as letras
+	// caem mais juntas e a mola acelera só o necessário: a entrada sempre conclui antes do corte (31/10, entrevista-3).
+	ate?: number;
+}> = ({texto, metal, largura, y, quadro, batida, queda, profundidade = 0.28, distancia = 11, intervalo = 2, ate}) => {
 	const {fps} = useVideoConfig();
 	const {letras, total} = useMemo(() => montar(texto, profundidade), [texto, profundidade]);
 	const mats = useMemo(() => materiais(metal), [metal]);
 	const k = largura / total;
+	const MOLA = 18; // quadros até a mola de uma letra assentar (|1 − p| < 0,03)
+	const n = letras.length;
+	const verba = ate === undefined ? Infinity : ate - batida;
+	let iv = intervalo;
+	let vel = 1;
+	if (verba < MOLA + iv * (n - 1)) {
+		iv = Math.max(0.5, Math.min(iv, (verba - MOLA) / Math.max(1, n - 1)));
+		const resto = verba - iv * (n - 1);
+		if (resto < MOLA) vel = MOLA / Math.max(8, resto);
+	}
+	const assenta = batida + iv * (n - 1) + MOLA / vel;
 	// Auditoria (scripts/auditar-texto3d.ts, inputProps {auditarTexto3d: true}): registra cada quadro em que a linha aparece,
 	// para conferir se a entrada termina antes de a cena sair.
 	const absoluto = Internals.Timeline.useTimelinePosition();
-	if ((getInputProps() as {auditarTexto3d?: boolean}).auditarTexto3d) console.log(`T3D|${absoluto}|${quadro}|${batida}|${letras.length}|${intervalo}|${texto}`);
+	if ((getInputProps() as {auditarTexto3d?: boolean}).auditarTexto3d) console.log(`T3D|${absoluto}|${quadro}|${batida}|${n}|${assenta.toFixed(1)}|${texto}`);
 	return (
 		<group position={[0, y, 0]} scale={k}>
 			{letras.map((l, i) => {
-				const local = quadro - batida - i * intervalo;
+				const local = quadro - batida - i * iv;
 				if (local < 0) return null;
-				const p = spring({frame: local, fps, config: {damping: 9, stiffness: 150, mass: 0.75}});
+				const p = spring({frame: local * vel, fps, config: {damping: 9, stiffness: 150, mass: 0.75}});
 				const lado = i % 2 ? 1 : -1;
 				let px = l.x - total / 2;
 				let py = 0;
