@@ -78,6 +78,10 @@ const geoSorriso = geoTorus(Math.PI);
 const geoOnda = geoTorus(Math.PI * 0.55);
 
 export type Humor = 'feliz' | 'assustada' | 'enjoada' | 'aliviada' | 'tonta';
+// Pose dos bracinhos: baixo (solto), cima (susto/festa), acena (tchau), rema (nadando), abraca (enjoada, abraça a barriga).
+export type Bracos = 'baixo' | 'cima' | 'acena' | 'rema' | 'abraca';
+const geoBraco = new THREE.CapsuleGeometry(0.11, 0.42, 4, 10);
+const geoMao = new THREE.SphereGeometry(0.15, 12, 10);
 
 // Gota-personagem: corpo liso e brilhante, olhos grandes com brilho, sobrancelhas que mudam com o humor, bochechas.
 // suja: 0..1 mistura a cor para marrom (e põe manchas). quadro: pisca de vez em quando.
@@ -90,7 +94,8 @@ export const Gota: React.FC<{
 	position?: [number, number, number];
 	rotation?: [number, number, number];
 	estica?: number; // >0 estica na vertical (caindo), <0 achata (impacto)
-}> = ({humor = 'feliz', suja = 0, quadro = 0, escala = 1, position = [0, 0, 0], rotation = [0, 0, 0], estica = 0}) => {
+	bracos?: Bracos;
+}> = ({humor = 'feliz', suja = 0, quadro = 0, escala = 1, position = [0, 0, 0], rotation = [0, 0, 0], estica = 0, bracos = 'baixo'}) => {
 	const mt = mats();
 	const s = Math.max(0, Math.min(1, suja));
 	const corpo = useMemo(() => {
@@ -120,6 +125,29 @@ export const Gota: React.FC<{
 						].map(([x, y, z, r], i) => <mesh key={i} geometry={geoEsf} material={mancha} position={[x, y, z]} scale={[r, r, r * 0.4]} />)
 					: null}
 			</group>
+			{/* bracinhos (ombro na lateral do corpo; ângulo z: 0 = para baixo, PI = para cima) */}
+			{[-1, 1].map((l) => {
+				const f = quadro * 0.35;
+				const ang =
+					bracos === 'cima'
+						? 2.5 + Math.sin(f * 1.6 + l) * 0.25
+						: bracos === 'acena'
+							? l === 1
+								? 2.4 + Math.sin(f * 1.4) * 0.45
+								: 0.35
+							: bracos === 'rema'
+								? 1.4 + Math.sin(f + (l === 1 ? 0 : Math.PI)) * 0.7
+								: bracos === 'abraca'
+									? 0.35
+									: 0.45 + Math.sin(f * 0.5 + l) * 0.08;
+				const frente = bracos === 'abraca' ? 0.9 : 0;
+				return (
+					<group key={'b' + l} position={[l * 0.82, -0.05, 0.1]} rotation={[0, l * -frente, l * ang]}>
+						<mesh geometry={geoBraco} material={corpo} position={[0, -0.32, 0]} />
+						<mesh geometry={geoMao} material={corpo} position={[0, -0.62, 0]} />
+					</group>
+				);
+			})}
 			{/* rosto */}
 			{[-1, 1].map((l) => (
 				<group key={l} position={[l * 0.3, 0.12, 0.86]}>
