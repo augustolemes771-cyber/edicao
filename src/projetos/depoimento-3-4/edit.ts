@@ -47,8 +47,9 @@ export const depoimento34: Edit = {
 	verificarCurva: false,
 	regraCamera: false,
 	barraProgresso: true,
-	extraFim: 2.4,
+	extraFim: 2.6,
 	transcricao,
+	silencios: silencios as Trecho[],
 	trechos: () => TRECHOS,
 	legenda: {
 		estilo: 'mare',
@@ -57,7 +58,7 @@ export const depoimento34: Edit = {
 		enfase: [
 			{palavra: 'iniciante', estilo: 'serif'},
 			{palavra: 'individual,', estilo: 'serif'},
-			{palavra: 'campeão.', estilo: 'serif'},
+			{palavra: 'incríveis,', estilo: 'serif'},
 			{palavra: 'especialidade', estilo: 'serif'},
 		],
 	},
@@ -71,47 +72,42 @@ export const depoimento34: Edit = {
 			lista.push(z(p.inicio, ESCALAS[i++ % ESCALAS.length]));
 			ultimo = p.inicio;
 		}
-		lista.push(
-			{tipo: 'flash', em: b.at('100%') - 0.04},
-			{tipo: 'chicote', em: b.say('é realmente essa').inicio},
-			{tipo: 'mergulho', em: b.at('pega')},
-			{tipo: 'flash', em: b.at('certo.') - 0.04},
-		);
+		// Chicote na saída do gancho (motion de tela cheia → rosto).
+		lista.push({tipo: 'chicote', em: b.say('é realmente essa').inicio});
 		return lista;
 	},
 	cenas: (b) => {
-		const fimFala = b.at('façam.') + 0.5;
+		const fimFala = b.at('façam.') + 0.65;
+		const fimGancho = b.say('é realmente essa').inicio - 0.03;
+		const aprendi = b.say('Eu aprendi').inicio - 0.03;
+		const g = {flopado: b.at('flopado,') - 0.05, risco: b.at('que') + 0.05, cem: b.at('100%') - 0.08, produto: b.at('produto')};
+		const mi = {golpes: [b.at('formato,'), b.at('mineração,')], acha: b.at('tudo')};
+		const pf = {zerado: b.at('zerado,'), iniciante: b.at('iniciante,'), sobe: b.at('iniciante', 2), pulsos: [b.at('caso,'), b.at('peguei')]};
+		const mao = {pega: b.at('pega'), mao: b.at('pega') + 0.1};
+		const su = {individual: b.at('individual,'), grupo: b.at('grupo'), individual2: b.at('individual,', 2), tirar: b.at('tirar'), duvidas: b.at('dúvidas')};
+		const ss = {segredo: b.at('segredo,'), milagre: b.at('milagre,'), constancia: b.at('constância,'), dedicacao: b.at('dedicação'), certo: b.say('produto certo').inicio};
 		return [
-			// 1. Gancho: NÃO EXISTE / PERFIL FLOPADO e o 100% PRODUTO em ouro 3D
+			// 1. Gancho (tela cheia): perfil com 0 e o carimbo FLOPADO, riscado em ouro no "que"; depois 100% PRODUTO em ouro 3D
 			{
-				tipo: 'frase',
+				tipo: 'peca',
+				nome: 'd34Flopado',
+				modo: 'cheia',
 				de: 0,
-				ate: b.at('que', 1) - 0.02,
-				palavras: [
-					{texto: 'NÃO EXISTE', em: b.at('não')},
-					{texto: 'PERFIL', em: b.at('perfil')},
-					{texto: 'FLOPADO', em: b.at('flopado,'), destaque: true},
-				],
-				som: 'pro_whoosh',
-			},
-			{
-				tipo: 'numero3d',
-				de: b.at('que', 1) - 0.02,
-				ate: b.say('é realmente essa').inicio - 0.04,
-				texto: '100%',
-				rotulo: 'É',
-				abaixo: 'PRODUTO',
-				em: b.at('que', 1),
-				y: 400,
+				ate: fimGancho,
+				dados: {...g, marcos: [g.flopado, g.risco, g.cem, g.produto]},
 				esconderLegenda: true,
-				som: 'pro_pop',
+				som: 'pro_whoosh',
+				sons: [
+					{em: g.flopado, som: 'pro_pop', ganho: 0.7},
+					{em: g.cem, som: 'pro_pop', ganho: 0.8},
+				],
 			},
 			// 2. Mentor e equipe
-			{tipo: 'pilula', de: b.at('Danilow') - 0.08, ate: b.at('do', 2) - 0.05, rotulo: 'MENTORIA', nome: 'Danilow', y: 0.56, esconderLegenda: true, som: 'pro_swipe'},
+			{tipo: 'pilula', de: b.at('Danilow') - 0.08, ate: b.at('Felipe,') - 0.1, rotulo: 'MENTORIA', nome: 'Danilow', y: 0.56, esconderLegenda: true, som: 'pro_swipe'},
 			{
 				tipo: 'chips',
 				de: b.at('Felipe,') - 0.08,
-				ate: b.at('os') - 0.05,
+				ate: b.at('caras') - 0.02,
 				itens: [
 					{texto: 'FELIPE', em: b.at('Felipe,') - 0.05},
 					{texto: 'MATHEUS', em: b.at('Matheus,') - 0.05},
@@ -119,107 +115,123 @@ export const depoimento34: Edit = {
 				y: 1040,
 				esconderLegenda: true,
 				som: 'pro_tick',
-				sons: [{em: b.at('Matheus,') - 0.05, som: 'pro_tick'}],
 			},
 			{
 				tipo: 'frase',
 				de: b.at('são') - 0.05,
-				ate: b.at('essa', 2) - 0.05,
+				ate: b.at('ela') - 0.05,
 				palavras: [
 					{texto: 'SÃO', em: b.at('são')},
-					{texto: 'GIGANTES', em: b.at('gigantes', 2), destaque: true},
+					{texto: 'GIGANTES', em: b.at('gigantes,'), destaque: true},
 				],
+				esconderLegenda: true,
 				som: 'pro_whoosh_curto',
 			},
-			// 3. O que a mentoria ensina na prática
+			{tipo: 'selo', de: b.at('prática') - 0.25, ate: b.at('formato,') - 0.12, texto: 'NA PRÁTICA', y: 380, esconderLegenda: true, som: 'pro_tick'},
+			// 3. Mineração (tela cheia): a picareta bate no formato e na mineração, a pedra racha e o produto sobe brilhando
 			{
-				tipo: 'chips',
+				tipo: 'peca',
+				nome: 'd34Mineracao',
+				modo: 'cheia',
 				de: b.at('formato,') - 0.1,
-				ate: b.at('tudo') - 0.05,
-				itens: [
-					{texto: 'FORMATO', em: b.at('formato,') - 0.05},
-					{texto: 'MINERAÇÃO', em: b.at('mineração,') - 0.05},
-				],
-				y: 1040,
-				numerado: true,
+				ate: b.at('sair') - 0.08,
+				dados: {...mi, marcos: [...mi.golpes, mi.acha]},
 				esconderLegenda: true,
-				som: 'pro_tick',
-				sons: [{em: b.at('mineração,') - 0.05, som: 'pro_tick'}],
+				som: 'pro_whoosh_curto',
+				sons: [{em: mi.acha, som: 'pro_quebra', ganho: 0.55}],
 			},
-			// 4. Dor: perfil zerado (0 seguidores em prata)
+			// 4. Perfil zerado (tela cheia): 0 seguidores, selo INICIANTE, e o número começa a subir
 			{
-				tipo: 'numero3d',
-				de: b.at('perfil', 2) - 0.1,
-				ate: b.at('né,', 2) - 0.05,
-				texto: '0',
-				rotulo: 'SEGUIDORES',
-				abaixo: 'PERFIL ZERADO',
-				metal: 'branco',
-				em: b.at('perfil', 2) - 0.05,
-				y: 400,
+				tipo: 'peca',
+				nome: 'd34Perfil',
+				modo: 'cheia',
+				de: b.at('sair') - 0.08,
+				ate: b.at('deixei') - 0.04,
+				dados: {...pf, marcos: [pf.zerado, pf.iniciante, pf.sobe, ...pf.pulsos]},
 				esconderLegenda: true,
-				som: 'pro_pop',
+				som: 'pro_whoosh',
+				sons: [
+					{em: pf.iniciante, som: 'pro_pop', ganho: 0.6},
+					{em: pf.sobe, som: 'pro_tick', ganho: 0.7},
+				],
 			},
-			{tipo: 'selo', de: b.at('iniciante,') - 0.05, ate: b.at('deixei') - 0.05, texto: 'INICIANTE', chip: 'DO ZERO', emChip: b.at('zerado,', 2) - 0.1, y: 380, som: 'pro_tick'},
 			{
 				tipo: 'frase',
 				dor: true,
-				de: b.at('deixei') - 0.05,
-				ate: b.at('realmente', 2) - 0.05,
+				de: b.at('deixei') - 0.04,
+				ate: b.at('vim') - 0.05,
 				palavras: [
 					{texto: 'OUTROS NICHOS', em: b.at('nicho')},
 					{texto: 'DE LADO', em: b.at('lado'), destaque: true},
 				],
+				esconderLegenda: true,
 				som: 'pro_whoosh',
 			},
-			// 5. Virada: pega pela mão, suporte individual
+			{tipo: 'selo', de: b.at('como', 2) - 0.05, ate: b.say('os caras ensinam').inicio - 0.05, texto: 'PROPÓSITO', y: 380, esconderLegenda: true, som: 'pro_tick'},
+			// 5. Pega pela mão (tela cheia): a mão de ouro pega a mão dela e guia pelo caminho até a estrela
 			{
-				tipo: 'frase',
-				de: b.at('pega') - 0.05,
-				ate: b.at('suporte') - 0.05,
-				palavras: [
-					{texto: 'PEGA', em: b.at('pega')},
-					{texto: 'PELA MÃO', em: b.at('pela'), destaque: true},
-				],
-				som: 'pro_frase',
-			},
-			{
-				tipo: 'selo',
-				de: b.at('suporte') - 0.03,
-				ate: b.at('então', 2) - 0.05,
-				texto: 'SUPORTE INDIVIDUAL',
-				chip: '1 A 1',
-				emChip: b.at('individual,') - 0.05,
-				y: 380,
+				tipo: 'peca',
+				nome: 'd34Mao',
+				modo: 'cheia',
+				de: b.at('literalmente,') - 0.04,
+				ate: b.at('suporte') - 0.04,
+				dados: {...mao, marcos: [mao.pega, mao.mao]},
 				esconderLegenda: true,
 				som: 'pro_swipe',
 			},
-			{tipo: 'comentario', de: b.at('tirar') - 0.1, ate: b.at('daqui') - 0.05, texto: 'Como eu escolho o produto?', y: 1040, som: 'pro_digita'},
-			// 6. Escalar
+			// 6. Suporte individual × grupo (tela cheia): conversa só dela, o grupo cheio, e a dúvida respondida
+			{
+				tipo: 'peca',
+				nome: 'd34Suporte',
+				modo: 'cheia',
+				de: b.at('suporte') - 0.04,
+				ate: b.say('é escalar').inicio - 0.04,
+				dados: {...su, marcos: Object.values(su)},
+				esconderLegenda: true,
+				som: 'pro_whoosh_curto',
+				sons: [
+					{em: su.grupo, som: 'pro_msg', ganho: 0.6},
+					{em: su.tirar, som: 'pro_msg', ganho: 0.6},
+				],
+			},
+			// 7. Escalar e gigantes
 			{
 				tipo: 'frase',
-				de: b.at('escalar') - 0.05,
-				ate: b.at('aí,') + 0.1,
+				de: b.say('é escalar').inicio - 0.04,
+				ate: b.at('porque') - 0.05,
 				palavras: [
 					{texto: 'AGORA É', em: b.say('é escalar').inicio},
 					{texto: 'ESCALAR', em: b.at('escalar'), destaque: true},
 				],
+				esconderLegenda: true,
 				som: 'pro_whoosh_curto',
 			},
 			{
 				tipo: 'numero3d',
-				de: b.at('gigantes', 2) - 0.25,
+				de: b.at('caras', 3) - 0.05,
 				ate: b.say('Eu deixo aqui uma').inicio - 0.05,
 				texto: 'GIGANTES',
 				rotulo: 'OS CARAS SÃO',
-				em: b.at('gigantes', 2) - 0.2,
+				em: b.at('gigantes.') - 0.1,
 				y: 400,
 				esconderLegenda: true,
 				som: 'pro_pop',
 			},
-			// 7. Indicação
-			{tipo: 'selo', de: b.at('indicação') - 0.05, ate: b.say('Eu aprendi').inicio - 0.05, texto: 'EU INDICO', chip: 'MENTORIA', emChip: b.at('mentoria', 3), y: 380, som: 'pro_swipe'},
-			// 8. Escalando: a live dela cheia
+			// 8. Indicação
+			{tipo: 'selo', de: b.at('indicação') - 0.05, ate: b.at('Danilow', 2) - 0.08, texto: 'EU INDICO', y: 380, esconderLegenda: true, som: 'pro_swipe'},
+			{tipo: 'pilula', de: b.at('Danilow', 2) - 0.05, ate: b.at('muito') - 0.08, rotulo: 'MENTORIA', nome: 'Danilow', y: 0.56, esconderLegenda: true},
+			{
+				tipo: 'frase',
+				de: b.at('muito') - 0.08,
+				ate: aprendi,
+				palavras: [
+					{texto: 'É MUITO', em: b.at('muito')},
+					{texto: 'BOM', em: b.at('bom.'), destaque: true},
+				],
+				esconderLegenda: true,
+				som: 'pro_pop',
+			},
+			// 9. Escalando: a live dela cheia
 			{
 				tipo: 'live',
 				de: b.at('escalando') - 0.05,
@@ -230,61 +242,57 @@ export const depoimento34: Edit = {
 					{nome: 'Carla', texto: 'quero 1!'},
 					{nome: 'Rô', texto: 'chegou hoje ✅'},
 				],
+				esconderLegenda: true,
 				som: 'pro_whoosh',
 			},
-			// 9. Os passos em cartas 3D: minerar → escalar → produto campeão
+			// 10. Minerar → escalar em cartas 3D
 			{
 				tipo: 'cards3d',
 				de: b.at('minerar,') - 0.1,
-				ate: b.say('Não existe segredo').inicio - 0.05,
+				ate: b.at('escolher') - 0.05,
 				itens: [
 					{texto: 'MINERAR', em: b.at('minerar,') - 0.05},
 					{texto: 'ESCALAR', em: b.at('escalar', 2) - 0.05},
-					{texto: 'PRODUTO CAMPEÃO', em: b.at('escolher') - 0.05},
 				],
 				y: 1010,
 				som: 'pro_tick',
-				sons: [
-					{em: b.at('escalar', 2) - 0.05, som: 'pro_tick'},
-					{em: b.at('escolher') - 0.05, som: 'pro_tick'},
-				],
 			},
-			// 10. Sem segredo, sem milagre
+			// 11. Produto campeão (tela cheia): pódio 3D e troféu de ouro que pousa no 1º lugar
 			{
-				tipo: 'frase',
-				dor: true,
-				de: b.say('Não existe segredo').inicio - 0.05,
-				ate: b.say('existe uma constância').inicio - 0.04,
-				palavras: [
-					{texto: 'SEM SEGREDO', em: b.at('segredo,')},
-					{texto: 'SEM MILAGRE', em: b.at('milagre,'), destaque: true},
-				],
-				som: 'pro_frase',
-			},
-			// 11. O que existe: constância, dedicação e o produto certo (um por vez, o último em ouro)
-			{
-				tipo: 'medo3d',
-				de: b.say('existe uma constância').inicio - 0.04,
-				ate: b.say('O Danilow deixou').inicio - 0.05,
-				y: 330,
-				linhas: [
-					{texto: 'CONSTÂNCIA', em: b.at('constância,'), metal: 'branco'},
-					{texto: 'DEDICAÇÃO', em: b.at('dedicação'), metal: 'branco'},
-					{texto: 'PRODUTO CERTO', em: b.say('produto certo').inicio, metal: 'ouro'},
-				],
+				tipo: 'peca',
+				nome: 'd34Campeao',
+				modo: 'cheia',
+				de: b.at('escolher') - 0.05,
+				ate: b.say('Não existe segredo').inicio - 0.05,
+				dados: {pousa: b.at('campeão.'), campeao: b.at('campeão.') + 0.03, marcos: [b.at('campeão.')]},
 				esconderLegenda: true,
-				som: 'pro_swipe',
+				som: 'pro_whoosh_curto',
+				sons: [{em: b.at('campeão.') + 0.1, som: 'pro_pop', ganho: 0.75}],
+			},
+			// 12. Sem segredo (cofre riscado), sem milagre (varinha riscada) → constância, dedicação e produto certo empilhados
+			{
+				tipo: 'peca',
+				nome: 'd34SemSegredo',
+				modo: 'cheia',
+				de: b.say('Não existe segredo').inicio - 0.05,
+				ate: b.say('O Danilow deixou').inicio - 0.05,
+				dados: {...ss, marcos: Object.values(ss)},
+				esconderLegenda: true,
+				som: null,
 				sons: [
-					{em: b.at('dedicação'), som: 'pro_tick'},
-					{em: b.say('produto certo').inicio, som: 'pro_pop'},
+					{em: ss.segredo + 0.15, som: 'pro_swipe', ganho: 0.6},
+					{em: ss.constancia, som: 'pro_pop', ganho: 0.6},
+					{em: ss.certo, som: 'pro_pop', ganho: 0.8},
 				],
 			},
-			// 12. Danilow deixou claro desde o início
-			{tipo: 'pilula', de: b.say('O Danilow deixou').inicio + 0.15 - 0.08, ate: b.at('claro') + 0.3, rotulo: 'MENTOR', nome: 'Danilow', y: 0.56, esconderLegenda: true, som: 'pro_swipe'},
-			// 13. Equipe de especialistas em live TikTok Shop
+			// 13. Danilow deixou claro desde o início; especialistas
+			{tipo: 'pilula', de: b.say('O Danilow deixou').inicio - 0.03, ate: b.at('claro') + 0.3, rotulo: 'MENTOR', nome: 'Danilow', y: 0.56, esconderLegenda: true, som: 'pro_swipe'},
+			{tipo: 'selo', de: b.at('desde') - 0.05, ate: b.at('com', 2) - 0.05, texto: 'DESDE O INÍCIO', y: 380, esconderLegenda: true, som: 'pro_tick'},
+			{tipo: 'selo', de: b.at('excelência') - 0.05, ate: b.at('sobre') - 0.05, texto: 'ESPECIALISTAS', y: 380, esconderLegenda: true, som: 'pro_tick'},
+			// 14. Equipe de especialistas em live TikTok Shop
 			{
 				tipo: 'live',
-				de: b.at('live') - 0.3,
+				de: b.at('sobre') - 0.03,
 				ate: b.at('Shop.') + 0.45,
 				host: 'TikTok Shop',
 				espectadores: '3,2 mil',
@@ -293,9 +301,11 @@ export const depoimento34: Edit = {
 					{nome: 'Ju', texto: 'manda o link!'},
 					{nome: 'Léo', texto: 'quero 2'},
 				],
+				esconderLegenda: true,
 				som: 'pro_whoosh',
 			},
-			// 14. Fecho
+			// 15. Fecho
+			{tipo: 'selo', de: b.at('indicação', 2) - 0.05, ate: b.at('só') - 0.05, texto: 'MINHA INDICAÇÃO', y: 380, esconderLegenda: true, som: 'pro_swipe'},
 			{
 				tipo: 'frase',
 				de: b.at('só') - 0.05,
@@ -304,6 +314,7 @@ export const depoimento34: Edit = {
 					{texto: 'SÓ', em: b.at('só')},
 					{texto: 'FAÇAM', em: b.at('façam.'), destaque: true},
 				],
+				esconderLegenda: true,
 				som: 'pro_frase',
 			},
 			{tipo: 'final', de: fimFala, ate: fimFala + 2.4, marca: 'Danilow', sub: 'MENTORIA', som: 'pro_logo'},
