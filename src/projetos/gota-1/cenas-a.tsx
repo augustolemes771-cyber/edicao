@@ -158,9 +158,10 @@ const Cena3D: React.FC<{cena: CenaPeca; fase: 1 | 2 | 3 | 4}> = ({cena, fase}) =
 		esc = frame < f + 28 ? 0.5 : 0.35;
 	} else if (fase === 3) {
 		const s = fim - 8;
-		cam = trilha(frame, [[0, [4, 0, 11]], [s * 0.4, [2, -5, 14]], [s, [4, -11, 12]]]);
-		alvo = trilha(frame, [[0, [3.5, -0.8, 0]], [s * 0.4, [3.5, -4.5, 0]], [s, [3.5, -12, 0]]]);
 		gp = trilha(frame, [[0, [3.6, -0.3, 0.1]], [10, [4, -1.5, 1.2]], [s, [4, -12.2, 1.2]]]);
+		// Câmera segue a gota pelo cano (antes ela saía do quadro na descida).
+		alvo = [gp[0] - 0.3, gp[1] + 0.4, 0.4];
+		cam = [gp[0] + interpolate(frame, [0, s], [0.5, -1.5], lim), gp[1] + 1.2, 11];
 		rot = [0, 0, frame * 0.15];
 		humor = 'assustada';
 		suja = interpolate(frame, [0, s], [0.3, 0.7], lim);
