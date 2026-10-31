@@ -145,7 +145,7 @@ export const entrevista3V3: Edit = {
 			{
 				tipo: 'numero3d',
 				de: b.at('quinto') - 0.1,
-				ate: b.say('quinto no Mundial').fim + 0.35,
+				ate: b.say('quinto no Mundial').fim + 0.55, // +0,55: o texto 3D assenta antes do esmaecer
 				texto: '5º LUGAR',
 				rotulo: 'NO MUNDIAL',
 				metal: 'branco',
