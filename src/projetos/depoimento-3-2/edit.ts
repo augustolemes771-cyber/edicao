@@ -147,18 +147,26 @@ export const depoimento32: Edit = {
 				som: 'pro_whoosh',
 			},
 			// 5. Totalmente leiga → aprendeu rápido com eles: grade antes/agora
+			// (pedido do usuário: tela cheia desde o "leiga"; caminho rápido nos ensinamentos e caminho longo, com erros, no "muito tempo")
 			{
-				tipo: 'gradeAntesDepois',
+				tipo: 'peca',
+				nome: 'd32Caminhos',
 				de: b.at('totalmente') - 0.1,
-				ate: b.at('aprender.') + 0.55,
-				titulo: [
-					{texto: 'TOTALMENTE', em: b.at('totalmente')},
-					{texto: 'LEIGA', em: b.at('leiga')},
-				],
-				antes: {texto: 'SOZINHA', valor: 'MUITO TEMPO', em: b.at('demoraria')},
-				depois: {texto: 'COM ELES', valor: 'APRENDENDO', em: b.at('aprender.') - 0.1},
+				ate: b.say('pra aprender').fim + 0.6,
+				dados: {
+					leiga: b.at('leiga'),
+					tudo: b.say('tudo que eles').inicio - 0.05,
+					chega: b.say('me ensinaram').fim - 0.1,
+					demoraria: b.at('demoraria') - 0.05,
+					aprender: b.say('pra aprender').fim,
+					marcos: [b.at('leiga'), b.say('tudo que eles').inicio, b.at('demoraria'), b.say('pra aprender').fim - 0.1],
+				},
+				esconderLegenda: true,
 				som: 'pro_whoosh',
-				sons: [{em: b.at('aprender.') - 0.1, som: 'pro_swipe', ganho: 0.7}],
+				sons: [
+					{em: b.say('tudo que eles').inicio - 0.05, som: 'pro_whoosh_curto', ganho: 0.7},
+					{em: b.at('demoraria') - 0.05, som: 'pro_swipe', ganho: 0.6},
+				],
 			},
 			// 6–8. Outras mentorias não entregam nem 1/3 do que esses meninos entregam: tubos de prata (1/3) × ouro (cheio)
 			{

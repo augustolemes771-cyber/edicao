@@ -222,4 +222,139 @@ const d32Sobem: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	);
 };
 
-export const pecas: Pecas = {d32Luz, d32Terco, d32Sobem};
+// ---------------------------------------------------------------- totalmente leiga → dois caminhos
+// Tela cheia desde o "totalmente leiga". No "tudo que eles me ensinaram": caminho reto em ouro, o ponto voa até a meta passando
+// por 3 checks (os ensinamentos). No "demoraria muito tempo pra aprender": o caminho rápido apaga e um caminho longo, em zigue-zague,
+// vai sendo traçado devagar, com um X em cada erro.
+// dados: {leiga, tudo, chega, demoraria, aprender}
+type Pt = [number, number];
+const INICIO: Pt = [190, 1470];
+const META: Pt = [870, 560];
+const LONGO: Pt[] = [INICIO, [900, 1390], [300, 1290], [860, 1170], [230, 1040], [800, 930], [400, 820], [760, 720], META];
+const ERROS = [2, 4, 6];
+const comprimento = (pts: Pt[]) => pts.slice(1).reduce((s, p, i) => s + Math.hypot(p[0] - pts[i][0], p[1] - pts[i][1]), 0);
+const pontoEm = (pts: Pt[], f: number): Pt => {
+	let resto = Math.max(0, Math.min(1, f)) * comprimento(pts);
+	for (let i = 1; i < pts.length; i++) {
+		const [ax, ay] = pts[i - 1];
+		const [bx, by] = pts[i];
+		const l = Math.hypot(bx - ax, by - ay);
+		if (resto <= l) return [ax + ((bx - ax) * resto) / l, ay + ((by - ay) * resto) / l];
+		resto -= l;
+	}
+	return pts[pts.length - 1];
+};
+const caminho = (pts: Pt[]) => pts.map((p, i) => `${i ? 'L' : 'M'}${p[0]},${p[1]}`).join(' ');
+
+const d32Caminhos: React.FC<{cena: CenaPeca}> = ({cena}) => {
+	const {frame, fps, fim, q, entrada, saida} = useCena(cena);
+	const d = (cena.dados ?? {}) as Record<string, number>;
+	const leiga = q(d.leiga);
+	const tudo = q(d.tudo);
+	const chega = Math.max(tudo + 8, q(d.chega));
+	const demoraria = q(d.demoraria);
+	const aprender = Math.min(fim - 10, q(d.aprender));
+	const mola = (de: number, rigidez = 170) => spring({frame: frame - de, fps, config: {damping: 13, stiffness: rigidez}});
+	const pTitulo = mola(0);
+	const pLeiga = mola(leiga, 200);
+	const sairTitulo = interpolate(frame, [tudo - 4, tudo + 4], [1, 0], lim);
+	// caminho rápido
+	const fRapido = interpolate(frame, [tudo, chega], [0, 1], {...lim, easing: (x) => 1 - Math.pow(1 - x, 3)});
+	const apagaRapido = interpolate(frame, [demoraria, demoraria + 8], [1, 0.22], lim);
+	const pontoR = pontoEm([INICIO, META], fRapido);
+	const pMeta = frame >= chega ? mola(chega, 260) : 0;
+	// caminho longo
+	const fLongo = interpolate(frame, [demoraria + 2, aprender], [0, 1], lim);
+	const LL = comprimento(LONGO);
+	const pontoL = pontoEm(LONGO, fLongo);
+	const LR = comprimento([INICIO, META]);
+	const cheg = (k: number) => comprimento(LONGO.slice(0, k + 1)) / LL;
+	const rotulo = frame < demoraria ? {texto: 'COM ELES · RÁPIDO', de: tudo} : {texto: 'SOZINHA · MUITO TEMPO', de: demoraria};
+	return (
+		<AbsoluteFill style={{opacity: Math.min(entrada, saida)}}>
+			<FundoMotion />
+			{/* título da dor */}
+			{sairTitulo > 0 ? (
+				<AbsoluteFill style={{opacity: sairTitulo}}>
+					<Kicker texto="EU SOU" y={600} p={pTitulo} />
+					<div style={{position: 'absolute', top: 680, width: '100%', textAlign: 'center', transform: `scale(${0.85 + 0.15 * pTitulo})`, opacity: pTitulo}}>
+						<span style={{fontFamily: poppins, fontWeight: 900, fontSize: 120, color: '#fff', textShadow: '0 8px 30px rgba(8,3,20,0.7)'}}>TOTALMENTE</span>
+					</div>
+					{frame >= leiga ? (
+						<div style={{position: 'absolute', top: 830, width: '100%', textAlign: 'center', transform: `scale(${0.6 + 0.4 * pLeiga}) rotate(${(1 - pLeiga) * -6}deg)`, opacity: Math.min(1, pLeiga * 1.5)}}>
+							<span style={{fontFamily: 'Playfair Display, Georgia, serif', fontStyle: 'italic', fontWeight: 800, fontSize: 150, color: OURO, textShadow: '0 0 34px rgba(232,194,122,0.5)'}}>leiga</span>
+						</div>
+					) : null}
+				</AbsoluteFill>
+			) : null}
+			{/* mapa dos caminhos */}
+			{frame >= tudo - 4 ? (
+				<AbsoluteFill style={{opacity: interpolate(frame, [tudo - 4, tudo + 4], [0, 1], lim)}}>
+					<svg width={1080} height={1920} style={{position: 'absolute', inset: 0}}>
+						<defs>
+							<filter id="brilho32" x="-50%" y="-50%" width="200%" height="200%">
+								<feGaussianBlur stdDeviation="8" result="b" />
+								<feMerge>
+									<feMergeNode in="b" />
+									<feMergeNode in="SourceGraphic" />
+								</feMerge>
+							</filter>
+						</defs>
+						{/* rápido */}
+						<g opacity={apagaRapido}>
+							<path d={caminho([INICIO, META])} stroke={OURO} strokeWidth={16} strokeLinecap="round" fill="none" strokeDasharray={LR} strokeDashoffset={LR * (1 - fRapido)} filter="url(#brilho32)" />
+							{[0.28, 0.52, 0.76].map((f) => {
+								const [x, y] = pontoEm([INICIO, META], f);
+								const p = fRapido >= f ? mola(tudo + Math.round((chega - tudo) * f), 280) : 0;
+								return (
+									<g key={f} transform={`translate(${x},${y}) scale(${p})`}>
+										<circle r={34} fill="#2a1552" stroke={OURO} strokeWidth={6} />
+										<path d="M-14,0 L-4,11 L15,-11" stroke={OURO} strokeWidth={7} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+									</g>
+								);
+							})}
+						</g>
+						{/* longo, com erros */}
+						{frame >= demoraria ? (
+							<g>
+								<path d={caminho(LONGO)} stroke="#bdb6cc" strokeWidth={12} strokeLinecap="round" strokeLinejoin="round" fill="none" strokeDasharray={`${LL}`} strokeDashoffset={LL * (1 - fLongo)} opacity={0.85} />
+								{ERROS.map((k) => {
+									const [x, y] = LONGO[k];
+									const chegou = fLongo >= cheg(k);
+									const p = chegou ? mola(demoraria + 2 + Math.round((aprender - demoraria - 2) * cheg(k)), 300) : 0;
+									const tremor = chegou ? Math.sin(frame * 2.2) * 6 * Math.max(0, 1 - p) : 0;
+									return (
+										<g key={k} transform={`translate(${x + tremor},${y}) scale(${p})`}>
+											<circle r={36} fill="#3a2350" stroke="#e9a0b4" strokeWidth={5} />
+											<path d="M-13,-13 L13,13 M13,-13 L-13,13" stroke="#e9a0b4" strokeWidth={7} strokeLinecap="round" />
+										</g>
+									);
+								})}
+								<circle cx={pontoL[0]} cy={pontoL[1]} r={22} fill="#e9e6f2" stroke="#2a1552" strokeWidth={5} />
+							</g>
+						) : null}
+						{/* início e meta */}
+						<g transform={`translate(${INICIO[0]},${INICIO[1]})`}>
+							<circle r={30} fill="#2a1552" stroke="#e9e6f2" strokeWidth={6} />
+							<text y={78} textAnchor="middle" fontFamily={poppins} fontWeight={800} fontSize={34} fill="#e9e6f2" letterSpacing={4}>
+								ZERO
+							</text>
+						</g>
+						<g transform={`translate(${META[0]},${META[1]}) scale(${1 + 0.35 * pMeta * Math.max(0, 1 - (frame - chega) / 14)})`}>
+							<circle r={46} fill={frame >= chega ? OURO : '#2a1552'} stroke={OURO} strokeWidth={7} filter={frame >= chega ? 'url(#brilho32)' : undefined} />
+							<path d="M-10,22 L-10,-24 L18,-14 L-10,-4" stroke={frame >= chega ? '#2a1552' : OURO} strokeWidth={6} fill="none" strokeLinejoin="round" />
+							<text y={-72} textAnchor="middle" fontFamily={poppins} fontWeight={800} fontSize={34} fill={OURO} letterSpacing={4}>
+								RESULTADO
+							</text>
+						</g>
+						{/* ponto do caminho rápido */}
+						{frame < demoraria ? <circle cx={pontoR[0]} cy={pontoR[1]} r={24} fill="#fff1c9" filter="url(#brilho32)" /> : null}
+					</svg>
+					<Kicker key={rotulo.texto} texto={rotulo.texto} y={300} p={mola(rotulo.de, 200)} cor={rotulo.texto.startsWith('COM') ? OURO : '#e9e6f2'} />
+				</AbsoluteFill>
+			) : null}
+		</AbsoluteFill>
+	);
+};
+
+export const pecas: Pecas = {d32Luz, d32Terco, d32Sobem, d32Caminhos};
