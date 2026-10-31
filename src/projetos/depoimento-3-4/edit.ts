@@ -73,7 +73,7 @@ export const depoimento34: Edit = {
 		}
 		lista.push(
 			{tipo: 'flash', em: b.at('100%') - 0.04},
-			{tipo: 'chicote', em: b.at('É,')},
+			{tipo: 'chicote', em: b.say('é realmente essa').inicio},
 			{tipo: 'mergulho', em: b.at('pega')},
 			{tipo: 'flash', em: b.at('certo.') - 0.04},
 		);
@@ -97,7 +97,7 @@ export const depoimento34: Edit = {
 			{
 				tipo: 'numero3d',
 				de: b.at('que', 1) - 0.02,
-				ate: b.at('É,') - 0.04,
+				ate: b.say('é realmente essa').inicio - 0.04,
 				texto: '100%',
 				rotulo: 'É',
 				abaixo: 'PRODUTO',
@@ -127,7 +127,7 @@ export const depoimento34: Edit = {
 				ate: b.at('essa', 2) - 0.05,
 				palavras: [
 					{texto: 'SÃO', em: b.at('são')},
-					{texto: 'GIGANTES', em: b.at('gigantes,'), destaque: true},
+					{texto: 'GIGANTES', em: b.at('gigantes', 2), destaque: true},
 				],
 				som: 'pro_whoosh_curto',
 			},
@@ -176,7 +176,7 @@ export const depoimento34: Edit = {
 			{
 				tipo: 'frase',
 				de: b.at('pega') - 0.05,
-				ate: b.at('o', 3) - 0.02,
+				ate: b.at('suporte') - 0.05,
 				palavras: [
 					{texto: 'PEGA', em: b.at('pega')},
 					{texto: 'PELA MÃO', em: b.at('pela'), destaque: true},
@@ -185,7 +185,7 @@ export const depoimento34: Edit = {
 			},
 			{
 				tipo: 'selo',
-				de: b.at('suporte', 2) - 0.05,
+				de: b.at('suporte') - 0.03,
 				ate: b.at('então', 2) - 0.05,
 				texto: 'SUPORTE INDIVIDUAL',
 				chip: '1 A 1',
@@ -201,24 +201,24 @@ export const depoimento34: Edit = {
 				de: b.at('escalar') - 0.05,
 				ate: b.at('aí,') + 0.1,
 				palavras: [
-					{texto: 'AGORA É', em: b.at('é', 3)},
+					{texto: 'AGORA É', em: b.say('é escalar').inicio},
 					{texto: 'ESCALAR', em: b.at('escalar'), destaque: true},
 				],
 				som: 'pro_whoosh_curto',
 			},
 			{
 				tipo: 'numero3d',
-				de: b.at('gigantes.') - 0.25,
-				ate: b.at('Eu') - 0.05,
+				de: b.at('gigantes', 2) - 0.25,
+				ate: b.say('Eu deixo aqui uma').inicio - 0.05,
 				texto: 'GIGANTES',
 				rotulo: 'OS CARAS SÃO',
-				em: b.at('gigantes.') - 0.2,
+				em: b.at('gigantes', 2) - 0.2,
 				y: 400,
 				esconderLegenda: true,
 				som: 'pro_pop',
 			},
 			// 7. Indicação
-			{tipo: 'selo', de: b.at('indicação') - 0.05, ate: b.at('Eu', 2) - 0.05, texto: 'EU INDICO', chip: 'MENTORIA', emChip: b.at('mentoria', 3), y: 380, som: 'pro_swipe'},
+			{tipo: 'selo', de: b.at('indicação') - 0.05, ate: b.say('Eu aprendi').inicio - 0.05, texto: 'EU INDICO', chip: 'MENTORIA', emChip: b.at('mentoria', 3), y: 380, som: 'pro_swipe'},
 			// 8. Escalando: a live dela cheia
 			{
 				tipo: 'live',
@@ -236,7 +236,7 @@ export const depoimento34: Edit = {
 			{
 				tipo: 'cards3d',
 				de: b.at('minerar,') - 0.1,
-				ate: b.at('Não') - 0.05,
+				ate: b.say('Não existe segredo').inicio - 0.05,
 				itens: [
 					{texto: 'MINERAR', em: b.at('minerar,') - 0.05},
 					{texto: 'ESCALAR', em: b.at('escalar', 2) - 0.05},
@@ -253,8 +253,8 @@ export const depoimento34: Edit = {
 			{
 				tipo: 'frase',
 				dor: true,
-				de: b.at('Não') - 0.05,
-				ate: b.at('existe', 5) - 0.04,
+				de: b.say('Não existe segredo').inicio - 0.05,
+				ate: b.say('existe uma constância').inicio - 0.04,
 				palavras: [
 					{texto: 'SEM SEGREDO', em: b.at('segredo,')},
 					{texto: 'SEM MILAGRE', em: b.at('milagre,'), destaque: true},
@@ -264,23 +264,23 @@ export const depoimento34: Edit = {
 			// 11. O que existe: constância, dedicação e o produto certo (um por vez, o último em ouro)
 			{
 				tipo: 'medo3d',
-				de: b.at('existe', 5) - 0.04,
-				ate: b.at('O', 1) - 0.05,
+				de: b.say('existe uma constância').inicio - 0.04,
+				ate: b.say('O Danilow deixou').inicio - 0.05,
 				y: 330,
 				linhas: [
 					{texto: 'CONSTÂNCIA', em: b.at('constância,'), metal: 'branco'},
 					{texto: 'DEDICAÇÃO', em: b.at('dedicação'), metal: 'branco'},
-					{texto: 'PRODUTO CERTO', em: b.at('produto', 4), metal: 'ouro'},
+					{texto: 'PRODUTO CERTO', em: b.say('produto certo').inicio, metal: 'ouro'},
 				],
 				esconderLegenda: true,
 				som: 'pro_swipe',
 				sons: [
 					{em: b.at('dedicação'), som: 'pro_tick'},
-					{em: b.at('produto', 4), som: 'pro_pop'},
+					{em: b.say('produto certo').inicio, som: 'pro_pop'},
 				],
 			},
 			// 12. Danilow deixou claro desde o início
-			{tipo: 'pilula', de: b.at('Danilow', 3) - 0.08, ate: b.at('claro') + 0.3, rotulo: 'MENTOR', nome: 'Danilow', y: 0.56, esconderLegenda: true, som: 'pro_swipe'},
+			{tipo: 'pilula', de: b.say('O Danilow deixou').inicio + 0.15 - 0.08, ate: b.at('claro') + 0.3, rotulo: 'MENTOR', nome: 'Danilow', y: 0.56, esconderLegenda: true, som: 'pro_swipe'},
 			// 13. Equipe de especialistas em live TikTok Shop
 			{
 				tipo: 'live',
