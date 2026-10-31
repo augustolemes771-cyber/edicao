@@ -202,9 +202,9 @@ export const depoimento32: Edit = {
 			// 10b. Não só em prosperar
 			{
 				tipo: 'chips',
-				de: b.at('preocupados') - 0.05,
-				ate: b.at('prosperar,') + 0.5,
-				itens: [{texto: 'NÃO SÓ EM PROSPERAR', em: b.at('preocupados')}],
+				de: b.say('só em prosperar').inicio - 0.08,
+				ate: b.say('só em prosperar').fim + 0.3,
+				itens: [{texto: 'NÃO SÓ EM PROSPERAR', em: b.say('só em prosperar').inicio}],
 				y: 380,
 				esconderLegenda: true,
 				som: 'pro_tick',
