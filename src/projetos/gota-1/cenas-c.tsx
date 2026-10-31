@@ -152,7 +152,7 @@ const Arvore: React.FC<{m: X; position: V3; s: number}> = ({m, position, s}) => 
 const Rio: React.FC<{m: X; frame: number; peixes: {x: number; f0: number; z: number}[]}> = ({m, frame, peixes}) => {
 	const itens = useMemo(
 		() => ({
-			arv: Array.from({length: 46}, (_, i) => ({x: 3 + i * 2.7 + rnd(i) * 1.5, z: (i % 2 ? 1 : -1) * (i % 5 === 0 ? 5.2 + rnd(i, 2) : 6.5 + rnd(i, 2) * 9), s: 0.8 + rnd(i, 3) * 0.7})),
+			arv: Array.from({length: 46}, (_, i) => ({x: 3 + i * 2.7 + rnd(i) * 1.5, z: i % 2 ? 10.5 + rnd(i, 2) * 8 : -(i % 5 === 0 ? 5.2 + rnd(i, 2) : 6.5 + rnd(i, 2) * 9), s: 0.8 + rnd(i, 3) * 0.7})),
 			ped: Array.from({length: 40}, (_, i) => ({x: 2 + i * 3.1 + rnd(i, 4) * 2, z: (i % 2 ? 1 : -1) * (2.3 + rnd(i, 5) * 0.8), s: 0.25 + rnd(i, 6) * 0.45})),
 			esp: Array.from({length: 50}, (_, i) => ({x: i * 2.6 + rnd(i, 8) * 2, z: (rnd(i, 9) - 0.5) * 4.6, c: 0.8 + rnd(i, 10) * 1.4})),
 		}),
@@ -265,7 +265,7 @@ const gCAfunda: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const lodo = interpolate(frame, [fps * 0.6, fim - 4], [0.02, 0.9], {...lim, easing: Easing.out(Easing.quad)});
 	const cam = mix([0, 6.5, 21], [5.5, 5, 18], frame / fim);
 	return (
-		<PalcoC pos={cam} alvo={[0, 1.6, 0]}>
+		<PalcoC pos={mix([0, 1.6, 0], cam, 0.78)} alvo={[0, 1.6, 0]}>
 			<Chao m={m} />
 			<Tanque m={m} lodo={lodo} frame={frame} />
 			<Particulas m={m} n={44} frame={frame} fps={fps} topo={3.1} fundo={0.1 + lodo} inicio={q(dd(cena).afunda) - 8} />
@@ -292,7 +292,7 @@ const gCDecanta: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const cam = pCano > 0 ? mix([4, 5, 19], [14, 5, 15], pCano) : mix([2, 5.5, 20], [4, 5, 19], Math.min(1, frame / Math.max(1, qDec)));
 	const alvo: V3 = pCano > 0 ? mix([R, 2.2, 0], [pos[0], 1.5, 0], pCano) : [pos[0] * 0.5, 1.8, 0];
 	return (
-		<PalcoC pos={cam} alvo={alvo} sobre={<Rotulo texto="DECANTAÇÃO" y={330} p={interpolate(frame, [qDec - 3, qDec + 8], [0, 1], lim)} tam={64} />}>
+		<PalcoC pos={mix(alvo, cam, 0.8)} alvo={alvo} sobre={<Rotulo texto="DECANTAÇÃO" y={330} p={interpolate(frame, [qDec - 3, qDec + 8], [0, 1], lim)} tam={64} />}>
 			<Chao m={m} />
 			<Tanque m={m} lodo={0.9} frame={frame + 100} />
 			<mesh material={m.rio} position={[40, -0.35, 0]}>
