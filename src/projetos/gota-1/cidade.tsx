@@ -47,6 +47,7 @@ const criar = () => ({
 	faixa: std('#f6f4ea'),
 	calcada: std('#ddd7cb'),
 	concreto: std('#d6cfc2'),
+	concretoDuplo: std('#cfc8bb', {side: THREE.DoubleSide}),
 	concretoEsc: std('#a69d90'),
 	corteConcreto: std('#bdb5a7'),
 	parede: std('#f4e4c4'),
@@ -135,6 +136,15 @@ export const GEO = {
 	toro: new THREE.TorusGeometry(1, 0.1, 6, 24),
 	meioToro: new THREE.TorusGeometry(1, 0.06, 6, 30, Math.PI),
 	disco: new THREE.CircleGeometry(1, 20),
+	// triângulo com a ponta para baixo em (0,0) e base em y = 1 (largura 2): corte de um cone
+	triangulo: (() => {
+		const sh = new THREE.Shape();
+		sh.moveTo(0, 0);
+		sh.lineTo(1, 1);
+		sh.lineTo(-1, 1);
+		sh.closePath();
+		return new THREE.ShapeGeometry(sh);
+	})(),
 	plano: new THREE.PlaneGeometry(1, 1),
 };
 
@@ -328,11 +338,12 @@ const ROTA: [string | null, number, number, number][] = [
 	['bomba', -16.9, 1.2, -19.0],
 	[null, -16.9, 1.2, -16.4],
 	[null, -18.3, 4.0, -15.2],
-	['filtro', -18.3, 2.85, -9.6],
-	[null, -18.3, 1.7, -9.6],
-	[null, -18.3, 0.5, -9.6],
-	['filtroFundo', -16.0, 0.55, -9.3],
-	[null, -14.2, 0.55, -9.3],
+	[null, -18.3, 3.4, -9.6],
+	['filtro', -18.3, 2.85, -8.95],
+	[null, -18.3, 1.7, -8.95],
+	[null, -18.3, 0.5, -8.95],
+	['filtroFundo', -16.0, 0.5, -8.95],
+	[null, -14.2, 0.55, -9.1],
 	['cloro', -13.6, 1.55, -9.6],
 	[null, -12.0, 1.55, -9.7],
 	[null, -11.0, 1.55, -9.6],
@@ -1217,7 +1228,13 @@ export const Decantador: React.FC<EstadoDecantador> = ({q = 0, separa = 1}) => {
 			{[-0.75, -0.25, 0.25, 0.75].map((f) => (
 				<Bc key={f} a={[cx + Math.sin(f * Math.PI) * (R - 0.3) - 0.15, CHAO, cz - Math.cos(f * Math.PI) * (R - 0.3) - 0.15]} b={[cx + Math.sin(f * Math.PI) * (R - 0.3) + 0.15, yb, cz - Math.cos(f * Math.PI) * (R - 0.3) + 0.15]} m={mt.concretoEsc} />
 			))}
-			<mesh geometry={GEO.meioTubo} material={mt.concreto} position={[cx, (yb + topo) / 2, cz]} scale={[R, topo - yb, R]} />
+			<mesh geometry={GEO.meioTubo} material={mt.concretoDuplo} position={[cx, (yb + topo) / 2, cz]} scale={[R, topo - yb, R]} />
+			{/* bordas cortadas da parede */}
+			{[-1, 1].map((l) => (
+				<Bc key={l} a={[cx + l * R - 0.1, yb - 0.1, cz - 0.02]} b={[cx + l * (R + 0.18), topo, cz]} m={mt.corteConcreto} />
+			))}
+			{/* face cortada do lodo (triângulo) */}
+			<mesh geometry={GEO.triangulo} material={mt.lodo} position={[cx, yb - 0.8, cz - 0.005]} scale={[R * (lodoH / 0.8) * 0.95, lodoH, 1]} />
 			<mesh geometry={GEO.meioToro} material={mt.concretoEsc} position={[cx, topo, cz]} rotation={[-Math.PI / 2, 0, 0]} scale={[R + 0.06, R + 0.06, 2]} />
 			{/* fundo em cone (funil, ponta em yb − 0.8) com o lodo acumulado */}
 			<mesh geometry={GEO.meioConeAberto} material={mt.canoInt} position={[cx, yb - 0.4, cz]} rotation={[0, 0, Math.PI]} scale={[R, 0.8, R]} />
@@ -1281,10 +1298,9 @@ export const Captacao: React.FC<{q?: number; bomba?: number}> = ({q = 0, bomba =
 			<Canos pts={[[x, -0.6, -23.6], [x, 1.2, -21.4], [x, 1.2, -19.6]]} r={0.25} m={mt.vidro} juntas={mt.canoLimpo} />
 			{/* casa de bombas (aberta na frente) */}
 			<Bc a={[-19.4, CHAO, -21.0]} b={[-14.4, CHAO + 0.15, -17.0]} m={mt.corteConcreto} />
-			<Bc a={[-19.4, CHAO, -21.0]} b={[-14.4, 3.0, -20.75]} m={mt.parede} />
-			<Bc a={[-19.4, CHAO, -21.0]} b={[-19.15, 3.0, -17.0]} m={mt.parede} />
-			<Bc a={[-14.65, CHAO, -21.0]} b={[-14.4, 3.0, -17.0]} m={mt.parede} />
-			<Bc a={[-19.6, 3.0, -21.2]} b={[-14.2, 3.25, -17.0]} m={mt.azul} />
+			{/* cobertura aberta sobre a bomba (dá para ver de qualquer lado) */}
+			{[-19.2, -14.6].flatMap((xx) => [-20.8, -17.2].map((zz) => <Bc key={`${xx}${zz}`} a={[xx - 0.1, CHAO, zz - 0.1]} b={[xx + 0.1, 3.0, zz + 0.1]} m={mt.ferro} />))}
+			<Bc a={[-19.6, 3.0, -21.2]} b={[-14.2, 3.2, -16.8]} m={mt.azul} />
 			{/* bomba: motor azul + caracol vermelho com rotor que gira */}
 			<group position={[x, 1.2, -19.0]}>
 				<Cy p={[0, 0, 0]} r={0.6} h={0.5} m={mt.vermelho} rot={[Math.PI / 2, 0, 0]} />
@@ -1414,7 +1430,6 @@ export const Cloracao: React.FC<EstadoCloro> = ({q = 0, dose = 1, mortos = 0}) =
 			{/* saída para a caixa d'água */}
 			<Canos pts={[[-11.0, 1.2, -9.0], [-11.0, 1.2, -1.0], [-20.5, 1.2, -1.0], [-20.5, 1.2, 4.0]]} r={0.22} m={mt.vidro} juntas={mt.canoLimpo} />
 			{/* cerca da ETA */}
-			<Cerca a={[-22.4, -7.0]} b={[-9.6, -7.0]} />
 			<Cerca a={[-9.6, -7.0]} b={[-9.6, -20.0]} />
 			{/* placa */}
 			<group position={[-9.6, CHAO, -6.4]}>
@@ -1446,7 +1461,7 @@ export const CaixaDagua: React.FC<{q?: number; nivel?: number}> = ({nivel = 0.75
 			))}
 			{/* tanque (aberto na frente: dá para ver o nível da água) */}
 			<Cy p={[cx, y0 - 0.15, cz]} r={R + 0.1} h={0.3} m={mt.concreto} />
-			<mesh geometry={GEO.meioTubo} material={mt.concreto} position={[cx, y0 + H / 2, cz]} scale={[R, H, R]} />
+			<mesh geometry={GEO.meioTubo} material={mt.concretoDuplo} position={[cx, y0 + H / 2, cz]} scale={[R, H, R]} />
 			<mesh geometry={GEO.meioCil} material={mt.aguaLimpa} position={[cx, y0 + (H * nivel) / 2, cz]} scale={[R - 0.05, H * nivel, R - 0.05]} />
 			<Bc a={[cx - R + 0.05, y0, cz - 0.01]} b={[cx + R - 0.05, y0 + H * nivel, cz]} m={mt.aguaCorte} />
 			<mesh geometry={GEO.meioCone} material={mt.azul} position={[cx, y0 + H + 0.6, cz]} scale={[R + 0.2, 1.2, R + 0.2]} />
