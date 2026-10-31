@@ -15,10 +15,10 @@ import transcricao from './transcricao.json';
 const P = {x: 0.5, y: 0.38};
 
 const TRECHOS: Trecho[] = [
-	[47.77, 50.92], // gancho: "se você quer ganhar o seu salário de 30 dias e apenas um dia"
+	[47.6, 50.92], // (começa no vale antes de "Então": 47,77 caía no meio da palavra) gancho: "se você quer ganhar o seu salário de 30 dias e apenas um dia"
 	[0, 15.68], // apresentação + pergunta inteira
-	[16.38, 43.97], // resposta inteira, até "nem um dia."
-	[51.1, 52.88], // "não demora muito tempo não, começa hoje"
+	[16.34, 44.19], // (energia: "compensa" começa em 16,36 e "dia." acaba em ~44,18) resposta inteira, até "nem um dia."
+	[51.1, 52.92], // "não demora muito tempo não, começa hoje"
 	[53.36, 60.85], // CTA até "tem mudado vidas."
 ];
 

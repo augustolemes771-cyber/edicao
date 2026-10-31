@@ -34,6 +34,7 @@ const F = {
 const BORDA: Partial<Record<keyof typeof F, [number, number]>> = {
 	pergunta: [0, 0.06],
 	sintese: [-0.13, 0],
+	precisa: [0, 0.04],
 	duvida: [0.03, 0.05],
 	siga: [-0.04, 0],
 };

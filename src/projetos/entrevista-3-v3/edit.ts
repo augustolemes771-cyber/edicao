@@ -18,9 +18,9 @@ const transcricao = alinhar(transcricaoWhisper, pausas as [number, number][]);
 // Trechos no tempo original, na ordem do vídeo (bordas medidas na energia da voz, 30/10).
 const TRECHOS: Trecho[] = [
 	[4.1, 9.04], // gancho: "Hoje ela coloca mais de 100 mil reais ... fazendo live no TikTok Shop."
-	[0.04, 4.02], // apresentação: "Estou aqui com a Ludi ... quinto no Mundial."
+	[0.04, 4.09], // (fim pela energia: 4,02 cortava o fim de "Mundial") apresentação: "Estou aqui com a Ludi ... quinto no Mundial."
 	[9.52, 20.82], // pergunta: "Ludi, como é essa experiência ... de Floripa para a Goiânia?"
-	[24.2, 57.18], // resposta: "O que eu acho que eu levo ... que é o que a gente está buscando."
+	[24.03, 57.24], // (energia: o "O" começa em 24,06 e "buscando" acaba em ~57,22) resposta: "O que eu acho que eu levo ... que é o que a gente está buscando."
 	[58.72, 73.76], // síntese + CTA: "Não é fácil, mas é simples ... Bora para cima! Bora!"
 ];
 

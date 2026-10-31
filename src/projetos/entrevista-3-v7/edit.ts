@@ -35,7 +35,7 @@ const TRECHOS: Trecho[] = [
 	[67.32, 69.44], // Não é fácil, mas é muito simples,
 	[69.82, 71.0], // Quer começar no TikTok Shopping?
 	[71.32, 72.14], // Segue o Danilo,
-	[72.34, 75.08], // segue o Newtags, siga o MVM e vamos para cima.
+	[72.34, 75.13], // segue o Newtags, siga o MVM e vamos para cima.
 ];
 
 // Ritmo frenético (evento a cada 0,3–0,6 s): punch-in nas palavras, ciclo médio → close → aberto, até 1,28.

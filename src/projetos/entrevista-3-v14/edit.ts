@@ -60,7 +60,9 @@ export const entrevista3V14: Edit = {
 	trechos: (o) => {
 		const lista: Trecho[] = (Object.keys(F) as (keyof typeof F)[]).map((k) => [o.say(F[k][0]).inicio - 0.06, o.say(F[k][1]).fim + 0.08]);
 		// O gancho começa no meio da frase ("assim, quanto..."): a voz tem um vale em ~81,26 s, logo antes do "quanto".
-		lista[0][0] = o.say(F.gancho[0]).inicio + 0.02;
+		lista[0][0] = o.say(F.gancho[0]).inicio + 0.05;
+		// "É isso, pessoal" começa em 87,78 pela energia (o Whisper pôs em 86,98, em cima da cauda de "50 mil" do gancho).
+		lista[4][0] = Math.max(lista[4][0], 87.72);
 		// Trechos colados ou sobrepostos no original (na ordem) viram um só: não repete palavra.
 		for (let i = lista.length - 1; i > 0; i--) {
 			const vao = lista[i][0] - lista[i - 1][1];

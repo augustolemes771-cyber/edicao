@@ -21,9 +21,9 @@ const ISABELA = {x: 0.55, y: 0.43};
 // "Isabela" começa em 60,35; "certeza." termina em 75,95; "Ó, já me siga" começa em 76,75; "investimento." termina
 // em 89,15 (depois vem "Vai, boa!").
 const TRECHOS: Trecho[] = [
-	[0.9, 59.48],
-	[60.3, 76.0],
-	[76.7, 89.18],
+	[0.9, 59.51],
+	[60.3, 76.06],
+	[76.7, 89.22],
 ];
 
 const ESCALAS = [1.1, 1.2, 1.28, 1.14, 1.24, 1.06];
