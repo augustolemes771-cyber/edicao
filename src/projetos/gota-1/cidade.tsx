@@ -71,6 +71,7 @@ const criar = () => ({
 	canoLimpo: std('#4f8fe0', {side: THREE.DoubleSide}),
 	canoSujo: std('#8f7a55', {side: THREE.DoubleSide}),
 	vidro: transp('#cfefff', 0.28, {side: THREE.DoubleSide}),
+	juntaVidro: transp('#4f8fe0', 0.45),
 	esgoto: transp('#7a6233', 0.92),
 	aguaSuja: transp('#8a7f45', 0.42),
 	aguaMedia: transp('#6f9a7a', 0.38),
@@ -195,9 +196,9 @@ export const Canos: React.FC<{pts: V3[]; r: number; m: Mat; juntas?: Mat}> = ({p
 		{pts.slice(1).map((b, i) => (
 			<Tubo key={i} a={pts[i]} b={b} r={r} m={m} />
 		))}
-		{pts.map((p, i) => (
-			<Es key={'j' + i} p={p} r={r * (juntas ? 1.25 : 1.0)} m={juntas ?? m} g={GEO.esfLisa} />
-		))}
+		{pts.map((p, i) =>
+			i === 0 || i === pts.length - 1 ? null : <Es key={'j' + i} p={p} r={r * (juntas ? 1.25 : 1.0)} m={juntas ?? m} g={GEO.esfLisa} />,
+		)}
 	</group>
 );
 
@@ -313,9 +314,9 @@ const ROTA: [string | null, number, number, number][] = [
 	[null, 7.2, -3.6, 29.35],
 	[null, 7.2, 1.0, 29.35],
 	['chegada', 7.6, 1.75, 28.6],
-	[null, 8.5, 1.75, 28.3],
-	['grade', 9.75, 1.75, 28.3],
-	[null, 11.4, 1.75, 28.3],
+	[null, 8.5, 1.75, 28.05],
+	['grade', 9.75, 1.75, 28.05],
+	[null, 11.4, 1.75, 28.1],
 	[null, 12.4, 1.9, 28.3],
 	['aeracao', 13.4, 1.6, 28.4],
 	[null, 15.0, 0.9, 28.6],
@@ -338,7 +339,8 @@ const ROTA: [string | null, number, number, number][] = [
 	[null, -16.9, -0.6, -23.6],
 	[null, -16.9, 1.2, -21.4],
 	['bomba', -16.9, 1.2, -19.0],
-	['bombaSaida', -16.9, 1.2, -16.4],
+	['bombaSaida', -16.9, 1.2, -17.5],
+	[null, -16.9, 1.2, -16.4],
 	[null, -18.3, 4.0, -15.2],
 	[null, -18.3, 3.4, -9.6],
 	['filtro', -18.3, 2.85, -8.95],
@@ -1108,11 +1110,11 @@ export const Gradeamento: React.FC<EstadoGrade> = ({rastelo = 0, lixo = 1}) => {
 			{/* lixo preso do lado de cá da grade */}
 			{lixo > 0 ? (
 				<group scale={lixo}>
-					<Garrafa p={[9.15, 1.75, 27.6]} r={[0.3, 0, 1.3]} />
-					<Celular p={[9.05, 1.2, 29.3]} r={[0, 0.3, 0.45]} />
-					<Bx p={[9.3, 1.5, 28.6]} s={[0.12, 0.5, 0.55]} r={[0.2, 0.3, 0.45]} m={mt.vermelho} />
-					<Bx p={[8.9, 1.9, 29.0]} s={[0.4, 0.06, 0.35]} r={[0.4, 0.2, 0.1]} m={mt.amarelo} />
-					<Es p={[9.0, 1.0, 28.0]} r={0.16} m={mt.preto} g={GEO.pedra} />
+					<Garrafa p={[9.15, 1.75, 27.35]} r={[0.3, 0, 1.3]} />
+					<Celular p={[9.05, 1.2, 29.55]} r={[0, 0.3, 0.45]} />
+					<Bx p={[9.3, 1.5, 28.95]} s={[0.12, 0.5, 0.45]} r={[0.2, 0.3, 0.45]} m={mt.vermelho} />
+					<Bx p={[8.9, 1.9, 29.4]} s={[0.35, 0.06, 0.3]} r={[0.4, 0.2, 0.1]} m={mt.amarelo} />
+					<Es p={[9.0, 1.0, 27.4]} r={0.16} m={mt.preto} g={GEO.pedra} />
 				</group>
 			) : null}
 			{/* rastelo mecânico: sobe pela grade com o lixo e despeja na caçamba atrás */}
@@ -1276,7 +1278,7 @@ export const Decantador: React.FC<EstadoDecantador> = ({q = 0, separa = 1}) => {
 			<Bc a={[cx - 0.2, topo + 0.05, cz - R - 0.1]} b={[cx + 0.2, topo + 0.25, cz]} m={mt.ferro} />
 			<Bc a={[cx - 0.05, topo + 0.25, cz - R]} b={[cx + 0.05, topo + 0.7, cz]} m={mt.amarelo} />
 			{/* saída: cano que desce para o canal da lateral */}
-			<Canos pts={[[23.3, 3.1, 28.7], [23.8, 3.1, 28.7], [23.8, 1.0, 27.4], [22.9, 0.7, 26.6]]} r={0.2} m={mt.vidro} juntas={mt.canoLimpo} />
+			<Canos pts={[[23.3, 3.1, 28.7], [23.8, 3.1, 28.7], [23.8, 1.0, 27.4], [22.9, 0.7, 26.6]]} r={0.2} m={mt.vidro} juntas={mt.juntaVidro} />
 		</group>
 	);
 };
@@ -1320,7 +1322,7 @@ export const Captacao: React.FC<{q?: number; bomba?: number}> = ({q = 0, bomba =
 			{/* tomada d'água dentro do rio (grade) */}
 			<Bc a={[x - 0.8, RIO.leito, -25.2]} b={[x + 0.8, CHAO + 0.6, -23.6]} m={mt.concreto} />
 			<Bc a={[x - 0.6, RIO.leito + 0.3, -23.62]} b={[x + 0.6, RIO.nivel - 0.1, -23.55]} m={mt.ferro} />
-			<Canos pts={[[x, -0.6, -23.6], [x, 1.2, -21.4], [x, 1.2, -19.6]]} r={0.25} m={mt.vidro} juntas={mt.canoLimpo} />
+			<Canos pts={[[x, -0.6, -23.6], [x, 1.2, -21.4], [x, 1.2, -19.6]]} r={0.25} m={mt.vidro} juntas={mt.juntaVidro} />
 			{/* casa de bombas (aberta na frente) */}
 			<Bc a={[-19.4, CHAO, -21.0]} b={[-14.4, CHAO + 0.15, -17.0]} m={mt.corteConcreto} />
 			{/* guarda-corpo em volta da base (a bomba fica à vista) */}
@@ -1339,7 +1341,7 @@ export const Captacao: React.FC<{q?: number; bomba?: number}> = ({q = 0, bomba =
 				<Bx p={[-1.0, -0.6, 0]} s={[1.2, 0.3, 0.8]} m={mt.ferro} />
 				<Bx p={[0, -0.75, 0]} s={[0.8, 0.3, 0.8]} m={mt.ferro} />
 			</group>
-			<Canos pts={[[x, 1.2, -18.5], [x, 1.2, -16.4], [-18.3, 4.0, -15.2]]} r={0.25} m={mt.vidro} juntas={mt.canoLimpo} />
+			<Canos pts={[[x, 1.2, -18.5], [x, 1.2, -16.4], [-18.3, 4.0, -15.2]]} r={0.25} m={mt.vidro} juntas={mt.juntaVidro} />
 		</group>
 	);
 };
@@ -1454,7 +1456,7 @@ export const Cloracao: React.FC<EstadoCloro> = ({q = 0, dose = 1, mortos = 0}) =
 				),
 			)}
 			{/* saída para a caixa d'água */}
-			<Canos pts={[[-11.0, 1.2, -9.0], [-11.0, 1.2, -1.0], [-20.5, 1.2, -1.0], [-20.5, 1.2, 4.0]]} r={0.22} m={mt.vidro} juntas={mt.canoLimpo} />
+			<Canos pts={[[-11.0, 1.2, -9.0], [-11.0, 1.2, -1.0], [-20.5, 1.2, -1.0], [-20.5, 1.2, 4.0]]} r={0.22} m={mt.vidro} juntas={mt.juntaVidro} />
 			{/* cerca da ETA */}
 			<Cerca a={[-9.6, -7.0]} b={[-9.6, -20.0]} />
 			{/* placa */}
@@ -1494,7 +1496,7 @@ export const CaixaDagua: React.FC<{q?: number; nivel?: number}> = ({nivel = 0.75
 			<mesh geometry={GEO.meioToro} material={mt.azul} position={[cx, y0 + H * 0.55, cz]} rotation={[-Math.PI / 2, 0, 0]} scale={[R + 0.05, R + 0.05, 2]} />
 			{/* cano que sobe (vidro: a gota aparece) e cano que desce até a rede enterrada */}
 			<Tubo a={[cx, 1.2, cz]} b={[cx, y0, cz]} r={0.24} m={mt.vidro} />
-			<Canos pts={[[-21.5, y0 + 0.2, 3.4], [-21.5, 9.5, 3.4], [-23.65, 9.5, 3.4], [-23.65, CHAO, 3.4]]} r={0.22} m={mt.vidro} juntas={mt.canoLimpo} />
+			<Canos pts={[[-21.5, y0 + 0.2, 3.4], [-21.5, 9.5, 3.4], [-23.65, 9.5, 3.4], [-23.65, CHAO, 3.4]]} r={0.22} m={mt.vidro} juntas={mt.juntaVidro} />
 			{/* escada */}
 			<Bc a={[cx + 1.9, CHAO, cz + 0.8]} b={[cx + 1.95, y0, cz + 0.85]} m={mt.ferro} />
 			<Bc a={[cx + 1.9, CHAO, cz + 1.3]} b={[cx + 1.95, y0, cz + 1.35]} m={mt.ferro} />
