@@ -398,8 +398,8 @@ const CenaPeso: React.FC<{cena: CenaPeca; fase: 1 | 2}> = ({cena, fase}) => {
 	const cam =
 		fase === 1
 			? trilha(frame, [
-					[0, [11, 7.5, 17]],
-					[fim, [13, 6, 14]],
+					[0, [17, 10, 26]],
+					[fim, [21, 8.5, 21]],
 				])
 			: trilha(frame, [
 					[0, [15, 2.2, 7]],
