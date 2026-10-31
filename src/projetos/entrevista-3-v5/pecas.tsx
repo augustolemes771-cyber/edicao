@@ -82,7 +82,7 @@ const Gancho: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			</div>
 			<ThreeCanvas width={width} height={height} gl={GL} camera={CAMERA} style={{position: 'absolute', inset: 0}}>
 				<Luzes quadro={frame} batidas={[b500]} />
-				<Linha3D texto="R$ 500 MILHÕES" metal="ouro" largura={4.7} y={yM(370)} quadro={frame} batida={b500} profundidade={0.6} />
+				<Linha3D ate={fim - 8} texto="R$ 500 MILHÕES" metal="ouro" largura={4.7} y={yM(370)} quadro={frame} batida={b500} profundidade={0.6} />
 				<group position={[0, yM(1660), 0]} rotation={[0.25, giro, 0]}>
 					{Array.from({length: barras}, (_, i) => {
 						const alvo = 0.25 + 2.0 * (i / (barras - 1)) ** 1.7;
@@ -143,7 +143,7 @@ const TopCreator: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					{bloco(0, 1.25, p1, true)}
 					{bloco(1.15, 0.45, p3, false)}
 				</group>
-				<Linha3D texto="TOP CREATOR" metal="ouro" largura={4.4} y={yM(1170)} quadro={frame} batida={bTop} profundidade={0.55} />
+				<Linha3D ate={fim - 8} texto="TOP CREATOR" metal="ouro" largura={4.4} y={yM(1170)} quadro={frame} batida={bTop} profundidade={0.55} />
 			</ThreeCanvas>
 			<div style={{position: 'absolute', top: 1745, width: '100%', display: 'flex', justifyContent: 'center', opacity: pil, transform: `translateY(${(1 - pil) * 20}px)`}}>
 				<div style={{...VIDRO, padding: '12px 30px', borderRadius: 999, fontFamily: poppins, fontWeight: 700, fontSize: 32, letterSpacing: '0.12em', color: '#fff'}}>
@@ -254,9 +254,9 @@ const Investimento: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			<AbsoluteFill style={{background: 'radial-gradient(ellipse 70% 30% at 50% 50%, rgba(232,194,122,0.18) 0%, rgba(0,0,0,0) 70%)', opacity: interpolate(frame, [bI, bI + 10], [0, 1], lim)}} />
 			<ThreeCanvas width={width} height={height} gl={GL} camera={CAMERA} style={{position: 'absolute', inset: 0}}>
 				<Luzes quadro={frame} batidas={[bI]} />
-				<Linha3D texto="GASTO" metal="cinza" largura={3.0} y={yM(560)} quadro={frame} batida={bG} queda={quedaG} profundidade={0.5} />
-				<Linha3D texto="SUPÉRFLUO" metal="cinza" largura={3.8} y={yM(800)} quadro={frame} batida={bS} queda={quedaS} profundidade={0.5} />
-				<Linha3D texto="INVESTIMENTO" metal="ouro" largura={4.9} y={yM(900)} quadro={frame} batida={bI} profundidade={0.65} />
+				<Linha3D ate={fim - 8} texto="GASTO" metal="cinza" largura={3.0} y={yM(560)} quadro={frame} batida={bG} queda={quedaG} profundidade={0.5} />
+				<Linha3D ate={fim - 8} texto="SUPÉRFLUO" metal="cinza" largura={3.8} y={yM(800)} quadro={frame} batida={bS} queda={quedaS} profundidade={0.5} />
+				<Linha3D ate={fim - 8} texto="INVESTIMENTO" metal="ouro" largura={4.9} y={yM(900)} quadro={frame} batida={bI} profundidade={0.65} />
 			</ThreeCanvas>
 			{[
 				{y: 560, b: bG, w: 560, queda: quedaG},
@@ -359,8 +359,8 @@ const Obeso: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			<ThreeCanvas width={width} height={height} gl={GL} camera={CAMERA} style={{position: 'absolute', inset: 0}}>
 				<Luzes quadro={frame} batidas={[bI]} />
 				<group position={[0, -afunda, 0]}>
-					<Linha3D texto="OBESO" metal="branco" largura={3.0} y={yM(300)} quadro={frame} batida={bO} profundidade={0.6} />
-					<Linha3D texto="INTELECTUAL" metal="ouro" largura={4.6} y={yM(470)} quadro={frame} batida={bI} profundidade={0.6} />
+					<Linha3D ate={fim - 8} texto="OBESO" metal="branco" largura={3.0} y={yM(300)} quadro={frame} batida={bO} profundidade={0.6} />
+					<Linha3D ate={fim - 8} texto="INTELECTUAL" metal="ouro" largura={4.6} y={yM(470)} quadro={frame} batida={bI} profundidade={0.6} />
 				</group>
 				<group position={[0, yM(870), 0]} scale={1.35 * (1 - apaga * 0.25)}>
 					<Cerebro quadro={frame} incha={incha} apaga={apaga} />

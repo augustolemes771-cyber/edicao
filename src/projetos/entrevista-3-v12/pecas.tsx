@@ -133,7 +133,7 @@ const Calendario: React.FC<{cena: CenaPeca}> = ({cena}) => {
 						<Luzes quadro={frame} batidas={[fUm]} />
 						<pointLight position={[0, yMundo(1440), 4]} intensity={40} distance={10} color="#fff1cf" />
 						<group position={[0, yMundo(1455), 0]} rotation={[0, Math.sin((frame - fUm) / 10) * 0.18, 0]}>
-							<Linha3D texto="EM 1 DIA" metal="ouro" largura={3.9} y={0} quadro={frame} batida={fUm} profundidade={0.55} />
+							<Linha3D ate={fim - 8} texto="EM 1 DIA" metal="ouro" largura={3.9} y={0} quadro={frame} batida={fUm} profundidade={0.55} />
 						</group>
 					</ThreeCanvas>
 				</AbsoluteFill>
@@ -350,7 +350,7 @@ const OndaAzul: React.FC<{cena: CenaPeca}> = ({cena}) => {
 							) : null,
 						)}
 					</group>
-					<Linha3D texto="ONDA AZUL" metal="branco" largura={4.4} y={yMundo(470)} quadro={frame} batida={fO} profundidade={0.5} />
+					<Linha3D ate={fim - 8} texto="ONDA AZUL" metal="branco" largura={4.4} y={yMundo(470)} quadro={frame} batida={fO} profundidade={0.5} />
 				</ThreeCanvas>
 			</AbsoluteFill>
 			<Rotulo texto="TODO MUNDO SURFANDO" y={1440} k={kS} tamanho={44} ouro />
@@ -438,8 +438,8 @@ const Salario: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			<AbsoluteFill style={{filter: 'drop-shadow(0 22px 30px rgba(8,2,20,0.6))'}}>
 				<ThreeCanvas width={width} height={height} gl={GL} camera={CAMERA} style={{position: 'absolute', inset: 0}}>
 					<Luzes quadro={frame} batidas={[2, fSal, fP]} />
-					<Linha3D texto="O MESMO" metal="branco" largura={2.9} y={yMundo(360)} quadro={frame} batida={2} profundidade={0.45} />
-					<Linha3D texto="SALÁRIO" metal="ouro" largura={4.0} y={yMundo(560)} quadro={frame} batida={fSal} profundidade={0.55} />
+					<Linha3D ate={fim - 8} texto="O MESMO" metal="branco" largura={2.9} y={yMundo(360)} quadro={frame} batida={2} profundidade={0.45} />
+					<Linha3D ate={fim - 8} texto="SALÁRIO" metal="ouro" largura={4.0} y={yMundo(560)} quadro={frame} batida={fSal} profundidade={0.55} />
 					{frame >= fP - 4 ? (
 						<group position={[xMundo(930), yMundo(905), 0]} scale={0.5 * rel} rotation={[0.15, -0.3, 0]}>
 							<Relogio segundos={giro} />

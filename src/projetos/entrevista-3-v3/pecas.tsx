@@ -62,7 +62,7 @@ const V3Gancho: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					<pointLight position={[Math.sin(frame / 9) * 4, yMundo(330) + 0.5, 3.5]} intensity={frame >= trava ? 40 : 18} distance={10} color="#fff6e0" />
 					<pointLight position={[0, yMundo(1470), 3]} intensity={frame >= live ? 22 : 0} distance={6} color="#ff3355" />
 					<group position={[0, yMundo(330), 0]} rotation={[0.04, giro, 0]} scale={soco}>
-						<Linha3D texto={texto} metal="ouro" largura={0.44 * texto.length} y={0} quadro={frame} batida={0} profundidade={0.62} />
+						<Linha3D ate={fim - 8} texto={texto} metal="ouro" largura={0.44 * texto.length} y={0} quadro={frame} batida={0} profundidade={0.62} />
 					</group>
 					<group position={[0.05, yCel, 0]} rotation={[0.12, -0.35 + Math.sin((frame / fps) * 1.3) * 0.25, 0.05]} scale={0.5 * pulsoLive}>
 						<CelularReal segundos={frame / fps} />
@@ -152,10 +152,10 @@ const V3Rota: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					<PinoRota x={A.x} base={2.62} entra={0} />
 					<PinoRota x={B.x} base={2.62} entra={4} brilha={chega} />
 					<group position={[-1.3, 2.36, 0]}>
-						<Linha3D texto="FLORIANÓPOLIS" metal="branco" largura={2.25} y={0} quadro={frame} batida={2} profundidade={0.4} />
+						<Linha3D ate={fim - 8} texto="FLORIANÓPOLIS" metal="branco" largura={2.25} y={0} quadro={frame} batida={2} profundidade={0.4} />
 					</group>
 					<group position={[1.45, 2.36, 0]}>
-						<Linha3D texto="GOIÂNIA" metal="ouro" largura={1.45} y={0} quadro={frame} batida={6} profundidade={0.4} />
+						<Linha3D ate={fim - 8} texto="GOIÂNIA" metal="ouro" largura={1.45} y={0} quadro={frame} batida={6} profundidade={0.4} />
 					</group>
 					{frame >= voa
 						? pontos
@@ -244,10 +244,10 @@ const V3Caverna: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					<pointLight position={[0.9, yBase + 0.9, 1.2]} intensity={frame >= live ? 10 : 0} distance={3} color="#ff3355" />
 					<pointLight position={[0, yBase + 1, -1.5]} intensity={45 * luz} distance={12} color="#fff1c9" />
 					<group position={[0, 3.25, 0]}>
-						<Linha3D texto="SAIR DO" metal="branco" largura={2.6} y={0} quadro={frame} batida={sair} profundidade={0.5} />
+						<Linha3D ate={fim - 8} texto="SAIR DO" metal="branco" largura={2.6} y={0} quadro={frame} batida={sair} profundidade={0.5} />
 					</group>
 					<group position={[0, 2.25, 0]}>
-						<Linha3D texto="MODO CAVERNA" metal="ouro" largura={4.6} y={0} quadro={frame} batida={caverna} profundidade={0.55} />
+						<Linha3D ate={fim - 8} texto="MODO CAVERNA" metal="ouro" largura={4.6} y={0} quadro={frame} batida={caverna} profundidade={0.55} />
 					</group>
 					<group position={[0, -0.25 - push * 0.15, 0]} scale={(0.85 + 0.15 * pCav) * (1 + push * 0.05)} rotation={[0.12, Math.sin((frame / fps) * 0.9) * 0.12, 0]}>
 						{/* Caverna: duas metades de pedra que se afastam quando ela sai. */}

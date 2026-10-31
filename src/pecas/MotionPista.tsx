@@ -247,7 +247,7 @@ export const Motion3D: React.FC<{cena: De<'motion3d'>}> = ({cena}) => {
 						const curta = l.texto.length <= 6;
 						const largura = (curta ? 2.4 : Math.min(4.4, 0.34 * l.texto.length + 0.5)) * (cena.cheia ? 1 : 0.9);
 						return (
-							<Linha3D
+							<Linha3D ate={fim - 8}
 								key={i}
 								texto={l.texto}
 								metal={l.metal ?? (i === 0 && !cena.troca ? 'branco' : 'ouro')}
@@ -313,8 +313,8 @@ export const Final3D: React.FC<{cena: De<'final'>}> = ({cena}) => {
 				<ThreeCanvas width={width} height={height} gl={GL} camera={CAMERA} style={{position: 'absolute', inset: 0}}>
 					<CameraTremor quadro={frame} batidas={[]} z0={15.2} z1={13.6} duracao={dur} />
 					<Luzes quadro={frame} batidas={[b1, b2]} />
-					<Linha3D texto={cena.marca} metal="ouro" largura={cena.marca.length <= 4 ? 3.4 : 4.4} y={0.75} quadro={frame} batida={b1} profundidade={0.32} />
-					{cena.linha2 ? <Linha3D texto={cena.linha2} metal="branco" largura={4.2} y={-0.55} quadro={frame} batida={b2} profundidade={0.28} /> : null}
+					<Linha3D ate={fim - 8} texto={cena.marca} metal="ouro" largura={cena.marca.length <= 4 ? 3.4 : 4.4} y={0.75} quadro={frame} batida={b1} profundidade={0.32} />
+					{cena.linha2 ? <Linha3D ate={fim - 8} texto={cena.linha2} metal="branco" largura={4.2} y={-0.55} quadro={frame} batida={b2} profundidade={0.28} /> : null}
 				</ThreeCanvas>
 			</AbsoluteFill>
 			{cena.sub ? (

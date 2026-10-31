@@ -198,7 +198,7 @@ export const Numero3D: React.FC<{cena: De<'numero3d'>}> = ({cena}) => {
 					<pointLight position={[feixe, yMundo + 0.6, 3.5]} intensity={feixe > -9 ? 45 : 0} distance={10} color="#fff6e0" />
 					<pointLight position={[0, yMundo + 0.4, -3]} intensity={30 * interpolate(frame, [batida, batida + 8], [0, 1], lim)} distance={9} color={metalOuro ? '#ffcf7a' : '#c9d4ff'} />
 					<group position={[0, yMundo, 0]} rotation={[inclina, giro, 0]}>
-						<Linha3D texto={cena.texto} metal={cena.metal ?? 'ouro'} largura={cena.largura ?? 4.4} y={0} quadro={frame} batida={batida} profundidade={0.62} />
+						<Linha3D ate={fim - 8} texto={cena.texto} metal={cena.metal ?? 'ouro'} largura={cena.largura ?? 4.4} y={0} quadro={frame} batida={batida} profundidade={0.62} />
 					</group>
 				</ThreeCanvas>
 			</AbsoluteFill>
@@ -291,7 +291,7 @@ export const Celular3D: React.FC<{cena: De<'celular3d'>}> = ({cena}) => {
 					</group>
 					{cena.linhas.map((l, i) => (
 						<React.Fragment key={i}>
-							<Linha3D texto={l.texto} metal={i === 0 ? 'branco' : 'ouro'} largura={4.4} y={yLinha(i)} quadro={frame} batida={batidas[i]} profundidade={0.26} />
+							<Linha3D ate={fim - 8} texto={l.texto} metal={i === 0 ? 'branco' : 'ouro'} largura={4.4} y={yLinha(i)} quadro={frame} batida={batidas[i]} profundidade={0.26} />
 							<Onda quadro={frame} inicio={batidas[i]} y={yLinha(i)} cor="#ffd27a" tamanho={2.6} />
 							<Faiscas quadro={frame} inicio={batidas[i]} y={yLinha(i)} cor="#ffd27a" largura={4} />
 						</React.Fragment>

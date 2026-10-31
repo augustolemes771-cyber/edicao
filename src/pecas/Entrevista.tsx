@@ -197,9 +197,9 @@ export const Drama: React.FC<{cena: De<'drama'>}> = ({cena}) => {
 					<Luzes quadro={frame} batidas={[batida, apaga]} />
 					<CameraTremor quadro={frame} batidas={[batida, apaga]} duracao={fim} />
 					<group scale={interpolate(frame, [fim - 8, fim], [1, 0.85], lim)}>
-						<Linha3D texto={cena.grande} metal="ouro" largura={4.55} y={0.3} quadro={frame} batida={batida} profundidade={0.22} />
+						<Linha3D ate={fim - 8} texto={cena.grande} metal="ouro" largura={4.55} y={0.3} quadro={frame} batida={batida} profundidade={0.22} />
 						{cena.pequeno && (
-							<Linha3D texto={cena.pequeno} metal="branco" largura={larg2} y={-0.95} quadro={frame} batida={apaga} queda={queda} profundidade={0.4} distancia={9} />
+							<Linha3D ate={fim - 8} texto={cena.pequeno} metal="branco" largura={larg2} y={-0.95} quadro={frame} batida={apaga} queda={queda} profundidade={0.4} distancia={9} />
 						)}
 					</group>
 					<Onda quadro={frame} inicio={batida} y={0.3} cor="#ffd27a" tamanho={5.5} />

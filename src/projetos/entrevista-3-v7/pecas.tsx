@@ -143,7 +143,7 @@ const v7Gancho: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					) : null}
 					{frame >= conta ? (
 						<group key={texto} position={[0, yMundo(330), 0]} scale={salto} rotation={[0, giro > 0 ? Math.sin((giro / fps) * 1.7) * 0.18 : 0, 0]}>
-							<Linha3D texto={texto} metal="ouro" largura={valor === 1 ? 4.1 : 4.6} y={0} quadro={frame} batida={desde === conta ? conta : -60} profundidade={0.6} />
+							<Linha3D ate={fim - 8} texto={texto} metal="ouro" largura={valor === 1 ? 4.1 : 4.6} y={0} quadro={frame} batida={desde === conta ? conta : -60} profundidade={0.6} />
 						</group>
 					) : null}
 				</ThreeCanvas>
@@ -171,8 +171,8 @@ const v7ZeroBarreira: React.FC<{cena: CenaPeca}> = ({cena}) => {
 				<ThreeCanvas width={width} height={height} gl={GL} camera={CAMERA} style={{position: 'absolute', inset: 0}}>
 					<CameraTremor quadro={frame} batidas={[quebra]} z0={14.5} z1={13.9} duracao={fim} />
 					<Luzes quadro={frame} batidas={[2, quebra]} />
-					<Linha3D texto="ZERO BARREIRA" metal="branco" largura={4.6} y={yMundo(400)} quadro={frame} batida={2} profundidade={0.4} />
-					<Linha3D texto="DE ENTRADA" metal="ouro" largura={3.1} y={yMundo(560)} quadro={frame} batida={9} profundidade={0.36} />
+					<Linha3D ate={fim - 8} texto="ZERO BARREIRA" metal="branco" largura={4.6} y={yMundo(400)} quadro={frame} batida={2} profundidade={0.4} />
+					<Linha3D ate={fim - 8} texto="DE ENTRADA" metal="ouro" largura={3.1} y={yMundo(560)} quadro={frame} batida={9} profundidade={0.36} />
 					<group position={[0, yMundo(1080), 0]} scale={1.05} rotation={[0.12, Math.sin(t * 1.3) * 0.12, 0]}>
 						<Parede q={frame} quebra={quebra} />
 					</group>
@@ -203,8 +203,8 @@ const v7CelularInternet: React.FC<{cena: CenaPeca}> = ({cena}) => {
 				<ThreeCanvas width={width} height={height} gl={GL} camera={CAMERA} style={{position: 'absolute', inset: 0}}>
 					<CameraTremor quadro={frame} batidas={[]} z0={14.8} z1={13.8} duracao={fim} />
 					<Luzes quadro={frame} batidas={[cel, net]} />
-					{frame >= cel ? <Linha3D texto="UM CELULAR" metal="branco" largura={4.2} y={yMundo(330)} quadro={frame} batida={cel} profundidade={0.4} /> : null}
-					{frame >= net ? <Linha3D texto="+ INTERNET" metal="ouro" largura={4.2} y={yMundo(1450)} quadro={frame} batida={net} profundidade={0.4} /> : null}
+					{frame >= cel ? <Linha3D ate={fim - 8} texto="UM CELULAR" metal="branco" largura={4.2} y={yMundo(330)} quadro={frame} batida={cel} profundidade={0.4} /> : null}
+					{frame >= net ? <Linha3D ate={fim - 8} texto="+ INTERNET" metal="ouro" largura={4.2} y={yMundo(1450)} quadro={frame} batida={net} profundidade={0.4} /> : null}
 					<group position={[pos, yMundo(960) + (1 - pc) * -7, 0]} rotation={[0.08, (1 - pc) * Math.PI * 2 + Math.sin(t * 1.4) * 0.25, (1 - pc) * 0.4]} scale={0.95}>
 						<CelularReal segundos={t} />
 					</group>
@@ -287,8 +287,8 @@ const v7CorridaRatos: React.FC<{cena: CenaPeca}> = ({cena}) => {
 				<ThreeCanvas width={width} height={height} gl={GL} camera={CAMERA} style={{position: 'absolute', inset: 0}}>
 					<CameraTremor quadro={frame} batidas={[]} z0={14.8} z1={13.6} duracao={fim} />
 					<Luzes quadro={frame} batidas={[c1, c2]} />
-					{frame >= c1 ? <Linha3D texto="CORRIDA" metal="branco" largura={3.6} y={yMundo(330)} quadro={frame} batida={c1} profundidade={0.4} /> : null}
-					{frame >= c2 ? <Linha3D texto="DOS RATOS" metal="ouro" largura={3.9} y={yMundo(500)} quadro={frame} batida={c2} profundidade={0.4} /> : null}
+					{frame >= c1 ? <Linha3D ate={fim - 8} texto="CORRIDA" metal="branco" largura={3.6} y={yMundo(330)} quadro={frame} batida={c1} profundidade={0.4} /> : null}
+					{frame >= c2 ? <Linha3D ate={fim - 8} texto="DOS RATOS" metal="ouro" largura={3.9} y={yMundo(500)} quadro={frame} batida={c2} profundidade={0.4} /> : null}
 					<group position={[0, yMundo(1130), 0]} scale={p} rotation={[0.18, -0.45 + Math.sin(t * 0.9) * 0.08, 0]}>
 						{/* Roda: dois aros, travessas que giram, eixo e suporte. */}
 						<group rotation={[0, 0, -giro]}>
@@ -480,10 +480,7 @@ const v7Suplemento: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					{linhas.map((l, i) => {
 						const proxima = linhas[i + 1]?.f ?? Infinity;
 						if (frame < l.f || frame >= proxima) return null;
-						// linha longa com pouco tempo até a próxima (ou até o fim): letras mais juntas para a entrada concluir
-						const tela = Math.min(proxima, fim - 8) - l.f;
-						const intervalo = 2 * (l.texto.replace(/ /g, '').length - 1) + 18 + 8 > tela ? 1 : 2;
-						return <Linha3D key={i} texto={l.texto} metal={i % 2 ? 'branco' : 'ouro'} largura={Math.min(4.6, 0.36 * l.texto.length + 0.6)} y={yMundo(1070)} quadro={frame} batida={l.f} profundidade={0.36} intervalo={intervalo} />;
+						return <Linha3D key={i} texto={l.texto} metal={i % 2 ? 'branco' : 'ouro'} largura={Math.min(4.6, 0.36 * l.texto.length + 0.6)} y={yMundo(1070)} quadro={frame} batida={l.f} profundidade={0.36} ate={Math.min(proxima - 6, fim - 8)} />;
 					})}
 				</ThreeCanvas>
 			</AbsoluteFill>
@@ -527,7 +524,7 @@ const v7Recorde: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					</group>
 					{frame >= sobe ? (
 						<group key={valor} position={[0, yMundo(1050), 0]} scale={1 + 0.12 * clarao}>
-							<Linha3D texto={`R$ ${valor} MI`} metal={travou ? 'ouro' : 'branco'} largura={3.9} y={0} quadro={frame} batida={-60} profundidade={0.45} />
+							<Linha3D ate={fim - 8} texto={`R$ ${valor} MI`} metal={travou ? 'ouro' : 'branco'} largura={3.9} y={0} quadro={frame} batida={-60} profundidade={0.45} />
 						</group>
 					) : null}
 				</ThreeCanvas>
@@ -560,8 +557,8 @@ const v7Relogio: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					<group position={[0, yMundo(330), 0]} scale={virou ? 1.75 + 0.15 * Math.exp(-(frame - v24) / 4) : 1.6}>
 						<Relogio24 q={virou ? frame + Math.round(t * 40) : frame} entra={oito} />
 					</group>
-					{frame >= oito && !virou ? <Linha3D texto="8 HORAS?" metal="branco" largura={3.6} y={yMundo(1070)} quadro={frame} batida={oito} profundidade={0.38} /> : null}
-					{virou ? <Linha3D texto="24 HORAS" metal="ouro" largura={3.9} y={yMundo(1070)} quadro={frame} batida={v24} profundidade={0.5} /> : null}
+					{frame >= oito && !virou ? <Linha3D ate={fim - 8} texto="8 HORAS?" metal="branco" largura={3.6} y={yMundo(1070)} quadro={frame} batida={oito} profundidade={0.38} /> : null}
+					{virou ? <Linha3D ate={fim - 8} texto="24 HORAS" metal="ouro" largura={3.9} y={yMundo(1070)} quadro={frame} batida={v24} profundidade={0.5} /> : null}
 				</ThreeCanvas>
 			</AbsoluteFill>
 		</AbsoluteFill>

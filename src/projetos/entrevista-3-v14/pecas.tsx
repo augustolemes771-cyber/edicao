@@ -120,10 +120,10 @@ const v14Pergunta: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			<Canvas>
 				<Luzes quadro={frame} batidas={[0, ...linhas.map((l) => q(l.em))]} />
 				<group position={[0, wy(1090), 0]} rotation={[0, frame * 0.07 + (1 - p) * 2, Math.sin(frame / 9) * 0.08]} scale={0.4 + 0.6 * p}>
-					<Linha3D texto="?" metal="ouro" largura={1.5} y={0} quadro={frame} batida={0} profundidade={0.7} />
+					<Linha3D ate={fim - 8} texto="?" metal="ouro" largura={1.5} y={0} quadro={frame} batida={0} profundidade={0.7} />
 				</group>
 				{linhas.map((l, i) => (
-					<Linha3D key={i} texto={l.texto} metal={l.metal ?? (i ? 'ouro' : 'branco')} largura={Math.min(4.6, l.texto.length * 0.42)} y={wy(330 + i * 175)} quadro={frame} batida={q(l.em)} profundidade={0.34} />
+					<Linha3D ate={fim - 8} key={i} texto={l.texto} metal={l.metal ?? (i ? 'ouro' : 'branco')} largura={Math.min(4.6, l.texto.length * 0.42)} y={wy(330 + i * 175)} quadro={frame} batida={q(l.em)} profundidade={0.34} />
 				))}
 			</Canvas>
 			<div style={{position: 'absolute', bottom: 0, height: 4, left: 0, width: `${(frame / dur) * 100}%`, background: OURO, opacity: 0.6}} />
@@ -163,7 +163,7 @@ const v14Contador: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					);
 				})}
 				<group position={[0, wy(yNum), 0]} scale={1 + clarao * 0.25}>
-					<Linha3D texto={texto} metal="ouro" largura={Math.min(4.7, texto.length * 0.5)} y={0} quadro={frame} batida={f0} profundidade={0.6} />
+					<Linha3D ate={fim - 8} texto={texto} metal="ouro" largura={Math.min(4.7, texto.length * 0.5)} y={0} quadro={frame} batida={f0} profundidade={0.6} />
 				</group>
 			</Canvas>
 			<AbsoluteFill style={{background: '#fff', opacity: clarao}} />
@@ -262,7 +262,7 @@ const v14Interroga: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			<Canvas>
 				<Luzes quadro={frame} batidas={[2]} />
 				<group position={[0, wy(300), 0]} rotation={[0, frame * 0.09, Math.sin(frame / 7) * 0.1]} scale={0.3 + 0.7 * p}>
-					<Linha3D texto="?" metal="ouro" largura={0.9} y={0} quadro={frame} batida={0} profundidade={0.6} />
+					<Linha3D ate={fim - 8} texto="?" metal="ouro" largura={0.9} y={0} quadro={frame} batida={0} profundidade={0.6} />
 				</group>
 			</Canvas>
 		</AbsoluteFill>
@@ -299,7 +299,7 @@ const v14Pegadas: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			<Canvas>
 				<Luzes quadro={frame} batidas={[fp, ...linhas.map((l) => q(l.em))]} />
 				{linhas.map((l, i) => (
-					<Linha3D key={i} texto={l.texto} metal={l.metal ?? (i % 2 ? 'ouro' : 'branco')} largura={Math.min(4.6, l.texto.length * 0.4)} y={wy(300 + i * 170)} quadro={frame} batida={q(l.em)} profundidade={0.34} />
+					<Linha3D ate={fim - 8} key={i} texto={l.texto} metal={l.metal ?? (i % 2 ? 'ouro' : 'branco')} largura={Math.min(4.6, l.texto.length * 0.4)} y={wy(300 + i * 170)} quadro={frame} batida={q(l.em)} profundidade={0.34} />
 				))}
 			</Canvas>
 		</AbsoluteFill>
@@ -349,7 +349,7 @@ const v14Rota: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			<div style={{position: 'absolute', left: B.x - 170, width: 300, top: B.y + 20, textAlign: 'center', opacity: kB, fontFamily: poppins, fontWeight: 800, fontSize: 30, letterSpacing: '0.12em', color: OURO}}>ONDE QUER CHEGAR</div>
 			<Canvas>
 				<Luzes quadro={frame} batidas={[q(emInveste)]} />
-				<Linha3D texto="INVESTE." metal="ouro" largura={3.9} y={wy(330)} quadro={frame} batida={q(emInveste)} profundidade={0.5} />
+				<Linha3D ate={fim - 8} texto="INVESTE." metal="ouro" largura={3.9} y={wy(330)} quadro={frame} batida={q(emInveste)} profundidade={0.5} />
 			</Canvas>
 		</AbsoluteFill>
 	);
@@ -676,7 +676,7 @@ const v14Mente: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					</mesh>
 				))}
 				{linhas.map((l, i) => (
-					<Linha3D key={i} texto={l.texto} metal={l.metal ?? (i ? 'branco' : 'ouro')} largura={Math.min(4.6, l.texto.length * 0.45)} y={wy(290 + i * 170)} quadro={frame} batida={q(l.em)} profundidade={0.4} />
+					<Linha3D ate={fim - 8} key={i} texto={l.texto} metal={l.metal ?? (i ? 'branco' : 'ouro')} largura={Math.min(4.6, l.texto.length * 0.45)} y={wy(290 + i * 170)} quadro={frame} batida={q(l.em)} profundidade={0.4} />
 				))}
 			</Canvas>
 		</AbsoluteFill>

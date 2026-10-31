@@ -132,7 +132,7 @@ export const Medo3D: React.FC<{cena: Cena}> = ({cena}) => {
 						const ultima = i === cena.linhas.length - 1;
 						return (
 							<React.Fragment key={i}>
-								<Linha3D texto={l.texto} metal={l.metal ?? (cena.pessoa ? (ultima ? 'cinza' : 'sangue') : ultima ? 'ouro' : 'branco')} largura={l.largura ?? (l.texto.length <= 5 ? 3.4 : 4.6)} y={y} quadro={frame} batida={batidas[i]} profundidade={0.32} />
+								<Linha3D ate={fim - 8} texto={l.texto} metal={l.metal ?? (cena.pessoa ? (ultima ? 'cinza' : 'sangue') : ultima ? 'ouro' : 'branco')} largura={l.largura ?? (l.texto.length <= 5 ? 3.4 : 4.6)} y={y} quadro={frame} batida={batidas[i]} profundidade={0.32} />
 								<Onda quadro={frame} inicio={batidas[i]} y={y} cor={cena.pessoa ? '#7a1018' : ultima ? '#ffd27a' : '#d9d2ff'} tamanho={2.4} />
 								<Faiscas quadro={frame} inicio={batidas[i]} y={y} cor={cena.pessoa ? '#a3141f' : ultima ? '#ffd27a' : '#e6e0ff'} largura={4} />
 							</React.Fragment>

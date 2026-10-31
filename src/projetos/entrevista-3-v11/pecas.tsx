@@ -231,7 +231,7 @@ const V11Titulo: React.FC<{cena: {de: number; ate: number; dados?: Record<string
 			<AbsoluteFill style={{background: 'linear-gradient(180deg, rgba(30,15,58,0.8) 0%, rgba(30,15,58,0.4) 26%, rgba(30,15,58,0) 40%)', opacity: interpolate(frame, [0, 6], [0, 1], lim)}} />
 			<ThreeCanvas width={width} height={height} gl={GL} camera={CAMERA} style={{position: 'absolute', inset: 0}}>
 				<Luzes quadro={frame} batidas={[2]} />
-				<Linha3D texto={texto} metal="ouro" largura={Math.min(5.2, texto.length * 0.36)} y={yMundo(330)} quadro={frame} batida={2} profundidade={0.5} />
+				<Linha3D ate={fim - 8} texto={texto} metal="ouro" largura={Math.min(5.2, texto.length * 0.36)} y={yMundo(330)} quadro={frame} batida={2} profundidade={0.5} />
 			</ThreeCanvas>
 		</AbsoluteFill>
 	);
