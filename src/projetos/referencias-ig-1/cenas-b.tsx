@@ -15,9 +15,11 @@ type V3 = [number, number, number];
 
 // ---------------------------------------------------------------- utilidades
 const useCena = (cena: CenaPeca) => {
-	const {frame, fps, q} = useQ(cena.de);
+	// origem: começo da cena original quando ela foi dividida em partes contínuas (ver dividir).
 	const d = (cena.dados ?? {}) as Record<string, number>;
-	const fim = Math.round((cena.ate - cena.de) * fps);
+	const origem = d.origem ?? cena.de;
+	const {frame, fps, q} = useQ(origem);
+	const fim = Math.round((cena.ate - origem) * fps);
 	// q de um tempo dos dados
 	const k = (nome: string) => q(d[nome]);
 	const mola = (em: number, rigidez = 170, amort = 14) => spring({frame: frame - em, fps, config: {damping: amort, stiffness: rigidez}});
@@ -593,14 +595,40 @@ const igBProfundor: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	);
 };
 
-export const pecasB: Pecas = {igBDevagar, igBFlaps, igBSobe, igBVirar, igBAilerons, igBProfundor};
+// Partes com outro nome (mesmo componente) para o momento do rótulo.
+const igBFlapsNome = igBFlaps;
+const igBAileronsNome = igBAilerons;
+const igBProfundorNome = igBProfundor;
+
+export const pecasB: Pecas = {igBDevagar, igBFlaps, igBFlapsNome, igBSobe, igBVirar, igBAilerons, igBAileronsNome, igBProfundor, igBProfundorNome};
 
 // ---------------------------------------------------------------- cenas do bloco B
+type Som = NonNullable<Cena['som']>;
+type Base = {nome: string; de: number; ate: number; dados: Record<string, number>; marcos: number[]; som: Som | null; sons: {em: number; som: Som; ganho?: number}[]};
+// Divide uma cena em partes contínuas (a animação segue sem corte: cada parte recebe a origem da cena inteira); cada
+// parte leva só os marcos e os sons que caem dentro dela.
+const dividir = (c: Base, cortes: {em: number; nome?: string}[] = []): Cena[] => {
+	const lim = [c.de, ...cortes.map((x) => x.em), c.ate];
+	return lim.slice(0, -1).map((de, i) => {
+		const ate = lim[i + 1];
+		return {
+			tipo: 'peca',
+			nome: i === 0 ? c.nome : (cortes[i - 1].nome ?? c.nome),
+			modo: 'cheia',
+			de,
+			ate,
+			dados: {...c.dados, origem: c.de, marcos: c.marcos.filter((t) => t > de && t < ate)},
+			som: i === 0 ? c.som : null,
+			sons: c.sons.filter((x) => x.em >= de && x.em < ate),
+		};
+	});
+};
+
 export const cenasB = (b: Busca): Cena[] => {
 	const inicio = b.say('Só que na decolagem').inicio;
 	const fimBloco = b.say('Lá em cima').inicio;
 	const [, , , decolagem, , , , , devagar] = b.tempos('Só que na decolagem o avião ainda está devagar');
-	const [, , asa, sozinha, , segura, , peso] = b.tempos('e a asa sozinha não segura tanto peso');
+	const [eAsa, , asa, sozinha, , segura, , peso] = b.tempos('e a asa sozinha não segura tanto peso');
 	const c1 = {decolagem, devagar, asa, sozinha, segura, peso};
 
 	const iniFlaps = b.say('Então ela estica').inicio;
@@ -630,48 +658,60 @@ export const cenasB = (b: Busca): Cena[] => {
 	const c6 = {cauda, aponta, cima, baixo: baixo2, rotulo: b.say('é o profundor').inicio};
 
 	return [
-		{tipo: 'peca', nome: 'igBDevagar', modo: 'cheia', de: inicio, ate: iniFlaps, dados: {...c1, marcos: Object.values(c1)}, som: 'pro_whoosh', sons: [{em: segura, som: 'pro_pop', ganho: 0.6}]},
-		{
-			tipo: 'peca',
-			nome: 'igBFlaps',
-			modo: 'cheia',
-			de: iniFlaps,
-			ate: iniSobe,
-			dados: {...c2, marcos: Object.values(c2)},
-			som: 'pro_whoosh_curto',
-			sons: [
-				{em: ficando, som: 'pro_tick', ganho: 0.6},
-				{em: c2.rotulo, som: 'pro_pop', ganho: 0.8},
-			],
-		},
-		{tipo: 'peca', nome: 'igBSobe', modo: 'cheia', de: iniSobe, ate: iniVirar, dados: {...c3, marcos: Object.values(c3)}, som: null, sons: [{em: iniSobe, som: 'pro_aviao', ganho: 0.7}]},
-		{tipo: 'peca', nome: 'igBVirar', modo: 'cheia', de: iniVirar, ate: iniAil, dados: {...c4, marcos: Object.values(c4)}, som: 'pro_whoosh', sons: [{em: c4.virar, som: 'pro_swipe', ganho: 0.6}]},
-		{
-			tipo: 'peca',
-			nome: 'igBAilerons',
-			modo: 'cheia',
-			de: iniAil,
-			ate: iniProf,
-			dados: {...c5, marcos: Object.values(c5)},
-			som: 'pro_whoosh_curto',
-			sons: [
-				{em: c5.sobe, som: 'pro_tick', ganho: 0.6},
-				{em: c5.inclina, som: 'pro_whoosh', ganho: 0.6},
-				{em: c5.rotulo, som: 'pro_pop', ganho: 0.8},
-			],
-		},
-		{
-			tipo: 'peca',
-			nome: 'igBProfundor',
-			modo: 'cheia',
-			de: iniProf,
-			ate: fimBloco,
-			dados: {...c6, marcos: Object.values(c6)},
-			som: 'pro_whoosh_curto',
-			sons: [
-				{em: cima, som: 'pro_swipe', ganho: 0.6},
-				{em: c6.rotulo, som: 'pro_pop', ganho: 0.8},
-			],
-		},
+		// 1. Pista, devagar (velocímetro baixo); câmera vai para a asa: seta azul pequena × setas vermelhas de peso
+		...dividir({nome: 'igBDevagar', de: inicio, ate: iniFlaps, dados: c1, marcos: Object.values(c1), som: 'pro_whoosh', sons: [{em: segura, som: 'pro_pop', ganho: 0.6}]}, [{em: eAsa}]),
+		// 2. Close na asa por trás: flaps saem para trás e para baixo; corte da asa ficando maior e curvada; rótulo FLAPS
+		...dividir(
+			{
+				nome: 'igBFlaps',
+				de: iniFlaps,
+				ate: iniSobe,
+				dados: c2,
+				marcos: Object.values(c2),
+				som: 'pro_whoosh_curto',
+				sons: [
+					{em: ficando, som: 'pro_tick', ganho: 0.6},
+					{em: c2.rotulo, som: 'pro_pop', ganho: 0.8},
+				],
+			},
+			[{em: ficando}, {em: b.say('Esses são os flaps').inicio, nome: 'igBFlapsNome'}],
+		),
+		// 3. Decolagem vista da pista: nariz sobe, sai do chão, recolhe o trem
+		...dividir({nome: 'igBSobe', de: iniSobe, ate: iniVirar, dados: c3, marcos: Object.values(c3), som: null, sons: [{em: iniSobe, som: 'pro_aviao', ganho: 0.7}]}),
+		// 4. No céu: câmera embaixo (bicho enorme) e depois do alto, com a seta curva da curva
+		...dividir({nome: 'igBVirar', de: iniVirar, ate: iniAil, dados: c4, marcos: Object.values(c4), som: 'pro_whoosh', sons: [{em: c4.virar, som: 'pro_swipe', ganho: 0.6}]}),
+		// 5. Por trás: aileron direito sobe, esquerdo desce, o avião inclina; rótulo AILERONS
+		...dividir(
+			{
+				nome: 'igBAilerons',
+				de: iniAil,
+				ate: iniProf,
+				dados: c5,
+				marcos: Object.values(c5),
+				som: 'pro_whoosh_curto',
+				sons: [
+					{em: c5.sobe, som: 'pro_tick', ganho: 0.6},
+					{em: c5.inclina, som: 'pro_whoosh', ganho: 0.6},
+					{em: c5.rotulo, som: 'pro_pop', ganho: 0.8},
+				],
+			},
+			[{em: c5.desce}, {em: b.say('Esses são os ailerons').inicio, nome: 'igBAileronsNome'}],
+		),
+		// 6. Cauda: profundor sobe/desce e o nariz aponta para cima/baixo; rótulo PROFUNDOR
+		...dividir(
+			{
+				nome: 'igBProfundor',
+				de: iniProf,
+				ate: fimBloco,
+				dados: c6,
+				marcos: Object.values(c6),
+				som: 'pro_whoosh_curto',
+				sons: [
+					{em: cima, som: 'pro_swipe', ganho: 0.6},
+					{em: c6.rotulo, som: 'pro_pop', ganho: 0.8},
+				],
+			},
+			[{em: aponta}, {em: b.say('Esse é o profundor').inicio, nome: 'igBProfundorNome'}],
+		),
 	];
 };
