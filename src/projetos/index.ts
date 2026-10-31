@@ -18,6 +18,11 @@ import {entrevista3V7} from './entrevista-3-v7/edit';
 import {entrevista3V11} from './entrevista-3-v11/edit';
 import {entrevista3V12} from './entrevista-3-v12/edit';
 import {entrevista3V14} from './entrevista-3-v14/edit';
+import {depoimento31} from './depoimento-3-1/edit';
+import {depoimento32} from './depoimento-3-2/edit';
+import {depoimento33} from './depoimento-3-3/edit';
+import {depoimento34} from './depoimento-3-4/edit';
+import {depoimento35} from './depoimento-3-5/edit';
 
 // Cada projeto novo entra aqui. O nome vira o id da composição no Studio e no render.
 export const projetos: Record<string, Edit> = {
@@ -40,4 +45,9 @@ export const projetos: Record<string, Edit> = {
 	'entrevista-3-v11': entrevista3V11,
 	'entrevista-3-v12': entrevista3V12,
 	'entrevista-3-v14': entrevista3V14,
+	'depoimento-3-1': depoimento31,
+	'depoimento-3-2': depoimento32,
+	'depoimento-3-3': depoimento33,
+	'depoimento-3-4': depoimento34,
+	'depoimento-3-5': depoimento35,
 };
