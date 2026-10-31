@@ -325,7 +325,7 @@ const gCRio: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	}, [fim]);
 	const gz = 0.9 * Math.sin(frame / 22);
 	return (
-		<PalcoC pos={[gx + 5, 3.4 + 0.4 * Math.sin(frame / 40), 8.6]} alvo={[gx + 3, 0.9, 0]}>
+		<PalcoC pos={[gx + 3, 3.4 + 0.4 * Math.sin(frame / 40), 8.6]} alvo={[gx + 0.6, 0.9, 0]}>
 			<Chao m={m} />
 			<Rio m={m} frame={frame} peixes={peixes} />
 			{Array.from({length: 7}, (_, i) => (
@@ -346,9 +346,9 @@ const gCCaptacao: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const x = frame < 40 ? interpolate(frame, [0, 14, 40], [118, 121, XF - 0.8], {...lim, easing: Easing.in(Easing.quad)}) : interpolate(frame, [40, fim - 4], [XF - 0.8, XF + 12], {...lim, easing: Easing.out(Easing.quad)});
 	const qc = q(dd(cena).capt);
 	const gz = frame < 40 ? 0.5 * Math.sin(frame / 8) * (1 - frame / 40) : 0;
-	const camX = Math.min(x + 5, XF + 2 + (frame / fim) * 8);
+	const camX = Math.min(x + 3, XF + 2 + (frame / fim) * 8);
 	return (
-		<PalcoC pos={[camX, 3.4, 8.6]} alvo={[Math.min(x + 2, XF + 8), 0.7, 0]} sobre={<Rotulo texto="CAPTAÇÃO" y={330} p={interpolate(frame, [qc - 3, qc + 8], [0, 1], lim)} tam={64} />}>
+		<PalcoC pos={[camX, 3.4, 8.6]} alvo={[Math.min(x + 0.6, XF + 8), 0.7, 0]} sobre={<Rotulo texto="CAPTAÇÃO" y={330} p={interpolate(frame, [qc - 3, qc + 8], [0, 1], lim)} tam={64} />}>
 			<Chao m={m} />
 			<Rio m={m} frame={frame} peixes={[]} />
 			{Array.from({length: 9}, (_, i) => {
