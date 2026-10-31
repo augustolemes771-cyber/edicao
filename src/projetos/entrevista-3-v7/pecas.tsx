@@ -355,27 +355,138 @@ const Pote: React.FC = () => {
 	);
 };
 
-// Meia tela: pote de suplemento girando sobre a grade; a cada ideia ele pula e o texto 3D troca no mesmo lugar.
-// dados: {linhas: {texto, em}[]}.
+// Casinha 3D (produto em casa): corpo roxo, telhado de ouro em quatro águas, porta e janela claras e uma caixa de produto.
+const Casa: React.FC = () => {
+	const m = useMats();
+	return (
+		<group position={[0, -0.15, 0]}>
+			<mesh material={m.roxoClaro}>
+				<boxGeometry args={[1.25, 0.95, 1.0]} />
+			</mesh>
+			<mesh position={[0, 0.78, 0]} rotation={[0, Math.PI / 4, 0]} material={m.ouroBrilho}>
+				<coneGeometry args={[1.02, 0.62, 4]} />
+			</mesh>
+			<mesh position={[0.24, -0.17, 0.505]} material={m.branco}>
+				<boxGeometry args={[0.3, 0.56, 0.02]} />
+			</mesh>
+			<mesh position={[-0.3, 0.12, 0.505]} material={m.ouro}>
+				<boxGeometry args={[0.3, 0.26, 0.02]} />
+			</mesh>
+			{/* caixa de produto na porta, com fita de ouro */}
+			<group position={[-0.42, -0.33, 0.78]} rotation={[0, 0.35, 0]}>
+				<mesh material={m.branco}>
+					<boxGeometry args={[0.42, 0.3, 0.34]} />
+				</mesh>
+				<mesh material={m.ouroBrilho}>
+					<boxGeometry args={[0.07, 0.31, 0.35]} />
+				</mesh>
+			</group>
+		</group>
+	);
+};
+
+// Haltere 3D (área fitness): barra de prata com pegada recartilhada e duas anilhas de cada lado (roxo e ouro).
+const Haltere: React.FC = () => {
+	const m = useMats();
+	const anilhas: [number, number, 'roxo' | 'ouroBrilho'][] = [
+		[0.62, 0.52, 'roxo'],
+		[0.8, 0.42, 'ouroBrilho'],
+	];
+	return (
+		<group rotation={[0, 0, 0.18]}>
+			<mesh rotation={[0, 0, Math.PI / 2]} material={m.prata}>
+				<cylinderGeometry args={[0.07, 0.07, 2.1, 24]} />
+			</mesh>
+			<mesh rotation={[0, 0, Math.PI / 2]} material={m.preto}>
+				<cylinderGeometry args={[0.085, 0.085, 0.8, 24]} />
+			</mesh>
+			{[-1, 1].flatMap((lado) =>
+				anilhas.map(([x, r, mat], i) => (
+					<mesh key={`${lado}${i}`} position={[x * lado, 0, 0]} rotation={[0, 0, Math.PI / 2]} material={m[mat]}>
+						<cylinderGeometry args={[r, r, 0.16, 40]} />
+					</mesh>
+				)),
+			)}
+			{[-1, 1].map((lado) => (
+				<mesh key={lado} position={[0.97 * lado, 0, 0]} rotation={[0, 0, Math.PI / 2]} material={m.ouro}>
+					<cylinderGeometry args={[0.11, 0.11, 0.12, 24]} />
+				</mesh>
+			))}
+		</group>
+	);
+};
+
+// Ring light no tripé (assim comecei: gravando em casa): aro branco aceso, suporte do celular no meio e tripé de prata.
+const RingLight: React.FC<{acende: number}> = ({acende}) => {
+	const m = useMats();
+	const luz = useMemo(() => new THREE.MeshStandardMaterial({color: '#fff6e6', emissive: '#fff1d6', emissiveIntensity: 0.4, roughness: 0.3}), []);
+	luz.emissiveIntensity = 0.4 + 1.4 * acende;
+	return (
+		<group position={[0, 0.25, 0]}>
+			<mesh material={luz}>
+				<torusGeometry args={[0.72, 0.1, 20, 64]} />
+			</mesh>
+			<mesh material={m.preto}>
+				<torusGeometry args={[0.72, 0.115, 8, 64, Math.PI * 2]} scale={[1, 1, 0.4]} />
+			</mesh>
+			<mesh position={[0, 0, 0.02]} material={m.preto}>
+				<boxGeometry args={[0.3, 0.56, 0.05]} />
+			</mesh>
+			<mesh position={[0, 0, 0.05]} material={m.roxoClaro}>
+				<boxGeometry args={[0.25, 0.5, 0.01]} />
+			</mesh>
+			<mesh position={[0, -1.0, 0]} material={m.prata}>
+				<cylinderGeometry args={[0.04, 0.04, 1.85, 12]} />
+			</mesh>
+			{[0, 1, 2].map((i) => (
+				<mesh key={i} position={[Math.cos((i / 3) * Math.PI * 2 + 0.5) * 0.3, -2.05, Math.sin((i / 3) * Math.PI * 2 + 0.5) * 0.3]} rotation={[Math.sin((i / 3) * Math.PI * 2 + 0.5) * 0.5, 0, -Math.cos((i / 3) * Math.PI * 2 + 0.5) * 0.5]} material={m.prata}>
+					<cylinderGeometry args={[0.03, 0.03, 0.7, 10]} />
+				</mesh>
+			))}
+		</group>
+	);
+};
+
+// Meia tela: um objeto 3D por ideia sobre a grade (casa → pote → haltere → ring light). Na batida de cada linha o objeto
+// anterior encolhe girando e o novo entra com mola; o texto 3D troca no mesmo lugar. dados: {linhas: {texto, em}[]}.
+const OBJETOS = [Casa, Pote, Haltere, RingLight] as const;
 const v7Suplemento: React.FC<{cena: CenaPeca}> = ({cena}) => {
-	const {frame, fps, width, height, q, entrada, saida, t} = useCena(cena);
+	const {frame, fps, width, height, fim, q, entrada, saida, t} = useCena(cena);
 	const linhas = ((cena.dados?.linhas ?? []) as {texto: string; em: number}[]).map((l) => ({...l, f: q(l.em)}));
-	const p = spring({frame, fps, config: {damping: 13, stiffness: 120}});
-	let pulo = 0;
-	for (const l of linhas) if (frame >= l.f) pulo = Math.max(pulo, Math.sin(Math.min(1, (frame - l.f) / 9) * Math.PI) * (frame - l.f < 9 ? 1 : 0));
+	const atual = Math.max(0, linhas.findLastIndex((l) => frame >= l.f));
+	const inicio = (i: number) => (i === 0 ? 0 : linhas[i].f);
 	return (
 		<AbsoluteFill style={{pointerEvents: 'none', opacity: saida}}>
 			<VeuBaixo op={entrada} />
 			<AbsoluteFill style={{filter: 'drop-shadow(0 22px 30px rgba(8,2,20,0.65))'}}>
 				<ThreeCanvas width={width} height={height} gl={GL} camera={CAMERA} style={{position: 'absolute', inset: 0}}>
 					<Luzes quadro={frame} batidas={linhas.map((l) => l.f)} />
-					<group position={[0, yMundo(1340) + (1 - p) * -3 + pulo * 0.45, 0]} rotation={[0.25, t * 1.1, pulo * 0.25]} scale={1.05}>
-						<Pote />
-					</group>
+					{linhas.map((l, i) => {
+						// o objeto i vive da sua batida até 6 quadros depois da próxima (sai encolhendo)
+						const proxima = linhas[i + 1]?.f ?? Infinity;
+						if (frame < inicio(i) || frame >= proxima + 6) return null;
+						const p = spring({frame: frame - inicio(i), fps, config: {damping: 12, stiffness: 140}});
+						const sai = frame >= proxima ? interpolate(frame, [proxima, proxima + 6], [1, 0], lim) : 1;
+						const Obj = OBJETOS[i % OBJETOS.length];
+						const local = (frame - inicio(i)) / fps;
+						return (
+							<group
+								key={i}
+								position={[0, yMundo(1340) + (1 - p) * -2.4, 0]}
+								rotation={[0.22, (1 - p) * Math.PI * 1.5 + local * 0.9 + (1 - sai) * 2, (1 - p) * 0.3]}
+								scale={1.05 * Math.max(0.001, p * sai)}
+							>
+								{Obj === RingLight ? <RingLight acende={interpolate(frame - inicio(i), [6, 14], [0, 1], lim)} /> : <Obj />}
+							</group>
+						);
+					})}
 					{linhas.map((l, i) => {
 						const proxima = linhas[i + 1]?.f ?? Infinity;
 						if (frame < l.f || frame >= proxima) return null;
-						return <Linha3D key={i} texto={l.texto} metal={i % 2 ? 'branco' : 'ouro'} largura={Math.min(4.6, 0.36 * l.texto.length + 0.6)} y={yMundo(1070)} quadro={frame} batida={l.f} profundidade={0.36} />;
+						// linha longa com pouco tempo até a próxima (ou até o fim): letras mais juntas para a entrada concluir
+						const tela = Math.min(proxima, fim - 8) - l.f;
+						const intervalo = 2 * (l.texto.replace(/ /g, '').length - 1) + 18 > tela ? 1 : 2;
+						return <Linha3D key={i} texto={l.texto} metal={i % 2 ? 'branco' : 'ouro'} largura={Math.min(4.6, 0.36 * l.texto.length + 0.6)} y={yMundo(1070)} quadro={frame} batida={l.f} profundidade={0.36} intervalo={intervalo} />;
 					})}
 				</ThreeCanvas>
 			</AbsoluteFill>
