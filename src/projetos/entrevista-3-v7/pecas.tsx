@@ -482,7 +482,7 @@ const v7Suplemento: React.FC<{cena: CenaPeca}> = ({cena}) => {
 						if (frame < l.f || frame >= proxima) return null;
 						// linha longa com pouco tempo até a próxima (ou até o fim): letras mais juntas para a entrada concluir
 						const tela = Math.min(proxima, fim - 8) - l.f;
-						const intervalo = 2 * (l.texto.replace(/ /g, '').length - 1) + 18 > tela ? 1 : 2;
+						const intervalo = 2 * (l.texto.replace(/ /g, '').length - 1) + 18 + 8 > tela ? 1 : 2;
 						return <Linha3D key={i} texto={l.texto} metal={i % 2 ? 'branco' : 'ouro'} largura={Math.min(4.6, 0.36 * l.texto.length + 0.6)} y={yMundo(1070)} quadro={frame} batida={l.f} profundidade={0.36} intervalo={intervalo} />;
 					})}
 				</ThreeCanvas>
