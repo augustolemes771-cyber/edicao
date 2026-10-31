@@ -426,8 +426,8 @@ const RingLight: React.FC<{acende: number}> = ({acende}) => {
 			<mesh material={luz}>
 				<torusGeometry args={[0.72, 0.1, 20, 64]} />
 			</mesh>
-			<mesh material={m.preto}>
-				<torusGeometry args={[0.72, 0.115, 8, 64, Math.PI * 2]} scale={[1, 1, 0.4]} />
+			<mesh position={[0, 0, -0.05]} scale={[1, 1, 0.5]} material={m.preto}>
+				<torusGeometry args={[0.72, 0.115, 8, 64]} />
 			</mesh>
 			<mesh position={[0, 0, 0.02]} material={m.preto}>
 				<boxGeometry args={[0.3, 0.56, 0.05]} />
@@ -449,11 +449,9 @@ const RingLight: React.FC<{acende: number}> = ({acende}) => {
 
 // Meia tela: um objeto 3D por ideia sobre a grade (casa → pote → haltere → ring light). Na batida de cada linha o objeto
 // anterior encolhe girando e o novo entra com mola; o texto 3D troca no mesmo lugar. dados: {linhas: {texto, em}[]}.
-const OBJETOS = [Casa, Pote, Haltere, RingLight] as const;
 const v7Suplemento: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const {frame, fps, width, height, fim, q, entrada, saida, t} = useCena(cena);
 	const linhas = ((cena.dados?.linhas ?? []) as {texto: string; em: number}[]).map((l) => ({...l, f: q(l.em)}));
-	const atual = Math.max(0, linhas.findLastIndex((l) => frame >= l.f));
 	const inicio = (i: number) => (i === 0 ? 0 : linhas[i].f);
 	return (
 		<AbsoluteFill style={{pointerEvents: 'none', opacity: saida}}>
@@ -467,7 +465,6 @@ const v7Suplemento: React.FC<{cena: CenaPeca}> = ({cena}) => {
 						if (frame < inicio(i) || frame >= proxima + 6) return null;
 						const p = spring({frame: frame - inicio(i), fps, config: {damping: 12, stiffness: 140}});
 						const sai = frame >= proxima ? interpolate(frame, [proxima, proxima + 6], [1, 0], lim) : 1;
-						const Obj = OBJETOS[i % OBJETOS.length];
 						const local = (frame - inicio(i)) / fps;
 						return (
 							<group
@@ -476,7 +473,7 @@ const v7Suplemento: React.FC<{cena: CenaPeca}> = ({cena}) => {
 								rotation={[0.22, (1 - p) * Math.PI * 1.5 + local * 0.9 + (1 - sai) * 2, (1 - p) * 0.3]}
 								scale={1.05 * Math.max(0.001, p * sai)}
 							>
-								{Obj === RingLight ? <RingLight acende={interpolate(frame - inicio(i), [6, 14], [0, 1], lim)} /> : <Obj />}
+								{[<Casa key="c" />, <Pote key="p" />, <Haltere key="h" />, <RingLight key="r" acende={interpolate(frame - inicio(i), [6, 14], [0, 1], lim)} />][i % 4]}
 							</group>
 						);
 					})}
