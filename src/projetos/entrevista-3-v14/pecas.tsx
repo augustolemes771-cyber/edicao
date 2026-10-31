@@ -110,7 +110,7 @@ const mola = (frame: number, ini: number, fps: number, damping = 12) => (frame <
 
 // 1. Gancho, pergunta: interrogação de ouro gigante girando na tela inteira e a pergunta em texto 3D.
 const v14Pergunta: React.FC<{cena: CenaPeca}> = ({cena}) => {
-	const {fim, frame, fps, q, entra, sai, d, dur} = useCena(cena);
+	const {frame, fps, q, entra, sai, d, dur} = useCena(cena);
 	const linhas = d.linhas ?? [];
 	const p = mola(frame, 0, fps, 10);
 	return (
@@ -120,10 +120,10 @@ const v14Pergunta: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			<Canvas>
 				<Luzes quadro={frame} batidas={[0, ...linhas.map((l) => q(l.em))]} />
 				<group position={[0, wy(1090), 0]} rotation={[0, frame * 0.07 + (1 - p) * 2, Math.sin(frame / 9) * 0.08]} scale={0.4 + 0.6 * p}>
-					<Linha3D ate={fim - 8} texto="?" metal="ouro" largura={1.5} y={0} quadro={frame} batida={0} profundidade={0.7} />
+					<Linha3D ate={dur - 8} texto="?" metal="ouro" largura={1.5} y={0} quadro={frame} batida={0} profundidade={0.7} />
 				</group>
 				{linhas.map((l, i) => (
-					<Linha3D ate={fim - 8} key={i} texto={l.texto} metal={l.metal ?? (i ? 'ouro' : 'branco')} largura={Math.min(4.6, l.texto.length * 0.42)} y={wy(330 + i * 175)} quadro={frame} batida={q(l.em)} profundidade={0.34} />
+					<Linha3D ate={dur - 8} key={i} texto={l.texto} metal={l.metal ?? (i ? 'ouro' : 'branco')} largura={Math.min(4.6, l.texto.length * 0.42)} y={wy(330 + i * 175)} quadro={frame} batida={q(l.em)} profundidade={0.34} />
 				))}
 			</Canvas>
 			<div style={{position: 'absolute', bottom: 0, height: 4, left: 0, width: `${(frame / dur) * 100}%`, background: OURO, opacity: 0.6}} />
@@ -134,7 +134,7 @@ const v14Pergunta: React.FC<{cena: CenaPeca}> = ({cena}) => {
 // 2. Gancho, resposta: contador em ouro 3D que corre com ease-out até travar (com clarão) e moedas caindo dos lados.
 const MOEDAS = Array.from({length: 14}, (_, i) => ({x: (i % 2 ? 1 : -1) * (1.55 + ((i * 37) % 9) / 10), atraso: i * 2.2, giro: 0.12 + ((i * 13) % 7) / 40}));
 const v14Contador: React.FC<{cena: CenaPeca}> = ({cena}) => {
-	const {fim, frame, fps, q, entra, sai, d} = useCena(cena);
+	const {dur, frame, fps, q, entra, sai, d} = useCena(cena);
 	const [ini = cena.de, trava = cena.de + 1.2, rot = trava] = d.marcos ?? [];
 	const f0 = q(ini);
 	const f1 = q(trava);
@@ -163,7 +163,7 @@ const v14Contador: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					);
 				})}
 				<group position={[0, wy(yNum), 0]} scale={1 + clarao * 0.25}>
-					<Linha3D ate={fim - 8} texto={texto} metal="ouro" largura={Math.min(4.7, texto.length * 0.5)} y={0} quadro={frame} batida={f0} profundidade={0.6} />
+					<Linha3D ate={dur - 8} texto={texto} metal="ouro" largura={Math.min(4.7, texto.length * 0.5)} y={0} quadro={frame} batida={f0} profundidade={0.6} />
 				</group>
 			</Canvas>
 			<AbsoluteFill style={{background: '#fff', opacity: clarao}} />
@@ -254,7 +254,7 @@ const v14Degraus: React.FC<{cena: CenaPeca}> = ({cena}) => {
 
 // 5. Pergunta: interrogação de ouro girando acima da cabeça.
 const v14Interroga: React.FC<{cena: CenaPeca}> = ({cena}) => {
-	const {fim, frame, fps, entra, sai} = useCena(cena);
+	const {dur, frame, fps, entra, sai} = useCena(cena);
 	const p = mola(frame, 0, fps, 9);
 	return (
 		<AbsoluteFill style={{pointerEvents: 'none', opacity: sai}}>
@@ -262,7 +262,7 @@ const v14Interroga: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			<Canvas>
 				<Luzes quadro={frame} batidas={[2]} />
 				<group position={[0, wy(300), 0]} rotation={[0, frame * 0.09, Math.sin(frame / 7) * 0.1]} scale={0.3 + 0.7 * p}>
-					<Linha3D ate={fim - 8} texto="?" metal="ouro" largura={0.9} y={0} quadro={frame} batida={0} profundidade={0.6} />
+					<Linha3D ate={dur - 8} texto="?" metal="ouro" largura={0.9} y={0} quadro={frame} batida={0} profundidade={0.6} />
 				</group>
 			</Canvas>
 		</AbsoluteFill>
@@ -284,7 +284,7 @@ const Pegada: React.FC<{x: number; y: number; k: number; esq: boolean; escala?: 
 	</svg>
 );
 const v14Pegadas: React.FC<{cena: CenaPeca}> = ({cena}) => {
-	const {fim, frame, fps, q, entra, sai, d} = useCena(cena);
+	const {dur, frame, fps, q, entra, sai, d} = useCena(cena);
 	const [passo = cena.de + 0.5] = d.marcos ?? [];
 	const linhas = d.linhas ?? [];
 	const fp = q(passo);
@@ -299,7 +299,7 @@ const v14Pegadas: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			<Canvas>
 				<Luzes quadro={frame} batidas={[fp, ...linhas.map((l) => q(l.em))]} />
 				{linhas.map((l, i) => (
-					<Linha3D ate={fim - 8} key={i} texto={l.texto} metal={l.metal ?? (i % 2 ? 'ouro' : 'branco')} largura={Math.min(4.6, l.texto.length * 0.4)} y={wy(300 + i * 170)} quadro={frame} batida={q(l.em)} profundidade={0.34} />
+					<Linha3D ate={dur - 8} key={i} texto={l.texto} metal={l.metal ?? (i % 2 ? 'ouro' : 'branco')} largura={Math.min(4.6, l.texto.length * 0.4)} y={wy(300 + i * 170)} quadro={frame} batida={q(l.em)} profundidade={0.34} />
 				))}
 			</Canvas>
 		</AbsoluteFill>
@@ -309,7 +309,7 @@ const v14Pegadas: React.FC<{cena: CenaPeca}> = ({cena}) => {
 // 7. Ponto A → ponto B: dois pinos no mapa, a rota tracejada se desenha de A até B com um ponto andando e, no "Investe",
 // o texto 3D bate no meio.
 const v14Rota: React.FC<{cena: CenaPeca}> = ({cena}) => {
-	const {fim, frame, fps, q, entra, sai, d} = useCena(cena);
+	const {dur, frame, fps, q, entra, sai, d} = useCena(cena);
 	const [emA = cena.de + 0.3, emB = cena.de + 1.2, emInveste = cena.de + 1.8] = d.marcos ?? [];
 	const fa = q(emA);
 	const fb = q(emB);
@@ -349,7 +349,7 @@ const v14Rota: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			<div style={{position: 'absolute', left: B.x - 170, width: 300, top: B.y + 20, textAlign: 'center', opacity: kB, fontFamily: poppins, fontWeight: 800, fontSize: 30, letterSpacing: '0.12em', color: OURO}}>ONDE QUER CHEGAR</div>
 			<Canvas>
 				<Luzes quadro={frame} batidas={[q(emInveste)]} />
-				<Linha3D ate={fim - 8} texto="INVESTE." metal="ouro" largura={3.9} y={wy(330)} quadro={frame} batida={q(emInveste)} profundidade={0.5} />
+				<Linha3D ate={dur - 8} texto="INVESTE." metal="ouro" largura={3.9} y={wy(330)} quadro={frame} batida={q(emInveste)} profundidade={0.5} />
 			</Canvas>
 		</AbsoluteFill>
 	);
@@ -642,7 +642,7 @@ const v14Seta: React.FC<{cena: CenaPeca}> = ({cena}) => {
 // 15. Mentalidade expandida: esfera de luz presa numa caixa de vidro; ela cresce, a caixa se abre em quatro e voa, e
 // quando tenta encolher bate e volta grande: "NÃO VOLTA / AO NORMAL" em texto 3D.
 const v14Mente: React.FC<{cena: CenaPeca}> = ({cena}) => {
-	const {fim, frame, fps, q, entra, sai, d} = useCena(cena);
+	const {dur, frame, fps, q, entra, sai, d} = useCena(cena);
 	const [emExpande = cena.de + 0.5, emTenta = cena.de + 2] = d.marcos ?? [];
 	const linhas = d.linhas ?? [];
 	const fe = q(emExpande);
@@ -676,7 +676,7 @@ const v14Mente: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					</mesh>
 				))}
 				{linhas.map((l, i) => (
-					<Linha3D ate={fim - 8} key={i} texto={l.texto} metal={l.metal ?? (i ? 'branco' : 'ouro')} largura={Math.min(4.6, l.texto.length * 0.45)} y={wy(290 + i * 170)} quadro={frame} batida={q(l.em)} profundidade={0.4} />
+					<Linha3D ate={dur - 8} key={i} texto={l.texto} metal={l.metal ?? (i ? 'branco' : 'ouro')} largura={Math.min(4.6, l.texto.length * 0.45)} y={wy(290 + i * 170)} quadro={frame} batida={q(l.em)} profundidade={0.4} />
 				))}
 			</Canvas>
 		</AbsoluteFill>

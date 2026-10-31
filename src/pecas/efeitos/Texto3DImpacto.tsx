@@ -22,7 +22,7 @@ export const Texto3DImpacto: React.FC<{texto: string; dur: number; inicio?: numb
 			<ThreeCanvas width={width} height={height} gl={{alpha: true, antialias: true, preserveDrawingBuffer: true}} camera={{fov: 35, position: [0, 0, 14.5], near: 0.1, far: 60}} style={{position: 'absolute', inset: 0}}>
 				<CameraTremor quadro={frame} batidas={[ini + 10]} duracao={Math.round(dur * fps)} />
 				<Luzes quadro={frame} batidas={[ini]} />
-				<Linha3D ate={fim - 8} texto={texto} metal={metal} largura={largura} y={y} quadro={frame} batida={ini} profundidade={0.3} />
+				<Linha3D ate={Math.round(dur * fps) - 8} texto={texto} metal={metal} largura={largura} y={y} quadro={frame} batida={ini} profundidade={0.3} />
 				<Onda quadro={frame} inicio={ini + 10} y={y} cor={cor} />
 				<Faiscas quadro={frame} inicio={ini + 10} y={y} cor={cor} />
 			</ThreeCanvas>

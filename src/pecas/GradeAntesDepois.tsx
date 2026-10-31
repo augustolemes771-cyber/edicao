@@ -129,7 +129,7 @@ const Titulo3D: React.FC<{linhas: {texto: string; em: number}[]; de: number}> = 
 					const ultima = i === linhas.length - 1;
 					return (
 						<React.Fragment key={i}>
-							<Linha3D ate={fim - 8} texto={l.texto} metal={ultima ? 'ouro' : 'branco'} largura={ultima ? 4.6 : 3.6} y={y} quadro={frame} batida={batidas[i]} profundidade={0.3} />
+							<Linha3D texto={l.texto} metal={ultima ? 'ouro' : 'branco'} largura={ultima ? 4.6 : 3.6} y={y} quadro={frame} batida={batidas[i]} profundidade={0.3} />
 							<Onda quadro={frame} inicio={batidas[i]} y={y} cor="#ffd27a" tamanho={2.4} />
 							<Faiscas quadro={frame} inicio={batidas[i]} y={y} cor="#ffd27a" largura={4} />
 						</React.Fragment>

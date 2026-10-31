@@ -313,8 +313,8 @@ export const Final3D: React.FC<{cena: De<'final'>}> = ({cena}) => {
 				<ThreeCanvas width={width} height={height} gl={GL} camera={CAMERA} style={{position: 'absolute', inset: 0}}>
 					<CameraTremor quadro={frame} batidas={[]} z0={15.2} z1={13.6} duracao={dur} />
 					<Luzes quadro={frame} batidas={[b1, b2]} />
-					<Linha3D ate={fim - 8} texto={cena.marca} metal="ouro" largura={cena.marca.length <= 4 ? 3.4 : 4.4} y={0.75} quadro={frame} batida={b1} profundidade={0.32} />
-					{cena.linha2 ? <Linha3D ate={fim - 8} texto={cena.linha2} metal="branco" largura={4.2} y={-0.55} quadro={frame} batida={b2} profundidade={0.28} /> : null}
+					<Linha3D ate={dur - 8} texto={cena.marca} metal="ouro" largura={cena.marca.length <= 4 ? 3.4 : 4.4} y={0.75} quadro={frame} batida={b1} profundidade={0.32} />
+					{cena.linha2 ? <Linha3D ate={dur - 8} texto={cena.linha2} metal="branco" largura={4.2} y={-0.55} quadro={frame} batida={b2} profundidade={0.28} /> : null}
 				</ThreeCanvas>
 			</AbsoluteFill>
 			{cena.sub ? (
