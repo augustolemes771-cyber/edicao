@@ -282,7 +282,7 @@ export const depoimento31: Edit = {
 				tipo: 'peca',
 				nome: 'd31Gmv',
 				de: b.say('esse aqui foi').inicio - 0.05,
-				ate: b.say('muito expressivo').fim + 0.35,
+				ate: b.say('muito expressivo').fim + 0.6,
 				dados: {
 					conta: b.say('um dos testes').inicio,
 					trava: b.say('de hoje').fim,
