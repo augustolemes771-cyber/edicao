@@ -608,9 +608,9 @@ type Base = {nome: string; de: number; ate: number; dados: Record<string, number
 // Divide uma cena em partes contínuas (a animação segue sem corte: cada parte recebe a origem da cena inteira); cada
 // parte leva só os marcos e os sons que caem dentro dela.
 const dividir = (c: Base, cortes: {em: number; nome?: string}[] = []): Cena[] => {
-	const lim = [c.de, ...cortes.map((x) => x.em), c.ate];
-	return lim.slice(0, -1).map((de, i) => {
-		const ate = lim[i + 1];
+	const pontos = [c.de, ...cortes.map((x) => x.em), c.ate];
+	return pontos.slice(0, -1).map((de, i) => {
+		const ate = pontos[i + 1];
 		return {
 			tipo: 'peca',
 			nome: i === 0 ? c.nome : (cortes[i - 1].nome ?? c.nome),
