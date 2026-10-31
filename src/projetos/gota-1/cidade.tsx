@@ -71,8 +71,8 @@ const criar = () => ({
 	canoSujo: std('#8f7a55', {side: THREE.DoubleSide}),
 	vidro: transp('#cfefff', 0.28, {side: THREE.DoubleSide}),
 	esgoto: transp('#7a6233', 0.92),
-	aguaSuja: transp('#8a7f45', 0.6),
-	aguaMedia: transp('#6f9a7a', 0.55),
+	aguaSuja: transp('#8a7f45', 0.42),
+	aguaMedia: transp('#6f9a7a', 0.38),
 	aguaLimpa: transp('#4fc3f7', 0.55),
 	aguaCorte: transp('#4fb6f0', 0.75),
 	rio: transp('#3b9ee6', 0.88, {emissive: '#0d3f6a', emissiveIntensity: 0.15}),
@@ -1079,7 +1079,7 @@ export const Gradeamento: React.FC<EstadoGrade> = ({rastelo = 0, lixo = 1}) => {
 			<Bc a={[x0, fl, zA + 0.3]} b={[x1 + 0.6, nivel, ZF - 0.02]} m={mt.aguaSuja} />
 			{/* barras da grade (inclinadas) e a viga que as segura */}
 			<Inst geo={GEO.caixa} m={mt.ferro} itens={barras} />
-			<Bc a={[9.95, 2.35, zA]} b={[10.45, 2.55, ZF]} m={mt.ferro} />
+			<Bc a={[10.1, 2.4, zA]} b={[10.3, 2.52, ZF]} m={mt.ferro} />
 			{/* lixo preso do lado de cá da grade */}
 			{lixo > 0 ? (
 				<group scale={lixo}>
@@ -1111,10 +1111,10 @@ export const Gradeamento: React.FC<EstadoGrade> = ({rastelo = 0, lixo = 1}) => {
 
 export type EstadoAeracao = {q?: number; limpeza?: number};
 const BACTERIAS: V3[] = [
-	[13.6, 1.0, 28.9],
-	[14.6, 1.8, 28.2],
-	[15.8, 0.9, 29.2],
-	[16.8, 1.6, 28.6],
+	[13.6, 1.0, 29.2],
+	[14.4, 2.0, 28.8],
+	[15.9, 0.9, 29.3],
+	[16.9, 1.7, 28.9],
 	[13.9, 2.1, 27.0],
 	[15.2, 1.3, 26.2],
 	[16.5, 2.2, 25.0],
@@ -1129,7 +1129,7 @@ const Bacteria: React.FC<{p: V3; q: number; i: number; come: number}> = ({p, q, 
 	const bob = Math.sin(q * 0.12 + i) * 0.08;
 	const boca = 0.5 + 0.5 * Math.sin(q * 0.5 + i * 1.7) * come;
 	return (
-		<group position={[p[0], p[1] + bob, p[2]]} rotation={[0, 0, Math.sin(q * 0.05 + i) * 0.4]} scale={0.3}>
+		<group position={[p[0], p[1] + bob, p[2]]} rotation={[0, 0, Math.sin(q * 0.05 + i) * 0.4]} scale={0.38}>
 			<mesh geometry={GEO.esfLisa} material={mt.bacteria} scale={[1.2, 0.85, 0.85]} />
 			{[-0.55, 0, 0.55].map((x) => (
 				<mesh key={x} geometry={GEO.cil8} material={mt.bacteriaEsc} position={[x, -0.85, 0]} scale={[0.05, 0.4, 0.05]} rotation={[0, 0, Math.sin(q * 0.4 + x * 3) * 0.5]} />
