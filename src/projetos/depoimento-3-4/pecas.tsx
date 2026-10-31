@@ -120,7 +120,7 @@ const d34Flopado: React.FC<{cena: CenaPeca}> = ({cena}) => {
 						tremor={tremor}
 						selo={
 							frame >= selo ? (
-								<div style={{position: 'absolute', left: '50%', top: '50%', transform: `translate(-50%,-50%) rotate(-12deg) scale(${2.4 - 1.4 * pSelo})`, opacity: Math.min(1, pSelo * 2)}}>
+								<div style={{position: 'absolute', left: '50%', top: '50%', transform: `translate(-50%,-50%) rotate(-12deg) scale(${1.5 - 0.5 * pSelo})`, opacity: Math.min(1, pSelo * 2)}}>
 									<div style={{position: 'relative', padding: '10px 40px', border: '10px solid #e9e6f2', borderRadius: 22, fontFamily: poppins, fontWeight: 900, fontSize: 128, color: '#e9e6f2', letterSpacing: '0.06em', background: 'rgba(30,15,58,0.82)'}}>
 										FLOPADO
 										<div style={{position: 'absolute', left: -30, top: '50%', height: 20, width: `${risca * 112}%`, background: `linear-gradient(90deg, #fff1c9, ${OURO})`, borderRadius: 10, transform: 'rotate(-8deg)', boxShadow: '0 0 30px rgba(232,194,122,0.8)'}} />
@@ -212,7 +212,7 @@ const d34Mineracao: React.FC<{cena: CenaPeca}> = ({cena}) => {
 						</group>
 					</group>
 				) : null}
-				{golpes.length ? <Linha3D texto="MINERAÇÃO" metal="ouro" largura={5.8} y={yMundo(470)} quadro={frame} batida={golpes[golpes.length - 1]} profundidade={0.4} intervalo={1} ate={fim - 8} /> : null}
+				{golpes.length ? <Linha3D texto="MINERAÇÃO" metal="ouro" largura={4.2} y={yMundo(470)} quadro={frame} batida={golpes[golpes.length - 1]} profundidade={0.4} intervalo={1} ate={fim - 8} /> : null}
 			</Canvas>
 			<Kicker texto="ACHAR O PRODUTO" y={1460} p={frame >= acha ? pTexto * mola(acha, 170) : 0} />
 		</AbsoluteFill>
@@ -439,7 +439,7 @@ const d34Campeao: React.FC<{cena: CenaPeca}> = ({cena}) => {
 				<group position={[0, yTrofeu + quica, 0.2]} rotation={[0.1, t * 1.4, 0]} scale={1.25}>
 					<Trofeu m={m} />
 				</group>
-				{frame >= campeao ? <Linha3D texto="CAMPEÃO" metal="ouro" largura={5.6} y={yMundo(330)} quadro={frame} batida={campeao} profundidade={0.45} intervalo={1} ate={fim - 8} /> : null}
+				{frame >= campeao ? <Linha3D texto="CAMPEÃO" metal="ouro" largura={4.0} y={yMundo(330)} quadro={frame} batida={campeao} profundidade={0.45} intervalo={1} ate={fim - 8} /> : null}
 			</Canvas>
 			<Kicker texto="PRODUTO" y={frame >= campeao ? 190 : 330} p={mola(4, 170)} />
 		</AbsoluteFill>
@@ -531,7 +531,7 @@ const d34SemSegredo: React.FC<{cena: CenaPeca}> = ({cena}) => {
 						})
 					: null}
 				{fase === 2 && ativo >= 0 ? (
-					<Linha3D key={ativo} texto={nomes[ativo]} metal={ativo === 2 ? 'ouro' : 'branco'} largura={ativo === 2 ? 6.4 : 5.6} y={yMundo(400)} quadro={frame} batida={blocos[ativo]} profundidade={0.4} intervalo={1} ate={Math.min(fim - 8, (blocos[ativo + 1] ?? fim) - 2)} />
+					<Linha3D key={ativo} texto={nomes[ativo]} metal={ativo === 2 ? 'ouro' : 'branco'} largura={ativo === 2 ? 4.4 : 4.1} y={yMundo(400)} quadro={frame} batida={blocos[ativo]} profundidade={0.4} intervalo={1} ate={Math.min(fim - 8, (blocos[ativo + 1] ?? fim) - 2)} />
 				) : null}
 			</Canvas>
 		</AbsoluteFill>
