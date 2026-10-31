@@ -45,12 +45,12 @@ export const depoimento31: Edit = {
 	silencios: silencios as Trecho[],
 	transcricao,
 	trechos: () => {
-		// Tira as pausas medidas (≥ 0,2 s) que caem dentro de um trecho, com 0,04 s de ar de cada lado.
+		// Tira todas as pausas medidas (≥ 0,13 s) que caem dentro de um trecho, com 0,04 s de ar de cada lado.
 		const cortado: Trecho[] = [];
 		for (const [a, z] of TRECHOS) {
 			let ini = a;
 			for (const [s0, s1] of silencios as Trecho[]) {
-				if (s0 <= ini + 0.1 || s1 >= z - 0.1 || s1 - s0 < 0.2) continue;
+				if (s0 <= ini + 0.1 || s1 >= z - 0.1 || s1 - s0 < 0.13) continue;
 				cortado.push([ini, s0 + 0.04]);
 				ini = s1 - 0.04;
 			}
@@ -79,7 +79,8 @@ export const depoimento31: Edit = {
 			// Volta para o começo da gravação: deslize e plano aberto
 			{tipo: 'deslize', em: intro, direcao: 'esquerda'},
 			z(intro, 1.0),
-			...punches(b, 'finalizando mais uma live no TikTok, tentando escalar um produto', 0.5),
+			...punches(b, 'finalizando mais uma live no TikTok', 0.5),
+			...punches(b, 'tentando escalar um produto', 0.5),
 			...punches(b, 'então resolvi deixar esse relato de agradecimento aqui aos meninos da M4', 0.5),
 			...punches(b, 'já tive várias mentorias de valores bem agregados até, que não entregavam a metade do que os meninos estão entregando', 0.5),
 			...punches(b, 'e realmente foi um divisor de água no digital pra mim', 0.5),
@@ -111,18 +112,17 @@ export const depoimento31: Edit = {
 				esconderLegenda: true,
 				som: 'pop',
 			},
-			// 2. A dor do gancho, palavra por palavra
+			// 2. "nunca tinha tido resultado": gráfico de 3 anos reto no zero, R$ 0 em prata 3D (peça nova)
 			{
-				tipo: 'frase',
-				dor: true,
+				tipo: 'peca',
+				nome: 'd31Zero',
+				modo: 'cheia',
 				de: nunca - 0.03,
 				ate: b.say('tido resultado').fim + 0.02,
-				palavras: [
-					{texto: 'NUNCA', em: nunca},
-					{texto: 'TINHA TIDO', em: b.say('tinha tido').inicio},
-					{texto: 'RESULTADO', em: b.say('resultado').inicio, destaque: true},
-				],
+				dados: {emZero: b.say('resultado').inicio},
+				esconderLegenda: true,
 				som: 'pro_whoosh_curto',
+				sons: [{em: b.say('resultado').inicio, som: 'pro_pouso', ganho: 0.7}],
 			},
 			// 3. "mais uma live no TikTok": a live dela passa pela tela
 			{
@@ -161,31 +161,25 @@ export const depoimento31: Edit = {
 				esconderLegenda: true,
 				som: 'swish',
 			},
-			// 6. As mentorias caras de antes, um chip por vez
+			// 6–7. Mentorias caras que não entregavam a metade: cartões $$$ + barra de entrega que trava em 50% (peça nova)
 			{
-				tipo: 'chips',
+				tipo: 'peca',
+				nome: 'd31Metade',
+				modo: 'cheia',
 				de: b.say('várias mentorias').inicio - 0.05,
-				ate: b.say('que não entregavam').inicio - 0.05,
-				itens: [
-					{texto: 'VÁRIAS MENTORIAS', em: b.say('várias mentorias').inicio},
-					{texto: 'VALORES ALTOS', em: b.say('valores bem agregados').inicio},
-				],
-				y: 1060,
+				ate: b.say('a metade').fim + 0.5,
+				dados: {
+					emCartas: b.say('várias mentorias').inicio,
+					emValores: b.say('valores bem agregados').inicio,
+					emEntrega: b.say('não entregavam').inicio,
+					emMetade: b.say('a metade').inicio,
+				},
 				esconderLegenda: true,
-				som: 'tick',
-				sons: [{em: b.say('valores bem agregados').inicio, som: 'pro_tick'}],
-			},
-			// 7. "não entregavam a metade": texto 3D em metais sombrios
-			{
-				tipo: 'medo3d',
-				de: b.say('não entregavam').inicio - 0.08,
-				ate: b.say('a metade').fim + 0.25,
-				y: 330,
-				linhas: [
-					{texto: 'NÃO ENTREGAVAM', em: b.say('não entregavam').inicio, metal: 'cinza'},
-					{texto: 'A METADE', em: b.say('a metade').inicio, metal: 'sangue'},
+				som: 'pro_whoosh',
+				sons: [
+					{em: b.say('valores bem agregados').inicio, som: 'pro_pop', ganho: 0.7},
+					{em: b.say('a metade').inicio, som: 'pro_pouso', ganho: 0.7},
 				],
-				som: 'swish',
 			},
 			// 8. Divisor de água: antes × depois em grade, com título 3D
 			{
@@ -201,17 +195,17 @@ export const depoimento31: Edit = {
 				som: 'whoosh',
 				sons: [{em: b.say('no digital pra mim').inicio, som: 'swish'}],
 			},
-			// 9. Pediu demissão da CLT
+			// 9. Pediu demissão da CLT: carteira de trabalho carimbada DEMISSÃO e jogada fora (peça nova)
 			{
-				tipo: 'frase',
-				de: b.say('pedir demissão').inicio - 0.08,
+				tipo: 'peca',
+				nome: 'd31Demissao',
+				modo: 'cheia',
+				de: b.say('Eu resolvi pedir').inicio - 0.03,
 				ate: b.say('do CLT').fim + 0.05,
-				palavras: [
-					{texto: 'PEDI', em: b.say('pedir').inicio},
-					{texto: 'DEMISSÃO', em: b.say('demissão').inicio},
-					{texto: 'DA CLT', em: b.say('do CLT').inicio, destaque: true},
-				],
-				som: 'pro_whoosh_curto',
+				dados: {emCarimbo: b.say('demissão').inicio, emSai: b.say('do CLT').inicio},
+				esconderLegenda: true,
+				som: 'pro_swipe',
+				sons: [{em: b.say('demissão').inicio, som: 'pro_pouso', ganho: 0.8}],
 			},
 			// 10. Há pouco mais de 1 mês: ouro 3D (o "depois")
 			{
@@ -265,6 +259,7 @@ export const depoimento31: Edit = {
 					{titulo: 'Felipe', texto: 'Como foi a live hoje?', em: b.say('mandam mensagem').inicio},
 					{titulo: 'Danilow', texto: 'O que não deu certo? Bora ajustar', em: b.say('não tá dando certo').inicio},
 				],
+				esconderLegenda: true,
 				somItem: 'pro_msg',
 				ganhoItem: 0.6,
 			},
@@ -305,16 +300,17 @@ export const depoimento31: Edit = {
 				],
 				som: 'pro_whoosh_curto',
 			},
-			// 17. Fora da curva
+			// 17. Fora da curva: curva normal da turma e um ponto de luz que salta para fora dela + texto 3D (peça nova)
 			{
-				tipo: 'frase',
-				de: b.say('fora da curva').inicio - 0.06,
+				tipo: 'peca',
+				nome: 'd31Curva',
+				modo: 'cheia',
+				de: b.say('os meninos são fora').inicio - 0.05,
 				ate: fimFala + 0.05,
-				palavras: [
-					{texto: 'FORA', em: b.say('fora').inicio},
-					{texto: 'DA CURVA', em: b.say('da curva').inicio, destaque: true},
-				],
-				som: 'whoosh',
+				dados: {emFora: b.say('fora').inicio, emCurva: b.say('da curva').inicio},
+				esconderLegenda: true,
+				som: 'pro_whoosh',
+				sons: [{em: b.say('fora').inicio, som: 'pro_pop', ganho: 0.7}],
 			},
 			// 18. Cartão final
 			{tipo: 'final', de: fimFala + 0.1, ate: fimFala + 2.4, marca: 'Danilow', sub: 'MENTORIA M4', som: 'pro_logo'},
