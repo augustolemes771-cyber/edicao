@@ -586,7 +586,7 @@ const d43Cadeado: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			{COISAS.map((t, i) => {
 				const e = mola(frame, fps, coisas + i * 3, 160);
 				const lado = i % 2 === 0 ? -1 : 1;
-				const x = cx + lado * (140 + 120 * (i > 1 ? 1 : 0)) * e;
+				const x = cx + lado * (250 + 50 * (i > 1 ? 1 : 0)) * e;
 				const y = cy - 40 - (i > 1 ? 70 : -60) * e;
 				return (
 					<div key={t} style={{position: 'absolute', left: x - 110, top: y - 30, width: 220, textAlign: 'center', opacity: frame >= coisas + i * 3 ? Math.min(1, e * 1.4) : 0, transform: `scale(${0.4 + 0.6 * e}) rotate(${lado * 6 * e}deg)`}}>
