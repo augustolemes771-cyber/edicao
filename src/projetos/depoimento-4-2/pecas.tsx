@@ -310,7 +310,7 @@ const d42Comparacao: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			<ThreeCanvas width={width} height={height} gl={GL} camera={CAMERA} style={{position: 'absolute', inset: 0}}>
 				<CameraTremor quadro={frame} batidas={[quase]} z0={14.5} z1={14.1} duracao={fim} />
 				<Luzes quadro={frame} batidas={[quase]} />
-				<Linha3D ate={fim - 6} texto="≈" metal="ouro" largura={1.5} y={yMundo(470)} quadro={frame} batida={quase} profundidade={0.6} />
+				<Linha3D ate={fim - 6} texto="≈" metal="ouro" largura={1.15} y={yMundo(470)} quadro={frame} batida={quase} profundidade={0.6} />
 			</ThreeCanvas>
 		</AbsoluteFill>
 	);
