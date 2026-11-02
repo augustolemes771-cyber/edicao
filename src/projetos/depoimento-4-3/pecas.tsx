@@ -125,10 +125,10 @@ const d43Linha: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const pino = mola(frame, fps, em, 220);
 	const rot = mola(frame, fps, emRot, 200);
 	const pPlaca = mola(frame, fps, 0, 170);
-	const y = 300;
+	const y = 330;
 	return (
 		<AbsoluteFill style={{opacity: op}}>
-			<Placa top={190} altura={330} p={pPlaca}>
+			<Placa top={190} altura={380} p={pPlaca}>
 				<Kicker texto="MINHA JORNADA NO TIKTOK SHOP" p={pPlaca} top={30} />
 			</Placa>
 			<svg width={1080} height={1920} viewBox="0 0 1080 1920" style={{position: 'absolute', inset: 0}}>
@@ -148,12 +148,12 @@ const d43Linha: React.FC<{cena: CenaPeca}> = ({cena}) => {
 				{/* cursor de luz */}
 				<circle cx={xc} cy={y + 40} r={26} fill="rgba(255,240,200,0.35)" opacity={frame < em + 4 ? pPlaca : 0} />
 				{/* pino no mês falado */}
-				<g transform={`translate(${xm(alvo)}, ${y + 40 - 70 * pino}) scale(${pino})`} opacity={frame >= em ? 1 : 0}>
+				<g transform={`translate(${xm(alvo)}, ${y + 40 - 46 * pino}) scale(${0.72 * pino})`} opacity={frame >= em ? 1 : 0}>
 					<path d="M0,0 C-26,-30 -30,-64 0,-74 C30,-64 26,-30 0,0 Z" fill={OURO} />
 					<circle cx={0} cy={-48} r={11} fill={ROXO} />
 				</g>
 				{deMar ? (
-					<text x={xm(0)} y={y - 10} textAnchor="middle" fontFamily={poppins} fontWeight={800} fontSize={26} fill="rgba(233,230,242,0.75)" letterSpacing={2} opacity={pPlaca}>
+					<text x={xm(0) - 24} y={y + 4} textAnchor="start" fontFamily={poppins} fontWeight={800} fontSize={26} fill="rgba(233,230,242,0.75)" letterSpacing={2} opacity={pPlaca}>
 						{String(d.rotuloMar ?? 'COMEÇO')}
 					</text>
 				) : null}
