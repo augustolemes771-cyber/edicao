@@ -624,7 +624,7 @@ const d42Comunidade: React.FC<{cena: CenaPeca}> = ({cena}) => {
 				</div>
 				</div>
 			</div>
-			<div style={{position: 'absolute', top: 730, width: '100%', display: 'flex', justifyContent: 'center', opacity: Math.min(1, pOk * 1.4)}}>
+			<div style={{position: 'absolute', top: 640, width: '100%', display: 'flex', justifyContent: 'center', opacity: Math.min(1, pOk * 1.4)}}>
 				<div style={{display: 'flex', alignItems: 'center', gap: 16, padding: '14px 34px', borderRadius: 999, background: VERDE, color: ROXO, fontFamily: poppins, fontWeight: 900, fontSize: 44, letterSpacing: '0.06em', transform: `scale(${0.6 + 0.4 * pOk})`, boxShadow: '0 0 34px rgba(91,227,155,0.55)'}}>
 					<svg width={44} height={44} viewBox="0 0 70 70">
 						<path d="M14 37 L29 52 L57 20" fill="none" stroke={ROXO} strokeWidth={11} strokeLinecap="round" strokeLinejoin="round" />
