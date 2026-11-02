@@ -228,7 +228,7 @@ const d41Formula: React.FC<{cena: CenaPeca}> = ({cena}) => {
 				justifyContent: 'center',
 				fontFamily: poppins,
 				fontWeight: 900,
-				fontSize: ouro ? 70 : 64,
+				fontSize: ouro ? 62 : 64,
 				letterSpacing: '0.06em',
 				color: ouro ? ROXO : '#fff',
 				opacity: Math.min(1, p * 1.4),
