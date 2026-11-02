@@ -4,6 +4,12 @@
 import React, {useMemo} from 'react';
 import {useThree} from '@react-three/fiber';
 import {getInputProps, Internals, interpolate, random, spring, useVideoConfig} from 'remotion';
+import * as THREE from 'three';
+import {FontLoader} from 'three/examples/jsm/loaders/FontLoader.js';
+import {TextGeometry} from 'three/examples/jsm/geometries/TextGeometry.js';
+import {RoomEnvironment} from 'three/examples/jsm/environments/RoomEnvironment.js';
+import fonteJson from '../../../public/fontes/montserrat-black.typeface.json';
+
 // getInputProps() lança erro dentro do <Player> do painel (derrubava o player inteiro e a tela ficava preta): só lê no render/Studio.
 const auditando = () => {
 	try {
@@ -12,11 +18,6 @@ const auditando = () => {
 		return false;
 	}
 };
-import * as THREE from 'three';
-import {FontLoader} from 'three/examples/jsm/loaders/FontLoader.js';
-import {TextGeometry} from 'three/examples/jsm/geometries/TextGeometry.js';
-import {RoomEnvironment} from 'three/examples/jsm/environments/RoomEnvironment.js';
-import fonteJson from '../../../public/fontes/montserrat-black.typeface.json';
 
 const fonte = new FontLoader().parse(fonteJson as never);
 const lim = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
