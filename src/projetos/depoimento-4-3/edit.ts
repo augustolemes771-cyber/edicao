@@ -205,19 +205,20 @@ export const depoimento43: Edit = {
 				nome: 'd43Linha',
 				de: b.say('comecinho de setembro').inicio - 0.05,
 				ate: b.say('dessa mentoria').fim + 0.1,
-				dados: {mes: 'SET', em: b.say('setembro').inicio, emRotulo: b.say('dessa mentoria').inicio, rotulo: 'MENTORIA', rotuloMar: 'COMEÇO'},
+				dados: {mes: 'SET', em: b.say('setembro').inicio, emRotulo: b.say('a possibilidade').inicio, rotulo: 'MENTORIA', rotuloMar: 'COMEÇO'},
 				esconderLegenda: true,
 				som: 'pro_whoosh',
 				sons: [
 					{em: b.say('setembro').inicio, som: 'pro_pop', ganho: 0.6},
-					{em: b.say('dessa mentoria').inicio, som: 'pro_tick', ganho: 0.6},
+					{em: b.say('a possibilidade').inicio, som: 'pro_tick', ganho: 0.6},
+					{em: b.say('dessa mentoria').inicio, som: 'pro_pop', ganho: 0.4},
 				],
 			},
 			// 7. Os três mentores, um chip por nome
 			{
 				tipo: 'chips',
 				de: b.say('com o Danilow').inicio - 0.05,
-				ate: b.say('o Felipe').fim + 0.1,
+				ate: b.say('Método Lucrando').inicio - 0.08,
 				itens: [
 					{texto: 'DANILOW', em: b.say('Danilow').inicio},
 					{texto: 'MATHEUS', em: b.say('Matheus').inicio},
