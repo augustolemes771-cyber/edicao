@@ -220,7 +220,7 @@ const d42Espectadores: React.FC<{cena: CenaPeca}> = ({cena}) => {
 				const y = 300 + ((i * 89) % 140);
 				const cores = ['#8a5cf6', '#f2a65a', '#5bc0eb', '#ef6f9a', '#9be564'];
 				return (
-					<div key={i} style={{position: 'absolute', left: x, top: y - (1 - p) * 60, width: 44, height: 44, borderRadius: 44, background: cores[i % cores.length], boxShadow: '0 0 0 3px rgba(255,255,255,0.85)', opacity: p * interpolate(frame, [n900, n900 + 6], [1, 0.35], lim)}} />
+					<div key={i} style={{position: 'absolute', left: x, top: y - (1 - p) * 60, width: 44, height: 44, borderRadius: 44, background: cores[i % cores.length], boxShadow: '0 0 0 3px rgba(255,255,255,0.85)', opacity: p * interpolate(frame, [n900 - 2, n900 + 4], [1, 0], lim)}} />
 				);
 			})}
 			<ThreeCanvas width={width} height={height} gl={GL} camera={CAMERA} style={{position: 'absolute', inset: 0}}>
