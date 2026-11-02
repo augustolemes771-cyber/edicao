@@ -363,7 +363,7 @@ const d43Escada: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					<g opacity={pPerd} transform={`translate(${x0 + 40}, ${yChao})`}>
 						<circle cx={0} cy={-56} r={17} fill="#fff" />
 						<path d="M -25 0 Q -25 -36 0 -36 Q 25 -36 25 0 Z" fill="#fff" />
-						<text x={44} y={-70 - 8 * Math.abs(Math.sin(frame / 5))} fontFamily={poppins} fontWeight={900} fontSize={60} fill={OURO}>
+						<text x={44} y={-70 - 8 * Math.abs(Math.sin(frame / 5))} fontFamily={poppins} fontWeight={900} fontSize={96} fill={OURO}>
 							?
 						</text>
 					</g>
@@ -375,7 +375,7 @@ const d43Escada: React.FC<{cena: CenaPeca}> = ({cena}) => {
 				) : null}
 			</svg>
 			{!completa ? (
-				<div style={{position: 'absolute', left: x0 - 30, top: yChao - 170, width: 2 * w + 60, textAlign: 'center', opacity: frame >= base ? pBase : 0, transform: `scale(${1.6 - 0.6 * pBase}) rotate(-6deg)`}}>
+				<div style={{position: 'absolute', left: x0 - 30, top: yChao - 270, width: 2 * w + 60, textAlign: 'center', opacity: frame >= base ? pBase : 0, transform: `scale(${1.6 - 0.6 * pBase}) rotate(-6deg)`}}>
 					<span style={{display: 'inline-block', padding: '6px 22px', borderRadius: 14, background: '#e5484d', color: '#fff', fontFamily: poppins, fontWeight: 900, fontSize: 40, letterSpacing: '0.06em'}}>SEM BASE</span>
 				</div>
 			) : (
