@@ -253,7 +253,7 @@ export const depoimento42: Edit = {
 				tipo: 'peca',
 				nome: 'd42Aberta',
 				de: b.say('A operação').inicio - 0.03,
-				ate: b.say('estão fazendo').fim + 0.03,
+				ate: b.say('Por que que tá dando').inicio - 0.06,
 				dados: {emAberta: b.at('aberta'), emNada: b.at('nada'), emFazendo: b.at('fazendo')},
 				esconderLegenda: true,
 				som: 'pro_swipe',
@@ -306,7 +306,7 @@ export const depoimento42: Edit = {
 			{
 				tipo: 'frase',
 				de: b.say('E isso é muito').inicio - 0.03,
-				ate: b.say('muito importante').fim + 0.04,
+				ate: b.say('é o que eu não sabia').inicio - 0.06,
 				palavras: [
 					{texto: 'MUITO', em: b.say('muito importante').inicio},
 					{texto: 'IMPORTANTE', em: b.at('importante'), destaque: true},
@@ -331,7 +331,7 @@ export const depoimento42: Edit = {
 			{
 				tipo: 'chips',
 				de: b.say('O suporte dos').inicio - 0.03,
-				ate: b.say('lá é incrível').fim + 0.04,
+				ate: b.at('Qualquer') - 0.06,
 				itens: [
 					{texto: 'SUPORTE INCRÍVEL', em: b.say('O suporte dos').inicio},
 					{texto: 'COMUNIDADE INCRÍVEL', em: b.say('A comunidade').inicio},
