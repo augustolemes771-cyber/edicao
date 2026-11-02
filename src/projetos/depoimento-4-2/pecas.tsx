@@ -490,8 +490,8 @@ const d42Funil: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			<svg width={width} height={height} viewBox="0 0 1080 1920" style={{position: 'absolute', inset: 0}}>
 				{camadas.map((c, i) => {
 					const topo = y0 + i * (hC + 14);
-					const larg0 = 880 - i * 170;
-					const larg1 = 880 - (i + 1) * 170;
+					const larg0 = 900 - i * 140;
+					const larg1 = 900 - (i + 1) * 140;
 					const p = mola(frame, fps, c.em, 220);
 					const ativo = frame >= c.em;
 					const atual = ativo && (i === camadas.length - 1 || frame < camadas[i + 1].em);
@@ -504,7 +504,7 @@ const d42Funil: React.FC<{cena: CenaPeca}> = ({cena}) => {
 								strokeWidth={4}
 								style={{filter: atual ? 'drop-shadow(0 0 22px rgba(232,194,122,0.6))' : undefined}}
 							/>
-							<text x={540} y={topo + hC / 2 + 16} textAnchor="middle" fontFamily={poppins} fontWeight={900} fontSize={i === 3 ? 34 : 46} letterSpacing={2} fill={atual ? ROXO : '#fff'} opacity={ativo ? 1 : 0.35} transform={`translate(540 ${topo + hC / 2}) scale(${0.8 + 0.2 * Math.min(1.1, p)}) translate(-540 ${-(topo + hC / 2)})`}>
+							<text x={540} y={topo + hC / 2 + 16} textAnchor="middle" fontFamily={poppins} fontWeight={900} fontSize={i === 3 ? 32 : 46} letterSpacing={2} fill={atual ? ROXO : '#fff'} opacity={ativo ? 1 : 0.35} transform={`translate(540 ${topo + hC / 2}) scale(${0.8 + 0.2 * Math.min(1.1, p)}) translate(-540 ${-(topo + hC / 2)})`}>
 								{c.t}
 							</text>
 						</g>
