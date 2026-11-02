@@ -522,15 +522,15 @@ const d41Juntas: React.FC<{cena: CenaPeca}> = ({cena}) => {
 
 // ---------------------------------------------------------------- 7. enxergar possibilidades
 // Sobre o vídeo: a tela começa embaçada e escura ("antes eu não enxergava"); no "enxergar" uma lente abre do centro e limpa
-// a imagem; no "possibilidades" caminhos dourados saem do alto da cabeça dela para os lados e para cima, com nós de luz, e
-// POSSIBILIDADES aparece em serifa dourada no topo.
+// a imagem; no "possibilidades" caminhos dourados saem do alto da cabeça dela para os lados e para cima, com nós de luz.
+// Sem texto próprio: a legenda (com "possibilidades" em destaque) continua.
 const d41Enxergar: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const {frame, width, height, q, op} = useCena(cena);
 	const d = cena.dados as {emEnxergar: number; emPossib: number};
 	const enx = q(d.emEnxergar);
 	const pos = q(d.emPossib);
-	const abre = interpolate(frame, [enx, enx + 12], [0, 1], {...lim, easing: Easing.out(Easing.cubic)});
-	const raio = 40 + 1500 * abre;
+	const abre = interpolate(frame, [enx, enx + 20], [0, 1], {...lim, easing: Easing.inOut(Easing.quad)});
+	const raio = 30 + 1300 * abre;
 	const mascara = `radial-gradient(circle at 50% 46%, transparent ${raio}px, black ${raio + 140}px)`;
 	const origem = {x: 540, y: 660};
 	const destinos = [
@@ -573,25 +573,6 @@ const d41Enxergar: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					);
 				})}
 			</svg>
-			<AbsoluteFill style={{background: 'linear-gradient(180deg, rgba(20,8,40,0.88) 0%, rgba(20,8,40,0.6) 16%, rgba(20,8,40,0) 28%)', opacity: interpolate(frame, [pos, pos + 6], [0, 1], lim)}} />
-			<div
-				style={{
-					position: 'absolute',
-					top: 150,
-					width: '100%',
-					textAlign: 'center',
-					fontFamily: playfair,
-					fontStyle: 'italic',
-					fontWeight: 800,
-					fontSize: 112,
-					color: OURO,
-					opacity: interpolate(frame, [pos, pos + 6], [0, 1], lim),
-					transform: `scale(${interpolate(frame, [pos, pos + 8], [1.2, 1], lim)})`,
-					textShadow: '0 0 30px rgba(232,194,122,0.5), 0 6px 18px rgba(0,0,0,0.5)',
-				}}
-			>
-				possibilidades
-			</div>
 		</AbsoluteFill>
 	);
 };

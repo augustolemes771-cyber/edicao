@@ -399,14 +399,13 @@ const cenas = (b: Busca): ReturnType<Edit['cenas']> => {
 			som: 'pro_whoosh',
 			sons: [{em: b.at('sozinhas.'), som: 'pro_pouso', ganho: 0.7}],
 		},
-		// 23. Enxergar possibilidades: a tela embaçada abre como uma lente e caminhos dourados se abrem (peça nova)
+		// 23. Enxergar possibilidades: a tela embaçada abre como uma lente e caminhos dourados se abrem (peça nova; legenda segue)
 		{
 			tipo: 'peca',
 			nome: 'd41Enxergar',
-			de: b.say('consigo enxergar').inicio,
+			de: b.say('mas hoje eu já').inicio,
 			ate: sai(b.say('não enxergava.').fim, b.say('E é por isso').inicio, 0.3),
 			dados: {emEnxergar: b.at('enxergar', 2), emPossib: b.at('possibilidades')},
-			esconderLegenda: true,
 			som: 'pro_whoosh_curto',
 			sons: [{em: b.at('possibilidades'), som: 'pro_pop', ganho: 0.6}],
 		},
