@@ -123,7 +123,7 @@ const cenas = (b: Busca): ReturnType<Edit['cenas']> => {
 		{
 			tipo: 'pilula',
 			de: b.say('com o Danilow.').inicio,
-			ate: sai(b.say('com o Danilow.').fim, b.say('Eu já vinha').inicio, 0.25),
+			ate: b.at('vinha') - 0.03,
 			rotulo: 'COM O',
 			nome: 'Danilow',
 			y: 360,
@@ -133,7 +133,7 @@ const cenas = (b: Busca): ReturnType<Edit['cenas']> => {
 		// 4. Lives há algum tempo, tentando vender: a live dela com pouca gente
 		{
 			tipo: 'live',
-			de: b.say('Eu já vinha').inicio,
+			de: b.at('vinha'),
 			ate: sai(b.say('tentando vender.').fim, b.say('Mas a verdade', 1).inicio, 0.1),
 			espectadores: '4',
 			curtidas: '12 curtidas',
@@ -308,7 +308,7 @@ const cenas = (b: Busca): ReturnType<Edit['cenas']> => {
 		{
 			tipo: 'frase',
 			de: b.say('E eles não simplesmente').inicio,
-			ate: sai(b.say('se virar, não.').fim, b.say('Eles praticamente').inicio, 0.2),
+			ate: b.at('praticamente') + 0.04,
 			palavras: [
 				{texto: 'EXPLICAR', em: b.at('explicam')},
 				{texto: 'E DEIXAR SE VIRAR?', em: b.say('deixam a gente').inicio},
@@ -321,7 +321,7 @@ const cenas = (b: Busca): ReturnType<Edit['cenas']> => {
 			tipo: 'peca',
 			nome: 'd41Passos',
 			modo: 'cheia',
-			de: b.say('Eles praticamente').inicio,
+			de: b.at('praticamente') + 0.06,
 			ate: sai(b.say('passo a passo,').fim, b.say('oferecendo atendimento').inicio, 0.15),
 			dados: {
 				emMao: b.say('pegam na nossa mão.').inicio,
@@ -355,9 +355,9 @@ const cenas = (b: Busca): ReturnType<Edit['cenas']> => {
 			ate: sai(b.say('nas nossas lives.').fim, b.say('E isso faz').inicio, 0.2),
 			icone: 'mensagem',
 			itens: [
-				{titulo: 'Danilow', texto: 'Manda sua dúvida que a gente resolve', em: b.say('Tiram nossas').inicio + 0.05},
-				{titulo: 'Matheus', texto: 'Testa esse produto na sua próxima live', em: b.say('sugerem produtos').inicio},
-				{titulo: 'Felipe', texto: 'Separei mais 2 produtos pra live', em: b.say('nas nossas lives.').inicio},
+				{titulo: 'Danilow', texto: 'Manda sua dúvida!', em: b.say('Tiram nossas').inicio + 0.05},
+				{titulo: 'Matheus', texto: 'Testa esse produto na live', em: b.say('sugerem produtos').inicio},
+				{titulo: 'Felipe', texto: 'Bora testar hoje?', em: b.say('nas nossas lives.').inicio},
 			],
 			esconderLegenda: true,
 			somItem: 'pro_msg',
@@ -426,7 +426,7 @@ const cenas = (b: Busca): ReturnType<Edit['cenas']> => {
 		{
 			tipo: 'cards3d',
 			de: b.say('ao Danilow, Matheus').inicio,
-			ate: sai(b.say('ao Felipe.').fim, b.at('Meninos,'), 0.3),
+			ate: b.at('obrigada'),
 			itens: [
 				{texto: 'DANILOW', em: b.at('Danilow', 3)},
 				{texto: 'MATHEUS', em: b.at('Matheus', 2)},
