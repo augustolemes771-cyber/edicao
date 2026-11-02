@@ -826,8 +826,15 @@
   "confidence": 1
  },
  {
-  "text": " Era",
-  "startMs": 30150,
+  "text": " E",
+  "startMs": 30000,
+  "endMs": 30130,
+  "timestampMs": null,
+  "confidence": 1
+ },
+ {
+  "text": " era",
+  "startMs": 30130,
   "endMs": 30270,
   "timestampMs": null,
   "confidence": 1
@@ -1527,15 +1534,15 @@
  },
  {
   "text": " o",
-  "startMs": 54760,
-  "endMs": 55170,
+  "startMs": 55300,
+  "endMs": 55380,
   "timestampMs": null,
   "confidence": 1
  },
  {
   "text": " produto,",
-  "startMs": 55170,
-  "endMs": 55350,
+  "startMs": 54850,
+  "endMs": 55300,
   "timestampMs": null,
   "confidence": 1
  },
@@ -1548,22 +1555,22 @@
  },
  {
   "text": " produtor,",
-  "startMs": 55700,
-  "endMs": 56030,
+  "startMs": 55380,
+  "endMs": 55660,
   "timestampMs": null,
   "confidence": 1
  },
  {
   "text": " uma",
-  "startMs": 56030,
-  "endMs": 56510,
+  "startMs": 55720,
+  "endMs": 56000,
   "timestampMs": null,
   "confidence": 1
  },
  {
   "text": " live,",
-  "startMs": 56510,
-  "endMs": 56790,
+  "startMs": 56000,
+  "endMs": 56580,
   "timestampMs": null,
   "confidence": 1
  },

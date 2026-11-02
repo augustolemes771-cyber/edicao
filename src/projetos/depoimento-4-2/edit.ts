@@ -20,7 +20,7 @@ const TRECHOS: Trecho[] = [
 	[0.0, 3.24], // Quando eu entrei, eu me lembro que eles tinham feito 240 mil em um dia,
 	[17.19, 24.82], // na minha primeira live ... 5 mil de GMV em uma hora. E coloquei mais de 900 ... nunca tinha colocado 900 pessoas numa live.
 	[8.38, 15.1], // Depois de 15 dias de mentoria ... eu fiz em dois dias, mas fiz quase o mesmo resultado que eles.
-	[29.99, 37.1], // Era pra ter sido muito mais ... acabou, não tem mais ... tem que obedecer.
+	[29.99, 37.1], // E era pra ter sido muito mais ... acabou, não tem mais ... tem que obedecer.
 	[46.34, 58.27], // A operação de live deles é toda aberta ali ... funil de compra do cliente?
 	[60.2, 67.08], // E isso é muito importante ... eu não sabia analisar tudo aquilo, as métricas.
 	[71.8, 80.56], // O suporte dos meninos é incrível ... e você conseguir fazer.
@@ -88,7 +88,7 @@ export const depoimento42: Edit = {
 			punches(b, 'E coloquei mais de 900 pessoas numa live, eu nunca tinha colocado 900 pessoas numa live', 0.5),
 			punches(b, 'Depois de 15 dias de mentoria, tive esse resultado aqui', 0.5),
 			punches(b, 'Eles fizeram em um dia, eu fiz em dois dias, mas fiz quase o mesmo resultado que eles', 0.5),
-			punches(b, 'Era pra ter sido muito mais, a gente só parou porque o produtor disse', 0.45),
+			punches(b, 'E era pra ter sido muito mais, a gente só parou porque o produtor disse', 0.45),
 			punches(b, 'Acabou, não tem mais, para de vender, que a gente não tem', 0.45),
 			punches(b, 'E aí a gente obedeceu, né, tem que obedecer', 0.4),
 			punches(b, 'A operação de live deles é toda aberta ali', 0.5),
@@ -227,7 +227,7 @@ export const depoimento42: Edit = {
 			{
 				tipo: 'peca',
 				nome: 'd42Estoque',
-				de: b.say('Era pra ter').inicio - 0.03,
+				de: b.say('E era pra ter').inicio - 0.03,
 				ate: b.say('a gente não tem').fim + 0.04,
 				dados: {
 					emMais: b.say('muito mais').inicio,
