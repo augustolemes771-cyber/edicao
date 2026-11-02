@@ -218,7 +218,7 @@ const cenas = (b: Busca): ReturnType<Edit['cenas']> => {
 			de: b.say('o Danilow, Matheus').inicio,
 			ate: sai(b.say('me mostrando.').fim, b.say('Estou aprendendo').inicio),
 			itens: [
-				{texto: 'DANILOW', em: b.at('Danilow,')},
+				{texto: 'DANILOW', em: b.at('Danilow', 2)},
 				{texto: 'MATHEUS', em: b.at('Matheus')},
 				{texto: 'FELIPE', em: b.at('Felipe')},
 			],
@@ -312,7 +312,7 @@ const cenas = (b: Busca): ReturnType<Edit['cenas']> => {
 			palavras: [
 				{texto: 'EXPLICAR', em: b.at('explicam')},
 				{texto: 'E DEIXAR SE VIRAR?', em: b.say('deixam a gente').inicio},
-				{texto: 'NÃO', em: b.at('não.'), destaque: true},
+				{texto: 'NÃO', em: b.tempos('se virar, não.')[2], destaque: true},
 			],
 			som: 'pro_frase',
 		},
@@ -428,15 +428,15 @@ const cenas = (b: Busca): ReturnType<Edit['cenas']> => {
 			de: b.say('ao Danilow, Matheus').inicio,
 			ate: sai(b.say('ao Felipe.').fim, b.at('Meninos,'), 0.3),
 			itens: [
-				{texto: 'DANILOW', em: b.at('Danilow,', 2)},
+				{texto: 'DANILOW', em: b.at('Danilow', 3)},
 				{texto: 'MATHEUS', em: b.at('Matheus', 2)},
-				{texto: 'FELIPE', em: b.at('Felipe.')},
+				{texto: 'FELIPE', em: b.at('Felipe', 2)},
 			],
 			y: 1180,
 			som: 'swish',
 			sons: [
 				{em: b.at('Matheus', 2), som: 'pro_tick'},
-				{em: b.at('Felipe.'), som: 'pro_tick'},
+				{em: b.at('Felipe', 2), som: 'pro_tick'},
 			],
 		},
 		// 26. Obrigada pela paciência, dedicação e conhecimento
@@ -446,7 +446,7 @@ const cenas = (b: Busca): ReturnType<Edit['cenas']> => {
 			ate: sai(b.say('com a gente.').fim, b.say('É muito bom').inicio, 0.25),
 			titulo: 'Obrigada',
 			itens: [
-				{texto: 'PACIÊNCIA', em: b.at('paciência,')},
+				{texto: 'PACIÊNCIA', em: b.at('paciência', 2)},
 				{texto: 'DEDICAÇÃO', em: b.at('dedicação')},
 				{texto: 'CONHECIMENTO', em: b.at('conhecimento')},
 			],
