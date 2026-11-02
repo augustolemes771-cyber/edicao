@@ -74,13 +74,13 @@ const d43Gmv: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const lento = interpolate(frame, [agora, trinta], [0, 0.26], lim);
 	const dispara = interpolate(frame, [trinta, trinta + 9], [0, 1], {...lim, easing: Easing.out(Easing.back(1.4))});
 	const ouro = Math.max(lento, 0.26 + 0.74 * dispara);
-	const L = 700; // largura total da barra cheia (30 mil)
+	const L = 560; // largura total da barra cheia (30 mil)
 	const valor9 = Math.round(9 * prata);
 	const valorOuro = frame < trinta ? Math.round(30 * lento * (frame >= agora ? 1 : 0)) : Math.round(9 + 21 * Math.min(1, dispara));
 	const kick = frame < trinta - 2 ? mola(frame, fps, melhor, 200) : interpolate(frame, [trinta - 2, trinta + 3], [1, 0], lim);
 	const tremor = frame >= trinta && frame < trinta + 10 ? Math.sin(frame * 2.9) * 10 * (1 - (frame - trinta) / 10) : 0;
 	const Barra = ({y, f, cor, rotulo, valor, pv}: {y: number; f: number; cor: string; rotulo: string; valor: string; pv: number}) => (
-		<div style={{position: 'absolute', left: 130, top: y, width: 820, opacity: pv}}>
+		<div style={{position: 'absolute', left: 40, top: y, width: 820, opacity: pv}}>
 			<div style={{fontFamily: poppins, fontWeight: 800, fontSize: 28, letterSpacing: '0.2em', color: 'rgba(233,230,242,0.8)', marginBottom: 10}}>{rotulo}</div>
 			<div style={{position: 'relative', height: 64}}>
 				<div style={{position: 'absolute', left: 0, top: 0, height: 64, width: Math.max(64, L * f), borderRadius: 32, background: cor, boxShadow: cor === OURO ? '0 0 40px rgba(232,194,122,0.55)' : 'none'}} />
@@ -93,7 +93,7 @@ const d43Gmv: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			<Placa top={190} altura={430} p={pPlaca} borda={frame >= trinta ? OURO : undefined}>
 				<Kicker texto="MEU MELHOR DIA · GMV" p={kick} />
 				<Barra y={170} f={0.3 * prata} cor={PRATA} rotulo="ANTES" valor={`R$ ${valor9} MIL`} pv={interpolate(frame, [Math.max(1, nove - 12), nove - 4], [0, 1], lim)} />
-				<Barra y={290} f={ouro} cor={OURO} rotulo="AGORA" valor={frame >= trinta ? '+30 MIL' : `R$ ${valorOuro} MIL`} pv={interpolate(frame, [agora - 2, agora + 4], [0, 1], lim)} />
+				<Barra y={290} f={ouro} cor={OURO} rotulo="AGORA" valor={`R$ ${valorOuro} MIL`} pv={interpolate(frame, [agora - 2, agora + 4], [0, 1], lim)} />
 			</Placa>
 			<ThreeCanvas width={width} height={height} gl={GL} camera={CAMERA} style={{position: 'absolute', inset: 0}}>
 				<CameraTremor quadro={frame} batidas={[trinta]} z0={14.5} z1={13.9} duracao={fim} />
