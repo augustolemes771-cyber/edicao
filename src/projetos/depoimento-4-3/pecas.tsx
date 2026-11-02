@@ -289,7 +289,7 @@ const d43Mudando: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			<div
 				style={{
 					position: 'absolute',
-					top: 430,
+					top: 320,
 					width: '100%',
 					textAlign: 'center',
 					opacity: defasou ? Math.min(1, carimbo * 1.3) : 0,
