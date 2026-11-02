@@ -143,7 +143,7 @@ const d41Acolhe: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<AbsoluteFill style={{opacity: op}}>
 			{/* topo escurece para o ouro ler */}
-			<AbsoluteFill style={{background: 'linear-gradient(180deg, rgba(20,8,40,0.78) 0%, rgba(20,8,40,0.35) 22%, rgba(20,8,40,0) 36%)'}} />
+			<AbsoluteFill style={{background: 'linear-gradient(180deg, rgba(20,8,40,0.88) 0%, rgba(20,8,40,0.62) 18%, rgba(20,8,40,0) 32%)'}} />
 			{/* luz quente do abraço */}
 			<AbsoluteFill style={{background: `radial-gradient(ellipse 60% 45% at 50% 52%, rgba(255,214,140,${0.22 * calor}) 0%, rgba(255,190,90,${0.1 * calor}) 50%, rgba(0,0,0,0) 75%)`, mixBlendMode: 'screen'}} />
 			<svg width={width} height={height} viewBox="0 0 1080 1920" style={{position: 'absolute', inset: 0}}>
@@ -573,7 +573,7 @@ const d41Enxergar: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					);
 				})}
 			</svg>
-			<AbsoluteFill style={{background: 'linear-gradient(180deg, rgba(20,8,40,0.7) 0%, rgba(20,8,40,0.25) 16%, rgba(20,8,40,0) 24%)', opacity: interpolate(frame, [pos, pos + 6], [0, 1], lim)}} />
+			<AbsoluteFill style={{background: 'linear-gradient(180deg, rgba(20,8,40,0.88) 0%, rgba(20,8,40,0.6) 16%, rgba(20,8,40,0) 28%)', opacity: interpolate(frame, [pos, pos + 6], [0, 1], lim)}} />
 			<div
 				style={{
 					position: 'absolute',
