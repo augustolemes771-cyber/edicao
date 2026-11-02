@@ -222,27 +222,23 @@ export const depoimento42: Edit = {
 					{em: b.say('quase o mesmo').inicio, som: 'pro_pouso', ganho: 0.8},
 				],
 			},
-			// 8. Era pra ter sido muito mais
-			{
-				tipo: 'frase',
-				de: b.say('Era pra ter').inicio - 0.03,
-				ate: b.say('muito mais').fim + 0.04,
-				palavras: [
-					{texto: 'ERA PRA SER', em: b.say('Era pra ter').inicio},
-					{texto: 'MUITO MAIS', em: b.say('muito mais').inicio, destaque: true},
-				],
-				som: 'pro_whoosh_curto',
-			},
-			// 9. Acabou o estoque: barra esvaziando, mensagem do produtor e carimbo ESGOTADO (peça nova)
+			// 8–9. Era pra ter sido muito mais / acabou o estoque: o estoque esvazia enquanto ela fala (ERA PRA SER MUITO MAIS no
+			// "muito mais"), chega a mensagem do produtor e o carimbo ESGOTADO bate no "Acabou" (peça nova)
 			{
 				tipo: 'peca',
 				nome: 'd42Estoque',
-				de: b.say('a gente só parou').inicio - 0.03,
+				de: b.say('Era pra ter').inicio - 0.03,
 				ate: b.say('a gente não tem').fim + 0.04,
-				dados: {emProdutor: b.say('produtor disse').inicio, emAcabou: b.at('Acabou'), emPara: b.say('para de vender').inicio},
+				dados: {
+					emMais: b.say('muito mais').inicio,
+					emProdutor: b.say('produtor disse').inicio,
+					emAcabou: b.at('Acabou'),
+					emPara: b.say('para de vender').inicio,
+				},
 				esconderLegenda: true,
 				som: 'swish',
 				sons: [
+					{em: b.say('muito mais').inicio, som: 'pro_pop', ganho: 0.6},
 					{em: b.say('produtor disse').inicio, som: 'pro_msg', ganho: 0.6},
 					{em: b.at('Acabou'), som: 'pro_pouso', ganho: 0.8},
 					{em: b.say('para de vender').inicio, som: 'pro_msg', ganho: 0.6},
@@ -306,7 +302,8 @@ export const depoimento42: Edit = {
 			{
 				tipo: 'frase',
 				de: b.say('E isso é muito').inicio - 0.03,
-				ate: b.say('é o que eu não sabia').inicio - 0.06,
+				// fica 0,6 s depois do "importante" (ele entra no fim da frase) e a peça seguinte entra logo depois
+				ate: b.at('importante') + 0.68,
 				palavras: [
 					{texto: 'MUITO', em: b.say('muito importante').inicio},
 					{texto: 'IMPORTANTE', em: b.at('importante'), destaque: true},
@@ -317,7 +314,7 @@ export const depoimento42: Edit = {
 			{
 				tipo: 'peca',
 				nome: 'd42Analise',
-				de: b.say('é o que eu não sabia').inicio - 0.03,
+				de: b.at('importante') + 0.7,
 				ate: b.emendas[b.emendas.findIndex((e) => e > b.at('métricas'))] - 0.02,
 				dados: {emAnalisar: b.at('analisar', 2), emMetricas: b.say('As métricas').inicio},
 				esconderLegenda: true,
@@ -349,11 +346,10 @@ export const depoimento42: Edit = {
 				ate: b.say('conseguir fazer').fim + 0.03,
 				dados: {
 					itens: [
-						{de: 'Você', texto: 'Minha live não converte. O que eu ajusto?', em: b.at('dúvida'), eu: true},
-						{de: 'Danilow', texto: 'Muda o gancho dos 3 primeiros segundos', em: b.say('Os meninos não').inicio},
-						{de: 'Matheus', texto: 'Testa e manda o print das métricas', em: b.at('desistem')},
-						{de: 'Ana · comunidade', texto: 'Fiz isso ontem e funcionou!', em: b.at('testar')},
-						{de: 'Você', texto: 'Testei. Deu certo!!', em: b.at('conseguir'), eu: true},
+						{de: 'Você', texto: 'Minha live não converte. E agora?', em: b.at('dúvida'), eu: true},
+						{de: 'Danilow', texto: 'Testa outro gancho!', em: b.say('Os meninos não').inicio},
+						{de: 'Felipe', texto: 'Não desiste, testa de novo', em: b.at('testar')},
+						{de: 'Você', texto: 'Deu certo!!', em: b.at('conseguir'), eu: true},
 					],
 					emOk: b.say('conseguir fazer').fim - 0.25,
 				},
@@ -361,39 +357,26 @@ export const depoimento42: Edit = {
 				som: 'pro_msg',
 				sons: [
 					{em: b.say('Os meninos não').inicio, som: 'pro_msg', ganho: 0.5},
-					{em: b.at('desistem'), som: 'pro_msg', ganho: 0.5},
 					{em: b.at('testar'), som: 'pro_msg', ganho: 0.5},
 					{em: b.at('conseguir'), som: 'pro_msg', ganho: 0.5},
 					{em: b.say('conseguir fazer').fim - 0.25, som: 'pro_pop', ganho: 0.7},
 				],
 			},
-			// 17. Agradecimento aos meninos (com os nomes) e à comunidade, um selo por vez
+			// 17. Agradecimento aos meninos e, no "comunidade", à comunidade (os nomes vão no cartão final)
 			{
 				tipo: 'selo',
 				de: b.say('Então eu agradeço').inicio - 0.03,
-				ate: b.say('E agradeço').inicio - 0.04,
+				ate: fimFala + 0.04,
 				texto: 'OBRIGADA, MENINOS',
-				chip: 'DANILOW · MATHEUS · FELIPE',
-				emChip: b.say('aos meninos').inicio,
+				chip: 'E À COMUNIDADE',
+				emChip: b.at('comunidade', 2),
 				y: 380,
 				esconderLegenda: true,
 				som: 'swish',
-				sons: [{em: b.say('aos meninos').inicio, som: 'pro_tick', ganho: 0.6}],
-			},
-			{
-				tipo: 'selo',
-				de: b.say('E agradeço').inicio,
-				ate: fimFala + 0.04,
-				texto: 'E À COMUNIDADE',
-				chip: 'OBRIGADA, PESSOAL',
-				emChip: b.at('Obrigada'),
-				y: 380,
-				esconderLegenda: true,
-				som: 'tick',
-				sons: [{em: b.at('Obrigada'), som: 'pro_tick', ganho: 0.6}],
+				sons: [{em: b.at('comunidade', 2), som: 'pro_tick', ganho: 0.6}],
 			},
 			// 18. Cartão final
-			{tipo: 'final', de: fimFala + 0.1, ate: fimFala + 2.4, marca: 'Danilow', sub: 'MENTORIA', som: 'pro_logo'},
+			{tipo: 'final', de: fimFala + 0.1, ate: fimFala + 2.4, marca: 'Danilow', sub: 'MATHEUS E FELIPE', som: 'pro_logo'},
 		];
 	},
 };
