@@ -391,8 +391,8 @@ const d41Passos: React.FC<{cena: CenaPeca}> = ({cena}) => {
 		const yb = yD(Math.min(i + 1, DEG - 1));
 		return {x: xa + (xb - xa) * f, y: ya + (yb - ya) * f - Math.sin(f * Math.PI) * 60};
 	};
-	const ela = pos(nivel, -38);
-	const mentor = pos(Math.min(nivel + 0.0, DEG - 1), 38);
+	const ela = pos(nivel, -48);
+	const mentor = pos(nivel, 48);
 	const liga = interpolate(frame, [mao, mao + 8], [0, 1], lim);
 	const pMao = interpolate(frame, [mao, mao + 6], [0, 1], lim) * (1 - interpolate(frame, [passoTexto - 3, passoTexto], [0, 1], lim));
 	const pPasso = mola(frame, fps, passoTexto, 200);
@@ -433,13 +433,13 @@ const d41Passos: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					</radialGradient>
 				</defs>
 				{/* mãos dadas */}
-				<line x1={ela.x} y1={ela.y - 60} x2={ela.x + (mentor.x - ela.x) * liga} y2={ela.y - 60 + (mentor.y - ela.y) * liga} stroke={OURO} strokeWidth={10} strokeLinecap="round" />
-				<circle cx={(ela.x + mentor.x) / 2} cy={ela.y - 60} r={60} fill="url(#d41luzP)" opacity={liga * 0.8} />
+				<line x1={ela.x} y1={ela.y - 70} x2={ela.x + (mentor.x - ela.x) * liga} y2={ela.y - 70 + (mentor.y - ela.y) * liga} stroke={OURO} strokeWidth={10} strokeLinecap="round" />
+				<circle cx={(ela.x + mentor.x) / 2} cy={ela.y - 70} r={70} fill="url(#d41luzP)" opacity={liga * 0.8} />
 				{/* ela (branco) e o mentor (ouro): cabeça + corpo */}
-				<circle cx={ela.x} cy={ela.y - 105} r={26} fill="#fff" />
-				<rect x={ela.x - 22} y={ela.y - 76} width={44} height={70} rx={20} fill="#fff" />
-				<circle cx={mentor.x} cy={mentor.y - 115} r={28} fill={OURO} />
-				<rect x={mentor.x - 24} y={mentor.y - 84} width={48} height={78} rx={22} fill={OURO} />
+				<circle cx={ela.x} cy={ela.y - 152} r={36} fill="#fff" />
+				<rect x={ela.x - 30} y={ela.y - 110} width={60} height={104} rx={28} fill="#fff" />
+				<circle cx={mentor.x} cy={mentor.y - 166} r={40} fill={OURO} />
+				<rect x={mentor.x - 33} y={mentor.y - 120} width={66} height={114} rx={30} fill={OURO} />
 			</svg>
 			<Rotulo texto="PEGAM NA NOSSA MÃO" y={420} p={pMao} tamanho={52} />
 			<div
