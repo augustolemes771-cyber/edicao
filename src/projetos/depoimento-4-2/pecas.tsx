@@ -591,13 +591,13 @@ const d42Comunidade: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const d = cena.dados as {itens: Msg[]; emOk: number};
 	const itens = d.itens.map((m) => ({...m, f: q(m.em)}));
 	const ok = q(d.emOk);
-	const ALT = 150;
+	const ALT = 118;
 	const visiveis = itens.filter((m) => frame >= m.f);
 	const pCard = mola(frame, fps, 0, 190);
 	// a pilha sobe com mola a cada mensagem nova
 	let deslocamento = 0;
 	visiveis.forEach((m, i) => {
-		if (i >= 3) deslocamento += ALT * mola(frame, fps, m.f, 200);
+		if (i >= 4) deslocamento += ALT * mola(frame, fps, m.f, 200);
 	});
 	const pOk = mola(frame, fps, ok, 220);
 	return (
@@ -608,7 +608,8 @@ const d42Comunidade: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					<div style={{width: 46, height: 46, borderRadius: 46, background: OURO_TEXTO}} />
 					<div style={{fontFamily: poppins, fontWeight: 800, fontSize: 32, color: '#fff'}}>Comunidade da mentoria</div>
 				</div>
-				<div style={{position: 'absolute', left: 0, right: 0, top: 100, transform: `translateY(${-deslocamento}px)`}}>
+				<div style={{position: 'absolute', left: 0, right: 0, top: 92, bottom: 0, overflow: 'hidden'}}>
+				<div style={{position: 'absolute', left: 0, right: 0, top: 14, transform: `translateY(${-deslocamento}px)`}}>
 					{visiveis.map((m, i) => {
 						const p = mola(frame, fps, m.f, 210);
 						return (
@@ -620,6 +621,7 @@ const d42Comunidade: React.FC<{cena: CenaPeca}> = ({cena}) => {
 							</div>
 						);
 					})}
+				</div>
 				</div>
 			</div>
 			<div style={{position: 'absolute', top: 730, width: '100%', display: 'flex', justifyContent: 'center', opacity: Math.min(1, pOk * 1.4)}}>
