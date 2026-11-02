@@ -453,9 +453,9 @@ const d43Abraco: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const pTexto = mola(frame, fps, abr + 4, 200);
 	const alturas = [0.8, 1, 0.7, 1.15, 0.85, 1.05, 0.75];
 	const cx = 540;
-	const cy = 440;
+	const cy = 465;
 	const rx = 400;
-	const ry = 150;
+	const ry = 118;
 	// arco elíptico de cada lado, crescendo do lado de baixo até o topo
 	const meiaElipse = (lado: 1 | -1) => {
 		const pts: string[] = [];
@@ -473,7 +473,7 @@ const d43Abraco: React.FC<{cena: CenaPeca}> = ({cena}) => {
 				{alturas.map((a, i) => {
 					const x = cx + (i - 3) * 100;
 					const e = mola(frame, fps, pess + i * 2, 200);
-					const y = cy + 70;
+					const y = cy + 62;
 					return (
 						<g key={i} opacity={e} transform={`translate(${x}, ${y + (1 - e) * 40}) scale(${a})`}>
 							<circle cx={0} cy={-88} r={24} fill={frame >= abr + 8 ? '#fff6dc' : '#e9e6f2'} />
