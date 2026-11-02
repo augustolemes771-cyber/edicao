@@ -16,7 +16,7 @@ const P = {x: 0.56, y: 0.42};
 // Trechos no tempo original, na ordem da história.
 const TRECHOS: Trecho[] = [
 	[174.36, 177.8], // o meu melhor resultado em um único dia tinha sido 9 mil de GMV,
-	[178.84, 181.04], // e eu já consegui alcançar aí,
+	[178.84, 180.33], // e eu já consegui alcançar aí (o "é..." depois sai)
 	[182.16, 184.18], // mais de 30 mil de GMV.
 	[16.8, 20.44], // Eu comecei no TikTok Shop em março,
 	[24.68, 27.4], // fazendo somente trabalho com live gravada.
@@ -60,7 +60,7 @@ export const depoimento43: Edit = {
 	verificarCurva: false,
 	regraCamera: false,
 	barraProgresso: true,
-	extraFim: 2.4,
+	extraFim: 2.0,
 	silencios: silencios as Trecho[],
 	transcricao,
 	trechos: () => {
@@ -355,7 +355,7 @@ export const depoimento43: Edit = {
 				som: 'pro_whoosh_curto',
 			},
 			// 18. Cartão final
-			{tipo: 'final', de: fimFala + 0.15, ate: fimFala + 2.4, marca: 'Danilow', sub: 'MÉTODO LUCRANDO COM LIVES', som: 'pro_logo'},
+			{tipo: 'final', de: fimFala + 0.15, ate: fimFala + 2.0, marca: 'Danilow', sub: 'MÉTODO LUCRANDO COM LIVES', som: 'pro_logo'},
 		];
 	},
 };
