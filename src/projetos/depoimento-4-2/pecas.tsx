@@ -9,7 +9,7 @@ import * as THREE from 'three';
 import type {CenaPeca, Pecas} from '../../pecas/peca';
 import {FundoMotion} from '../../pecas/FundoMotion';
 import {CameraTremor, Linha3D, Luzes} from '../../pecas/tres/Texto3D';
-import {playfair, poppins} from '../../motor/tema';
+import {poppins} from '../../motor/tema';
 
 const lim = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 const OURO = '#E8C27A';
@@ -632,7 +632,5 @@ const d42Comunidade: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	);
 };
 
-// Para o tsc não reclamar de import sem uso quando uma peça deixar de usar a serifa.
-void playfair;
 
 export const pecas: Pecas = {d42Mes, d42Hora, d42Espectadores, d42Dias, d42Comparacao, d42Estoque, d42Aberta, d42CertoErrado, d42Funil, d42Analise, d42Comunidade};
