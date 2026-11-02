@@ -275,7 +275,7 @@
  {
   "text": " março,",
   "startMs": 20000,
-  "endMs": 20420,
+  "endMs": 20400,
   "timestampMs": null,
   "confidence": 0.99
  },
@@ -366,7 +366,7 @@
  {
   "text": " gravada.",
   "startMs": 26940,
-  "endMs": 27380,
+  "endMs": 27440,
   "timestampMs": null,
   "confidence": 0.99
  },
@@ -618,7 +618,7 @@
  {
   "text": " TikTok",
   "startMs": 43620,
-  "endMs": 44100,
+  "endMs": 44140,
   "timestampMs": null,
   "confidence": 0.99
  },
@@ -639,7 +639,7 @@
  {
   "text": " mudando,",
   "startMs": 45300,
-  "endMs": 45730,
+  "endMs": 45840,
   "timestampMs": null,
   "confidence": 0.99
  },
@@ -750,7 +750,7 @@
  },
  {
   "text": " porque",
-  "startMs": 54270,
+  "startMs": 54260,
   "endMs": 54460,
   "timestampMs": null,
   "confidence": 0.99
@@ -786,7 +786,7 @@
  {
   "text": " defasado.",
   "startMs": 55500,
-  "endMs": 56480,
+  "endMs": 56520,
   "timestampMs": null,
   "confidence": 0.99
  },
@@ -849,27 +849,27 @@
  {
   "text": " comecinho",
   "startMs": 61060,
-  "endMs": 61400,
+  "endMs": 61450,
   "timestampMs": null,
   "confidence": 0.99
  },
  {
   "text": " de",
-  "startMs": 61400,
-  "endMs": 61670,
+  "startMs": 61450,
+  "endMs": 62260,
   "timestampMs": null,
   "confidence": 0.99
  },
  {
   "text": " setembro,",
   "startMs": 62260,
-  "endMs": 62770,
+  "endMs": 62830,
   "timestampMs": null,
   "confidence": 0.99
  },
  {
   "text": " eu",
-  "startMs": 63520,
+  "startMs": 63460,
   "endMs": 64020,
   "timestampMs": null,
   "confidence": 0.99
@@ -933,20 +933,20 @@
  {
   "text": " com",
   "startMs": 67280,
-  "endMs": 67400,
+  "endMs": 67500,
   "timestampMs": null,
   "confidence": 0.99
  },
  {
   "text": " o",
-  "startMs": 67400,
-  "endMs": 67520,
+  "startMs": 67500,
+  "endMs": 67620,
   "timestampMs": null,
   "confidence": 0.99
  },
  {
   "text": " Matheus,",
-  "startMs": 67520,
+  "startMs": 67620,
   "endMs": 67940,
   "timestampMs": null,
   "confidence": 0.99
@@ -954,13 +954,13 @@
  {
   "text": " com",
   "startMs": 67940,
-  "endMs": 68000,
+  "endMs": 68080,
   "timestampMs": null,
   "confidence": 0.99
  },
  {
   "text": " o",
-  "startMs": 68000,
+  "startMs": 68080,
   "endMs": 68220,
   "timestampMs": null,
   "confidence": 0.99
@@ -996,7 +996,7 @@
  {
   "text": " Lives,",
   "startMs": 69840,
-  "endMs": 70020,
+  "endMs": 70080,
   "timestampMs": null,
   "confidence": 0.99
  },
@@ -1479,14 +1479,14 @@
  {
   "text": " participei",
   "startMs": 97100,
-  "endMs": 97410,
+  "endMs": 97400,
   "timestampMs": null,
   "confidence": 0.99
  },
  {
   "text": " de",
-  "startMs": 97410,
-  "endMs": 97630,
+  "startMs": 97400,
+  "endMs": 97690,
   "timestampMs": null,
   "confidence": 0.99
  },
@@ -1500,7 +1500,7 @@
  {
   "text": " mentorias,",
   "startMs": 98200,
-  "endMs": 98880,
+  "endMs": 98940,
   "timestampMs": null,
   "confidence": 0.99
  },
@@ -1702,7 +1702,7 @@
  },
  {
   "text": " então",
-  "startMs": 109590,
+  "startMs": 109680,
   "endMs": 109920,
   "timestampMs": null,
   "confidence": 0.99
@@ -1738,7 +1738,7 @@
  {
   "text": " perdido,",
   "startMs": 110920,
-  "endMs": 111680,
+  "endMs": 111780,
   "timestampMs": null,
   "confidence": 0.99
  },
@@ -1856,7 +1856,7 @@
  },
  {
   "text": " você",
-  "startMs": 117670,
+  "startMs": 117660,
   "endMs": 117780,
   "timestampMs": null,
   "confidence": 0.99
@@ -1885,13 +1885,13 @@
  {
   "text": " nem",
   "startMs": 118400,
-  "endMs": 118540,
+  "endMs": 118620,
   "timestampMs": null,
   "confidence": 0.99
  },
  {
   "text": " a",
-  "startMs": 118540,
+  "startMs": 118620,
   "endMs": 118840,
   "timestampMs": null,
   "confidence": 0.99
@@ -1899,7 +1899,7 @@
  {
   "text": " base.",
   "startMs": 118840,
-  "endMs": 119380,
+  "endMs": 119440,
   "timestampMs": null,
   "confidence": 0.99
  },
@@ -2038,7 +2038,7 @@
  },
  {
   "text": " foi",
-  "startMs": 129320,
+  "startMs": 129340,
   "endMs": 129540,
   "timestampMs": null,
   "confidence": 0.99
@@ -2088,7 +2088,7 @@
  {
   "text": " prometido,",
   "startMs": 130740,
-  "endMs": 131440,
+  "endMs": 131520,
   "timestampMs": null,
   "confidence": 0.99
  },
@@ -2116,7 +2116,7 @@
  {
   "text": " nível,",
   "startMs": 133700,
-  "endMs": 134280,
+  "endMs": 134340,
   "timestampMs": null,
   "confidence": 0.99
  },
@@ -2249,7 +2249,7 @@
  {
   "text": " mentoria,",
   "startMs": 144140,
-  "endMs": 144780,
+  "endMs": 144840,
   "timestampMs": null,
   "confidence": 0.99
  },
@@ -2270,14 +2270,14 @@
  {
   "text": " suporte",
   "startMs": 147260,
-  "endMs": 147960,
+  "endMs": 147940,
   "timestampMs": null,
   "confidence": 0.99
  },
  {
   "text": " offline,",
-  "startMs": 147960,
-  "endMs": 148360,
+  "startMs": 147940,
+  "endMs": 148440,
   "timestampMs": null,
   "confidence": 0.99
  },
@@ -2382,7 +2382,7 @@
  {
   "text": " privado.",
   "startMs": 154380,
-  "endMs": 154900,
+  "endMs": 154960,
   "timestampMs": null,
   "confidence": 0.99
  },
@@ -2424,7 +2424,7 @@
  {
   "text": " coisa,",
   "startMs": 158920,
-  "endMs": 159220,
+  "endMs": 159280,
   "timestampMs": null,
   "confidence": 0.99
  },
@@ -2676,13 +2676,13 @@
  {
   "text": " o",
   "startMs": 174380,
-  "endMs": 174620,
+  "endMs": 174540,
   "timestampMs": null,
   "confidence": 0.99
  },
  {
   "text": " meu",
-  "startMs": 174620,
+  "startMs": 174540,
   "endMs": 174780,
   "timestampMs": null,
   "confidence": 0.99
@@ -2767,7 +2767,7 @@
  {
   "text": " GMV,",
   "startMs": 177400,
-  "endMs": 177780,
+  "endMs": 177840,
   "timestampMs": null,
   "confidence": 0.99
  },
@@ -2802,14 +2802,14 @@
  {
   "text": " alcançar",
   "startMs": 179660,
-  "endMs": 180120,
+  "endMs": 179910,
   "timestampMs": null,
   "confidence": 0.99
  },
  {
   "text": " aí,",
   "startMs": 180120,
-  "endMs": 181020,
+  "endMs": 180340,
   "timestampMs": null,
   "confidence": 0.99
  },
@@ -2851,7 +2851,7 @@
  {
   "text": " GMV.",
   "startMs": 183740,
-  "endMs": 184160,
+  "endMs": 184220,
   "timestampMs": null,
   "confidence": 0.99
  },
@@ -2921,13 +2921,13 @@
  {
   "text": " dia",
   "startMs": 187460,
-  "endMs": 187720,
+  "endMs": 187740,
   "timestampMs": null,
   "confidence": 0.99
  },
  {
   "text": " dentro",
-  "startMs": 187720,
+  "startMs": 187740,
   "endMs": 187800,
   "timestampMs": null,
   "confidence": 0.99
@@ -2942,7 +2942,7 @@
  {
   "text": " TikTok.",
   "startMs": 188000,
-  "endMs": 188300,
+  "endMs": 188380,
   "timestampMs": null,
   "confidence": 0.99
  },
@@ -2971,13 +2971,6 @@
   "text": " então",
   "startMs": 190080,
   "endMs": 190380,
-  "timestampMs": null,
-  "confidence": 0.9
- },
- {
-  "text": " é",
-  "startMs": 190380,
-  "endMs": 190560,
   "timestampMs": null,
   "confidence": 0.9
  },
@@ -3019,14 +3012,14 @@
  {
   "text": " e",
   "startMs": 192320,
-  "endMs": 192490,
+  "endMs": 192550,
   "timestampMs": null,
   "confidence": 0.99
  },
  {
   "text": " indicar.",
   "startMs": 192940,
-  "endMs": 193380,
+  "endMs": 193440,
   "timestampMs": null,
   "confidence": 0.99
  },
