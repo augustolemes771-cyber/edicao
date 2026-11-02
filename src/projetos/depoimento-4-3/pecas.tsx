@@ -402,8 +402,8 @@ const d43Velocimetro: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const passa = mola(frame, fps, mais, 120);
 	const v = frame < mais ? ate : MARCA + (1.04 - MARCA) * passa;
 	const cx = 540;
-	const cy = 560;
-	const r = 300;
+	const cy = 585;
+	const r = 250;
 	const ang = (f: number) => Math.PI + Math.PI * f; // 0 → esquerda, 1 → direita
 	const pt = (f: number, rr: number) => [cx + rr * Math.cos(ang(f)), cy + rr * Math.sin(ang(f))];
 	const arco = (a: number, b: number, rr: number) => {
@@ -431,7 +431,7 @@ const d43Velocimetro: React.FC<{cena: CenaPeca}> = ({cena}) => {
 				<line x1={cx} y1={cy} x2={px} y2={py} stroke={frame >= mais ? OURO : '#fff'} strokeWidth={12} strokeLinecap="round" opacity={p} />
 				<circle cx={cx} cy={cy} r={24} fill={frame >= mais ? OURO : '#fff'} opacity={p} />
 			</svg>
-			<div style={{position: 'absolute', top: 400, width: '100%', textAlign: 'center', opacity: pMais, transform: `scale(${0.7 + 0.3 * pMais})`}}>
+			<div style={{position: 'absolute', top: 440, width: '100%', textAlign: 'center', opacity: pMais, transform: `scale(${0.7 + 0.3 * pMais})`}}>
 				<div style={{fontFamily: poppins, fontWeight: 800, fontSize: 28, letterSpacing: '0.24em', color: '#e9e6f2'}}>ENTREGUE</div>
 				<div style={{fontFamily: playfair, fontStyle: 'italic', fontWeight: 800, fontSize: 72, color: OURO, lineHeight: 1}}>muito mais</div>
 			</div>
