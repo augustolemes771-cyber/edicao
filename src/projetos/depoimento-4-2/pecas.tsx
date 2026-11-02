@@ -317,12 +317,13 @@ const d42Comparacao: React.FC<{cena: CenaPeca}> = ({cena}) => {
 };
 
 // ---------------------------------------------------------------- 6. acabou o estoque
-// Cartão ESTOQUE no topo: a barra esvazia enquanto as vendas saem; no "produtor disse" chega a mensagem do produtor;
-// no "Acabou" a barra zera e o carimbo ESGOTADO bate; no "para de vender" a mensagem troca por PARA DE VENDER.
-// dados: {emProdutor, emAcabou, emPara}
+// Cartão ESTOQUE no topo: a barra esvazia enquanto as vendas saem; no "muito mais" entra ERA PRA SER MUITO MAIS embaixo;
+// no "produtor disse" ela dá lugar à mensagem do produtor; no "Acabou" a barra zera e o carimbo ESGOTADO bate; no "para de
+// vender" a mensagem troca por PARA DE VENDER. dados: {emMais, emProdutor, emAcabou, emPara}
 const d42Estoque: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const {frame, fps, q, op} = useCena(cena);
-	const d = cena.dados as {emProdutor: number; emAcabou: number; emPara: number};
+	const d = cena.dados as {emMais: number; emProdutor: number; emAcabou: number; emPara: number};
+	const mais = q(d.emMais);
 	const prod = q(d.emProdutor);
 	const acabou = Math.max(prod + 4, q(d.emAcabou));
 	const para = q(d.emPara);
@@ -358,6 +359,7 @@ const d42Estoque: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					</div>
 				) : null}
 			</div>
+			{frame >= mais && frame < prod ? <Pilula texto="ERA PRA SER MUITO MAIS" y={440} p={mola(frame, fps, mais, 220)} ouro tamanho={42} /> : null}
 			{/* mensagem do produtor */}
 			{frame >= prod ? (
 				<div style={{position: 'absolute', left: 130, top: 400, display: 'flex', alignItems: 'flex-end', gap: 14, opacity: Math.min(1, pMsg * 1.4), transform: `translateY(${(1 - pMsg) * 30}px) scale(${0.85 + 0.15 * pMsg})`, transformOrigin: 'left bottom'}}>
