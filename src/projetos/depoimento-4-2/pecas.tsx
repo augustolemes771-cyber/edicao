@@ -111,7 +111,7 @@ const d42Mes: React.FC<{cena: CenaPeca}> = ({cena}) => {
 				</defs>
 				<line x1={x0} y1={yB} x2={x1} y2={yB} stroke="rgba(255,255,255,0.35)" strokeWidth={4} />
 				<line x1={x0} y1={yMeta} x2={x1} y2={yMeta} stroke={OURO} strokeOpacity={0.55 + 0.45 * acende} strokeWidth={4} strokeDasharray="18 14" />
-				<text x={x1} y={yMeta - 22} textAnchor="end" fontFamily={poppins} fontWeight={800} fontSize={34} letterSpacing={3} fill={OURO}>
+				<text x={x0} y={yMeta - 22} textAnchor="start" fontFamily={poppins} fontWeight={800} fontSize={34} letterSpacing={3} fill={OURO}>
 					R$ 500 MIL
 				</text>
 				<polygon points={`${x0},${yB} ${pts.join(' ')} ${px.toFixed(1)},${yB}`} fill="url(#d42area)" />
