@@ -359,10 +359,10 @@ const d42Estoque: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					</div>
 				) : null}
 			</div>
-			{frame >= mais && frame < prod ? <Pilula texto="ERA PRA SER MUITO MAIS" y={440} p={mola(frame, fps, mais, 220)} ouro tamanho={42} /> : null}
+			{frame >= mais && frame < prod ? <Pilula texto="ERA PRA SER MUITO MAIS" y={340} p={mola(frame, fps, mais, 220)} ouro tamanho={42} /> : null}
 			{/* mensagem do produtor */}
 			{frame >= prod ? (
-				<div style={{position: 'absolute', left: 130, top: 400, display: 'flex', alignItems: 'flex-end', gap: 14, opacity: Math.min(1, pMsg * 1.4), transform: `translateY(${(1 - pMsg) * 30}px) scale(${0.85 + 0.15 * pMsg})`, transformOrigin: 'left bottom'}}>
+				<div style={{position: 'absolute', left: 130, top: 330, display: 'flex', alignItems: 'flex-end', gap: 14, opacity: Math.min(1, pMsg * 1.4), transform: `translateY(${(1 - pMsg) * 30}px) scale(${0.85 + 0.15 * pMsg})`, transformOrigin: 'left bottom'}}>
 					<div style={{width: 64, height: 64, borderRadius: 64, background: 'linear-gradient(160deg,#5b34a8,#24124a)', boxShadow: `inset 0 0 0 3px ${OURO}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: poppins, fontWeight: 900, fontSize: 30, color: OURO}}>P</div>
 					<div style={{background: '#fffdf8', borderRadius: '28px 28px 28px 6px', padding: '16px 28px 18px', boxShadow: '0 16px 40px rgba(8,3,20,0.45)'}}>
 						<div style={{fontFamily: poppins, fontWeight: 800, fontSize: 26, letterSpacing: '0.1em', color: '#7a5bb8'}}>PRODUTOR</div>
