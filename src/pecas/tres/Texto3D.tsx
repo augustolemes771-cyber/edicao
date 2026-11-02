@@ -4,6 +4,14 @@
 import React, {useMemo} from 'react';
 import {useThree} from '@react-three/fiber';
 import {getInputProps, Internals, interpolate, random, spring, useVideoConfig} from 'remotion';
+// getInputProps() lança erro dentro do <Player> do painel (derrubava o player inteiro e a tela ficava preta): só lê no render/Studio.
+const auditando = () => {
+	try {
+		return Boolean((getInputProps() as {auditarTexto3d?: boolean}).auditarTexto3d);
+	} catch {
+		return false;
+	}
+};
 import * as THREE from 'three';
 import {FontLoader} from 'three/examples/jsm/loaders/FontLoader.js';
 import {TextGeometry} from 'three/examples/jsm/geometries/TextGeometry.js';
@@ -111,7 +119,7 @@ export const Linha3D: React.FC<{
 	// Auditoria (scripts/auditar-texto3d.ts, inputProps {auditarTexto3d: true}): registra cada quadro em que a linha aparece,
 	// para conferir se a entrada termina antes de a cena sair.
 	const absoluto = Internals.Timeline.useTimelinePosition();
-	if ((getInputProps() as {auditarTexto3d?: boolean}).auditarTexto3d) console.log(`T3D|${absoluto}|${quadro}|${batida}|${n}|${assenta.toFixed(1)}|${texto}`);
+	if (auditando()) console.log(`T3D|${absoluto}|${quadro}|${batida}|${n}|${assenta.toFixed(1)}|${texto}`);
 	return (
 		<group position={[0, y, 0]} scale={k}>
 			{letras.map((l, i) => {
