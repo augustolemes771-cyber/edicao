@@ -111,7 +111,7 @@ const cenas = (b: Busca): ReturnType<Edit['cenas']> => {
 		{
 			tipo: 'selo',
 			de: b.say('na mentoria lucrando').inicio - 0.05,
-			ate: b.say('lucrando com lives').fim + 0.05,
+			ate: Math.min(b.say('lucrando com lives').fim + 0.05, b.say('com o Danilow.').inicio - 0.03),
 			texto: 'LUCRANDO COM LIVES',
 			chip: 'MENTORIA',
 			emChip: b.say('mentoria lucrando').inicio,
