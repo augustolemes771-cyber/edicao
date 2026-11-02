@@ -23,7 +23,8 @@ const TRECHOS: Trecho[] = [
 	[43.4, 44.12], // O TikTok
 	[44.5, 45.75], // sempre vai mudando,
 	[54.1, 56.5], // porque senão você vai ficar defasado.
-	[96.98, 98.9], // Já participei de algumas mentorias,
+	[96.98, 100.12], // Já participei de algumas mentorias, não só relacionadas ao TikTok,
+	[100.44, 101.32], // mas em diversas áreas,
 	[109.5, 111.7], // então muita coisa você fica perdido,
 	[117.65, 119.4], // você ainda não aprendeu nem a base.
 	[60.96, 70.04], // comecinho de setembro, eu vi a possibilidade dessa mentoria com o Danilow, com o Matheus, com o Felipe, Método Lucrando com Lives,
