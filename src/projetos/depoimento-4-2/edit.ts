@@ -351,7 +351,7 @@ export const depoimento42: Edit = {
 						{de: 'Felipe', texto: 'Não desiste, testa de novo', em: b.at('testar')},
 						{de: 'Você', texto: 'Deu certo!!', em: b.at('conseguir'), eu: true},
 					],
-					emOk: b.say('conseguir fazer').fim - 0.25,
+					emOk: b.at('conseguir') + 0.2,
 				},
 				esconderLegenda: true,
 				som: 'pro_msg',
@@ -359,7 +359,7 @@ export const depoimento42: Edit = {
 					{em: b.say('Os meninos não').inicio, som: 'pro_msg', ganho: 0.5},
 					{em: b.at('testar'), som: 'pro_msg', ganho: 0.5},
 					{em: b.at('conseguir'), som: 'pro_msg', ganho: 0.5},
-					{em: b.say('conseguir fazer').fim - 0.25, som: 'pro_pop', ganho: 0.7},
+					{em: b.at('conseguir') + 0.2, som: 'pro_pop', ganho: 0.7},
 				],
 			},
 			// 17. Agradecimento aos meninos e, no "comunidade", à comunidade (os nomes vão no cartão final)

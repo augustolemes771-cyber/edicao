@@ -591,7 +591,7 @@ const d42Comunidade: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const d = cena.dados as {itens: Msg[]; emOk: number};
 	const itens = d.itens.map((m) => ({...m, f: q(m.em)}));
 	const ok = q(d.emOk);
-	const ALT = 118;
+	const ALT = 106;
 	const visiveis = itens.filter((m) => frame >= m.f);
 	const pCard = mola(frame, fps, 0, 190);
 	// a pilha sobe com mola a cada mensagem nova
@@ -603,7 +603,7 @@ const d42Comunidade: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<AbsoluteFill style={{opacity: op}}>
 			<VeuTopo ate={900} />
-			<div style={{position: 'absolute', left: 90, right: 90, top: 100, height: 600, borderRadius: 36, ...VIDRO, overflow: 'hidden', opacity: Math.min(1, pCard * 1.4), transform: `translateY(${(1 - pCard) * -40}px)`}}>
+			<div style={{position: 'absolute', left: 90, right: 90, top: 100, height: 540, borderRadius: 36, ...VIDRO, overflow: 'hidden', opacity: Math.min(1, pCard * 1.4), transform: `translateY(${(1 - pCard) * -40}px)`}}>
 				<div style={{height: 84, display: 'flex', alignItems: 'center', gap: 16, padding: '0 28px', borderBottom: '2px solid rgba(232,194,122,0.3)'}}>
 					<div style={{width: 46, height: 46, borderRadius: 46, background: OURO_TEXTO}} />
 					<div style={{fontFamily: poppins, fontWeight: 800, fontSize: 32, color: '#fff'}}>Comunidade da mentoria</div>
@@ -616,7 +616,7 @@ const d42Comunidade: React.FC<{cena: CenaPeca}> = ({cena}) => {
 							<div key={i} style={{position: 'absolute', top: i * ALT, left: m.eu ? undefined : 24, right: m.eu ? 24 : undefined, maxWidth: 760, opacity: Math.min(1, p * 1.5), transform: `translateY(${(1 - p) * 40}px) scale(${0.85 + 0.15 * p})`, transformOrigin: m.eu ? 'right bottom' : 'left bottom'}}>
 								<div style={{background: m.eu ? OURO_TEXTO : '#fffdf8', borderRadius: m.eu ? '26px 26px 6px 26px' : '26px 26px 26px 6px', padding: '12px 24px 14px', boxShadow: '0 10px 26px rgba(8,3,20,0.35)'}}>
 									<div style={{fontFamily: poppins, fontWeight: 800, fontSize: 24, letterSpacing: '0.08em', color: m.eu ? '#5a3a10' : '#7a5bb8'}}>{m.de.toUpperCase()}</div>
-									<div style={{fontFamily: poppins, fontWeight: 700, fontSize: 36, lineHeight: 1.2, color: ROXO}}>{m.texto}</div>
+									<div style={{fontFamily: poppins, fontWeight: 700, fontSize: 33, lineHeight: 1.2, color: ROXO}}>{m.texto}</div>
 								</div>
 							</div>
 						);
@@ -624,7 +624,7 @@ const d42Comunidade: React.FC<{cena: CenaPeca}> = ({cena}) => {
 				</div>
 				</div>
 			</div>
-			<div style={{position: 'absolute', top: 640, width: '100%', display: 'flex', justifyContent: 'center', opacity: Math.min(1, pOk * 1.4)}}>
+			<div style={{position: 'absolute', top: 590, width: '100%', display: 'flex', justifyContent: 'center', opacity: Math.min(1, pOk * 1.4)}}>
 				<div style={{display: 'flex', alignItems: 'center', gap: 16, padding: '14px 34px', borderRadius: 999, background: VERDE, color: ROXO, fontFamily: poppins, fontWeight: 900, fontSize: 44, letterSpacing: '0.06em', transform: `scale(${0.6 + 0.4 * pOk})`, boxShadow: '0 0 34px rgba(91,227,155,0.55)'}}>
 					<svg width={44} height={44} viewBox="0 0 70 70">
 						<path d="M14 37 L29 52 L57 20" fill="none" stroke={ROXO} strokeWidth={11} strokeLinecap="round" strokeLinejoin="round" />
