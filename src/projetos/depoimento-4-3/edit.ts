@@ -204,7 +204,7 @@ export const depoimento43: Edit = {
 				tipo: 'peca',
 				nome: 'd43Linha',
 				de: b.say('comecinho de setembro').inicio - 0.05,
-				ate: b.say('dessa mentoria').fim + 0.1,
+				ate: b.say('com o Danilow').inicio - 0.07,
 				dados: {mes: 'SET', em: b.say('setembro').inicio, emRotulo: b.say('a possibilidade').inicio, rotulo: 'MENTORIA', rotuloMar: 'COMEÇO'},
 				esconderLegenda: true,
 				som: 'pro_whoosh',
