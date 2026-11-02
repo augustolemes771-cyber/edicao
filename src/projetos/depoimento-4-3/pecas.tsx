@@ -318,7 +318,7 @@ const d43Escada: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const p = mola(frame, fps, 0, 170);
 	const N = 5;
 	const w = 150;
-	const h = 62;
+	const h = completa ? 48 : 62;
 	const x0 = 160;
 	const yChao = 560;
 	const faltam = completa ? 0 : 2;
@@ -379,8 +379,8 @@ const d43Escada: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					<span style={{display: 'inline-block', padding: '6px 22px', borderRadius: 14, background: '#e5484d', color: '#fff', fontFamily: poppins, fontWeight: 900, fontSize: 40, letterSpacing: '0.06em'}}>SEM BASE</span>
 				</div>
 			) : (
-				<div style={{position: 'absolute', top: 222, width: '100%', textAlign: 'center', opacity: pNivel, transform: `translateY(${(1 - pNivel) * 16}px)`}}>
-					<span style={{fontFamily: playfair, fontStyle: 'italic', fontWeight: 800, fontSize: 64, color: OURO}}>qualquer nível</span>
+				<div style={{position: 'absolute', top: 236, left: 135, width: 460, textAlign: 'left', opacity: pNivel, transform: `translateY(${(1 - pNivel) * 16}px)`}}>
+					<span style={{fontFamily: playfair, fontStyle: 'italic', fontWeight: 800, fontSize: 56, color: OURO}}>qualquer nível</span>
 				</div>
 			)}
 		</AbsoluteFill>
