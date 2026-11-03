@@ -46,11 +46,12 @@ async def gerar(projeto: str, voz: str, taxa: str, texto: str):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Uso: python3 scripts/narrar.py <projeto> [voz=pt-BR-AntonioNeural] [taxa=+12%] < roteiro.txt", file=sys.stderr)
+        print("Uso: python3 scripts/narrar.py <projeto> [voz=pt-BR-HumbertoNeural] [taxa=-8%] < roteiro.txt", file=sys.stderr)
         sys.exit(1)
     projeto = sys.argv[1]
-    voz = sys.argv[2] if len(sys.argv) > 2 else "pt-BR-AntonioNeural"
-    taxa = sys.argv[3] if len(sys.argv) > 3 else "+12%"
+    # Humberto: grave e solene, combina com tom de terror/suspense (tema do projeto).
+    voz = sys.argv[2] if len(sys.argv) > 2 else "pt-BR-HumbertoNeural"
+    taxa = sys.argv[3] if len(sys.argv) > 3 else "-8%"
     texto = sys.stdin.read().strip()
     texto = re.sub(r"\s+", " ", texto)
     asyncio.run(gerar(projeto, voz, taxa, texto))
