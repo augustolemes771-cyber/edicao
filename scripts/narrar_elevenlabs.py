@@ -22,6 +22,13 @@ import requests
 
 RAIZ = Path(__file__).resolve().parent.parent
 API = "https://api.elevenlabs.io/v1"
+# ELEVEN_MODELO=eleven_v3 aceita marcações de emoção entre colchetes ([whispers], [pause]...), que não são faladas.
+MODELO = os.environ.get("ELEVEN_MODELO", "eleven_multilingual_v2")
+AJUSTES = (
+    {"stability": float(os.environ.get("ELEVEN_ESTABILIDADE", "0.5"))}
+    if MODELO == "eleven_v3"
+    else {"stability": 0.55, "similarity_boost": 0.8, "style": 0.35, "use_speaker_boost": True}
+)
 
 
 def cabecalho():
@@ -79,8 +86,8 @@ def gerar(projeto: str, voice_id_pedido: str | None, texto: str):
         headers={**cabecalho(), "Content-Type": "application/json"},
         json={
             "text": texto,
-            "model_id": "eleven_multilingual_v2",
-            "voice_settings": {"stability": 0.55, "similarity_boost": 0.8, "style": 0.35, "use_speaker_boost": True},
+            "model_id": MODELO,
+            "voice_settings": AJUSTES,
         },
         timeout=120,
     )
@@ -101,7 +108,14 @@ def gerar(projeto: str, voice_id_pedido: str | None, texto: str):
     entradas = []
     palavra_chars = []
     palavra_ini = None
+    dentro_tag = False
     for ch, ti, tf in zip(chars, inicio_s, fim_s):
+        if ch == "[":
+            dentro_tag = True
+        if dentro_tag:
+            if ch == "]":
+                dentro_tag = False
+            ch = " "
         if ch.strip() == "":
             if palavra_chars:
                 entradas.append({"text": " " + "".join(palavra_chars), "startMs": round(palavra_ini * 1000), "endMs": round(ultimo_fim * 1000), "timestampMs": None, "confidence": 1})
@@ -115,6 +129,7 @@ def gerar(projeto: str, voice_id_pedido: str | None, texto: str):
     if palavra_chars:
         entradas.append({"text": " " + "".join(palavra_chars), "startMs": round(palavra_ini * 1000), "endMs": round(ultimo_fim * 1000), "timestampMs": None, "confidence": 1})
 
+    entradas = [e for e in entradas if re.search(r"\w", e["text"])]
     (pasta_src / "transcricao.json").write_text(json.dumps(entradas, ensure_ascii=False, indent=1), encoding="utf8")
     dur = fim_s[-1] if fim_s else 0
     print(f"Narração: {mp3_path} ({len(entradas)} palavras, {dur:.1f}s)")
