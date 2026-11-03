@@ -188,18 +188,28 @@ export const espKitty: React.FC<{cena: CenaPeca}> = ({cena}) => {
 };
 
 // 11. "foi atacada a poucos metros do prédio onde morava,": plano aberto, seta medindo a distância até a porta.
+// Embaixo das janelas cheias de gente, a sombra alcança a Kitty na calçada e a ataca (luta, braço erguido, pulso
+// vermelho; nada explícito). Depois a seta mostra que a porta do prédio estava a poucos metros.
 export const espMetros: React.FC<{cena: CenaPeca}> = ({cena}) => {
-	const {mola, frame} = usePeca(cena);
-	const seta = interpolate(frame, [8, 26], [0, 1], lim);
+	const {mola, frame, fps, t} = usePeca(cena);
+	const total = dur(cena) * fps;
+	const chega = total * 0.35; // quadro em que a sombra alcança a Kitty
+	const sombraX = interpolate(frame, [0, chega], [-80, 250], lim);
+	const ataque = frame >= chega;
+	const luta = ataque ? Math.sin(frame * 1.3) * 10 : 0;
+	const pulso = ataque ? Math.max(0, Math.sin(((frame - chega) / fps) * Math.PI * 2.2)) : 0;
+	const seta = interpolate(frame, [total * 0.6, total * 0.8], [0, 1], lim);
 	return (
 		<Fundo noite>
-			<CameraMundo cena={cena} de={[520, 1330, 1.7]} para={[520, 1320, 1.45]}>
-				<Rua olhar={1} />
-				<Kitty x={300} y={PE} s={1.2} olhar={1} />
-				<line x1={350} y1={PE - 40} x2={350 + 160 * seta} y2={PE - 40} stroke={COR.vermelho} strokeWidth={6} strokeDasharray="14 10" />
+			<CameraMundo cena={cena} de={[520, 1180, 1.25]} para={[420, 1360, 1.75]}>
+				<Rua olhar={1} destaque={ataque ? FOCO.i : null} />
+				<Kitty x={330 + luta * 0.6} y={PE} s={1.25} olhar={-1} braco={ataque ? 0.9 : 0} anda={ataque ? 0 : t * 7} />
+				<Sombra x={sombraX + luta} y={PE + 6} s={1.55} anda={ataque ? frame * 0.9 : t * 10} />
+				<line x1={400} y1={PE - 40} x2={400 + 110 * seta} y2={PE - 40} stroke={COR.vermelho} strokeWidth={6} strokeDasharray="14 10" opacity={seta > 0 ? 1 : 0} />
 				{seta > 0.95 && <polygon points={`${510},${PE - 52} ${530},${PE - 40} ${510},${PE - 28}`} fill={COR.vermelho} />}
-				<Rotulo x={430} y={PE - 110} texto="POUCOS METROS" p={mola(18, 140, 13)} tam={30} />
+				<Rotulo x={470} y={PE - 120} texto="POUCOS METROS" p={mola(Math.round(total * 0.7), 140, 13)} tam={30} />
 			</CameraMundo>
+			<div style={{position: 'absolute', inset: 0, background: COR.vermelho, opacity: pulso * 0.3, mixBlendMode: 'screen'}} />
 			<Vinheta forca={0.6} />
 			<Grao />
 		</Fundo>
