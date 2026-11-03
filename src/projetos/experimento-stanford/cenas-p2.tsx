@@ -3,7 +3,7 @@
 // da cena (zoom/pan contínuo + primeiro plano) pra parecer plano de filme, não cartão/ícone flutuando.
 import React from 'react';
 import type {CenaPeca, Pecas} from '../../pecas/peca';
-import {Camera, COR, Foco, Fundo, GradePrimeiroPlano, OmbroPrimeiroPlano, Personagem, Pilula, Porao, Vinheta, fonte, usePeca} from './ilustracao';
+import {Camera, COR, Foco, Fundo, GradePrimeiroPlano, OmbroPrimeiroPlano, Personagem, Pilula, PoraoCompleto, Vinheta, fonte, usePeca} from './ilustracao';
 
 // P2a — "os prisioneiros já estavam se rebelando": câmera atrás da grade (em primeiro plano) olhando
 // pros dois prisioneiros empurrando e gritando — ponto de vista de quem está do lado de fora da cela.
@@ -16,7 +16,7 @@ export const stanfordP2a: React.FC<{cena: CenaPeca}> = ({cena}) => {
 		<Fundo noite>
 			<Camera cena={cena} zoom={[1.1, 1.4]} y={[40, -60]}>
 				<div style={{position: 'absolute', inset: 0, transform: `translateX(${treme}px)`}}>
-					<Porao p={1} />
+					<PoraoCompleto escuro={0.25} balanco={1.4} piscar />
 					<Personagem x={330} y={1260} tom="prisioneiro" braco={braco} escala={2.3} p={entra} />
 					<Personagem x={790} y={1260} tom="prisioneiro" vira braco={Math.max(0, 1 - braco)} escala={2.3} p={entra} />
 					{/* bocas abertas (grito), acento local sem mexer na peça compartilhada */}
@@ -41,7 +41,7 @@ export const stanfordP2b: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<Camera cena={cena} zoom={[1.15, 1.42]} x={[0, -40]}>
-				<Porao p={1} />
+				<PoraoCompleto escuro={0.15} />
 				<Personagem x={800} y={1480} tom="guarda" braco={Math.min(1, entra)} escala={2.6} p={entra} />
 				{/* prisioneiro em flexão: pose própria (deitado), desenhada localmente, bem maior/mais perto */}
 				<svg style={{position: 'absolute', left: 120, top: 1500 + flex * 20, opacity: entra, transform: `scale(${1.7 * entra})`}} width={220} height={90} viewBox="0 0 220 90">
@@ -69,6 +69,7 @@ export const stanfordP2c: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<Camera cena={cena} zoom={[1.15, 1.65]} y={[20, -40]}>
+				<PoraoCompleto escuro={0.5} placa={null} />
 				<svg style={{position: 'absolute', left: 780, top: 820}} width={300} height={400} viewBox="0 0 300 400" opacity={0.9}>
 					{[0, 1, 2, 3, 4].map((i) => (
 						<rect key={i} x={20 + i * 54} y={0} width={10} height={400} fill="#0a0b0d" />
@@ -93,7 +94,7 @@ export const stanfordP2d: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<Camera cena={cena} zoom={[1.2, 1.5]} x={[0, 30]} y={[0, -30]}>
-				<Porao p={1} />
+				<PoraoCompleto escuro={0.4} />
 				<div style={{position: 'absolute', left: 300, top: 1280, transform: `scale(${1.3 * entra})`, transformOrigin: 'bottom center'}}>
 					<Personagem x={55} y={160} tom="prisioneiro" escala={1.6} p={1} />
 				</div>
@@ -116,7 +117,7 @@ export const stanfordP2e: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<Camera cena={cena} zoom={[1, 1.5]} y={[-10, -220]}>
-				<Porao p={1} />
+				<PoraoCompleto escuro={0.15} placa={null} />
 				<svg style={{position: 'absolute', left: 470, top: 1560, opacity: entra, transform: `scale(1.8)`, transformOrigin: 'bottom center'}} width={140} height={160} viewBox="0 0 140 160">
 					<rect x={20} y={70} width={90} height={12} fill={COR.predioEscuro} />
 					<rect x={20} y={10} width={12} height={160} fill={COR.predioEscuro} />
@@ -155,7 +156,7 @@ export const stanfordP2f: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<Camera cena={cena} zoom={[1.15, 1.35]} x={[sai * -60, sai * 40]}>
-				<Porao p={1} />
+				<PoraoCompleto escuro={0.2} />
 				<div style={{position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', transform: `translateX(${sai * 90}px)`}}>
 					<Personagem x={430} y={1380} tom="prisioneiro" escala={2.4} braco={0.3} p={entra} />
 					<Personagem x={700} y={1340} tom="guarda" vira escala={2.1} braco={0.15} p={entra} />

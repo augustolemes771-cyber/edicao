@@ -2,7 +2,22 @@
 // Cenas curtas, cada uma já em movimento desde o primeiro quadro — nada de tela parada.
 import React from 'react';
 import type {CenaPeca, Pecas} from '../../pecas/peca';
-import {Camera, COR, Fundo, GradePrimeiroPlano, Livro, OmbroPrimeiroPlano, Personagem, TextoGrande, Vinheta, fonte, usePeca} from './ilustracao';
+import {
+	BibliotecaCompleta,
+	Camera,
+	COR,
+	EscritorioCompleto,
+	Fundo,
+	GradePrimeiroPlano,
+	Livro,
+	OmbroPrimeiroPlano,
+	Personagem,
+	PoraoCompleto,
+	TextoGrande,
+	Vinheta,
+	fonte,
+	usePeca,
+} from './ilustracao';
 
 // Cartão de calendário com um número grande que pode ficar fixo ou contar rápido até um valor.
 const CartaoCalendario: React.FC<{dia: number; p: number; y?: number; girar?: number}> = ({dia, p, y = 760, girar = 0}) => (
@@ -28,6 +43,7 @@ export const stanfordP3a: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<Camera cena={cena} zoom={[1.5, 1.9]} y={[40, -20]}>
+				<PoraoCompleto escuro={0.5} />
 				<CartaoCalendario dia={contagem} p={p} girar={contagem < 6 ? girar : 0} y={900} />
 			</Camera>
 			<Vinheta forca={0.45} />
@@ -68,6 +84,7 @@ export const stanfordP3b: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<Camera cena={cena} zoom={[1.15, 1.4]} x={[-20, 20]}>
+				<EscritorioCompleto />
 				<FiguraDupla x={540} y={1050} escala={2.3} p={p} maos={0} />
 			</Camera>
 			<div
@@ -99,6 +116,7 @@ export const stanfordP3c: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<Camera cena={cena} zoom={[1.6, 2.1]} y={[20, -40]}>
+				<PoraoCompleto escuro={0.5} />
 				<FiguraDupla x={540} y={1050} escala={2.8} p={1} maos={maos} />
 			</Camera>
 			<OmbroPrimeiroPlano lado="direita" />
@@ -115,6 +133,7 @@ export const stanfordP3d: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<Camera cena={cena} zoom={[1, 1.5]}>
+				<PoraoCompleto escuro={0.6} />
 				<div style={{position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: Math.min(1, carimbo * 1.6)}}>
 					<svg width={320} height={320} viewBox="0 0 200 200" style={{transform: `scale(${0.5 + 0.5 * carimbo}) rotate(${(1 - carimbo) * -25}deg)`}}>
 						<circle cx={100} cy={100} r={92} fill={COR.vermelho} stroke={COR.branco} strokeWidth={10} />
@@ -143,6 +162,7 @@ export const stanfordP3e: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite={false}>
 			<Camera cena={cena} zoom={[1, 1.18]} y={[-10, 10]}>
+				<BibliotecaCompleta />
 				{[0, 1, 2, 3].map((i) => (
 					<div key={i} style={{position: 'absolute', left: voo(i), top: 260 + i * 240, opacity: 0.55, transform: `rotate(${(i - 1.5) * 12}deg) scale(0.55)`}}>
 						<CartaoCalendario dia={1971 % 10} p={1} y={0} />
@@ -164,6 +184,7 @@ export const stanfordP3f: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite={false}>
 			<Camera cena={cena} zoom={[1.1, 1.55]} y={[10, -30]}>
+				<BibliotecaCompleta />
 				<svg style={{position: 'absolute', left: '50%', top: 620, transform: 'translateX(-50%)'}} width={260} height={420} viewBox="0 0 260 420">
 					<defs>
 						<clipPath id="metade">
@@ -201,6 +222,7 @@ export const stanfordP3g: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite={false}>
 			<Camera cena={cena} zoom={[1, 1.22]} x={[-10, 10]}>
+				<BibliotecaCompleta mesa={false} />
 				{[-1, 0, 1].map((i) => {
 					const atraso = (i + 1) * 6;
 					const p = Math.min(1, mola(atraso, 120, 14));

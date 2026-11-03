@@ -3,7 +3,7 @@
 // vinheta de lente e profundidade em primeiro plano — plano de filme, não cartão parado.
 import React from 'react';
 import type {CenaPeca, Pecas} from '../../pecas/peca';
-import {Camera, COR, Fundo, GradePrimeiroPlano, Numero, OmbroPrimeiroPlano, Personagem, Pilula, Vinheta, fonte, usePeca} from './ilustracao';
+import {Camera, COR, EscritorioCompleto, Fundo, GradePrimeiroPlano, Numero, OmbroPrimeiroPlano, Personagem, Pilula, Vinheta, fonte, usePeca} from './ilustracao';
 
 const CX = 540; // centro horizontal da composição 1080x1920
 
@@ -15,6 +15,7 @@ export const stanfordP5a: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<Camera cena={cena} zoom={[1, 1.22]}>
+				<EscritorioCompleto persiana={0.6} luz={false} />
 				<div style={{position: 'absolute', inset: 0, background: COR.vermelho, opacity: 0.05 + 0.04 * Math.sin(frame * 0.4)}} />
 				<div style={{transform: `translateX(${tremor}px)`}}>
 					<Numero valor="2018" rotulo="A VERSÃO OFICIAL RACHA" p={n} cor={COR.vermelho} top={720} />
@@ -36,6 +37,7 @@ export const stanfordP5b: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<Camera cena={cena} zoom={[1.15, 1.5]} y={[40, -40]}>
+				<EscritorioCompleto quadroCortica documentos={4} persiana={0.3} />
 				<svg style={{position: 'absolute', left: CX - 280, top: 680}} width={560} height={540} viewBox="0 0 440 420">
 					{folhas.map((f, i) => (
 						<rect
@@ -70,6 +72,7 @@ export const stanfordP5c: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<Camera cena={cena} zoom={[1.3, 1.6]} y={[0, -50]}>
+				<EscritorioCompleto mesa={false} persiana={0.5} />
 				<Personagem x={CX} y={1480} tom="guarda" escala={3.3} braco={0.25} />
 				<div
 					style={{
@@ -103,6 +106,7 @@ export const stanfordP5d: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<Camera cena={cena} zoom={[1.2, 1.5]} x={[0, -30]}>
+				<EscritorioCompleto mesa={false} persiana={0.2} luz={false} />
 				<Personagem x={CX} y={1420} tom="prisioneiro" escala={3.1} />
 				<svg
 					style={{position: 'absolute', left: CX - 170, top: 680 - sobe * 150, opacity: sobe, transform: `rotate(${vira * 16}deg)`}}
@@ -133,6 +137,7 @@ export const stanfordP5e: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<Camera cena={cena} zoom={[1.1, 1.4]} x={[0, 30]}>
+				<EscritorioCompleto quadroCortica={false} persiana={0.55} />
 				<svg style={{position: 'absolute', left: CX - 260, top: 620 + (1 - sobe) * 60, opacity: sobe}} width={520} height={560} viewBox="0 0 400 420">
 					<rect x={190} y={40} width={20} height={300} fill={COR.predio} />
 					<polygon points="160,340 240,340 220,380 180,380" fill={COR.predioEscuro} />
@@ -166,6 +171,7 @@ export const stanfordP5f: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<Camera cena={cena} zoom={[1, 1.3]}>
+				<EscritorioCompleto quadroCortica documentos={3} persiana={0.7} luz={false} />
 				<div style={{transform: `scale(${pulso})`, transformOrigin: '50% 820px'}}>
 					<Pilula texto="FRAUDE?" p={entra} y={780} cor={COR.vermelho} />
 				</div>

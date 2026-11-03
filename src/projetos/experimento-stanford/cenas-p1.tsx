@@ -1,7 +1,7 @@
 // Bloco 1 (abertura) do experimento-stanford, em cenas curtas — cada frase vira uma imagem distinta.
 import React from 'react';
 import type {CenaPeca, Pecas} from '../../pecas/peca';
-import {Camera, COR, Fundo, GradePrimeiroPlano, Lua, Mapa, Numero, OmbroPrimeiroPlano, Personagem, Pilula, Porao, Predio, Vinheta, usePeca} from './ilustracao';
+import {Camera, CampusCompleto, COR, Fundo, GradePrimeiroPlano, Lua, Mapa, Numero, OmbroPrimeiroPlano, Personagem, Pilula, PoraoCompleto, Vinheta, usePeca} from './ilustracao';
 
 // 1a. "Cientistas pegaram vinte e quatro estudantes comuns": crowd pequena, contador 24 subindo.
 export const stanfordP1a: React.FC<{cena: CenaPeca}> = ({cena}) => {
@@ -12,6 +12,7 @@ export const stanfordP1a: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<Camera cena={cena} zoom={[1.15, 1.35]} x={[-40, 60]}>
+				<CampusCompleto noite />
 				<Lua x={800} y={70} r={40} p={1} />
 				{posicoes.map((x, i) => (
 					<Personagem key={i} x={540 + x * Math.min(1, crowd)} y={1120} tom={i % 2 ? 'guarda' : 'prisioneiro'} escala={1.9} p={Math.min(1, crowd)} />
@@ -32,6 +33,7 @@ export const stanfordP1b: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<Camera cena={cena} zoom={[1, 1.3]} y={[0, -40]}>
+				<CampusCompleto noite />
 				<svg style={{position: 'absolute', left: '50%', top: 620, transform: `translate(-50%, ${(1 - p) * 40}px)`, opacity: p}} width={460} height={600} viewBox="0 0 200 260">
 					<rect x={10} y={10} width={180} height={240} rx={10} fill={COR.branco} />
 					<rect x={70} y={0} width={60} height={24} rx={6} fill={COR.predioEscuro} />
@@ -57,6 +59,7 @@ export const stanfordP1c: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<Camera cena={cena} zoom={[1.15, 1.4]} y={[0, -50]}>
+				<PoraoCompleto />
 				<Personagem x={540} y={1280} tom="guarda" escala={3.6} p={Math.min(1, p)} />
 			</Camera>
 			<Vinheta forca={0.55} />
@@ -72,6 +75,7 @@ export const stanfordP1d: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<Camera cena={cena} zoom={[1.15, 1.4]} x={[0, 40]} y={[0, -50]}>
+				<PoraoCompleto />
 				<Personagem x={540} y={1280} tom="prisioneiro" escala={3.6} p={Math.min(1, p)} />
 			</Camera>
 			<GradePrimeiroPlano lado="direita" />
@@ -91,7 +95,7 @@ export const stanfordP1e: React.FC<{cena: CenaPeca}> = ({cena}) => {
 		<Fundo noite>
 			{sai < 0.98 && <Mapa p={Math.max(0, mapa - sai)} rotulo="UNIVERSIDADE STANFORD" />}
 			<Camera cena={cena} zoom={[1, 1.4]} y={[0, -80]}>
-				<Predio p={Math.min(1, predio)} y={620} />
+				<CampusCompleto p={Math.min(1, predio)} noite />
 			</Camera>
 			<Vinheta forca={0.45} />
 		</Fundo>
@@ -105,7 +109,7 @@ export const stanfordP1f: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<Camera cena={cena} zoom={[1.3, 1.55]} y={[-60, -180]}>
-				<Porao p={Math.min(1, desce)} />
+				<PoraoCompleto p={Math.min(1, desce)} placa="STANFORD COUNTY JAIL" />
 			</Camera>
 			<GradePrimeiroPlano lado="baixo" />
 			<Vinheta />
