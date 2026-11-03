@@ -1,7 +1,7 @@
 // Bloco 6 (fechamento) do experimento-stanford, em cenas curtas.
 import React from 'react';
 import type {CenaPeca, Pecas} from '../../pecas/peca';
-import {Cartela, Foco, Fundo, Lua, Personagem, TextoGrande, usePeca} from './ilustracao';
+import {Camera, Cartela, Foco, Fundo, Lua, Personagem, TextoGrande, Vinheta, usePeca} from './ilustracao';
 
 // 6a. "A pergunta que ficou não é mais:": ponto de interrogação gigante se formando.
 export const stanfordP6a: React.FC<{cena: CenaPeca}> = ({cena}) => {
@@ -9,7 +9,7 @@ export const stanfordP6a: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const p = mola(0, 90, 15);
 	return (
 		<Fundo noite>
-			<Lua x={340} y={90} r={44} p={1} />
+			<Lua x={800} y={90} r={44} p={1} />
 			<TextoGrande texto="?" p={Math.min(1, p)} />
 		</Fundo>
 	);
@@ -22,8 +22,11 @@ export const stanfordP6b: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const texto = mola(8, 100, 14);
 	return (
 		<Fundo noite>
-			<Personagem x={216} y={980} tom="prisioneiro" escala={1.5} />
-			<Foco x={216} y={900} r={Math.max(60, 420 - foco * 320)} p={1} />
+			<Camera cena={cena} zoom={[1.4, 1.75]} y={[0, -60]}>
+				<Personagem x={540} y={1180} tom="prisioneiro" escala={3.4} />
+			</Camera>
+			<Foco x={540} y={900} r={Math.max(60, 420 - foco * 320)} p={1} />
+			<Vinheta forca={0.7} />
 			{texto > 0.05 && <TextoGrande texto="MONSTRO?" p={Math.min(1, texto)} />}
 		</Fundo>
 	);

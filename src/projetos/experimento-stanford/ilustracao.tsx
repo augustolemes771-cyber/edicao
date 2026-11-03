@@ -78,7 +78,7 @@ export const Predio: React.FC<{p: number; y?: number}> = ({p, y = 420}) => (
 
 // Corte transversal do porão: corredor com portas de grade dos dois lados (perspectiva simples, chapada).
 export const Porao: React.FC<{p: number}> = ({p}) => (
-	<svg style={{position: 'absolute', left: 0, top: 480, opacity: p}} width={432} height={480} viewBox="0 0 432 480" preserveAspectRatio="none">
+	<svg style={{position: 'absolute', left: 0, top: 1200, opacity: p}} width={1080} height={720} viewBox="0 0 432 480" preserveAspectRatio="none">
 		<polygon points="0,480 432,480 300,60 132,60" fill="#3a3f47" />
 		<polygon points="0,480 132,60 132,480" fill="#2a2e34" />
 		<polygon points="432,480 300,60 300,480" fill="#2a2e34" />
@@ -253,6 +253,80 @@ export const Livro: React.FC<{p: number; y?: number}> = ({p, y = 440}) => (
 		{[30, 50, 70, 90].map((yy) => (
 			<line key={`r${yy}`} x1={148} y1={yy - 2} x2={234} y2={yy} stroke="#b9b2a0" strokeWidth={3} />
 		))}
+	</svg>
+);
+
+// Câmera cinematográfica: zoom/pan lento e contínuo por cima do conteúdo, pra parecer que a câmera está
+// dentro da cena se movendo, não um cartão parado. Use em toda peça — mesmo um leve zoom já tira o ar de slide.
+export const Camera: React.FC<{cena: CenaPeca; zoom?: [number, number]; x?: [number, number]; y?: [number, number]; children: React.ReactNode}> = ({
+	cena,
+	zoom = [1, 1.13],
+	x = [0, 0],
+	y = [0, 0],
+	children,
+}) => {
+	const frame = useCurrentFrame();
+	const {fps} = useVideoConfig();
+	const dur = Math.max(1, Math.round((cena.ate - cena.de) * fps));
+	const p = interpolate(frame, [0, dur], [0, 1], lim);
+	const s = zoom[0] + (zoom[1] - zoom[0]) * p;
+	const tx = x[0] + (x[1] - x[0]) * p;
+	const ty = y[0] + (y[1] - y[0]) * p;
+	return <div style={{position: 'absolute', inset: 0, transform: `scale(${s}) translate(${tx}px, ${ty}px)`, transformOrigin: '50% 50%'}}>{children}</div>;
+};
+
+// Vinheta de cantos escuros (olhar de câmera/lente, não de cartaz).
+export const Vinheta: React.FC<{forca?: number}> = ({forca = 0.55}) => (
+	<div style={{position: 'absolute', inset: 0, background: `radial-gradient(ellipse at 50% 45%, transparent 35%, rgba(0,0,0,${forca}) 100%)`, pointerEvents: 'none'}} />
+);
+
+// Grade em primeiro plano, bem perto da câmera e desfocada — como se o espectador olhasse de dentro de
+// uma cela pra fora, ou de trás de um objeto. Dá profundidade e a sensação de estar DENTRO da cena.
+export const GradePrimeiroPlano: React.FC<{lado?: 'baixo' | 'esquerda' | 'direita'; p?: number}> = ({lado = 'baixo', p = 1}) => {
+	const vertical = lado === 'baixo';
+	const barras = Array.from({length: vertical ? 9 : 6});
+	return (
+		<div
+			style={{
+				position: 'absolute',
+				inset: 0,
+				opacity: p,
+				filter: 'blur(3px)',
+				display: 'flex',
+				flexDirection: vertical ? 'row' : 'column',
+				justifyContent: lado === 'direita' ? 'flex-end' : 'flex-start',
+				alignItems: vertical ? 'flex-end' : undefined,
+				gap: vertical ? 26 : 34,
+				padding: vertical ? '0 10px' : '10px 0',
+				pointerEvents: 'none',
+			}}
+		>
+			{barras.map((_, i) => (
+				<div
+					key={i}
+					style={{
+						background: 'linear-gradient(180deg, #000 0%, #000 100%)',
+						opacity: 0.92,
+						width: vertical ? 18 : lado === 'direita' ? 140 - i * 6 : 140 - i * 6,
+						height: vertical ? 260 - i * 4 : 18,
+						borderRadius: 4,
+					}}
+				/>
+			))}
+		</div>
+	);
+};
+
+// Silhueta de ombro/cabeça em primeiro plano (câmera "por cima do ombro" de alguém olhando a cena).
+export const OmbroPrimeiroPlano: React.FC<{lado?: 'esquerda' | 'direita'; p?: number}> = ({lado = 'esquerda', p = 1}) => (
+	<svg
+		style={{position: 'absolute', bottom: -40, [lado === 'esquerda' ? 'left' : 'right']: -60, opacity: p, filter: 'blur(1px)'} as React.CSSProperties}
+		width={320}
+		height={420}
+		viewBox="0 0 320 420"
+	>
+		<ellipse cx={lado === 'esquerda' ? 60 : 260} cy={430} rx={220} ry={190} fill="#05070a" opacity={0.96} />
+		<circle cx={lado === 'esquerda' ? 150 : 170} cy={160} r={70} fill="#05070a" opacity={0.96} />
 	</svg>
 );
 

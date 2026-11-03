@@ -2,7 +2,7 @@
 // Cenas curtas, cada uma já em movimento desde o primeiro quadro — nada de tela parada.
 import React from 'react';
 import type {CenaPeca, Pecas} from '../../pecas/peca';
-import {COR, Fundo, Livro, Personagem, TextoGrande, fonte, usePeca} from './ilustracao';
+import {Camera, COR, Fundo, GradePrimeiroPlano, Livro, OmbroPrimeiroPlano, Personagem, TextoGrande, Vinheta, fonte, usePeca} from './ilustracao';
 
 // Cartão de calendário com um número grande que pode ficar fixo ou contar rápido até um valor.
 const CartaoCalendario: React.FC<{dia: number; p: number; y?: number; girar?: number}> = ({dia, p, y = 760, girar = 0}) => (
@@ -27,7 +27,10 @@ export const stanfordP3a: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const girar = Math.max(0, (6 - contagem) * 2.5);
 	return (
 		<Fundo noite>
-			<CartaoCalendario dia={contagem} p={p} girar={contagem < 6 ? girar : 0} />
+			<Camera cena={cena} zoom={[1.5, 1.9]} y={[40, -20]}>
+				<CartaoCalendario dia={contagem} p={p} girar={contagem < 6 ? girar : 0} y={900} />
+			</Camera>
+			<Vinheta forca={0.45} />
 		</Fundo>
 	);
 };
@@ -64,7 +67,9 @@ export const stanfordP3b: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const p = mola(0, 150, 16);
 	return (
 		<Fundo noite>
-			<FiguraDupla x={540} y={1150} escala={1.5} p={p} maos={0} />
+			<Camera cena={cena} zoom={[1.15, 1.4]} x={[-20, 20]}>
+				<FiguraDupla x={540} y={1050} escala={2.3} p={p} maos={0} />
+			</Camera>
 			<div
 				style={{
 					position: 'absolute',
@@ -81,6 +86,8 @@ export const stanfordP3b: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			>
 				CIENTISTA E DIRETOR
 			</div>
+			<OmbroPrimeiroPlano lado="esquerda" />
+			<Vinheta forca={0.5} />
 		</Fundo>
 	);
 };
@@ -91,7 +98,11 @@ export const stanfordP3c: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const maos = Math.min(1, mola(0, 110, 12));
 	return (
 		<Fundo noite>
-			<FiguraDupla x={540} y={1150} escala={1.6} p={1} maos={maos} />
+			<Camera cena={cena} zoom={[1.6, 2.1]} y={[20, -40]}>
+				<FiguraDupla x={540} y={1050} escala={2.8} p={1} maos={maos} />
+			</Camera>
+			<OmbroPrimeiroPlano lado="direita" />
+			<Vinheta forca={0.6} />
 		</Fundo>
 	);
 };
@@ -103,15 +114,19 @@ export const stanfordP3d: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const apaga = mola(14, 90, 20);
 	return (
 		<Fundo noite>
-			<div style={{position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: Math.min(1, carimbo * 1.6)}}>
-				<svg width={320} height={320} viewBox="0 0 200 200" style={{transform: `scale(${0.5 + 0.5 * carimbo}) rotate(${(1 - carimbo) * -25}deg)`}}>
-					<circle cx={100} cy={100} r={92} fill={COR.vermelho} stroke={COR.branco} strokeWidth={10} />
-					<text x={100} y={88} textAnchor="middle" fontFamily={fonte} fontWeight={800} fontSize={46} fill={COR.branco}>
-						PARE
-					</text>
-					<path d="M46 118 L154 118" stroke={COR.branco} strokeWidth={10} strokeLinecap="round" />
-				</svg>
-			</div>
+			<Camera cena={cena} zoom={[1, 1.5]}>
+				<div style={{position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: Math.min(1, carimbo * 1.6)}}>
+					<svg width={320} height={320} viewBox="0 0 200 200" style={{transform: `scale(${0.5 + 0.5 * carimbo}) rotate(${(1 - carimbo) * -25}deg)`}}>
+						<circle cx={100} cy={100} r={92} fill={COR.vermelho} stroke={COR.branco} strokeWidth={10} />
+						<text x={100} y={88} textAnchor="middle" fontFamily={fonte} fontWeight={800} fontSize={46} fill={COR.branco}>
+							PARE
+						</text>
+						<path d="M46 118 L154 118" stroke={COR.branco} strokeWidth={10} strokeLinecap="round" />
+					</svg>
+				</div>
+			</Camera>
+			<GradePrimeiroPlano lado="baixo" />
+			<Vinheta forca={0.65} />
 			<div style={{position: 'absolute', inset: 0, background: '#000', opacity: Math.min(1, apaga)}} />
 		</Fundo>
 	);
@@ -127,15 +142,17 @@ export const stanfordP3e: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	};
 	return (
 		<Fundo noite={false}>
-			{[0, 1, 2, 3].map((i) => (
-				<div key={i} style={{position: 'absolute', left: voo(i), top: 260 + i * 240, opacity: 0.55, transform: `rotate(${(i - 1.5) * 12}deg) scale(0.55)`}}>
-					<CartaoCalendario dia={1971 % 10} p={1} y={0} />
+			<Camera cena={cena} zoom={[1, 1.18]} y={[-10, 10]}>
+				{[0, 1, 2, 3].map((i) => (
+					<div key={i} style={{position: 'absolute', left: voo(i), top: 260 + i * 240, opacity: 0.55, transform: `rotate(${(i - 1.5) * 12}deg) scale(0.55)`}}>
+						<CartaoCalendario dia={1971 % 10} p={1} y={0} />
+					</div>
+				))}
+				<div style={{position: 'absolute', top: 760, width: '100%', textAlign: 'center', opacity: Math.min(1, n * 1.5), transform: `scale(${0.8 + 0.2 * n})`}}>
+					<div style={{fontFamily: fonte, fontWeight: 800, fontSize: 150, color: '#1a1a1a'}}>50</div>
+					<div style={{fontFamily: fonte, fontWeight: 700, fontSize: 32, color: '#8a5a2b', letterSpacing: '0.06em'}}>ANOS</div>
 				</div>
-			))}
-			<div style={{position: 'absolute', top: 760, width: '100%', textAlign: 'center', opacity: Math.min(1, n * 1.5), transform: `scale(${0.8 + 0.2 * n})`}}>
-				<div style={{fontFamily: fonte, fontWeight: 800, fontSize: 150, color: '#1a1a1a'}}>50</div>
-				<div style={{fontFamily: fonte, fontWeight: 700, fontSize: 32, color: '#8a5a2b', letterSpacing: '0.06em'}}>ANOS</div>
-			</div>
+			</Camera>
 		</Fundo>
 	);
 };
@@ -146,31 +163,34 @@ export const stanfordP3f: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const vira = mola(6, 90, 14);
 	return (
 		<Fundo noite={false}>
-			<svg style={{position: 'absolute', left: '50%', top: 620, transform: 'translateX(-50%)'}} width={260} height={420} viewBox="0 0 260 420">
-				<defs>
-					<clipPath id="metade">
-						<rect x={130} y={0} width={130} height={420} />
-					</clipPath>
-				</defs>
-				{/* corpo normal */}
-				<g>
-					<ellipse cx={130} cy={400} rx={70} ry={14} fill="#000" opacity={0.2} />
-					<rect x={75} y={160} width={110} height={190} rx={22} fill={COR.peleClara} opacity={0.001} />
-					<rect x={75} y={160} width={110} height={190} rx={22} fill="#e8c9a8" />
-					<circle cx={130} cy={100} r={62} fill={COR.pele} />
-					<circle cx={112} cy={96} r={7} fill="#1a1a1a" />
-					<circle cx={148} cy={96} r={7} fill="#1a1a1a" />
-				</g>
-				{/* metade monstro por cima, recortada */}
-				<g clipPath="url(#metade)" opacity={vira}>
-					<ellipse cx={130} cy={400} rx={70} ry={14} fill="#000" opacity={0.3} />
-					<rect x={75} y={160} width={110} height={190} rx={22} fill="#1c2027" />
-					<circle cx={130} cy={100} r={62} fill="#2a2e36" />
-					<circle cx={112} cy={94} r={9} fill={COR.vermelho} />
-					<circle cx={148} cy={94} r={9} fill={COR.vermelho} />
-					<path d="M100 130 Q130 150 160 130" stroke={COR.vermelho} strokeWidth={4} fill="none" />
-				</g>
-			</svg>
+			<Camera cena={cena} zoom={[1.1, 1.55]} y={[10, -30]}>
+				<svg style={{position: 'absolute', left: '50%', top: 620, transform: 'translateX(-50%)'}} width={260} height={420} viewBox="0 0 260 420">
+					<defs>
+						<clipPath id="metade">
+							<rect x={130} y={0} width={130} height={420} />
+						</clipPath>
+					</defs>
+					{/* corpo normal */}
+					<g>
+						<ellipse cx={130} cy={400} rx={70} ry={14} fill="#000" opacity={0.2} />
+						<rect x={75} y={160} width={110} height={190} rx={22} fill={COR.peleClara} opacity={0.001} />
+						<rect x={75} y={160} width={110} height={190} rx={22} fill="#e8c9a8" />
+						<circle cx={130} cy={100} r={62} fill={COR.pele} />
+						<circle cx={112} cy={96} r={7} fill="#1a1a1a" />
+						<circle cx={148} cy={96} r={7} fill="#1a1a1a" />
+					</g>
+					{/* metade monstro por cima, recortada */}
+					<g clipPath="url(#metade)" opacity={vira}>
+						<ellipse cx={130} cy={400} rx={70} ry={14} fill="#000" opacity={0.3} />
+						<rect x={75} y={160} width={110} height={190} rx={22} fill="#1c2027" />
+						<circle cx={130} cy={100} r={62} fill="#2a2e36" />
+						<circle cx={112} cy={94} r={9} fill={COR.vermelho} />
+						<circle cx={148} cy={94} r={9} fill={COR.vermelho} />
+						<path d="M100 130 Q130 150 160 130" stroke={COR.vermelho} strokeWidth={4} fill="none" />
+					</g>
+				</svg>
+			</Camera>
+			<Vinheta forca={0.4} />
 		</Fundo>
 	);
 };
@@ -180,15 +200,17 @@ export const stanfordP3g: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const {mola} = usePeca(cena);
 	return (
 		<Fundo noite={false}>
-			{[-1, 0, 1].map((i) => {
-				const atraso = (i + 1) * 6;
-				const p = Math.min(1, mola(atraso, 120, 14));
-				return (
-					<div key={i} style={{position: 'absolute', left: `${50 + i * 26}%`, top: 0, transform: 'translateX(-50%)'}}>
-						<Livro p={p} y={520 - Math.abs(i) * 40} />
-					</div>
-				);
-			})}
+			<Camera cena={cena} zoom={[1, 1.22]} x={[-10, 10]}>
+				{[-1, 0, 1].map((i) => {
+					const atraso = (i + 1) * 6;
+					const p = Math.min(1, mola(atraso, 120, 14));
+					return (
+						<div key={i} style={{position: 'absolute', left: `${50 + i * 26}%`, top: 0, transform: 'translateX(-50%)'}}>
+							<Livro p={p} y={520 - Math.abs(i) * 40} />
+						</div>
+					);
+				})}
+			</Camera>
 			<TextoGrande texto="ENSINADO ATÉ HOJE" p={mola(26, 100, 14)} cor="#6b4a24" />
 		</Fundo>
 	);
