@@ -303,7 +303,7 @@ export const espMetros: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					{seta > 0.95 && (
 						<polygon points={`${510},${PE - 52} ${530},${PE - 40} ${510},${PE - 28}`} fill={COR.vermelho} />
 					)}
-					<Rotulo x={470} y={PE - 120} texto="POUCOS METROS" p={mola(Math.round(total * 0.7), 140, 13)} tam={30} />{' '}
+					<Rotulo x={560} y={PE - 250} texto="POUCOS METROS" p={mola(Math.round(total * 0.7), 140, 13)} tam={30} />{' '}
 				</Rua>
 			</CameraMundo>
 			<div
