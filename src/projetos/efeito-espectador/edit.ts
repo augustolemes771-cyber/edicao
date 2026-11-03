@@ -62,7 +62,7 @@ export const efeitoEspectador: Edit = {
 			['espPergunta', b.say('e deu origem').inicio],
 			['espMaisGente', b.say('por que quanto mais').inicio],
 			['espMenosAjuda', b.say('menos gente ajuda').inicio],
-			['espPsicologos', b.at('Dois')],
+			['espPsicologos', b.say('Dois psicólogos').inicio],
 			['espSalas', b.say('Eles montaram').inicio],
 			['espEmergencia', b.say('e simularam').inicio],
 			['espCrise', b.say('alguém fingindo').inicio],
