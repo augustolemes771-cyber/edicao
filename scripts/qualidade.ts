@@ -163,7 +163,10 @@ for (const c of cenas) {
 for (const c of cenas) {
 	if (c.tipo !== 'peca') continue;
 	// Uma peça pode vir de outro projeto (o registro junta todas): procura em todos os pecas.tsx.
-	const arqs = readdirSync(path.join('src', 'projetos')).map((d) => path.join('src', 'projetos', d, 'pecas.tsx')).filter((a) => existsSync(a));
+	// pecas.tsx pode juntar peças de outros arquivos da pasta (cenas-p1.tsx...): olha todos os .tsx de quem tem pecas.tsx.
+	const arqs = readdirSync(path.join('src', 'projetos'))
+		.filter((d) => existsSync(path.join('src', 'projetos', d, 'pecas.tsx')))
+		.flatMap((d) => readdirSync(path.join('src', 'projetos', d)).filter((f) => f.endsWith('.tsx')).map((f) => path.join('src', 'projetos', d, f)));
 	if (!arqs.some((a) => new RegExp(`\\b${c.nome}\\s*[:(,]`).test(readFileSync(a, 'utf8')))) erros.push(`${fmt(c.de)}: peça "${c.nome}" não está em nenhum src/projetos/*/pecas.tsx`);
 }
 

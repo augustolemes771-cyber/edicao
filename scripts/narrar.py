@@ -21,7 +21,7 @@ async def gerar(projeto: str, voz: str, taxa: str, texto: str):
     pasta_src.mkdir(parents=True, exist_ok=True)
 
     mp3 = pasta_publica / "narracao.mp3"
-    comunicar = edge_tts.Communicate(texto, voz, rate=taxa)
+    comunicar = edge_tts.Communicate(texto, voz, rate=taxa, boundary="WordBoundary")
     palavras = []
     with open(mp3, "wb") as f:
         async for trecho in comunicar.stream():
