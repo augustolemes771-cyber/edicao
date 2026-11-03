@@ -59,16 +59,20 @@ export const CameraMundo: React.FC<{cena: CenaPeca; de: Plano; para?: Plano; cur
 	);
 };
 
-// Grão de filme leve + vinheta (clima de suspense).
+// Grão de filme leve (clima de suspense) + faixa escura atrás da legenda.
 export const Grao: React.FC = () => {
 	const frame = useCurrentFrame();
 	return (
+		<>
+		{/* faixa escura atrás da legenda (ela fica a 80% da altura, por cima de janelas acesas) */}
+		<div style={{position: 'absolute', left: 0, right: 0, top: 1300, height: 520, background: 'linear-gradient(180deg, transparent 0%, rgba(4,6,12,0.62) 40%, rgba(4,6,12,0.62) 70%, transparent 100%)', pointerEvents: 'none'}} />
 		<svg style={{position: 'absolute', inset: 0, opacity: 0.09, mixBlendMode: 'overlay', pointerEvents: 'none'}} width={1080} height={1920}>
 			<filter id={`grao${frame % 4}`}>
 				<feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves={2} seed={frame % 4} />
 			</filter>
 			<rect width={1080} height={1920} filter={`url(#grao${frame % 4})`} />
 		</svg>
+		</>
 	);
 };
 
