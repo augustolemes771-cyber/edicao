@@ -35,13 +35,25 @@ export const efeitoEspectador: Edit = {
 			['contaram'],
 			['você'],
 			['andando'],
-		].map(([palavra, ocorrencia]) => ({palavra: palavra as string, ocorrencia: ocorrencia as number | undefined, estilo: 'cor' as const, cor: '#ff5a5f'})),
+		].map(([palavra, ocorrencia]) => ({
+			palavra: palavra as string,
+			ocorrencia: ocorrencia as number | undefined,
+			estilo: 'cor' as const,
+			cor: '#ff5a5f',
+		})),
 	},
 	camera: () => [{tipo: 'foco', em: 0}],
 	transcricao,
 	cortes: [],
 	cenas: (b) => {
-		const peca = (nome: string, de: number, ate: number) => ({tipo: 'peca' as const, nome, modo: 'cheia' as const, de, ate, dados: {}});
+		const peca = (nome: string, de: number, ate: number) => ({
+			tipo: 'peca' as const,
+			nome,
+			modo: 'cheia' as const,
+			de,
+			ate,
+			dados: {},
+		});
 		// Cada cena vai do início da sua frase até o início da próxima (sem buraco entre cenas).
 		const seq: [string, number][] = [
 			['espGancho', 0],

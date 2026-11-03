@@ -3,8 +3,31 @@
 import React from 'react';
 import {interpolate} from 'remotion';
 import type {CenaPeca, Pecas} from '../../pecas/peca';
-import {COR, Fundo, Numero, Pilula, Vinheta, TextoGrande, lim, fonte, usePeca} from '../experimento-stanford/ilustracao';
-import {CALCADA, CameraMundo, Grao, JANELAS, Jornal, Ondas, Pessoa, Rotulo, Rua, Sombra, Telefone, rnd} from './cenario';
+import {
+	COR,
+	Fundo,
+	Numero,
+	Pilula,
+	Vinheta,
+	TextoGrande,
+	lim,
+	fonte,
+	usePeca,
+} from '../experimento-stanford/ilustracao';
+import {
+	CALCADA,
+	CameraMundo,
+	Grao,
+	JANELAS,
+	Jornal,
+	Ondas,
+	Pessoa,
+	Rotulo,
+	Rua,
+	Sombra,
+	Telefone,
+	rnd,
+} from './cenario';
 import {FOCO} from './cenas-p1';
 
 const PE = CALCADA + 70;
@@ -21,11 +44,24 @@ export const espDecadas: React.FC<{cena: CenaPeca}> = ({cena}) => {
 		<Fundo noite>
 			<CameraMundo cena={cena} de={[540, 900, 1.0]} para={[540, 900, 1.15]}>
 				<Rua olhar={0.6} apagar={0.4}>
-				<rect x={-600} y={-600} width={2300} height={3200} fill="#000" opacity={0.5} />
-				{Array.from({length: 8}).map((_, i) => {
-					const f = interpolate(frame, [i * 3, i * 3 + 14], [0, 1], lim);
-					return <rect key={i} x={380 + f * (rnd(i) - 0.5) * 900} y={760 - f * 500 + rnd(i + 3) * 60} width={320} height={380} rx={12} fill={COR.papel} opacity={f > 0 && f < 1 ? 1 - f : 0} transform={`rotate(${f * (rnd(i + 5) - 0.5) * 120} 540 950)`} />;
-				})}				</Rua>
+					<rect x={-600} y={-600} width={2300} height={3200} fill="#000" opacity={0.5} />
+					{Array.from({length: 8}).map((_, i) => {
+						const f = interpolate(frame, [i * 3, i * 3 + 14], [0, 1], lim);
+						return (
+							<rect
+								key={i}
+								x={380 + f * (rnd(i) - 0.5) * 900}
+								y={760 - f * 500 + rnd(i + 3) * 60}
+								width={320}
+								height={380}
+								rx={12}
+								fill={COR.papel}
+								opacity={f > 0 && f < 1 ? 1 - f : 0}
+								transform={`rotate(${f * (rnd(i + 5) - 0.5) * 120} 540 950)`}
+							/>
+						);
+					})}{' '}
+				</Rua>
 			</CameraMundo>
 			<Vinheta forca={0.6} />
 			<Numero valor={String(ano)} rotulo="DÉCADAS DEPOIS" p={mola(0, 140, 14)} top={170} />
@@ -47,7 +83,15 @@ export const espJornalistas: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					<Jornal y={880} s={0.95} rot={3} manchete={'38 VIRAM.\nNINGUÉM\nAJUDOU.'} p={1} />
 					<g opacity={Math.min(1, mola(4, 130, 14))}>
 						<circle cx={lx} cy={ly} r={130} fill="#ffffff" opacity={0.12} stroke="#1d1f24" strokeWidth={22} />
-						<rect x={lx + 85} y={ly + 85} width={40} height={180} rx={18} fill="#1d1f24" transform={`rotate(-45 ${lx + 105} ${ly + 105})`} />
+						<rect
+							x={lx + 85}
+							y={ly + 85}
+							width={40}
+							height={180}
+							rx={18}
+							fill="#1d1f24"
+							transform={`rotate(-45 ${lx + 105} ${ly + 105})`}
+						/>
 					</g>
 				</svg>
 			</CameraMundo>
@@ -87,7 +131,18 @@ export const espNuncaViram: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			</CameraMundo>
 			<Vinheta forca={0.6} />
 			<Numero valor="38" rotulo="NUNCA VIRAM DE VERDADE" p={mola(0, 140, 14)} top={130} cor={COR.vermelho} />
-			<div style={{position: 'absolute', top: 175, left: 380, width: 320 * Math.min(1, mola(14, 160, 13)), height: 12, background: COR.vermelho, transform: 'rotate(-12deg)', borderRadius: 6}} />
+			<div
+				style={{
+					position: 'absolute',
+					top: 175,
+					left: 380,
+					width: 320 * Math.min(1, mola(14, 160, 13)),
+					height: 12,
+					background: COR.vermelho,
+					transform: 'rotate(-12deg)',
+					borderRadius: 6,
+				}}
+			/>
 			<Grao />
 		</Fundo>
 	);
@@ -100,7 +155,15 @@ export const espSons: React.FC<{cena: CenaPeca}> = ({cena}) => {
 		<Fundo noite>
 			<CameraMundo cena={cena} de={[ESCURA.x, ESCURA.y + 40, 3.6]} para={[ESCURA.x - 40, ESCURA.y + 120, 2.6]}>
 				<Rua olhar={0} olhos={0.6}>
-				<Ondas x={ESCURA.x - 260} y={ESCURA.y + 420} p={0.45 * Math.min(1, mola(0, 120, 14))} cor={COR.branco} escala={0.8} lado={1} />				</Rua>
+					<Ondas
+						x={ESCURA.x - 260}
+						y={ESCURA.y + 420}
+						p={0.45 * Math.min(1, mola(0, 120, 14))}
+						cor={COR.branco}
+						escala={0.8}
+						lado={1}
+					/>{' '}
+				</Rua>
 			</CameraMundo>
 			<Vinheta forca={0.7} />
 			<Pilula texto="SONS DISTANTES" p={mola(10, 130, 13)} y={200} cor="#2a3044" />
@@ -117,7 +180,15 @@ export const espGritou: React.FC<{cena: CenaPeca}> = ({cena}) => {
 		<Fundo noite>
 			<CameraMundo cena={cena} de={[GRITO.x, GRITO.y, 3.4]} para={[GRITO.x + 40, GRITO.y + 30, 2.8]} curva="rapida">
 				<Rua olhar={0.9} grito={{janela: GRITO.i, p: abre}} destaque={GRITO.i}>
-				<Ondas x={GRITO.x + 40} y={GRITO.y + 10} p={Math.min(1, mola(8, 160, 12))} cor={COR.dourado} escala={0.55} lado={1} />				</Rua>
+					<Ondas
+						x={GRITO.x + 40}
+						y={GRITO.y + 10}
+						p={Math.min(1, mola(8, 160, 12))}
+						cor={COR.dourado}
+						escala={0.55}
+						lado={1}
+					/>{' '}
+				</Rua>
 			</CameraMundo>
 			<Vinheta forca={0.6} />
 			<Pilula texto="UM VIZINHO GRITOU" p={mola(10, 140, 12)} y={200} cor="#3fae5c" />
@@ -134,8 +205,18 @@ export const espAssustou: React.FC<{cena: CenaPeca}> = ({cena}) => {
 		<Fundo noite>
 			<CameraMundo cena={cena} de={[460, PE - 260, 1.8]} para={[700, PE - 260, 1.6]}>
 				<Rua olhar={1} grito={{janela: GRITO.i, p: 1}}>
-				<Sombra x={x} y={PE + 6} s={1.55} anda={t * 16} />
-				<Pessoa x={330} y={PE} s={1.25} corpo="#8e2f3a" pele={COR.peleClara} cabelo="longo" corCabelo="#1f1512" olhar={1} />				</Rua>
+					<Sombra x={x} y={PE + 6} s={1.55} anda={t * 16} />
+					<Pessoa
+						x={330}
+						y={PE}
+						s={1.25}
+						corpo="#8e2f3a"
+						pele={COR.peleClara}
+						cabelo="longo"
+						corCabelo="#1f1512"
+						olhar={1}
+					/>{' '}
+				</Rua>
 			</CameraMundo>
 			<Vinheta forca={0.6} />
 			<Grao />
@@ -168,8 +249,20 @@ export const espTarde: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			<CameraMundo cena={cena} de={[540, 1300, 1.3]} para={[540, 1340, 1.15]}>
 				<Rua olhar={1} apagar={0.5} />
 			</CameraMundo>
-			<div style={{position: 'absolute', inset: 0, background: `radial-gradient(ellipse at 100% 85%, rgba(61,107,255,${0.5 * azul}) 0%, transparent 60%)`}} />
-			<div style={{position: 'absolute', inset: 0, background: `radial-gradient(ellipse at 0% 85%, rgba(232,84,92,${0.45 * verm}) 0%, transparent 60%)`}} />
+			<div
+				style={{
+					position: 'absolute',
+					inset: 0,
+					background: `radial-gradient(ellipse at 100% 85%, rgba(61,107,255,${0.5 * azul}) 0%, transparent 60%)`,
+				}}
+			/>
+			<div
+				style={{
+					position: 'absolute',
+					inset: 0,
+					background: `radial-gradient(ellipse at 0% 85%, rgba(232,84,92,${0.45 * verm}) 0%, transparent 60%)`,
+				}}
+			/>
 			<Vinheta forca={0.6} />
 			<Pilula texto="TARDE DEMAIS" p={mola(4, 140, 12)} y={200} />
 			<Grao />
@@ -188,7 +281,18 @@ export const espSolida: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					<rect x={-600} y={1320} width={2300} height={1400} fill="#1b2030" />
 					{Array.from({length: 6}).map((_, i) => {
 						const p = Math.min(1, mola(i * 4, 170, 14));
-						return <rect key={i} x={380} y={1320 - (i + 1) * 110 - (1 - p) * 600} width={320} height={100} rx={10} fill={i % 2 ? '#3c5a8a' : '#4b6a9a'} opacity={p} />;
+						return (
+							<rect
+								key={i}
+								x={380}
+								y={1320 - (i + 1) * 110 - (1 - p) * 600}
+								width={320}
+								height={100}
+								rx={10}
+								fill={i % 2 ? '#3c5a8a' : '#4b6a9a'}
+								opacity={p}
+							/>
+						);
 					})}
 				</svg>
 			</CameraMundo>
@@ -219,7 +323,15 @@ export const espDezenas: React.FC<{cena: CenaPeca}> = ({cena}) => {
 								<circle cx={x + 50} cy={y + 70} r={14} fill="#11141c" />
 								<circle cx={x + 90} cy={y + 70} r={14} fill="#11141c" />
 								{ok && <circle cx={x + 120} cy={y + 18} r={20} fill="#3fae5c" />}
-								{ok && <path d={`M${x + 110} ${y + 18} L${x + 117} ${y + 26} L${x + 130} ${y + 10}`} stroke={COR.branco} strokeWidth={5} fill="none" strokeLinecap="round" />}
+								{ok && (
+									<path
+										d={`M${x + 110} ${y + 18} L${x + 117} ${y + 26} L${x + 130} ${y + 10}`}
+										stroke={COR.branco}
+										strokeWidth={5}
+										fill="none"
+										strokeLinecap="round"
+									/>
+								)}
 							</g>
 						);
 					})}
@@ -254,7 +366,14 @@ export const espContaram: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			<CameraMundo cena={cena} de={[540, 860, 1.15]} para={[540, 880, 1.0]}>
 				<svg style={{position: 'absolute', left: 0, top: 0, overflow: 'visible'}} width={1080} height={1920}>
 					<rect x={-600} y={-600} width={2300} height={3200} fill="#141722" />
-					<Jornal y={880} s={0.95} rot={-2} manchete={'38 VIRAM.\nNINGUÉM\nAJUDOU.'} rasga={Math.min(1.2, mola(6, 120, 12))} p={1} />
+					<Jornal
+						y={880}
+						s={0.95}
+						rot={-2}
+						manchete={'38 VIRAM.\nNINGUÉM\nAJUDOU.'}
+						rasga={Math.min(1.2, mola(6, 120, 12))}
+						p={1}
+					/>
 				</svg>
 			</CameraMundo>
 			<Vinheta forca={0.55} />
@@ -273,12 +392,41 @@ export const espNaoSo: React.FC<{cena: CenaPeca}> = ({cena}) => {
 				<Rua olhar={0.6} apagar={0.6} />
 			</CameraMundo>
 			<div style={{position: 'absolute', inset: 0, background: 'rgba(5,7,12,0.6)'}} />
-			<div style={{position: 'absolute', top: 260, width: '100%', textAlign: 'center', opacity: Math.min(1, mola(0, 130, 14) * 1.5)}}>
-				<div style={{display: 'inline-block', position: 'relative', fontFamily: fonte, fontWeight: 800, fontSize: 64, color: COR.branco, lineHeight: 1.1}}>
+			<div
+				style={{
+					position: 'absolute',
+					top: 260,
+					width: '100%',
+					textAlign: 'center',
+					opacity: Math.min(1, mola(0, 130, 14) * 1.5),
+				}}
+			>
+				<div
+					style={{
+						display: 'inline-block',
+						position: 'relative',
+						fontFamily: fonte,
+						fontWeight: 800,
+						fontSize: 64,
+						color: COR.branco,
+						lineHeight: 1.1,
+					}}
+				>
 					“POR QUE NINGUÉM
 					<br />
 					AJUDOU?”
-					<div style={{position: 'absolute', left: -20, top: '50%', height: 12, width: `calc(${Math.min(1, risca) * 100}% + 40px)`, background: COR.vermelho, borderRadius: 6, transform: 'rotate(-4deg)'}} />
+					<div
+						style={{
+							position: 'absolute',
+							left: -20,
+							top: '50%',
+							height: 12,
+							width: `calc(${Math.min(1, risca) * 100}% + 40px)`,
+							background: COR.vermelho,
+							borderRadius: 6,
+							transform: 'rotate(-4deg)',
+						}}
+					/>
 				</div>
 			</div>
 			<Grao />
@@ -293,7 +441,8 @@ export const espVoce: React.FC<{cena: CenaPeca}> = ({cena}) => {
 		<Fundo noite>
 			<CameraMundo cena={cena} de={[560, PE - 200, 3.0]} para={[560, PE - 220, 2.4]}>
 				<Rua olhar={0.9}>
-				<Pessoa x={560} y={PE} s={1.3} corpo="#3c5a8a" olhar={interpolate(frame, [10, 20], [0, -1], lim)} />				</Rua>
+					<Pessoa x={560} y={PE} s={1.3} corpo="#3c5a8a" olhar={interpolate(frame, [10, 20], [0, -1], lim)} />{' '}
+				</Rua>
 			</CameraMundo>
 			<Vinheta forca={0.6} />
 			<Pilula texto="VOCÊ" p={mola(4, 140, 12)} y={200} cor="#3c5a8a" />
@@ -314,10 +463,20 @@ export const espGenteAli: React.FC<{cena: CenaPeca}> = ({cena}) => {
 		<Fundo noite>
 			<CameraMundo cena={cena} de={[560, PE - 220, 2.2]} para={[600, PE - 240, 1.7]}>
 				<Rua olhar={0.9}>
-				{outros.map(([x, cor], i) => (
-					<Pessoa key={i} x={x} y={PE} s={1.25} corpo={cor} cabelo={i % 2 ? 'longo' : 'curto'} olhar={-0.3} p={Math.min(1, mola(i * 5, 140, 14))} />
-				))}
-				<Pessoa x={560} y={PE} s={1.3} corpo="#3c5a8a" olhar={-1} />				</Rua>
+					{outros.map(([x, cor], i) => (
+						<Pessoa
+							key={i}
+							x={x}
+							y={PE}
+							s={1.25}
+							corpo={cor}
+							cabelo={i % 2 ? 'longo' : 'curto'}
+							olhar={-0.3}
+							p={Math.min(1, mola(i * 5, 140, 14))}
+						/>
+					))}
+					<Pessoa x={560} y={PE} s={1.3} corpo="#3c5a8a" olhar={-1} />{' '}
+				</Rua>
 			</CameraMundo>
 			<Vinheta forca={0.6} />
 			<Grao />
@@ -336,10 +495,11 @@ export const espSeguiu: React.FC<{cena: CenaPeca}> = ({cena}) => {
 		<Fundo noite>
 			<CameraMundo cena={cena} de={[600, PE - 240, 1.7]} para={[540, 760, 1.0]}>
 				<Rua espectadores={1} olhar={0.7} olhos={1}>
-				{[300, 800].map((px, i) => (
-					<Pessoa key={i} x={px} y={PE} s={1.25} corpo={i ? '#2b4a46' : '#4a3a52'} olhar={-0.3} />
-				))}
-				<Pessoa x={x} y={PE} s={1.3} corpo="#3c5a8a" anda={t * 9} olhar={1} />				</Rua>
+					{[300, 800].map((px, i) => (
+						<Pessoa key={i} x={px} y={PE} s={1.25} corpo={i ? '#2b4a46' : '#4a3a52'} olhar={-0.3} />
+					))}
+					<Pessoa x={x} y={PE} s={1.3} corpo="#3c5a8a" anda={t * 9} olhar={1} />{' '}
+				</Rua>
 			</CameraMundo>
 			<Vinheta forca={0.65} />
 			<div style={{position: 'absolute', inset: 0, background: '#000', opacity: fim}} />

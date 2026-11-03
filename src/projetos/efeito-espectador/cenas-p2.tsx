@@ -4,14 +4,34 @@ import React from 'react';
 import {interpolate} from 'remotion';
 import type {CenaPeca, Pecas} from '../../pecas/peca';
 import {COR, Fundo, Pilula, Numero, Vinheta, lim, fonte, usePeca} from '../experimento-stanford/ilustracao';
-import {Balao, Cadeira, CameraMundo, Cronometro, Grao, Pessoa, Rotulo, SALA, Sala, Silhueta, Telefone, rnd} from './cenario';
+import {
+	Balao,
+	Cadeira,
+	CameraMundo,
+	Cronometro,
+	Grao,
+	Pessoa,
+	Rotulo,
+	SALA,
+	Sala,
+	Silhueta,
+	Telefone,
+	rnd,
+} from './cenario';
 
 const dur = (cena: CenaPeca) => cena.ate - cena.de;
 const CHAO = SALA.parede + 120; // pés de quem está sentado
 const ASSENTOS = [180, 340, 500, 660];
 
 // Voluntário sentado (cadeira + pessoa na frente dela).
-const Sentado: React.FC<{x: number; voluntario?: boolean; olhar?: number; levanta?: number; anda?: number; p?: number}> = ({x, voluntario, olhar = 0, levanta = 0, anda = 0, p = 1}) => (
+const Sentado: React.FC<{
+	x: number;
+	voluntario?: boolean;
+	olhar?: number;
+	levanta?: number;
+	anda?: number;
+	p?: number;
+}> = ({x, voluntario, olhar = 0, levanta = 0, anda = 0, p = 1}) => (
 	<g opacity={p}>
 		<Cadeira x={x} y={CHAO} s={1.1} />
 		<Pessoa
@@ -36,7 +56,16 @@ export const espPsicologos: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			<CameraMundo cena={cena} de={[540, 1150, 1.9]} para={[540, 1120, 1.6]}>
 				<Sala>
 					<Pessoa x={400} y={CHAO} s={1.6} jaleco olhar={0.6 + Math.sin(t * 3) * 0.2} p={mola(0, 120, 14)} />
-					<Pessoa x={680} y={CHAO} s={1.6} jaleco corCabelo="#5a4a3a" olhar={-0.6} braco={0.35 * mola(14, 120, 12)} p={mola(5, 120, 14)} />
+					<Pessoa
+						x={680}
+						y={CHAO}
+						s={1.6}
+						jaleco
+						corCabelo="#5a4a3a"
+						olhar={-0.6}
+						braco={0.35 * mola(14, 120, 12)}
+						p={mola(5, 120, 14)}
+					/>
 				</Sala>
 			</CameraMundo>
 			<Vinheta forca={0.45} />
@@ -149,7 +178,14 @@ export const espAjudava: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					<Sentado x={340} voluntario levanta={lev * 1.6} anda={lev < 1 ? t * 9 : 0} olhar={1} />
 					<g transform={`translate(910,620) scale(${Math.min(1, mola(34, 160, 12))})`}>
 						<circle r={60} fill="#3fae5c" />
-						<path d="M-26 0 L-6 22 L30 -24" stroke={COR.branco} strokeWidth={14} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+						<path
+							d="M-26 0 L-6 22 L30 -24"
+							stroke={COR.branco}
+							strokeWidth={14}
+							fill="none"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						/>
 					</g>
 				</Sala>
 			</CameraMundo>
@@ -167,7 +203,13 @@ export const espOutras: React.FC<{cena: CenaPeca}> = ({cena}) => {
 		<Fundo noite>
 			<CameraMundo cena={cena} de={[420, 1100, 1.7]} para={[440, 1000, 1.05]}>
 				<Sala fumaca={0.6}>
-					{ASSENTOS.map((x, i) => (x === 340 ? <Sentado key={x} x={x} voluntario olhar={Math.sin(t * 3) * 0.8} /> : <Sentado key={x} x={x} olhar={0} p={Math.min(1, mola(4 + i * 6, 140, 14))} />))}
+					{ASSENTOS.map((x, i) =>
+						x === 340 ? (
+							<Sentado key={x} x={x} voluntario olhar={Math.sin(t * 3) * 0.8} />
+						) : (
+							<Sentado key={x} x={x} olhar={0} p={Math.min(1, mola(4 + i * 6, 140, 14))} />
+						),
+					)}
 				</Sala>
 			</CameraMundo>
 			<Vinheta forca={0.5} />
@@ -190,12 +232,37 @@ export const espMetade: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					<rect x={-600} y={-600} width={2300} height={3200} fill="#121725" />
 					<rect x={220} y={1240 - 600 * a} width={240} height={600 * a} rx={16} fill="#3fae5c" />
 					<rect x={620} y={1240 - 600 * grupo} width={240} height={600 * grupo} rx={16} fill={COR.vermelho} />
-					<line x1={580} y1={940} x2={900} y2={940} stroke={COR.branco} strokeWidth={4} strokeDasharray="12 10" opacity={cai} />
+					<line
+						x1={580}
+						y1={940}
+						x2={900}
+						y2={940}
+						stroke={COR.branco}
+						strokeWidth={4}
+						strokeDasharray="12 10"
+						opacity={cai}
+					/>
 					<rect x={160} y={1240} width={760} height={10} fill="#2b3550" />
-					<text x={340} y={1310} textAnchor="middle" fontFamily={fonte} fontWeight={800} fontSize={40} fill={COR.branco}>
+					<text
+						x={340}
+						y={1310}
+						textAnchor="middle"
+						fontFamily={fonte}
+						fontWeight={800}
+						fontSize={40}
+						fill={COR.branco}
+					>
 						SOZINHO
 					</text>
-					<text x={740} y={1310} textAnchor="middle" fontFamily={fonte} fontWeight={800} fontSize={40} fill={COR.branco}>
+					<text
+						x={740}
+						y={1310}
+						textAnchor="middle"
+						fontFamily={fonte}
+						fontWeight={800}
+						fontSize={40}
+						fill={COR.branco}
+					>
 						EM GRUPO
 					</text>
 				</svg>
@@ -208,7 +275,12 @@ export const espMetade: React.FC<{cena: CenaPeca}> = ({cena}) => {
 };
 
 // Fileira de pessoas na rua (mecanismo): cada uma olha pro lado em sequência.
-const Fila: React.FC<{olhar: (i: number) => number; n?: number; y?: number; brilho?: (i: number) => number}> = ({olhar, n = 5, y = 1260, brilho}) => (
+const Fila: React.FC<{olhar: (i: number) => number; n?: number; y?: number; brilho?: (i: number) => number}> = ({
+	olhar,
+	n = 5,
+	y = 1260,
+	brilho,
+}) => (
 	<svg style={{position: 'absolute', left: 0, top: 0, overflow: 'visible'}} width={1080} height={1920}>
 		<rect x={-600} y={-600} width={2300} height={3200} fill="#121725" />
 		<rect x={-600} y={y} width={2300} height={1400} fill="#1b2030" />
@@ -216,8 +288,17 @@ const Fila: React.FC<{olhar: (i: number) => number; n?: number; y?: number; bril
 			const x = 540 + (i - (n - 1) / 2) * 190;
 			return (
 				<g key={i}>
-					{brilho && brilho(i) > 0.01 && <circle cx={x} cy={y - 260} r={34 * brilho(i)} fill={COR.dourado} opacity={0.95} />}
-					<Pessoa x={x} y={y} s={1.5} corpo={i === Math.floor(n / 2) ? '#3c5a8a' : ['#4a3a52', '#2b4a46', '#5a4636', '#3a4256', '#4d3434'][i % 5]} olhar={olhar(i)} cabelo={i % 2 ? 'longo' : 'curto'} />
+					{brilho && brilho(i) > 0.01 && (
+						<circle cx={x} cy={y - 260} r={34 * brilho(i)} fill={COR.dourado} opacity={0.95} />
+					)}
+					<Pessoa
+						x={x}
+						y={y}
+						s={1.5}
+						corpo={i === Math.floor(n / 2) ? '#3c5a8a' : ['#4a3a52', '#2b4a46', '#5a4636', '#3a4256', '#4d3434'][i % 5]}
+						olhar={olhar(i)}
+						cabelo={i % 2 ? 'longo' : 'curto'}
+					/>
 				</g>
 			);
 		})}
@@ -320,7 +401,17 @@ export const espTestemunhas: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					{Array.from({length: n * 2}).map((_, i) => {
 						const fila = i % 2;
 						const k = Math.floor(i / 2);
-						return <Silhueta key={i} x={540 + (k - (n - 1) / 2) * 120 + fila * 60} y={1150 + fila * 120} s={1.4 + fila * 0.2} cor={fila ? '#20283c' : '#2b3550'} olhos={1} olhar={Math.sin(frame / 12 + i) * 0.4} />;
+						return (
+							<Silhueta
+								key={i}
+								x={540 + (k - (n - 1) / 2) * 120 + fila * 60}
+								y={1150 + fila * 120}
+								s={1.4 + fila * 0.2}
+								cor={fila ? '#20283c' : '#2b3550'}
+								olhos={1}
+								olhar={Math.sin(frame / 12 + i) * 0.4}
+							/>
+						);
 					})}
 				</svg>
 			</CameraMundo>
@@ -346,7 +437,9 @@ const Responsabilidade: React.FC<{cena: CenaPeca; espalha: number; pesa: number}
 					const x = 540 + (tx - 540) * espalha;
 					const yy = 640 + (y - 290 - 640) * espalha + Math.sin(frame / 8 + i) * 4;
 					const r = (110 / Math.sqrt(1 + 4 * espalha)) * (1 - 0.55 * pesa) * (espalha < 0.02 ? 1 : 1);
-					return <circle key={i} cx={x} cy={yy} r={espalha < 0.02 && i > 0 ? 0 : r} fill={COR.dourado} opacity={0.95} />;
+					return (
+						<circle key={i} cx={x} cy={yy} r={espalha < 0.02 && i > 0 ? 0 : r} fill={COR.dourado} opacity={0.95} />
+					);
 				})}
 			</svg>
 		</>
