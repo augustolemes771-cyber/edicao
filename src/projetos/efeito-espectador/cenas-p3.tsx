@@ -20,12 +20,12 @@ export const espDecadas: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<CameraMundo cena={cena} de={[540, 900, 1.0]} para={[540, 900, 1.15]}>
-				<Rua olhar={0.6} apagar={0.4} />
+				<Rua olhar={0.6} apagar={0.4}>
 				<rect x={-600} y={-600} width={2300} height={3200} fill="#000" opacity={0.5} />
 				{Array.from({length: 8}).map((_, i) => {
 					const f = interpolate(frame, [i * 3, i * 3 + 14], [0, 1], lim);
 					return <rect key={i} x={380 + f * (rnd(i) - 0.5) * 900} y={760 - f * 500 + rnd(i + 3) * 60} width={320} height={380} rx={12} fill={COR.papel} opacity={f > 0 && f < 1 ? 1 - f : 0} transform={`rotate(${f * (rnd(i + 5) - 0.5) * 120} 540 950)`} />;
-				})}
+				})}				</Rua>
 			</CameraMundo>
 			<Vinheta forca={0.6} />
 			<Numero valor={String(ano)} rotulo="DÉCADAS DEPOIS" p={mola(0, 140, 14)} top={170} />
@@ -99,8 +99,8 @@ export const espSons: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<CameraMundo cena={cena} de={[ESCURA.x, ESCURA.y + 40, 3.6]} para={[ESCURA.x - 40, ESCURA.y + 120, 2.6]}>
-				<Rua olhar={0} olhos={0.6} />
-				<Ondas x={ESCURA.x - 260} y={ESCURA.y + 420} p={0.45 * Math.min(1, mola(0, 120, 14))} cor={COR.branco} escala={0.8} lado={1} />
+				<Rua olhar={0} olhos={0.6}>
+				<Ondas x={ESCURA.x - 260} y={ESCURA.y + 420} p={0.45 * Math.min(1, mola(0, 120, 14))} cor={COR.branco} escala={0.8} lado={1} />				</Rua>
 			</CameraMundo>
 			<Vinheta forca={0.7} />
 			<Pilula texto="SONS DISTANTES" p={mola(10, 130, 13)} y={200} cor="#2a3044" />
@@ -116,8 +116,8 @@ export const espGritou: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<CameraMundo cena={cena} de={[GRITO.x, GRITO.y, 3.4]} para={[GRITO.x + 40, GRITO.y + 30, 2.8]} curva="rapida">
-				<Rua olhar={0.9} grito={{janela: GRITO.i, p: abre}} destaque={GRITO.i} />
-				<Ondas x={GRITO.x + 40} y={GRITO.y + 10} p={Math.min(1, mola(8, 160, 12))} cor={COR.dourado} escala={0.55} lado={1} />
+				<Rua olhar={0.9} grito={{janela: GRITO.i, p: abre}} destaque={GRITO.i}>
+				<Ondas x={GRITO.x + 40} y={GRITO.y + 10} p={Math.min(1, mola(8, 160, 12))} cor={COR.dourado} escala={0.55} lado={1} />				</Rua>
 			</CameraMundo>
 			<Vinheta forca={0.6} />
 			<Pilula texto="UM VIZINHO GRITOU" p={mola(10, 140, 12)} y={200} cor="#3fae5c" />
@@ -133,9 +133,9 @@ export const espAssustou: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<CameraMundo cena={cena} de={[460, PE - 260, 1.8]} para={[700, PE - 260, 1.6]}>
-				<Rua olhar={1} grito={{janela: GRITO.i, p: 1}} />
+				<Rua olhar={1} grito={{janela: GRITO.i, p: 1}}>
 				<Sombra x={x} y={PE + 6} s={1.55} anda={t * 16} />
-				<Pessoa x={330} y={PE} s={1.25} corpo="#8e2f3a" pele={COR.peleClara} cabelo="longo" corCabelo="#1f1512" olhar={1} />
+				<Pessoa x={330} y={PE} s={1.25} corpo="#8e2f3a" pele={COR.peleClara} cabelo="longo" corCabelo="#1f1512" olhar={1} />				</Rua>
 			</CameraMundo>
 			<Vinheta forca={0.6} />
 			<Grao />
@@ -292,8 +292,8 @@ export const espVoce: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<CameraMundo cena={cena} de={[560, PE - 200, 3.0]} para={[560, PE - 220, 2.4]}>
-				<Rua olhar={0.9} />
-				<Pessoa x={560} y={PE} s={1.3} corpo="#3c5a8a" olhar={interpolate(frame, [10, 20], [0, -1], lim)} />
+				<Rua olhar={0.9}>
+				<Pessoa x={560} y={PE} s={1.3} corpo="#3c5a8a" olhar={interpolate(frame, [10, 20], [0, -1], lim)} />				</Rua>
 			</CameraMundo>
 			<Vinheta forca={0.6} />
 			<Pilula texto="VOCÊ" p={mola(4, 140, 12)} y={200} cor="#3c5a8a" />
@@ -313,11 +313,11 @@ export const espGenteAli: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<CameraMundo cena={cena} de={[560, PE - 220, 2.2]} para={[600, PE - 240, 1.7]}>
-				<Rua olhar={0.9} />
+				<Rua olhar={0.9}>
 				{outros.map(([x, cor], i) => (
 					<Pessoa key={i} x={x} y={PE} s={1.25} corpo={cor} cabelo={i % 2 ? 'longo' : 'curto'} olhar={-0.3} p={Math.min(1, mola(i * 5, 140, 14))} />
 				))}
-				<Pessoa x={560} y={PE} s={1.3} corpo="#3c5a8a" olhar={-1} />
+				<Pessoa x={560} y={PE} s={1.3} corpo="#3c5a8a" olhar={-1} />				</Rua>
 			</CameraMundo>
 			<Vinheta forca={0.6} />
 			<Grao />
@@ -335,11 +335,11 @@ export const espSeguiu: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<CameraMundo cena={cena} de={[600, PE - 240, 1.7]} para={[540, 760, 1.0]}>
-				<Rua espectadores={1} olhar={0.7} olhos={1} />
+				<Rua espectadores={1} olhar={0.7} olhos={1}>
 				{[300, 800].map((px, i) => (
 					<Pessoa key={i} x={px} y={PE} s={1.25} corpo={i ? '#2b4a46' : '#4a3a52'} olhar={-0.3} />
 				))}
-				<Pessoa x={x} y={PE} s={1.3} corpo="#3c5a8a" anda={t * 9} olhar={1} />
+				<Pessoa x={x} y={PE} s={1.3} corpo="#3c5a8a" anda={t * 9} olhar={1} />				</Rua>
 			</CameraMundo>
 			<Vinheta forca={0.65} />
 			<div style={{position: 'absolute', inset: 0, background: '#000', opacity: fim}} />

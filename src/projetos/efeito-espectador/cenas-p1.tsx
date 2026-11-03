@@ -51,9 +51,9 @@ export const espJornais: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<CameraMundo cena={cena} de={[540, 900, 1.1]} para={[540, 920, 1.25]}>
-				<Rua olhar={0.7} />
+				<Rua olhar={0.7}>
 				<rect x={-500} y={-500} width={2100} height={2900} fill="#000" opacity={0.55} />
-				<Jornal y={880} s={0.95} rot={-6} manchete={'38 VIRAM.\nNINGUÉM\nAJUDOU.'} p={mola(0, 120, 14)} />
+				<Jornal y={880} s={0.95} rot={-6} manchete={'38 VIRAM.\nNINGUÉM\nAJUDOU.'} p={mola(0, 120, 14)} />				</Rua>
 			</CameraMundo>
 			<Vinheta forca={0.5} />
 			<Grao />
@@ -67,8 +67,8 @@ export const espViram: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<CameraMundo cena={cena} de={[FOCO.x, FOCO.y, 4.2]} para={[FOCO.x, FOCO.y + 10, 5]}>
-				<Rua olhar={0.9} />
-				<Ondas x={FOCO.x - 70} y={FOCO.y + 60} p={mola(q(cena.de + dur(cena) * 0.45), 120, 14)} escala={0.35} lado={1} />
+				<Rua olhar={0.9}>
+				<Ondas x={FOCO.x - 70} y={FOCO.y + 60} p={mola(q(cena.de + dur(cena) * 0.45), 120, 14)} escala={0.35} lado={1} />				</Rua>
 			</CameraMundo>
 			<Vinheta forca={0.75} />
 			<Grao />
@@ -84,9 +84,9 @@ export const espAssassinada: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<CameraMundo cena={cena} de={[FOCO.x, FOCO.y, 2.6]} para={[380, PE - 200, 1.9]}>
-				<Rua olhar={1} />
+				<Rua olhar={1}>
 				<Kitty x={400} y={PE} s={1.35} olhar={-1} vira />
-				<Sombra x={sombraX} y={PE + 6} s={1.55} anda={t * 9} />
+				<Sombra x={sombraX} y={PE + 6} s={1.55} anda={t * 9} />				</Rua>
 			</CameraMundo>
 			<div style={{position: 'absolute', inset: 0, background: COR.vermelho, opacity: (1 - Math.min(1, flash)) * 0.0 + Math.max(0, Math.sin(flash * Math.PI)) * 0.35}} />
 			<Vinheta forca={0.7} />
@@ -177,8 +177,8 @@ export const espKitty: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<CameraMundo cena={cena} de={[400, PE - 190, 3.2]} para={[400, PE - 170, 2.7]}>
-				<Rua olhar={0.8} />
-				<Kitty x={400} y={PE} s={1.35} olhar={Math.sin(t * 2) * 0.3} />
+				<Rua olhar={0.8}>
+				<Kitty x={400} y={PE} s={1.35} olhar={Math.sin(t * 2) * 0.3} />				</Rua>
 			</CameraMundo>
 			<Vinheta forca={0.6} />
 			<Pilula texto="KITTY GENOVESE" p={mola(6, 130, 13)} y={200} cor="#8e2f3a" />
@@ -202,12 +202,12 @@ export const espMetros: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<CameraMundo cena={cena} de={[520, 1180, 1.25]} para={[420, 1360, 1.75]}>
-				<Rua olhar={1} destaque={ataque ? FOCO.i : null} />
+				<Rua olhar={1} destaque={ataque ? FOCO.i : null}>
 				<Kitty x={330 + luta * 0.6} y={PE} s={1.25} olhar={-1} braco={ataque ? 0.9 : 0} anda={ataque ? 0 : t * 7} />
 				<Sombra x={sombraX + luta} y={PE + 6} s={1.55} anda={ataque ? frame * 0.9 : t * 10} />
 				<line x1={400} y1={PE - 40} x2={400 + 110 * seta} y2={PE - 40} stroke={COR.vermelho} strokeWidth={6} strokeDasharray="14 10" opacity={seta > 0 ? 1 : 0} />
 				{seta > 0.95 && <polygon points={`${510},${PE - 52} ${530},${PE - 40} ${510},${PE - 28}`} fill={COR.vermelho} />}
-				<Rotulo x={470} y={PE - 120} texto="POUCOS METROS" p={mola(Math.round(total * 0.7), 140, 13)} tam={30} />
+				<Rotulo x={470} y={PE - 120} texto="POUCOS METROS" p={mola(Math.round(total * 0.7), 140, 13)} tam={30} />				</Rua>
 			</CameraMundo>
 			<div style={{position: 'absolute', inset: 0, background: COR.vermelho, opacity: pulso * 0.3, mixBlendMode: 'screen'}} />
 			<Vinheta forca={0.6} />
@@ -258,9 +258,9 @@ export const espTrintaMin: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<CameraMundo cena={cena} de={[400, 1300, 1.5]} para={[420, 1320, 1.7]}>
-				<Rua olhar={1} poste={0.8} />
+				<Rua olhar={1} poste={0.8}>
 				<rect x={-500} y={-500} width={2100} height={2900} fill="#000" opacity={0.45} />
-				<Cronometro x={420} y={1220} r={150} giro={giro} p={mola(0, 140, 14)} />
+				<Cronometro x={420} y={1220} r={150} giro={giro} p={mola(0, 140, 14)} />				</Rua>
 			</CameraMundo>
 			<Vinheta forca={0.6} />
 			<Numero valor="30+" rotulo="MINUTOS" p={mola(6, 130, 13)} top={180} cor={COR.vermelho} />
@@ -277,14 +277,14 @@ export const espDoisAtaques: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<Fundo noite>
 			<CameraMundo cena={cena} de={[460, PE - 250, 1.9]} para={[540, PE - 240, 1.75]}>
-				<Rua olhar={1} />
+				<Rua olhar={1}>
 				<Kitty x={560} y={PE} s={1.25} olhar={-1} />
 				<Sombra x={interpolate(t, [0, dur(cena)], [160, 420], lim)} y={PE + 6} s={1.5} anda={t * 8} />
 				<line x1={260} y1={1200} x2={820} y2={1200} stroke={COR.branco} strokeWidth={5} opacity={0.6} />
 				<circle cx={380} cy={1200} r={22 * Math.min(1, a1)} fill={COR.vermelho} />
 				<circle cx={700} cy={1200} r={22 * Math.min(1, a2)} fill={COR.vermelho} />
 				<Rotulo x={380} y={1130} texto="1º" p={a1} tam={30} />
-				<Rotulo x={700} y={1130} texto="2º" p={a2} tam={30} />
+				<Rotulo x={700} y={1130} texto="2º" p={a2} tam={30} />				</Rua>
 			</CameraMundo>
 			<Vinheta forca={0.6} />
 			<Pilula texto="DOIS ATAQUES" p={mola(8, 130, 13)} y={210} cor={COR.vermelho} />
