@@ -56,9 +56,12 @@ def gerar(projeto: str, nome_voz: str, texto: str):
     palavras_txt = texto.split()
 
     sr = voice.config.sample_rate
-    audio_total = []
+    gap_s = 0.06  # respiro curto entre palavras, REALMENTE inserido no áudio (antes só contava no tempo, não no som)
+    gap_samples = np.zeros(int(sr * gap_s), dtype=np.float32)
+    silencio_inicial_s = 0.08
+    audio_total = [np.zeros(int(sr * silencio_inicial_s), dtype=np.float32)]
     entradas = []
-    t_ms = 80.0  # pequeno silêncio inicial
+    t_ms = silencio_inicial_s * 1000
 
     for w in palavras_txt:
         chunks = list(voice.synthesize(w, syn_config=syn_config))
@@ -68,7 +71,8 @@ def gerar(projeto: str, nome_voz: str, texto: str):
             continue
         audio_total.append(audio_palavra)
         entradas.append({"text": " " + w, "startMs": round(t_ms), "endMs": round(t_ms + dur_ms), "timestampMs": None, "confidence": 1})
-        t_ms += dur_ms + 60  # respiro curto entre palavras
+        t_ms += dur_ms + gap_s * 1000
+        audio_total.append(gap_samples)
 
     audio_final = np.concatenate(audio_total) if audio_total else np.zeros(0, dtype=np.float32)
     wav_path = pasta_publica / "narracao.wav"
