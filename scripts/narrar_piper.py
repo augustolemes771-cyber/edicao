@@ -50,7 +50,7 @@ def gerar(projeto: str, nome_voz: str, texto: str):
 
     onnx = baixar_voz(nome_voz)
     voice = PiperVoice.load(str(onnx))
-    syn_config = SynthesisConfig(length_scale=1.08, sentence_silence=0.0)
+    syn_config = SynthesisConfig(length_scale=1.08)
 
     # Tokeniza preservando pontuação grudada na palavra (igual ao formato do transcricao.json existente).
     palavras_txt = texto.split()
