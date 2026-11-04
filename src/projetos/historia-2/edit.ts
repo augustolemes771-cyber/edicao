@@ -1,5 +1,10 @@
 import type {Edit} from '../../motor/plano';
 import transcricao from './transcricao.json';
+import {cenasMisterio} from './misterio';
+
+// "O Apagão de Corvo Branco" (Ilha do Boto Branco), parte 1. Mistério 100% em motion, narração neural com tempo exato
+// por palavra (scripts/narrar.py, pt-BR-AntonioNeural +12%). Os comentários do CTA viram a parte 2.
+const DURACAO = 58.8;
 
 export const historia2: Edit = {
 	pasta: 'projetos/historia-2',
@@ -7,10 +12,15 @@ export const historia2: Edit = {
 	formato: 'vertical',
 	verificarCurva: false,
 	regraCamera: false,
-	legenda: {estilo: 'palavra', enfase: []},
-	camera: (b) => [{tipo: 'foco', em: 0}],
+	escalaFinal: 1,
+	legenda: {
+		estilo: 'palavra',
+		palavrasPorTela: 1,
+		altura: 0.74,
+		enfase: ['apagou.', 'sumido.', 'lembra', 'cassete.', 'inocente.', 'chega.', 'teoria.'].map((palavra) => ({palavra, estilo: 'cor' as const, cor: '#ffc34a'})),
+	},
+	camera: () => [{tipo: 'foco', em: 0}],
 	transcricao,
-	// Notas faladas para a IA, no tempo original. Ex.: (o) => [[o.say('abre nota').inicio, o.say('fecha nota').fim]]
 	cortes: [],
-	cenas: (b) => [],
+	cenas: (b) => cenasMisterio(b, DURACAO),
 };
