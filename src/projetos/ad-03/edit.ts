@@ -4,7 +4,7 @@ import transcricao from './transcricao.json';
 
 // AD 03 - Melão de São Caetano (PDF "Roteiros - Letícia"). Tela dividida como a ref. Sil Skin Care: em cima o vídeo do melão
 // (ssstik.io_1793670658500.mp4 em loop), embaixo a criadora; legenda no meio em tarja preta. "Pochete" mutado (pedido do PDF).
-// A composição dividida e o mudo saem prontos do ffmpeg em public/projetos/ad-03/split.mp4 (a partir de video.mp4 e cima.mp4).
+// Embaixo: baixo.mp4 (criadora recortada + pochete mutado, do ffmpeg). Em cima: peça ad03Cima (melão em loop, fora dos cortes).
 const PALAVRAS = (transcricao as {words: {text: string; start: number; end: number; type: string}[]}).words.filter(
 	(w) => w.type === 'word',
 );
@@ -25,7 +25,7 @@ CORTES.push([PALAVRAS[PALAVRAS.length - 1].end + 0.3, 146.1]);
 
 export const ad03: Edit = {
 	pasta: 'projetos/ad-03',
-	video: 'split.mp4',
+	video: 'baixo.mp4',
 	formato: 'vertical',
 	escalaFinal: 1,
 	verificarCurva: false,
@@ -34,5 +34,5 @@ export const ad03: Edit = {
 	camera: () => [],
 	transcricao,
 	cortes: CORTES,
-	cenas: () => [],
+	cenas: (b) => [{tipo: 'peca', nome: 'ad03Cima', de: 0, ate: b.palavras[b.palavras.length - 1].fim + 0.3}],
 };
