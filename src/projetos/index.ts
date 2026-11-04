@@ -27,6 +27,7 @@ import {gota1} from './gota-1/edit';
 import {depoimento41} from './depoimento-4-1/edit';
 import {depoimento42} from './depoimento-4-2/edit';
 import {depoimento43} from './depoimento-4-3/edit';
+import {historia2} from './historia-2/edit';
 
 // Cada projeto novo entra aqui. O nome vira o id da composição no Studio e no render.
 export const projetos: Record<string, Edit> = {
@@ -58,4 +59,5 @@ export const projetos: Record<string, Edit> = {
 	'depoimento-4-1': depoimento41,
 	'depoimento-4-2': depoimento42,
 	'depoimento-4-3': depoimento43,
+	'historia-2': historia2,
 };
