@@ -30,6 +30,7 @@ import {depoimento43} from './depoimento-4-3/edit';
 import {experimentoStanford} from './experimento-stanford/edit';
 import {efeitoEspectador} from './efeito-espectador/edit';
 import {teste} from './teste/edit';
+import {ad03} from './ad-03/edit';
 
 // Cada projeto novo entra aqui. O nome vira o id da composição no Studio e no render.
 export const projetos: Record<string, Edit> = {
@@ -64,4 +65,5 @@ export const projetos: Record<string, Edit> = {
 	'experimento-stanford': experimentoStanford,
 	'efeito-espectador': efeitoEspectador,
 	'teste': teste,
+	'ad-03': ad03,
 };
