@@ -41,6 +41,17 @@ export type Som =
 	| 'pro_aviao'
 	| 'pro_quebra'
 	| 'pro_robo'
+	// Efeitos de cena de mistério (scripts/gerar-sfx-misterio.sh).
+	| 'trovao'
+	| 'tranca'
+	| 'carimbo'
+	| 'coracao'
+	| 'fita'
+	| 'tictac'
+	| 'apagao'
+	| 'rangido'
+	| 'vento'
+	| 'sting'
 	// "punch" nunca toca: antes de t2 vira swish, depois some.
 	| 'punch';
 

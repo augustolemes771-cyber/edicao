@@ -21,6 +21,8 @@ export const historia2: Edit = {
 	},
 	camera: () => [{tipo: 'foco', em: 0}],
 	transcricao,
+	// Ambiente contínuo (chuva, mar, vento e drone grave) por baixo da fala; os efeitos de cena entram em `sons` das cenas.
+	musica: {arquivo: 'ambiente.wav', volumeDb: -20},
 	cortes: [],
 	cenas: (b) => cenasMisterio(b, DURACAO),
 };
