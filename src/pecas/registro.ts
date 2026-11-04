@@ -19,4 +19,5 @@ import {pecas as d43} from '../projetos/depoimento-4-3/pecas';
 import {pecas as expStanford} from '../projetos/experimento-stanford/pecas';
 import {pecas as efEspectador} from '../projetos/efeito-espectador/pecas';
 import {pecas as teste} from '../projetos/teste/pecas';
-export const PECAS: Pecas = {...teste,...e3v3, ...e3v5, ...e3v7, ...e3v11, ...e3v12, ...e3v14, ...d33, ...d34, ...d32, ...d31, ...rig1, ...gota1, ...d41, ...d42, ...d43, ...expStanford, ...efEspectador};
+import {pecas as ad03} from '../projetos/ad-03/pecas';
+export const PECAS: Pecas = {...teste, ...ad03, ...e3v3, ...e3v5, ...e3v7, ...e3v11, ...e3v12, ...e3v14, ...d33, ...d34, ...d32, ...d31, ...rig1, ...gota1, ...d41, ...d42, ...d43, ...expStanford, ...efEspectador};
