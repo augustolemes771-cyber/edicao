@@ -219,7 +219,7 @@ export const PPlay: React.FC<PlanoProps> = ({s, T}) => {
 				<rect x={-400} y={1120} width={W + 800} height={20} fill="#6b4a2e" />
 				<TocaFitas x={540} y={960} esc={1.2} s={s} play={play} giro={giro} aperta={aperta} />
 				{/* indicador de Lia descendo sobre a tecla PLAY */}
-				<Mao x={540 - 110 * 1.2 + 72 * 1.2} y={lerp(540, 1080, desce) + aperta * 10} esc={1.4} rot={-6} aponta />
+				<Mao x={540 - 110 * 1.2 + 72 * 1.2} y={lerp(540, 1080, desce) + aperta * 10} esc={1.5} rot={172} aponta />
 				{play > 0 && <circle cx={540 - 38 * 1.2} cy={1104} r={40 + (s - T.play) * 260} fill="none" stroke={AMBAR} strokeWidth={6} opacity={L(1 - (s - T.play) * 2.5)} />}
 			</Camada>
 		</Rot>
