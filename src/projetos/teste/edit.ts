@@ -42,6 +42,7 @@ export const teste: Edit = {
 	},
 	camera: punches,
 	transcricao,
+	silencios: silencios as Trecho[],
 	cortes: CORTES,
 	cenas: (b) => [
 		{
