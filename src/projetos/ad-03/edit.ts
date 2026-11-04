@@ -35,5 +35,13 @@ export const ad03: Edit = {
 	transcricao,
 	cortes: CORTES,
 	// Seta para o botão laranja do CTA ("E claro que eu vou te mostrar onde conseguir") até o fim.
-	cenas: (b) => [{tipo: 'peca', nome: 'ad03Seta', de: b.say('E claro que eu vou te mostrar').inicio, ate: b.palavras[b.palavras.length - 1].fim + 0.3}],
+	cenas: (b) => {
+		const cta = b.say('E claro que eu vou te mostrar').inicio;
+		const fim = b.palavras[b.palavras.length - 1].fim + 0.3;
+		// B-roll do produto (foto do pote) na metade de cima durante o CTA + seta para o botão laranja até o fim.
+		return [
+			{tipo: 'peca', nome: 'ad03Produto', de: cta, ate: fim},
+			{tipo: 'peca', nome: 'ad03Seta', de: cta, ate: fim},
+		];
+	},
 };
