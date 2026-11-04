@@ -126,7 +126,7 @@
   "confidence": 0.999985
  },
  {
-  "text": " 14",
+  "text": " catorze",
   "startMs": 7280,
   "endMs": 8080,
   "timestampMs": null,
@@ -154,8 +154,22 @@
   "confidence": 0.999794
  },
  {
-  "text": " 87,",
+  "text": " oitenta",
   "startMs": 8880,
+  "endMs": 9472,
+  "timestampMs": null,
+  "confidence": 0.985205
+ },
+ {
+  "text": " e",
+  "startMs": 9472,
+  "endMs": 9557,
+  "timestampMs": null,
+  "confidence": 0.985205
+ },
+ {
+  "text": " sete,",
+  "startMs": 9557,
   "endMs": 9980,
   "timestampMs": null,
   "confidence": 0.985205
@@ -168,8 +182,36 @@
   "confidence": 0.995187
  },
  {
-  "text": " 11h47,",
+  "text": " onze",
   "startMs": 10060,
+  "endMs": 10359,
+  "timestampMs": null,
+  "confidence": 0.990662
+ },
+ {
+  "text": " e",
+  "startMs": 10359,
+  "endMs": 10434,
+  "timestampMs": null,
+  "confidence": 0.990662
+ },
+ {
+  "text": " quarenta",
+  "startMs": 10434,
+  "endMs": 11032,
+  "timestampMs": null,
+  "confidence": 0.990662
+ },
+ {
+  "text": " e",
+  "startMs": 11032,
+  "endMs": 11107,
+  "timestampMs": null,
+  "confidence": 0.990662
+ },
+ {
+  "text": " sete,",
+  "startMs": 11107,
   "endMs": 11480,
   "timestampMs": null,
   "confidence": 0.990662
@@ -518,7 +560,7 @@
   "confidence": 0.999857
  },
  {
-  "text": " 40",
+  "text": " quarenta",
   "startMs": 32840,
   "endMs": 33310,
   "timestampMs": null,
@@ -952,8 +994,15 @@
   "confidence": 0.855233
  },
  {
-  "text": " sua",
+  "text": " a",
   "startMs": 55250,
+  "endMs": 55298,
+  "timestampMs": null,
+  "confidence": 0.843713
+ },
+ {
+  "text": " sua",
+  "startMs": 55298,
   "endMs": 55440,
   "timestampMs": null,
   "confidence": 0.843713
@@ -1008,7 +1057,7 @@
   "confidence": 0.901098
  },
  {
-  "text": " 2.",
+  "text": " dois.",
   "startMs": 57700,
   "endMs": 58320,
   "timestampMs": null,
