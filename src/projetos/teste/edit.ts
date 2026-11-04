@@ -52,7 +52,7 @@ export const teste: Edit = {
 			// Neste estilo a headline fica só os 5 primeiros segundos.
 			ate: 5,
 			dados: {
-				linhas: ['deixe seu cabelo crescer', 'até o bumbum até o', 'fim do ano 🦃'],
+				linhas: ['deixe seu cabelo crescer até o bumbum', 'até o fim do ano 🎄'],
 				img: 'projetos/teste/rapunzel.jpeg',
 			},
 		},
