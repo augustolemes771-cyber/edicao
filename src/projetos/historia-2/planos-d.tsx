@@ -324,7 +324,7 @@ export const PCta: React.FC<PlanoProps> = ({s, T}) => {
 	const fundoBlur = s > T.comenta - 0.2;
 	const bolhas = [
 		{t: T.comenta, y: 640, nome: '@mari.teorias', txt: 'o delegado sabe de tudo', cor: '#e45b87', likes: 218},
-		{t: T.comenta + 0.55, y: 810, nome: '@joao_suspeito', txt: 'o farol nunca apagou sozinho', cor: '#4aa3df', likes: 342},
+		{t: T.comenta + 0.55, y: 810, nome: '@joao_suspeito', txt: 'e se a fita foi gravada depois?', cor: '#4aa3df', likes: 342},
 		{t: T.comenta + 1.1, y: 980, nome: '@lu.detetive', txt: 'a voz é da avó da Lia?!', cor: '#7bd389', likes: 97},
 	];
 	return (
@@ -360,12 +360,11 @@ export const PCta: React.FC<PlanoProps> = ({s, T}) => {
 						/>
 					</g>
 					{/* "quem lembra é suspeito": silhuetas refletidas no vidro, uma a uma */}
-					<g opacity={q2 * 0.7}>
-						{(['pescador', 'padre', 'cassio', 'senhora'] as const).map((q, i) => (
-							<g key={q} opacity={entra(s, T.porQue + 0.25 + i * 0.25, 0.2)}>
-								<Pessoa quem={q} x={190 + i * 230} y={1180} esc={0.85} t={s + i} sombra={0} rim="#0a0d12" rimDx={0} expr="serio" />
-								<rect x={190 + i * 230 - 70} y={1180 - 470 * 0.85} width={140} height={470 * 0.85} fill="#0a1820" opacity={0.65} />
-								<Txt x={190 + i * 230} y={1180 - 470 * 0.85 + 180} size={110} fill={AMBAR} op={0.9}>
+					<g opacity={q2 * 0.9}>
+						{(['pescador', 'padre', 'cassio', 'pescador'] as const).map((q, i) => (
+							<g key={i} opacity={entra(s, T.porQue + 0.25 + i * 0.25, 0.2)}>
+								<Pessoa quem={q} x={170 + i * 245} y={1260} esc={1.2} t={s + i} sombra={0} silhueta="#07121a" sd={i + 3} rim="#4a7a90" rimDx={4} />
+								<Txt x={170 + i * 245} y={1260 - 470 * 1.2 + 70 + Math.sin(s * 2 + i) * 8} size={120} fill={AMBAR} op={0.95}>
 									?
 								</Txt>
 							</g>
@@ -373,7 +372,7 @@ export const PCta: React.FC<PlanoProps> = ({s, T}) => {
 					</g>
 				</Camada>
 				<Camada cam={cam} p={1}>
-					<Busto quem="lia" x={540} y={1560} esc={3.0} t={s} vira={0} ox={0} oy={0} expr={s < T.comenta ? 'tensa' : 'serio'} rim="#9fd0e0" />
+					<Busto quem="lia" x={540} y={1440} esc={2.45} t={s} vira={0} ox={0} oy={0} expr={s < T.comenta ? 'tensa' : 'serio'} rim="#9fd0e0" />
 				</Camada>
 			</g>
 			{/* perguntas */}

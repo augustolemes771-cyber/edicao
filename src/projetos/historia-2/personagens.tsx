@@ -486,10 +486,11 @@ export type PessoaProps = {
 	op?: number;
 	sombra?: number;
 	sd?: number;
+	silhueta?: string;
 };
 
 // Personagem de corpo inteiro com sombra no chão e rim light (cópia em cor única deslocada por trás).
-export const Pessoa: React.FC<PessoaProps> = ({quem, x, y, esc = 1, t, pose = 'parado', ritmo = 1.6, vira = 0, ox = 0, oy = 0, expr = 'neutro', fala = 0, rim, rimDx = 4, dir = 1, costas = false, op = 1, sombra = 0.5, sd = 1}) => {
+export const Pessoa: React.FC<PessoaProps> = ({quem, x, y, esc = 1, t, pose = 'parado', ritmo = 1.6, vira = 0, ox = 0, oy = 0, expr = 'neutro', fala = 0, rim, rimDx = 4, dir = 1, costas = false, op = 1, sombra = 0.5, sd = 1, silhueta}) => {
 	const v = VISUAL[quem];
 	const k = esc * v.esc;
 	const a = poseAng(pose, t + sd * 0.37, ritmo);
@@ -503,7 +504,7 @@ export const Pessoa: React.FC<PessoaProps> = ({quem, x, y, esc = 1, t, pose = 'p
 						<Corpo {...props} mono={rim} />
 					</g>
 				)}
-				<Corpo {...props} />
+				{silhueta ? <Corpo {...props} mono={silhueta} /> : <Corpo {...props} />}
 			</g>
 		</g>
 	);
@@ -563,16 +564,25 @@ export const Mao: React.FC<{x: number; y: number; esc: number; rot?: number; pel
 		<path d="M-30,96 C-34,60 -30,40 -22,30 L22,30 C30,40 34,60 30,96 Z" fill={pele} />
 		{aponta ? (
 			<g>
-				<rect x={-8} y={-4} width={16} height={46} rx={8} fill={pele} />
-				{[-22, 8, 20].map((fx, i) => (
-					<rect key={i} x={fx - 6} y={22 + i * 2} width={13} height={26} rx={6.5} fill={pele} />
+				{/* indicador esticado com unha e dobras */}
+				<path d="M-9,4 C-9,-4 9,-4 9,4 L11,40 L-11,40 Z" fill={pele} />
+				<ellipse cx={0} cy={4} rx={6} ry={5} fill="#ecc9b2" />
+				<path d="M-7,18 q7,3 14,0 M-8,30 q8,3 16,0" stroke={VISUAL.lia.peleS} strokeWidth={1.6} fill="none" />
+				{/* três dedos dobrados (nós dos dedos) */}
+				{[0, 1, 2].map((i) => (
+					<g key={i}>
+						<ellipse cx={18 + i * 4} cy={44 + i * 13} rx={15} ry={9} fill={pele} />
+						<path d={`M${8 + i * 4},${42 + i * 13} q10,-6 20,0`} stroke={VISUAL.lia.peleS} strokeWidth={1.6} fill="none" />
+					</g>
 				))}
-				<ellipse cx={0} cy={2} rx={5} ry={4} fill="#e8c4ae" opacity={0.7} />
+				{/* polegar encostado de lado */}
+				<path d="M-22,62 C-34,52 -34,38 -26,34 C-18,32 -12,42 -10,54 Z" fill={pele} />
+				<path d="M-28,40 q4,-2 7,1" stroke="#ecc9b2" strokeWidth={3} fill="none" />
 			</g>
 		) : (
 			[-21, -7, 7, 21].map((fx, i) => <rect key={i} x={fx - 6.5} y={2 + Math.abs(i - 1.5) * 5} width={13} height={42} rx={6.5} fill={pele} />)
 		)}
-		<path d="M-30,70 C-46,60 -50,44 -44,36 C-38,32 -30,40 -26,52 Z" fill={pele} />
+		{!aponta && <path d="M-30,70 C-46,60 -50,44 -44,36 C-38,32 -30,40 -26,52 Z" fill={pele} />}
 		<path d="M-30,96 C-34,60 -30,40 -22,30 L22,30 C30,40 34,60 30,96 Z" fill="url(#somE)" />
 	</g>
 );
