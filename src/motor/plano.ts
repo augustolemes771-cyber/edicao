@@ -346,7 +346,7 @@ export type EfeitoCamera =
 	// (empurrão suave na batida, lifestyle-1). Só move o vídeo: os textos ficam parados.
 	| {tipo: 'deslize'; em: number; direcao?: 'cima' | 'baixo' | 'esquerda' | 'direita'};
 
-export type EstiloLegenda = 'palavra' | 'ouro' | 'impacto' | 'neon' | 'mare';
+export type EstiloLegenda = 'palavra' | 'ouro' | 'impacto' | 'neon' | 'mare' | 'caixa';
 export type EstiloEnfase = 'serif' | 'cor' | 'caixa' | 'circulo' | 'grande' | 'riscar';
 
 export type Legenda = {

@@ -68,6 +68,17 @@ const VISUAL: Record<EstiloLegenda, Visual> = {
 		entrelinha: 0.9,
 		largura: 0.86,
 	},
+	caixa: {
+		fonte: inter,
+		peso: 900,
+		tamanho: 0.07,
+		cor: '#ffffff',
+		sombra: 'none',
+		corEnfase: '#e3241b',
+		sombraEnfase: 'none',
+		entrelinha: 1.1,
+		largura: 0.86,
+	},
 	// Tema Entrevista ("Maré"): placa de vidro clara com tinta roxa; a palavra falada acende e as próximas ficam a 30%;
 	// a ênfase vira chip roxo com serifa itálica dourada.
 	mare: {
@@ -111,6 +122,36 @@ const Palavra: React.FC<{
 	const cor =
 		e === 'cor' || grande || (estilo !== 'palavra' && serif) ? corEnf : e === 'caixa' ? '#ffffff' : visual.cor;
 	const sombra = cor === corEnf && estilo !== 'palavra' ? visual.sombraEnfase : visual.sombra;
+
+	if (estilo === 'caixa') {
+		// Ref. "ANTES, DEPOIS,": caixa alta branca grossa com contorno preto; a palavra falada ganha caixa vermelha arredondada.
+		const fimLocal = Math.round((p.fim - inicioPagina) * fps);
+		const falando = local >= 0 && local < Math.max(fimLocal, 4);
+		const pop = interpolate(local, [0, 3, 6], [0.85, 1.08, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+		return (
+			<span
+				style={{
+					position: 'relative',
+					display: 'inline-block',
+					fontFamily: visual.fonte,
+					fontWeight: 900,
+					fontSize: base,
+					textTransform: 'uppercase',
+					color: '#ffffff',
+					WebkitTextStroke: `${base * 0.09}px #000`,
+					paintOrder: 'stroke fill',
+					textShadow: '0 3px 8px rgba(0,0,0,0.5)',
+					padding: `0 ${base * 0.14}px`,
+					borderRadius: base * 0.16,
+					background: falando ? (p.cor ?? '#e3241b') : 'transparent',
+					opacity: local < 0 ? 0 : 1,
+					transform: `scale(${pop})`,
+				}}
+			>
+				{p.texto}
+			</span>
+		);
+	}
 
 	if (estilo === 'mare') {
 		const chip = e === 'serif' || e === 'cor' || e === 'grande' || e === 'caixa';
