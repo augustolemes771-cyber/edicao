@@ -1,6 +1,5 @@
-import type {EfeitoCamera, Edit} from '../../motor/plano';
+﻿import type {EfeitoCamera, Edit} from '../../motor/plano';
 import type {Busca, Trecho} from '../../motor/palavras';
-import silencios from './silencios.json';
 import transcricao from './transcricao.json';
 
 // Teste (tema edicao-simples): publi do Fit Hair, fala direta para a câmera. Foco do tema: velocidade.
@@ -52,7 +51,7 @@ export const teste: Edit = {
 	},
 	camera: punches,
 	transcricao,
-	silencios: silencios as Trecho[],
+	// Sem `silencios`: o eco da sala esconde as pausas no medidor e o encaixe desfazia os cortes pela fala.
 	cortes: CORTES,
 	cenas: (b) => [
 		{
