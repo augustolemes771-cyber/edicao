@@ -5,7 +5,7 @@ import React from 'react';
 import {useCurrentFrame, useVideoConfig} from 'remotion';
 import type {Busca} from '../../motor/palavras';
 import type {Cena, Som} from '../../motor/plano';
-import type {CenaPeca, Pecas} from '../../pecas/peca';
+import type {CenaPeca} from '../../pecas/peca';
 import {anton, poppins, spaceMono} from '../../motor/tema';
 
 const W = 1080;
@@ -826,7 +826,6 @@ export const misterioCorvo: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	);
 };
 
-export const pecas: Pecas = {misterioCorvo};
 
 // ---------------------------------------------------------------- cenas (âncoras na narração)
 export const cenasMisterio = (b: Busca, duracao: number): Cena[] => {
