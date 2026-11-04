@@ -153,8 +153,8 @@ const Calendario: React.FC<{s: number; T: Record<string, number>}> = ({s, T}) =>
 			})}
 			{/* 14 circulado à caneta */}
 			<path
-				d="M-62,-6 C-40,-14 -18,0 -22,18 C-26,34 -60,36 -78,24 C-96,10 -84,-12 -58,-14"
-				transform="translate(46 -20)"
+				d="M-24,-4 C-20,-22 12,-26 24,-8 C34,10 14,28 -8,26 C-28,22 -30,0 -18,-16"
+				transform="translate(124 -52)"
 				fill="none"
 				stroke={VERM}
 				strokeWidth={4.5}
