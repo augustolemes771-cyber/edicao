@@ -642,13 +642,13 @@ const Onda: React.FC<{s: number; T: D; mulher: number}> = ({s, T, mulher}) => {
 const Falas: React.FC<{s: number; T: D; q1: Palavra[]; q2: Palavra[]; q3: Palavra[]}> = ({s, T, q1, q2, q3}) => (
 	<g>
 		<rect x={0} y={150} width={W} height={430} fill="#03070c" opacity={0.0} />
-		<Txt x={540} y={186} size={34} fill="#9fc1d1" font={poppins} weight={800} ls={12} op={vis(s, T.voz, T.fimVoz, 0.2)}>
+		<Txt x={540} y={186} size={34} fill="#9fc1d1" font={poppins} weight={800} ls={12} op={vis(s, T.voz, T.mulher - 0.1, 0.2)}>
 			NA FITA
 		</Txt>
 		<Frase s={s} palavras={q1} y={300} porLinha={3} size={92} cores={{lembra: AMBAR, confie: VERM}} fim={T.quem - 0.08} />
 		<Frase s={s} palavras={q2} y={300} porLinha={3} size={92} cores={{inocente: '#5be0a0', lembra: AMBAR}} fim={T.mulher - 0.35} />
-		<Frase s={s} palavras={q3} y={330} porLinha={2} size={108} fill={ROSA} cores={{chega: ROSA, anselmo: ROSA}} fim={T.fimVoz} />
-		<g opacity={vis(s, T.mulher, T.fimVoz, 0.1)} transform={`translate(540 230) scale(${0.7 + 0.3 * pop(s, T.mulher, 0.3)})`}>
+		<Frase s={s} palavras={q3} y={400} porLinha={2} size={108} fill={ROSA} cores={{chega: ROSA, anselmo: ROSA}} fim={T.fimVoz} />
+		<g opacity={vis(s, T.mulher, T.fimVoz, 0.1)} transform={`translate(540 200) scale(${0.7 + 0.3 * pop(s, T.mulher, 0.3)})`}>
 			<rect x={-250} y={-44} width={500} height={70} rx={35} fill={ROSA} />
 			<Txt x={0} y={4} size={40} fill="#fff" font={poppins} weight={800} ls={5}>
 				VOZ DE MULHER
