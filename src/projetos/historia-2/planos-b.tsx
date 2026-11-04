@@ -83,7 +83,7 @@ const Lente: React.FC<{x: number; y: number; esc: number; s: number; luz: number
 export const PLente: React.FC<PlanoProps> = ({s, T}) => {
 	const a = T.faroleiro;
 	const k = L((s - a) / (T.sala - a));
-	const cam = somaCam({x: lerp(-120, -20, eio(k)), y: lerp(40, -20, k), z: lerp(1.05, 1.22, eio(k))}, mao(s, 1));
+	const cam = somaCam({x: lerp(-170, -110, eio(k)), y: lerp(110, 50, k), z: lerp(1.4, 1.55, eio(k))}, mao(s, 1));
 	const some = L((s - T.sumido) / 0.55);
 	const balanco = s > T.sumido ? Math.sin((s - T.sumido) * 5) * 16 * Math.exp(-(s - T.sumido) * 0.8) : Math.sin(s * 1.3) * 2;
 	const raios = relampago(s, [a + 1.6]);
@@ -241,7 +241,7 @@ const RelogioQueGira: React.FC<{x: number; y: number; r: number; s: number; t0: 
 	return (
 		<g transform={`translate(${tremor} 0)`}>
 			{parou && <circle cx={x} cy={y} r={r * 1.7} fill="url(#glowVerm)" opacity={0.6 * Math.max(0.3, 1 - (s - para) * 1.5)} />}
-			<Relogio cx={x} cy={y} r={r} hora={hora} minuto={minuto} numeros parado={parou ? 1 : 0} aro={parou ? '#7a1a14' : '#5a3a22'} />
+			<Relogio cx={x} cy={y} r={r * 1.25} hora={hora} minuto={minuto} numeros parado={parou ? 1 : 0} aro={parou ? '#7a1a14' : '#5a3a22'} />
 		</g>
 	);
 };

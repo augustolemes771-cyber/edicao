@@ -12,7 +12,7 @@ export const PIlha: React.FC<PlanoProps> = ({s, T}) => {
 	const k = L(s / fim);
 	// travelling lateral + push-in; em "farol" a câmera vira para o farol
 	const kf = eio((s - (T.farol - 0.3)) / 2.2);
-	const cam = somaCam({x: lerp(-70, 40, k) + kf * 120, y: lerp(60, 0, k) - kf * 60, z: 1.0 + 0.08 * k + kf * 0.12}, mao(s, 0.8));
+	const cam = somaCam({x: lerp(-70, 40, k) + kf * 120, y: lerp(60, 0, k) - kf * 60, z: 1.22 + 0.1 * k + kf * 0.14}, mao(s, 0.8));
 	const flash = relampago(s, [2.9, 5.3]) * 0.5;
 	const lampX = 840;
 	const lampY = 965 - 575 * 0.6;
@@ -144,7 +144,7 @@ export const PCozinha: React.FC<PlanoProps> = ({s, T}) => {
 	const drift = (s - a) * 14;
 	const cam = somaCam(
 		{
-			x: lerp(lerp(-210, 230, k1), 0, k2) + drift,
+			x: lerp(lerp(-210, 230, k1) + drift, -45 + (s - T.minutos) * 10, k2),
 			y: lerp(lerp(-320, -470, k1), 190, k2),
 			z: lerp(lerp(1.45 + (s - a) * 0.03, 1.55, k1), 1.65, k2),
 		},
@@ -255,7 +255,8 @@ export const PCozinha: React.FC<PlanoProps> = ({s, T}) => {
 			{/* brilho do LED vermelho por cima da escuridão */}
 			{apagou && !voltando && (
 				<g opacity={vis(s, T.minutos - 0.1, T.ate2, 0.1)}>
-					<circle cx={W / 2 - 75} cy={H / 2 - 40} r={320} fill="url(#glowVerm)" opacity={0.35 + 0.1 * Math.sin(s * 9)} />
+					<circle cx={(495 - 540 - cam.x) * cam.z + 540} cy={(1110 - 960 - cam.y) * cam.z + 960} r={320} fill="url(#glowVerm)" opacity={0.35 + 0.1 * Math.sin(s * 9)} />
+					<Digital x={(495 - 540 - cam.x) * cam.z + 540} y={(1130 - 960 - cam.y) * cam.z + 960} texto={s < T.minutos ? '23:47' : cont} size={74 * cam.z} />
 					<Txt x={W / 2} y={H / 2 + 330} size={44} font={poppins} weight={800} fill="#ff8a80" ls={10} op={entra(s, T.minutos + 0.3, 0.2)}>
 						SEM LUZ NA ILHA
 					</Txt>

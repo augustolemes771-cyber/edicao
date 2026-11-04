@@ -88,7 +88,7 @@ export const PDelegacia: React.FC<PlanoProps> = ({s, T}) => {
 	const dia = s < T.dia ? 14 : 15;
 	const flip = s > T.dia - 0.1 && s < T.dia + 0.15 ? Math.abs(Math.cos(((s - T.dia + 0.1) / 0.25) * Math.PI)) : 1;
 	const batida = s > T.afog && s < T.afog + 0.18 ? Math.sin(s * 90) * 5 : 0;
-	const mao2 = s < T.afog ? lerp(-380, -40, eio((s - (T.afog - 0.35)) / 0.35)) : lerp(-40, -420, eio((s - T.afog - 0.1) / 0.4));
+	const mao2 = s < T.afog ? lerp(-1100, -40, eio((s - (T.afog - 0.3)) / 0.3)) : lerp(-40, -1100, eio((s - T.afog - 0.15) / 0.4));
 	return (
 		<Rot r={cam.r ?? 0}>
 			<Camada cam={cam} p={0.6}>
