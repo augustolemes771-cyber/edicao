@@ -21,7 +21,7 @@ const CORTES: Trecho[] = [[0, Math.max(0, PALAVRAS[0].start - ANTES)]];
 for (let i = 1; i < PALAVRAS.length; i++) {
 	const a = PALAVRAS[i - 1].end + DEPOIS;
 	const z = PALAVRAS[i].start - ANTES;
-	if (z - a >= 0.04 && PALAVRAS[i].start - PALAVRAS[i - 1].end > 0.16) CORTES.push([a, z]);
+	if (z - a >= 0.04 && PALAVRAS[i].start - PALAVRAS[i - 1].end > 0.23) CORTES.push([a, z]);
 }
 CORTES.push([PALAVRAS[PALAVRAS.length - 1].end + 0.25, 117.0]);
 
