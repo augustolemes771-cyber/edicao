@@ -15,8 +15,10 @@ const Headline: Pecas[string] = ({cena}) => {
 	// Balanço leve contínuo para a imagem não ficar parada.
 	const balanco = Math.sin(frame / 18) * 2.5;
 	const fs = width * 0.052;
+	const fim = Math.round((cena.ate - cena.de) * fps);
+	const saida = interpolate(frame, [fim - 8, fim], [1, 0], lim);
 	return (
-		<AbsoluteFill style={{pointerEvents: 'none'}}>
+		<AbsoluteFill style={{pointerEvents: 'none', opacity: saida}}>
 			<div
 				style={{
 					position: 'absolute',

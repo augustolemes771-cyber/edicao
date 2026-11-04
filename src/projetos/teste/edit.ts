@@ -49,7 +49,8 @@ export const teste: Edit = {
 			tipo: 'peca',
 			nome: 'testeHeadline',
 			de: 0,
-			ate: b.palavras[b.palavras.length - 1].fim + 0.6,
+			// Neste estilo a headline fica só os 5 primeiros segundos.
+			ate: 5,
 			dados: {
 				linhas: ['deixe seu cabelo crescer', 'até o bumbum até o', 'fim do ano 🦃'],
 				img: 'projetos/teste/rapunzel.jpeg',
