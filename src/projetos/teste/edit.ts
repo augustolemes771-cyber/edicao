@@ -48,7 +48,7 @@ export const teste: Edit = {
 			tipo: 'peca',
 			nome: 'testeHeadline',
 			de: 0,
-			ate: b.fim,
+			ate: b.palavras[b.palavras.length - 1].fim + 0.6,
 			dados: {
 				linhas: ['deixe seu cabelo crescer', 'até o bumbum até o', 'fim do ano 🦃'],
 				img: 'projetos/teste/rapunzel.jpeg',
