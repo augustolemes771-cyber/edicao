@@ -4,7 +4,7 @@ import transcricao from './transcricao.json';
 
 // AD 03 - Melão de São Caetano (PDF "Roteiros - Letícia"). Tela dividida como a ref. Sil Skin Care: em cima o vídeo do melão
 // (ssstik.io_1793670658500.mp4 em loop), embaixo a criadora; legenda no meio em tarja preta. "Pochete" mutado (pedido do PDF).
-// Embaixo: baixo.mp4 (criadora recortada + pochete mutado, do ffmpeg). Em cima: peça ad03Cima (melão em loop, fora dos cortes).
+// Base pronta do ffmpeg: split.mp4 (melão em cima, criadora embaixo, pochete mutado).
 const PALAVRAS = (transcricao as {words: {text: string; start: number; end: number; type: string}[]}).words.filter(
 	(w) => w.type === 'word',
 );
@@ -25,7 +25,7 @@ CORTES.push([PALAVRAS[PALAVRAS.length - 1].end + 0.3, 146.1]);
 
 export const ad03: Edit = {
 	pasta: 'projetos/ad-03',
-	video: 'baixo.mp4',
+	video: 'split.mp4',
 	formato: 'vertical',
 	escalaFinal: 1,
 	verificarCurva: false,
@@ -34,5 +34,6 @@ export const ad03: Edit = {
 	camera: () => [],
 	transcricao,
 	cortes: CORTES,
-	cenas: (b) => [{tipo: 'peca', nome: 'ad03Cima', de: 0, ate: b.palavras[b.palavras.length - 1].fim + 0.3}],
+	// Seta para o botão laranja do CTA ("E claro que eu vou te mostrar onde conseguir") até o fim.
+	cenas: (b) => [{tipo: 'peca', nome: 'ad03Seta', de: b.say('E claro que eu vou te mostrar').inicio, ate: b.palavras[b.palavras.length - 1].fim + 0.3}],
 };
