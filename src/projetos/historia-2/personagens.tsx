@@ -307,7 +307,7 @@ const poseAng = (pose: Pose, t: number, ritmo: number): Ang => {
 	const resp = Math.sin(t * 1.6) * 1.5;
 	if (pose === 'apontar') return {bE: [-6, -4], bD: [105, 6], pE: [-4, 0], pD: [6, 0], bob: resp, incl: -2};
 	if (pose === 'assustado') return {bE: [-30, 128], bD: [30, -128], pE: [-9, 0], pD: [9, 0], bob: resp - 4, incl: -3};
-	if (pose === 'segurar') return {bE: [-14, 82], bD: [14, -82], pE: [-4, 0], pD: [4, 0], bob: resp, incl: 1};
+	if (pose === 'segurar') return {bE: [-14 + Math.sin(t * 2.1) * 3, 82], bD: [14 + Math.sin(t * 7) * 6, -82 + Math.sin(t * 9) * 12], pE: [-4, 0], pD: [4, 0], bob: resp, incl: 1};
 	if (pose === 'bracos') return {bE: [-22, 118], bD: [22, -118], pE: [-6, 0], pD: [6, 0], bob: resp, incl: 0};
 	return {bE: [-7 + resp * 0.6, 6], bD: [7 - resp * 0.6, -6], pE: [-4, 0], pD: [4, 0], bob: resp, incl: 0};
 };

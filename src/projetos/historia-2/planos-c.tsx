@@ -155,7 +155,7 @@ export const PDelegacia: React.FC<PlanoProps> = ({s, T}) => {
 					<Fumaca x={0} y={-70} s={s} sd={4} cor="#e8e2d2" op={0.3} />
 				</g>
 				{/* mão de Cássio com o carimbo */}
-				<g transform={`translate(560 ${1100 + mao2})`}>
+				<g transform={`translate(${700 - mao2 * 0.35} ${1100 + mao2}) rotate(28)`}>
 					<rect x={-40} y={-120} width={80} height={110} rx={10} fill="#4a3220" />
 					<rect x={-60} y={-14} width={120} height={22} rx={4} fill="#2a2a2a" />
 					<rect x={-26} y={-260} width={52} height={150} rx={20} fill="#8d5d3e" />
