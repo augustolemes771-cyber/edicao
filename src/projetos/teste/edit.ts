@@ -10,10 +10,20 @@ const P = {x: 0.5, y: 0.34};
 // Fonte 464x832: zoom no máximo 1,24.
 const ESCALAS = [1.08, 1.16, 1.22, 1.1, 1.18, 1.03];
 
-// Pausas maiores que ~0,25 s saem (no tempo original), mais a abertura e o fim mudos.
-const CORTES: Trecho[] = (silencios as Trecho[])
-	.filter(([a, z]) => z - a >= 0.25 || a === 0 || z >= 116.9)
-	.map(([a, z]) => (a === 0 ? [0, z - 0.08] : z >= 116.9 ? [a + 0.15, z] : [a + 0.06, z - 0.06]) as Trecho);
+// Cortes pela fala (Scribe, palavra por palavra): todo respiro entre palavras com mais de 0,16 s sai, deixando 0,07 s depois
+// do fim da palavra (cauda da consoante) e 0,05 s antes da próxima (ataque). Abertura e fim mudos saem também.
+const PALAVRAS = (transcricao as {words: {text: string; start: number; end: number; type: string}[]}).words.filter(
+	(w) => w.type === 'word',
+);
+const DEPOIS = 0.07;
+const ANTES = 0.05;
+const CORTES: Trecho[] = [[0, Math.max(0, PALAVRAS[0].start - ANTES)]];
+for (let i = 1; i < PALAVRAS.length; i++) {
+	const a = PALAVRAS[i - 1].end + DEPOIS;
+	const z = PALAVRAS[i].start - ANTES;
+	if (z - a >= 0.04 && PALAVRAS[i].start - PALAVRAS[i - 1].end > 0.16) CORTES.push([a, z]);
+}
+CORTES.push([PALAVRAS[PALAVRAS.length - 1].end + 0.25, 117.0]);
 
 const punches = (b: Busca): EfeitoCamera[] => {
 	const lista: EfeitoCamera[] = [{tipo: 'foco', em: 0}];
