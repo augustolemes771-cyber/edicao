@@ -85,7 +85,7 @@ export const PLente: React.FC<PlanoProps> = ({s, T}) => {
 	const k = L((s - a) / (T.sala - a));
 	const cam = somaCam({x: lerp(-170, -110, eio(k)), y: lerp(110, 50, k), z: lerp(1.4, 1.55, eio(k))}, mao(s, 1));
 	const some = L((s - T.sumido) / 0.55);
-	const balanco = s > T.sumido ? Math.sin((s - T.sumido) * 5) * 16 * Math.exp(-(s - T.sumido) * 0.8) : Math.sin(s * 1.3) * 2;
+	const balanco = s > T.sumido ? Math.sin((s - T.sumido) * 5) * 16 * Math.exp(-(s - T.sumido) * 0.8) : Math.sin(s * 2.2) * 7;
 	const raios = relampago(s, [a + 1.6]);
 	const chama = 0.85 + 0.15 * Math.sin(s * 23) * Math.sin(s * 7);
 	return (
@@ -109,18 +109,20 @@ export const PLente: React.FC<PlanoProps> = ({s, T}) => {
 			<Camada cam={cam} p={0.75}>
 				<Lente x={720} y={760} esc={1.0} s={s} luz={1} />
 				{/* feixe saindo da lente, girando */}
-				<polygon points={`720,760 ${720 + Math.cos(s * 2) * 900},${560} ${720 + Math.cos(s * 2) * 900},${960}`} fill="url(#feixe)" opacity={0.25 * Math.abs(Math.cos(s * 2))} filter="url(#bl2)" />
+				<polygon points={`720,760 ${720 + Math.cos(s * 2) * 900},${560} ${720 + Math.cos(s * 2) * 900},${960}`} fill="url(#feixe)" opacity={0.45 * Math.abs(Math.cos(s * 2))} filter="url(#bl2)" />
+				{/* sombra dos caixilhos varrendo a parede conforme a lente gira */}
+				<rect x={-300 + ((s * 700) % 1700)} y={-200} width={120} height={1500} fill="#000" opacity={0.25} filter="url(#bl3)" />
 			</Camada>
 			<Camada cam={cam} p={1}>
 				{/* chão de ferro e mesa */}
 				<rect x={-300} y={1240} width={W + 600} height={500} fill="#20262b" />
 				{/* Anselmo, de capa amarela, de lado escrevendo no diário */}
 				<g opacity={1 - some}>
-					<Pessoa quem="anselmo" x={330} y={1300} esc={1.18} t={s} pose="segurar" vira={0.55} ox={0.6} oy={0.8} expr="foco" rim={AMBAR} rimDx={5} sombra={0.4} />
+					<Pessoa quem="anselmo" x={330} y={1300} esc={1.18} t={s} pose="segurar" vira={0.45 + Math.sin(s * 1.6) * 0.35} ox={0.6 + Math.sin(s * 2.3) * 0.4} oy={0.8 - Math.max(0, Math.sin(s * 1.6)) * 1.2} expr="foco" rim={AMBAR} rimDx={5} sombra={0.4} />
 				</g>
 				{/* dissolve em partículas de luz */}
 				{some > 0 && some < 1 &&
-					Array.from({length: 60}).map((_, i) => {
+					Array.from({length: 36}).map((_, i) => {
 						const px = 330 + (rnd(i, 5) - 0.5) * 140 + (rnd(i, 6) - 0.3) * 260 * some;
 						const py = 1300 - rnd(i, 7) * 500 - some * 220 * rnd(i, 8);
 						return <circle key={i} cx={px} cy={py} r={2 + rnd(i, 9) * 4} fill={i % 3 ? AMBAR : '#fff6dc'} opacity={(1 - some) * (0.6 + 0.4 * rnd(i, 10))} />;
@@ -241,7 +243,7 @@ const RelogioQueGira: React.FC<{x: number; y: number; r: number; s: number; t0: 
 	return (
 		<g transform={`translate(${tremor} 0)`}>
 			{parou && <circle cx={x} cy={y} r={r * 1.7} fill="url(#glowVerm)" opacity={0.6 * Math.max(0.3, 1 - (s - para) * 1.5)} />}
-			<Relogio cx={x} cy={y} r={r * 1.25} hora={hora} minuto={minuto} numeros parado={parou ? 1 : 0} aro={parou ? '#7a1a14' : '#5a3a22'} />
+			<Relogio cx={x} cy={y} r={r * 1.5} hora={hora} minuto={minuto} numeros parado={parou ? 1 : 0} aro={parou ? '#7a1a14' : '#5a3a22'} />
 		</g>
 	);
 };
@@ -264,10 +266,10 @@ export const PRelogios: React.FC<PlanoProps> = ({s, T}) => {
 			</Camada>
 			<Camada cam={cam} p={1}>
 				{/* igreja com relógio na torre */}
-				<Igreja x={260} y={1250} esc={1.25} s={s} relogio={<RelogioQueGira x={0} y={0} r={46} s={s} t0={a} para={para(0)} i={0} />} />
+				<Igreja x={260} y={1250} esc={1.25} s={s} noite={false} relogio={<RelogioQueGira x={0} y={0} r={46} s={s} t0={a} para={para(0)} i={0} />} />
 				{/* bar com relógio na fachada */}
 				<g>
-					<Casa x={900} y={1250} esc={2.2} cor={CORES_CASA[2]} s={s} i={11} larg={220} alt={180} />
+					<Casa x={900} y={1250} esc={2.2} cor={CORES_CASA[2]} s={s} i={11} larg={220} alt={180} noite={false} />
 					<rect x={700} y={880} width={400} height={66} fill="#2a1e14" />
 					<text x={900} y={928} textAnchor="middle" fontFamily={poppins} fontWeight={900} fontSize={44} fill="#f0d27a" letterSpacing={6}>
 						BAR DO PORTO
@@ -276,7 +278,7 @@ export const PRelogios: React.FC<PlanoProps> = ({s, T}) => {
 				</g>
 				{/* mercearia com relógio pendurado */}
 				<g>
-					<Casa x={1480} y={1250} esc={2.0} cor={CORES_CASA[3]} s={s} i={12} larg={220} alt={180} />
+					<Casa x={1480} y={1250} esc={2.0} cor={CORES_CASA[3]} s={s} i={12} larg={220} alt={180} noite={false} />
 					<line x1={1480} y1={760} x2={1480} y2={790} stroke="#222" strokeWidth={6} />
 					<RelogioQueGira x={1480} y={850} r={60} s={s} t0={a} para={para(2)} i={2} />
 					<text x={1480} y={1000} textAnchor="middle" fontFamily={poppins} fontWeight={900} fontSize={36} fill="#2a1e14" letterSpacing={4}>
@@ -293,12 +295,14 @@ export const PRelogios: React.FC<PlanoProps> = ({s, T}) => {
 					<g key={x}>
 						<rect x={x - 6} y={760} width={12} height={490} fill="#1a1a1a" />
 						<rect x={x - 20} y={730} width={40} height={40} fill="#ffe3a0" opacity={0.85} />
-						<circle cx={x} cy={750} r={220} fill="url(#glowAmbar)" opacity={0.45 + 0.05 * Math.sin(s * 9 + i)} />
+						<circle cx={x} cy={750} r={420} fill="url(#glowAmbar)" opacity={0.6 + 0.06 * Math.sin(s * 9 + i)} />
+						<ellipse cx={x} cy={1300} rx={260} ry={40} fill="#ffe3a0" opacity={0.18} />
 					</g>
 				))}
 			</Camada>
 			<Camada cam={cam} p={1}>
-				<Nevoa s={s} y={1180} op={0.2} vel={30} />
+				<rect x={-500} y={-300} width={3000} height={2400} fill="#0a1a2a" opacity={0.28} />
+				<Nevoa s={s} y={1220} op={0.3} vel={30} cor="#a9c4d4" />
 			</Camada>
 			<Camada cam={cam} p={1.6} filtro="bl2">
 				<rect x={300} y={-200} width={60} height={2400} fill="#06090c" />
@@ -306,8 +310,9 @@ export const PRelogios: React.FC<PlanoProps> = ({s, T}) => {
 			</Camada>
 			{/* letreiro 23:47 aceso em vermelho quando param */}
 			<rect width={W} height={H} fill={VERM} opacity={0.12 * vermelho * (0.7 + 0.3 * Math.sin(s * 8))} />
-			<g opacity={entra(s, T.mesma, 0.2)}>
-				<Txt x={540} y={320} size={150} fill={VERM} glow={VERM} ls={6} sc={0.9 + 0.1 * pop(s, T.mesma, 0.3)}>
+			<g opacity={entra(s, T.pararam + 0.25, 0.12)} transform={`translate(540 300) scale(${0.7 + 0.3 * pop(s, T.pararam + 0.25, 0.35)})`}>
+				<rect x={-270} y={-120} width={540} height={170} rx={20} fill="#0a0404" opacity={0.85} stroke={VERM} strokeWidth={5} />
+				<Txt x={0} y={20} size={160} fill={VERM} glow={VERM} ls={6} op={0.85 + 0.15 * Math.sin(s * 10)}>
 					23:47
 				</Txt>
 			</g>

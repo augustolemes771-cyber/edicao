@@ -33,6 +33,7 @@ export const PIlha: React.FC<PlanoProps> = ({s, T}) => {
 				<Mar s={s} y0={990} refX={250} refOp={0.6} />
 			</Camada>
 			<Camada cam={cam} p={0.42}>
+				<g transform="translate(640 960) scale(1.42) translate(-640 -960)">
 				{/* ilha: morro, vila e o farol na ponta rochosa */}
 				<path d="M-300,1000 Q-120,880 120,900 Q300,840 470,880 Q620,850 760,900 Q900,880 1000,960 L1200,1000 Z" fill="#081620" />
 				<path d="M700,1000 Q760,930 830,940 Q900,930 960,990 Z" fill="#050d14" />
@@ -48,17 +49,24 @@ export const PIlha: React.FC<PlanoProps> = ({s, T}) => {
 					<Casa key={i} x={x} y={y} esc={e} cor={CORES_CASA[i % CORES_CASA.length]} s={s} i={i} fumaca={i % 2 === 0} />
 				))}
 				<Farol x={840} y={965} esc={0.6} luz={1} />
+				</g>
 			</Camada>
 			<Camada cam={cam} p={0.45}>
-				<Feixe x={lampX} y={lampY} ang={s * 1.9 + 0.6} comp={1400} larg={150} op={0.9} />
-				<Nevoa s={s} y={930} op={0.22} />
+				<g transform="translate(640 960) scale(1.42) translate(-640 -960)">
+					<Feixe x={lampX} y={lampY} ang={s * 1.9 + 0.6} comp={1100} larg={130} op={0.9} />
+					<Nevoa s={s} y={930} op={0.2} />
+				</g>
+				<Gaivotas s={s} />
 			</Camada>
 			<Camada cam={cam} p={0.6}>
-				<Balsa x={xb} y={1130} esc={0.42} s={s} />
-				<Barco x={820} y={1175} esc={0.45} cor="#2f6e8a" s={s} i={2} luz={1} />
+				<Balsa x={xb} y={1085} esc={0.5} s={s} />
+				<Barco x={820} y={1160} esc={0.5} cor="#2f6e8a" s={s} i={2} luz={1} />
+				<Barco x={140} y={1120} esc={0.38} cor="#d6b866" s={s} i={4} luz={1} />
+				<Espuma s={s} y={1180} />
 			</Camada>
 			<Camada cam={cam} p={0.85}>
 				<Pier x0={-200} x1={640} y={1255} esc={0.8} />
+				<Espuma s={s} y={1290} esp={2} />
 				<Barco x={720} y={1250} esc={0.75} cor="#c0543a" cor2="#efe6d0" s={s} i={1} nome="SANTA LUZIA" />
 				<g transform="translate(70 1250)">
 					<circle cx={0} cy={-150} r={90} fill="url(#glowAmbar)" opacity={0.7} />
@@ -80,13 +88,38 @@ export const PIlha: React.FC<PlanoProps> = ({s, T}) => {
 				<Nevoa s={s} y={1150} op={0.18} sd={3} vel={22} />
 			</Camada>
 			{/* primeiro plano desfocado: rochas e capim passando mais rápido */}
-			<Camada cam={cam} p={1.7} filtro="bl2">
-				<Rochas x={60} y={1900} esc={1.1} cor="#03080c" sd={2} n={4} />
-				<Capim x={640} y={1930} s={s} n={46} larg={560} alt={330} cor="#04100d" />
+			<Camada cam={cam} p={1.8} filtro="bl2">
+				<Rochas x={60} y={1950} esc={1.5} cor="#03080c" sd={2} n={4} />
+				<Capim x={600} y={1960} s={s} n={46} larg={620} alt={480} cor="#04100d" />
+				{/* poste de amarração com corda, bem perto da lente */}
+				<rect x={-40} y={1040} width={70} height={1000} fill="#1a120c" />
+				<path d={`M30,1160 Q260,${1240 + Math.sin(s * 1.5) * 20} 520,${1200 + Math.sin(s * 1.2) * 14}`} stroke="#2a1e14" strokeWidth={14} fill="none" />
 			</Camada>
 		</Rot>
 	);
 };
+
+// Gaivotas batendo asas cruzando o céu.
+const Gaivotas: React.FC<{s: number}> = ({s}) => (
+	<g stroke="#cfe0ea" strokeWidth={3.5} fill="none" strokeLinecap="round" opacity={0.75}>
+		{[0, 1, 2, 3].map((i) => {
+			const x = ((s * (60 + i * 12) + i * 260) % 1500) - 200;
+			const y = 520 + i * 60 + Math.sin(s * 1.3 + i) * 20;
+			const asa = 8 + Math.sin(s * 9 + i * 2) * 8;
+			return <path key={i} d={`M${x - 18},${y - asa} Q${x - 9},${y - 2} ${x},${y} Q${x + 9},${y - 2} ${x + 18},${y - asa}`} />;
+		})}
+	</g>
+);
+// Espuma das ondas quebrando (traços brancos que nascem e somem).
+const Espuma: React.FC<{s: number; y: number; esp?: number}> = ({s, y, esp = 3}) => (
+	<g stroke="#e6f2f6" strokeLinecap="round" strokeWidth={esp}>
+		{Array.from({length: 14}).map((_, i) => {
+			const f = ((s * 0.5 + i * 0.37) % 1 + 1) % 1;
+			const x = ((i * 97) % 1200) - 60 + f * 40;
+			return <line key={i} x1={x} y1={y + (i % 4) * 22} x2={x + 30 + f * 50} y2={y + (i % 4) * 22} opacity={Math.sin(f * Math.PI) * 0.55} />;
+		})}
+	</g>
+);
 
 // ---------------------------------------------------------------- 2 · cozinha da vila, 14/03/1987, tempestade e apagão
 const Calendario: React.FC<{s: number; T: Record<string, number>}> = ({s, T}) => {
@@ -146,7 +179,7 @@ export const PCozinha: React.FC<PlanoProps> = ({s, T}) => {
 		{
 			x: lerp(lerp(-210, 230, k1) + drift, -45 + (s - T.minutos) * 10, k2),
 			y: lerp(lerp(-320, -470, k1), 190, k2),
-			z: lerp(lerp(1.45 + (s - a) * 0.03, 1.55, k1), 1.65, k2),
+			z: lerp(lerp(1.45 + (s - a) * 0.03, 1.55, k1), 1.3 + L((s - T.minutos) / 2.2) * 0.45, k2),
 		},
 		mao(s, 1.2),
 	);
@@ -156,7 +189,7 @@ export const PCozinha: React.FC<PlanoProps> = ({s, T}) => {
 	let luz = apagou ? 0 : 1;
 	if (s > T.luzApaga - 0.32 && s < T.luzApaga) luz = Math.sin(s * 95) > 0 ? 1 : 0.15;
 	if (voltando) luz = 1;
-	const raios = relampago(s, [6.9, 8.6, 11.75, 12.95, 13.9]);
+	const raios = relampago(s, [6.9, 8.6, 11.75, 12.4, 12.95, 13.38, 13.9]);
 	const ilum = Math.max(luz, raios * 0.85);
 	// relógio: 23:46 que vira 23:47 em "sete"
 	const min = s < T.sete ? 46 : 47;
@@ -251,7 +284,9 @@ export const PCozinha: React.FC<PlanoProps> = ({s, T}) => {
 				<Chuva s={s} n={0} />
 			</Camada>
 			{/* escuridão do apagão: só o relâmpago ilumina */}
-			<rect x={0} y={0} width={W} height={H} fill="#01040a" opacity={0.9 * (1 - ilum)} />
+			<rect x={0} y={0} width={W} height={H} fill="#020a16" opacity={0.78 * (1 - ilum)} />
+			{/* no escuro, a luz azul fria da janela e o vermelho do LED desenham a cozinha */}
+			{apagou && !voltando && <rect x={0} y={0} width={W} height={H} fill="#1a3a5a" opacity={0.12 + raios * 0.2} />}
 			{/* brilho do LED vermelho por cima da escuridão */}
 			{apagou && !voltando && (
 				<g opacity={vis(s, T.minutos - 0.1, T.ate2, 0.1)}>
