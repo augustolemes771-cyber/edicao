@@ -68,6 +68,17 @@ const VISUAL: Record<EstiloLegenda, Visual> = {
 		entrelinha: 0.9,
 		largura: 0.86,
 	},
+	tarja: {
+		fonte: inter,
+		peso: 800,
+		tamanho: 0.05,
+		cor: '#ffffff',
+		sombra: 'none',
+		corEnfase: '#ffffff',
+		sombraEnfase: 'none',
+		entrelinha: 1.2,
+		largura: 0.8,
+	},
 	caixa: {
 		fonte: inter,
 		peso: 900,
@@ -122,6 +133,27 @@ const Palavra: React.FC<{
 	const cor =
 		e === 'cor' || grande || (estilo !== 'palavra' && serif) ? corEnf : e === 'caixa' ? '#ffffff' : visual.cor;
 	const sombra = cor === corEnf && estilo !== 'palavra' ? visual.sombraEnfase : visual.sombra;
+
+	if (estilo === 'tarja') {
+		// Ref. Sil Skin Care (tela dividida): caixa alta branca sobre tarja preta, na emenda das duas metades.
+		return (
+			<span
+				style={{
+					display: 'inline-block',
+					fontFamily: visual.fonte,
+					fontWeight: 800,
+					fontSize: base,
+					textTransform: 'uppercase',
+					color: '#fff',
+					background: '#000',
+					padding: `${base * 0.06}px ${base * 0.16}px`,
+					opacity: local < 0 ? 0 : 1,
+				}}
+			>
+				{p.texto}
+			</span>
+		);
+	}
 
 	if (estilo === 'caixa') {
 		// Ref. "ANTES, DEPOIS,": caixa alta branca grossa com contorno preto; a palavra falada ganha caixa vermelha arredondada.
