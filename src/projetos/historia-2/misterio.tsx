@@ -224,7 +224,7 @@ const Titulo: React.FC<{s: number; T: D}> = ({s, T}) => {
 	const nun = vis(s, T.farol, fim - 0.1, 0.2);
 	return (
 		<g>
-			<Txt x={540} y={238} size={44} fill="#9fc1d1" ls={16} op={vis(s, a, fim, 0.2)}>
+			<Txt x={540} y={205} size={44} fill="#9fc1d1" ls={16} op={vis(s, a, fim, 0.2)}>
 				ILHA DO
 			</Txt>
 			<Txt x={540} y={350} size={140} ls={4} op={vis(s, a, fim, 0.2)} sc={0.82 + 0.18 * pop(s, a, 0.45)} glow="#0b3a55">
@@ -232,14 +232,14 @@ const Titulo: React.FC<{s: number; T: D}> = ({s, T}) => {
 			</Txt>
 			{/* 1 balsa por dia */}
 			<g opacity={bal} transform={`translate(0 ${(1 - pop(s, T.balsa, 0.3)) * -30})`}>
-				<rect x={330} y={430} width={420} height={78} rx={39} fill="none" stroke={AMBAR} strokeWidth={5} />
-				<Txt x={540} y={484} size={46} fill={AMBAR} font={poppins} weight={800} ls={4}>
+				<rect x={330} y={395} width={420} height={78} rx={39} fill="none" stroke={AMBAR} strokeWidth={5} />
+				<Txt x={540} y={449} size={46} fill={AMBAR} font={poppins} weight={800} ls={4}>
 					1 BALSA POR DIA
 				</Txt>
 			</g>
 			<g opacity={nun} transform={`translate(0 ${(1 - pop(s, T.farol, 0.3)) * -30})`}>
-				<rect x={290} y={430} width={500} height={78} rx={39} fill={AMBAR} />
-				<Txt x={540} y={484} size={46} fill="#201400" font={poppins} weight={800} ls={4}>
+				<rect x={290} y={395} width={500} height={78} rx={39} fill={AMBAR} />
+				<Txt x={540} y={449} size={46} fill="#201400" font={poppins} weight={800} ls={4}>
 					NUNCA APAGOU
 				</Txt>
 			</g>
@@ -271,7 +271,7 @@ const Calendario: React.FC<{s: number; T: D}> = ({s, T}) => {
 		<g opacity={op} transform={`translate(540 430) scale(${0.6 + 0.4 * k} ${(0.6 + 0.4 * k) * (s - a < 0.5 ? 0.35 + 0.65 * (1 - flip) : 1)})`}>
 			<rect x={-250} y={-220} width={500} height={440} rx={34} fill={BRANCO} />
 			<path d="M-250,-220 h500 v110 h-500 Z" fill={VERM} />
-			<Txt x={0} y={-140} size={64} fill="#fff" font={poppins} weight={800} ls={10}>
+			<Txt x={0} y={-140} size={50} fill="#fff" font={poppins} weight={800} ls={8}>
 				MARÇO 1987
 			</Txt>
 			<Txt x={0} y={120} size={290} fill="#14181e" ls={0}>
@@ -549,11 +549,11 @@ const Lia: React.FC<{s: number; T: D}> = ({s, T}) => {
 			</Txt>
 			{/* casa da família */}
 			<g transform={`translate(540 1000) scale(${0.5 + 0.5 * casaK})`} opacity={L(casaK * 2)}>
-				<rect x={-230} y={-250} width={460} height={250} fill="#0a141d" />
-				<polygon points="-270,-250 0,-420 270,-250" fill="#07101a" />
-				<rect x={-40} y={-150} width={80} height={150} fill="#1a2a38" />
-				<rect x={-180} y={-190} width={90} height={80} fill={AMBAR} opacity={0.2 + 0.1 * Math.sin(s * 3)} />
-				<rect x={90} y={-190} width={90} height={80} fill="#1a2a38" />
+				<rect x={-230} y={-250} width={460} height={250} fill="#1a2c3d" />
+				<polygon points="-270,-250 0,-420 270,-250" fill="#122131" />
+				<rect x={-40} y={-150} width={80} height={150} fill="#0c1621" />
+				<rect x={-180} y={-190} width={90} height={80} fill={AMBAR} opacity={0.65 + 0.15 * Math.sin(s * 3)} />
+				<rect x={90} y={-190} width={90} height={80} fill="#2a4157" />
 				{/* placa */}
 				<g opacity={entra(s, T.vender, 0.2)} transform={`translate(230 0) scale(${0.6 + 0.4 * pop(s, T.vender, 0.3)})`}>
 					<rect x={-6} y={-150} width={12} height={150} fill="#6b5a3d" />
@@ -565,9 +565,9 @@ const Lia: React.FC<{s: number; T: D}> = ({s, T}) => {
 			</g>
 			{/* Lia com lanterna */}
 			<g transform="translate(250 1020)" opacity={entra(s, T.neta, 0.3)}>
-				<polygon points="30,-70 330,-190 330,-10" fill={AMBAR} opacity={0.18} />
-				<circle cx={0} cy={-120} r={22} fill="#0c1621" />
-				<path d="M-34,-12 Q-34,-92 0,-96 Q34,-92 34,-12 Z" fill="#0c1621" />
+				<polygon points="30,-70 330,-190 330,-10" fill={AMBAR} opacity={0.3} />
+				<circle cx={0} cy={-120} r={22} fill="#3b556b" />
+				<path d="M-34,-12 Q-34,-92 0,-96 Q34,-92 34,-12 Z" fill="#3b556b" />
 			</g>
 			<g opacity={entra(s, T.neta, 0.2)}>
 				<rect x={380} y={430} width={320} height={64} rx={32} fill={BRANCO} />
@@ -663,9 +663,9 @@ const Cta: React.FC<{s: number; T: D}> = ({s, T}) => {
 	const q1 = vis(s, a, T.porQue - 0.05, 0.12);
 	const q2 = vis(s, T.porQue, T.comenta - 0.05, 0.12);
 	const bolhas = [
-		{t: T.porQue + 0.2, y: 560, nome: '@mari.teorias', txt: 'foi a dona da pousada, certeza!', cor: '#e45b87', likes: 218},
-		{t: T.comenta, y: 760, nome: '@joao_suspeito', txt: 'o delegado sabe de tudo...', cor: '#4aa3df', likes: 342},
-		{t: T.comenta + 0.55, y: 960, nome: '@lu.detetive', txt: 'a voz é da avó da Lia?!', cor: '#7bd389', likes: 97},
+		{t: T.porQue + 0.2, y: 640, nome: '@mari.teorias', txt: 'foi a dona da pousada!', cor: '#e45b87', likes: 218},
+		{t: T.comenta, y: 810, nome: '@joao_suspeito', txt: 'o delegado sabe de tudo', cor: '#4aa3df', likes: 342},
+		{t: T.comenta + 0.55, y: 980, nome: '@lu.detetive', txt: 'a voz é da avó da Lia?!', cor: '#7bd389', likes: 97},
 	];
 	const parte2 = pop(s, T.mais, 0.45);
 	return (
@@ -677,7 +677,7 @@ const Cta: React.FC<{s: number; T: D}> = ({s, T}) => {
 			<Txt x={540} y={400} size={150} fill={ROSA} op={q1} sc={0.8 + 0.2 * pop(s, a + 0.2, 0.35)} glow={ROSA}>
 				ESSA VOZ?
 			</Txt>
-			<Txt x={540} y={270} size={104} ls={3} op={q2} sc={0.8 + 0.2 * pop(s, T.porQue, 0.35)}>
+			<Txt x={540} y={270} size={80} ls={3} op={q2} sc={0.8 + 0.2 * pop(s, T.porQue, 0.35)}>
 				POR QUE QUEM LEMBRA
 			</Txt>
 			<Txt x={540} y={400} size={150} fill={AMBAR} op={q2} sc={0.8 + 0.2 * pop(s, T.porQue + 0.2, 0.35)} glow={AMBAR}>
@@ -697,7 +697,7 @@ const Cta: React.FC<{s: number; T: D}> = ({s, T}) => {
 						<Txt x={220} y={-14} size={32} fill="#9fc1d1" font={poppins} weight={700} anchor="start" ls={0}>
 							{b.nome}
 						</Txt>
-						<Txt x={220} y={40} size={42} fill={BRANCO} font={poppins} weight={600} anchor="start" ls={0}>
+						<Txt x={220} y={40} size={36} fill={BRANCO} font={poppins} weight={600} anchor="start" ls={0}>
 							{b.txt}
 						</Txt>
 						<g transform="translate(920 5)">
@@ -711,12 +711,12 @@ const Cta: React.FC<{s: number; T: D}> = ({s, T}) => {
 			})}
 			{/* chamada final */}
 			<g opacity={entra(s, T.comenta, 0.2)}>
-				<rect x={110} y={1100} width={860} height={104} rx={52} fill={BRANCO} />
-				<Txt x={540} y={1172} size={58} fill="#14181e" font={poppins} weight={900} ls={3}>
+				<rect x={110} y={1130} width={860} height={104} rx={52} fill={BRANCO} />
+				<Txt x={540} y={1202} size={58} fill="#14181e" font={poppins} weight={900} ls={3}>
 					COMENTE SUA TEORIA ↓
 				</Txt>
 			</g>
-			<g transform={`translate(540 1450) scale(${0.6 + 0.4 * parte2})`} opacity={L(parte2 * 2)}>
+			<g transform={`translate(540 1500) scale(${0.6 + 0.4 * parte2})`} opacity={L(parte2 * 2)}>
 				<rect x={-440} y={-150} width={880} height={330} rx={46} fill="#101c28" stroke={AMBAR} strokeWidth={6} />
 				<Txt x={0} y={-60} size={52} fill="#9fc1d1" font={poppins} weight={800} ls={4}>
 					AS MAIS VOTADAS VIRAM A
@@ -756,7 +756,7 @@ const Mundo: React.FC<{s: number; frame: number; cena: CenaPeca}> = ({s, frame, 
 	const mergulho = eo((s - (T.volta - 0.1)) / 1.1) * (1 - eo((s - (T.trancada - 0.4)) / 1.0));
 	z = lerp(z, 3.4, mergulho);
 	const cx = 540;
-	const cy = lerp(700, 760, mergulho);
+	const cy = lerp(820, 760, mergulho);
 	const ilhaOp = 1 - L((s - (T.ninguem - 0.4)) / 0.5) + L((s - (T.deQuem - 0.1)) / 0.4) * 0.25;
 	const ilhaVis = Math.min(1, ilhaOp) * 1;
 
