@@ -43,7 +43,7 @@ export const vanessa0411Ad02: Edit = {
 	camera: (b) => [
 		{tipo: 'foco', em: 0},
 		{tipo: 'zoom', em: 0, escala: 1.08, y: 0.35},
-		{tipo: 'zoom', em: b.at('tchauzinho'), escala: 1.18, y: 0.35},
+		{tipo: 'zoom', em: b.atsW(2), escala: 1.18, y: 0.35},
 		{tipo: 'zoom', em: b.at('cabelo'), escala: 1.06, y: 0.35},
 		{tipo: 'zoom', em: b.at('colo'), escala: 1.2, y: 0.35},
 		{tipo: 'zoom', em: b.at('mexerica'), escala: 1.3, y: 0.35},
@@ -99,8 +99,8 @@ export const vanessa0411Ad02: Edit = {
 				dados: {pergunta: 'Por que minha pele tá ficando flácida?', autor: 'Camila'},
 			},
 			// Dores do gancho: uma foto por "assim".
-			{tipo: 'foto', src: 'maos.jpg', de: b.at('Mãos'), ate: b.at('tchauzinho'), tamanho: 0.5},
-			{tipo: 'foto', src: 'braco.jpg', de: b.at('tchauzinho'), ate: b.at('cabelo'), tamanho: 0.55},
+			{tipo: 'foto', src: 'maos.jpg', de: b.at('Mãos'), ate: b.atsW(2), tamanho: 0.5},
+			{tipo: 'foto', src: 'braco.jpg', de: b.atsW(2), ate: b.at('cabelo'), tamanho: 0.55},
 			{tipo: 'foto', src: 'cabelo.jpg', de: b.at('cabelo'), ate: b.at('colo'), tamanho: 0.5},
 			{tipo: 'foto', src: 'pescoco.jpg', de: b.at('colo'), ate: b.at('mexerica') - 0.4, tamanho: 0.7},
 			{tipo: 'foto', src: 'mexerica.jpg', de: b.at('mexerica') - 0.4, ate: b.at('Bom,'), tamanho: 0.75},
@@ -110,6 +110,7 @@ export const vanessa0411Ad02: Edit = {
 				nome: 'produtoAd02',
 				de: b.at('Ultra.'),
 				ate: b.say('em uma fórmula só').fim + 0.2,
+				esconderLegenda: true,
 				dados: {nome: 'Rejuvex Ultra', sub: '5 ativos em 1 fórmula', itens: ['Colágeno', 'Ác. hialurônico', 'Resveratrol', 'Retinol', 'Biotina']},
 			},
 			{
@@ -117,6 +118,7 @@ export const vanessa0411Ad02: Edit = {
 				nome: 'produtoAd02',
 				de: b.say('E ele é um').inicio,
 				ate: b.say('de quem já comprou').fim + 0.2,
+				esconderLegenda: true,
 				dados: {nome: 'Rejuvex Ultra', sub: 'Life In • suplemento alimentar', itens: ['Marca confiável', 'Vários depoimentos']},
 			},
 			// Seta para o botão laranja até o fim.

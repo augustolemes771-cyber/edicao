@@ -16,12 +16,9 @@ export const vanessa0411Ad01: Edit = {
 	silencios: silencios as Trecho[],
 	cortes: (o) => {
 		const p = o.palavras;
-		const c: Trecho[] = [];
-		if (p[0].inicio > 0.3) c.push([0, p[0].inicio - 0.12]);
-		for (let i = 0; i + 1 < p.length; i++) {
-			const vao = p[i + 1].inicio - p[i].fim;
-			if (vao > 0.35) c.push([p[i].fim + 0.1, p[i + 1].inicio - 0.08]);
-		}
+		const c: Trecho[] = (silencios as Trecho[])
+			.filter(([i, f]) => f - i > 0.3 && i > 0.2 && f < p[p.length - 1].fim)
+			.map(([i, f]) => [i + 0.08, f - 0.08] as Trecho);
 		c.push([p[p.length - 1].fim + 0.5, 9999]);
 		return c;
 	},
