@@ -11,14 +11,15 @@ W = [{'t': x['text'].strip(), 's': x['startMs'] / 1000, 'e': x['endMs'] / 1000} 
 DUR = 123.57
 
 # Trechos mantidos: corta pausas entre palavras maiores que 0,30 s (deixa 0,12 s de folga de cada lado).
-PAD = 0.12
+# A fala é corrida (quase sem pausa; o Whisper emenda o fim de uma palavra no início da outra), então as bordas vêm
+# do silêncio medido no áudio (silencedetect -20 dB, 0,22 s), com 0,05 s de folga.
+SIL = [(32.668, 32.904), (40.008, 40.291), (66.032, 66.314), (97.114, 97.377), (102.438, 102.730)]
 segs = []
-ini = max(0, W[0]['s'] - PAD)
-for a, b in zip(W, W[1:]):
-    if b['s'] - a['e'] > 0.30 + 2 * PAD:
-        segs.append([ini, a['e'] + PAD])
-        ini = b['s'] - PAD
-segs.append([ini, min(DUR, W[-1]['e'] + 0.4)])
+ini = 0.52
+for a, b in SIL:
+    segs.append([ini, a + 0.05])
+    ini = b - 0.05
+segs.append([ini, 123.40])
 
 def mapa(t):
     acc = 0
