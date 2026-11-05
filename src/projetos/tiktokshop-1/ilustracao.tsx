@@ -424,10 +424,21 @@ export const DinheiroGirando: React.FC<{tipo: 'moeda' | 'notas'; p: number}> = (
 	const {width, height} = useVideoConfig();
 	const t = frame / 30;
 	if (p <= 0.01) return null;
+	// Renderiza em metade da resolução (mesma proporção) e estica por CSS: no rasterizador por software
+	// (sem placa de vídeo na nuvem) o custo por quadro escala com nº de pixels, então isso corta ~4x o
+	// tempo sem perda visível (a moeda/cédula ocupa só uma fração pequena da tela).
+	const resW = Math.round(width / 2);
+	const resH = Math.round(height / 2);
 	return (
 		<div style={{position: 'absolute', inset: 0, opacity: Math.min(1, p * 1.4)}}>
-			{/* antialias desligado: no software rasterizer (sem placa de vídeo na nuvem) isso é o maior custo por quadro */}
-			<ThreeCanvas width={width} height={height} gl={{alpha: true, antialias: false}} camera={{fov: 35, position: [0, 0, 8], near: 0.1, far: 50}} style={{position: 'absolute', inset: 0}}>
+			{/* antialias desligado: no software rasterizer isso também é um custo grande por quadro */}
+			<ThreeCanvas
+				width={resW}
+				height={resH}
+				gl={{alpha: true, antialias: false}}
+				camera={{fov: 35, position: [0, 0, 8], near: 0.1, far: 50}}
+				style={{position: 'absolute', inset: 0, width: '100%', height: '100%'}}
+			>
 				<ambientLight intensity={0.8} />
 				<directionalLight position={[4, 6, 5]} intensity={1.6} />
 				<directionalLight position={[-4, -2, -4]} intensity={0.4} />
