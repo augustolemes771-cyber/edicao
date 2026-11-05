@@ -17,4 +17,5 @@ import {pecas as d41} from '../projetos/depoimento-4-1/pecas';
 import {pecas as d42} from '../projetos/depoimento-4-2/pecas';
 import {pecas as d43} from '../projetos/depoimento-4-3/pecas';
 import {pecas as expStanford} from '../projetos/experimento-stanford/pecas';
-export const PECAS: Pecas = {...e3v3, ...e3v5, ...e3v7, ...e3v11, ...e3v12, ...e3v14, ...d33, ...d34, ...d32, ...d31, ...rig1, ...gota1, ...d41, ...d42, ...d43, ...expStanford};
+import {pecas as tiktokshop1} from '../projetos/tiktokshop-1/pecas';
+export const PECAS: Pecas = {...e3v3, ...e3v5, ...e3v7, ...e3v11, ...e3v12, ...e3v14, ...d33, ...d34, ...d32, ...d31, ...rig1, ...gota1, ...d41, ...d42, ...d43, ...expStanford, ...tiktokshop1};
