@@ -22,6 +22,8 @@ export const vanessa0411Ad02: Edit = {
 	verificarCurva: false,
 	regraCamera: false,
 	transcricao,
+	silencios: silencios as T[],
+	barraProgresso: {cor: '#FE5000'},
 	cortes: (o) => [[0, Math.max(0, o.at('Mãos') - 0.05)], ...cortesPausa, [o.say('antes que ele acabe').fim + 0.35, 9999]],
 	legenda: {
 		estilo: 'palavra',
@@ -123,6 +125,46 @@ export const vanessa0411Ad02: Edit = {
 			},
 			// Seta para o botão laranja até o fim.
 			{tipo: 'peca', nome: 'setaAd02', de: b.say('Caso você queira').inicio, ate: fim, dados: {texto: 'EM OFERTA'}},
+			// Os 5 ativos entrando um por um, na hora da fala.
+			{
+				tipo: 'checklist',
+				titulo: '5 ativos secretos',
+				de: b.atsW(117),
+				ate: b.atsW(127) + 1.2,
+				itens: [
+					{texto: 'Colágeno hidrolisado', em: b.atsW(120)},
+					{texto: 'Ácido hialurônico', em: b.atsW(123)},
+					{texto: 'Resveratrol', em: b.atsW(124)},
+					{texto: 'Biotina', em: b.atsW(125)},
+					{texto: 'Retinol', em: b.atsW(127)},
+				],
+			},
+			// Sinais que aparecem.
+			{
+				tipo: 'alertas',
+				variante: 'escura',
+				de: b.atsW(177),
+				ate: b.atsW(182) + 1,
+				itens: [
+					{texto: 'rugas', em: b.atsW(177)},
+					{texto: 'bigode chinês', em: b.atsW(179)},
+					{texto: 'flacidez', em: b.atsW(182), icone: 'x'},
+				],
+			},
+			// O erro caro.
+			{tipo: 'kicker', pequeno: 'gastando mais de', grande: 'R$200/mês', emGrande: b.atsW(211), de: b.atsW(208), ate: b.atsW(219) + 0.8},
+			// Ativos da fórmula, na explicação.
+			{
+				tipo: 'checklist',
+				titulo: 'tudo em 1 fórmula',
+				de: b.atsW(264),
+				ate: b.atsW(292) + 1.5,
+				itens: [
+					{texto: 'Colágeno + ácido hialurônico: firmeza e hidratação', em: b.atsW(264)},
+					{texto: 'Resveratrol + retinol: antioxidantes', em: b.atsW(279)},
+					{texto: 'Biotina: cabelo e unhas', em: b.atsW(292)},
+				],
+			},
 		];
 	},
 };
