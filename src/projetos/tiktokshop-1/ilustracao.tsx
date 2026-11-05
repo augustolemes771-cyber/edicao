@@ -419,18 +419,24 @@ export const CTAFixo: React.FC<{texto: string; p: number}> = ({texto, p}) => {
 
 // Moeda/cédula 3D girando atrás do número — único elemento 3D do vídeo, só nas cenas de dinheiro
 // (contido de propósito: WebGL na nuvem é lento sem placa de vídeo; usar em excesso travaria o render).
-export const DinheiroGirando: React.FC<{tipo: 'moeda' | 'notas'; p: number}> = ({tipo, p}) => {
+export const DinheiroGirando: React.FC<{tipo: 'moeda' | 'notas'; p: number; cena: CenaPeca}> = ({tipo, p, cena}) => {
 	const frame = useCurrentFrame();
-	const {width, height} = useVideoConfig();
+	const {width, height, fps} = useVideoConfig();
 	const t = frame / 30;
-	if (p <= 0.01) return null;
-	// Renderiza em metade da resolução (mesma proporção) e estica por CSS: no rasterizador por software
-	// (sem placa de vídeo na nuvem) o custo por quadro escala com nº de pixels, então isso corta ~4x o
-	// tempo sem perda visível (a moeda/cédula ocupa só uma fração pequena da tela).
+	// Testado: no rasterizador por software (sem placa de vídeo na nuvem) o WebGL tem um custo alto e quase
+	// FIXO por quadro (reduzir a resolução não ajudou — não é gargalo de pixel, é leitura do framebuffer/
+	// sincronização), então a única alavanca real é limitar quantos quadros usam o canvas 3D: ele gira só
+	// nos ~1,4s iniciais da cena (dá pra ver bem a moeda/cédula) e depois some, ficando só o número 2D.
+	const localFrame = frame - cena.de * fps;
+	const janelaMax = Math.round(1.4 * fps);
+	if (p <= 0.01 || localFrame > janelaMax) return null;
+	// Renderiza em metade da resolução (mesma proporção) e estica por CSS: custo extra que não dói mais
+	// depois do corte de janela acima, mas segue ajudando um pouco.
 	const resW = Math.round(width / 2);
 	const resH = Math.round(height / 2);
+	const saida = interpolate(localFrame, [janelaMax - 10, janelaMax], [1, 0], lim);
 	return (
-		<div style={{position: 'absolute', inset: 0, opacity: Math.min(1, p * 1.4)}}>
+		<div style={{position: 'absolute', inset: 0, opacity: Math.min(1, p * 1.4) * saida}}>
 			{/* antialias desligado: no software rasterizer isso também é um custo grande por quadro */}
 			<ThreeCanvas
 				width={resW}
