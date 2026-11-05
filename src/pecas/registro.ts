@@ -17,6 +17,4 @@ import {pecas as d34} from '../projetos/depoimento-3-4/pecas';
 import {pecas as d41} from '../projetos/depoimento-4-1/pecas';
 import {pecas as d42} from '../projetos/depoimento-4-2/pecas';
 import {pecas as d43} from '../projetos/depoimento-4-3/pecas';
-import {pecas as vAd02} from '../projetos/vanessa-0411-ad02/pecas';
-import {pecas as vAd01} from '../projetos/vanessa-0411-ad01/pecas';
-export const PECAS: Pecas = {...vAd01, ...vAd02, ...e3v3, ...e3v5, ...e3v7, ...e3v11, ...e3v12, ...e3v14, ...d33, ...d34, ...d32, ...d31, ...rig1, ...gota1, ...hist2, ...d41, ...d42, ...d43};
+export const PECAS: Pecas = {...e3v3, ...e3v5, ...e3v7, ...e3v11, ...e3v12, ...e3v14, ...d33, ...d34, ...d32, ...d31, ...rig1, ...gota1, ...hist2, ...d41, ...d42, ...d43};
