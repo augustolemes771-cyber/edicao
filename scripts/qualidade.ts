@@ -163,8 +163,13 @@ for (const c of cenas) {
 for (const c of cenas) {
 	if (c.tipo !== 'peca') continue;
 	// Uma peça pode vir de outro projeto (o registro junta todas): procura em todos os pecas.tsx.
-	const arqs = readdirSync(path.join('src', 'projetos')).map((d) => path.join('src', 'projetos', d, 'pecas.tsx')).filter((a) => existsSync(a));
-	if (!arqs.some((a) => new RegExp(`\\b${c.nome}\\s*[:(,]`).test(readFileSync(a, 'utf8')))) erros.push(`${fmt(c.de)}: peça "${c.nome}" não está em nenhum src/projetos/*/pecas.tsx`);
+	// Também nos arquivos de cenas (cenas-*.tsx) que o pecas.tsx espalha.
+	const arqs = readdirSync(path.join('src', 'projetos')).flatMap((d) => {
+		const dir = path.join('src', 'projetos', d);
+		if (!existsSync(path.join(dir, 'pecas.tsx'))) return [];
+		return readdirSync(dir).filter((f) => f === 'pecas.tsx' || /^cenas-.*\.tsx$/.test(f)).map((f) => path.join(dir, f));
+	});
+	if (!arqs.some((a) => new RegExp(`\\b${c.nome}\\s*[:(,}=]`).test(readFileSync(a, 'utf8')))) erros.push(`${fmt(c.de)}: peça "${c.nome}" não está em nenhum src/projetos/*/pecas.tsx`);
 }
 
 // 9. Duração de Reels/Shorts.

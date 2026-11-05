@@ -47,13 +47,15 @@ ${
 writeFileSync(path.join(pasta, 'edit.ts'), modelo);
 
 const indice = path.join(raiz, 'src', 'projetos', 'index.ts');
-let s = readFileSync(indice, 'utf8');
+// O index.ts pode ter quebra de linha do Windows (CRLF): trabalha em LF e devolve no formato original.
+const crlf = readFileSync(indice, 'utf8').includes('\r\n');
+let s = readFileSync(indice, 'utf8').replace(/\r\n/g, '\n');
 s = s.replace(
 	/(import type \{Edit\} from '..\/motor\/plano';\n(?:import .*\n)*)/,
 	`$1import {${variavel}} from './${nome}/edit';\n`,
 );
 s = s.replace(/(export const projetos: Record<string, Edit> = \{\n(?:.*\n)*?)(\};)/, `$1\t'${nome}': ${variavel},\n$2`);
-writeFileSync(indice, s);
+writeFileSync(indice, crlf ? s.replace(/\n/g, '\r\n') : s);
 
 console.log(`Projeto ${nome} criado${vertical ? ' (vertical)' : ''}.
 1. Coloque o vídeo decupado em public/projetos/${nome}/video.mp4

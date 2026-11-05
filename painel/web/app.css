@@ -546,6 +546,8 @@ body.so-ver #f,body.so-ver .atalhos,body.so-ver #zerar{display:none}
 .esp{flex:1}
 #palco{flex:1;min-height:0;position:relative;display:flex;align-items:center;justify-content:center;padding:14px;background:#000}
 #player{width:100%;height:100%;border:0;background:#000;border-radius:6px}
+/* Versão nova do player carregando por trás da atual (troca sem tela preta). */
+#palco .player-carregando{position:absolute;inset:14px;width:calc(100% - 28px);height:calc(100% - 28px);border:0;background:#000;border-radius:6px;opacity:0;pointer-events:none;z-index:-1}
 #palcoVazio{max-width:420px}
 #palcoErro{position:absolute;left:14px;right:14px;bottom:14px;background:#2a0f12f0;border:1px solid var(--erro);color:#ffd7d7;border-radius:10px;padding:10px 12px;font-size:12.5px;max-height:45%;overflow:auto}
 #palcoErro pre{white-space:pre-wrap;margin:6px 0 0;font:11.5px var(--mono)}

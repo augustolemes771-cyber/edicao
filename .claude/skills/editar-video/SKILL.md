@@ -140,3 +140,9 @@ e deixe o pedido em `docs/agentes/NOTAS.md`. Conferir `duracaoEditada <= duraç�
 - `remotion still` copia a `public` inteira (~8 GB) para o temporário e não apaga: um still por vez e apagar a pasta
   `remotion-webpack-bundle-*` depois. Para conferir um render pronto, tirar quadros do mp4 com o ffmpeg (1 s, sem bundle).
 - Peça nova de projeto (`src/projetos/<p>/pecas.tsx`) só aparece depois de entrar em `src/pecas/registro.ts`.
+
+## Player do painel (02/11/2026)
+
+- Peça ou cena não pode chamar `getInputProps()` direto: dentro do `<Player>` do painel ele lança erro e o player inteiro fica
+  preto daquele ponto em diante (aconteceu no Texto3D, aos 30 s do depoimento-4-1). Se precisar, use try/catch como o `auditando()`
+  de `src/pecas/tres/Texto3D.tsx`.

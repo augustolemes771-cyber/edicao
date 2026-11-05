@@ -2065,7 +2065,46 @@ const fmtT = (s, comQuadro = false) => {
 	const base = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(x).padStart(2, '0')}`;
 	return comQuadro && PL.meta ? `${base}:${String(Math.floor((s % 1) * PL.meta.fps)).padStart(2, '0')}` : base;
 };
+// Versão nova do player carregando escondida atrás da atual (sem tela preta): troca quando ela avisa "pronto".
+function trocarPlayer() {
+	const p = proj();
+	const atual = plEl();
+	if (!p || !atual || atual.hidden || PL.projeto !== p || !PL.meta) return carregarPlayer({manterQuadro: true});
+	cancelarTroca();
+	const f = document.createElement('iframe');
+	f.title = 'Player do vídeo';
+	f.allow = 'autoplay; fullscreen';
+	f.className = 'player-carregando';
+	f.src = `/player.html?projeto=${enc(p)}&v=${PL.versao}#quadro=${PL.quadro}`;
+	atual.after(f);
+	const pend = {f, meta: null, projeto: p};
+	pend.timer = setTimeout(() => concluirTroca(pend), 15000);
+	PL.pendente = pend;
+}
+function cancelarTroca() {
+	if (!PL.pendente) return;
+	clearTimeout(PL.pendente.timer);
+	PL.pendente.f.remove();
+	PL.pendente = null;
+}
+function concluirTroca(pend) {
+	if (PL.pendente !== pend) return;
+	clearTimeout(pend.timer);
+	PL.pendente = null;
+	if (proj() !== pend.projeto) { pend.f.remove(); return; }
+	const tocava = PL.tocando;
+	plEl()?.remove();
+	pend.f.id = 'player';
+	pend.f.classList.remove('player-carregando');
+	if (pend.meta) PL.meta = pend.meta;
+	renderLinha();
+	renderDetalhes();
+	paraPlayer({cmd: 'ir', quadro: PL.quadro});
+	if (PL.mudo) paraPlayer({cmd: 'mudo', mudo: true});
+	if (tocava) paraPlayer({cmd: 'play'});
+}
 function carregarPlayer({manterQuadro = false} = {}) {
+	cancelarTroca();
 	const p = proj();
 	const f = plEl();
 	$('#plTitulo').textContent = p || 'Player';
@@ -2087,8 +2126,15 @@ function carregarPlayer({manterQuadro = false} = {}) {
 	renderDetalhes();
 }
 addEventListener('message', (e) => {
-	if (e.origin !== location.origin || !e.data?.dePlayer || e.source !== plEl()?.contentWindow) return;
+	if (e.origin !== location.origin || !e.data?.dePlayer) return;
 	const d = e.data;
+	const pend = PL.pendente;
+	if (pend && e.source === pend.f.contentWindow) {
+		if (d.tipo === 'meta') pend.meta = d;
+		else if (d.tipo === 'pronto') concluirTroca(pend);
+		return;
+	}
+	if (e.source !== plEl()?.contentWindow) return;
 	if (d.tipo === 'meta') {
 		const novo = !PL.meta;
 		PL.meta = d;
@@ -2114,7 +2160,7 @@ async function vigiarPlayer() {
 		if (r.versao && r.versao !== PL.versao) {
 			const primeira = !PL.versao;
 			PL.versao = r.versao;
-			if (!primeira && proj()) { carregarPlayer({manterQuadro: true}); aviso('A edição mudou: player atualizado.', 'info', {ms: 1800}); }
+			if (!primeira && proj()) { trocarPlayer(); aviso('A edição mudou: player atualizado.', 'info', {ms: 1800}); }
 		}
 	} catch {}
 	setTimeout(vigiarPlayer, 1500);
