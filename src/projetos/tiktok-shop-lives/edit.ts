@@ -23,7 +23,7 @@ export const tiktokShopLives: Edit = {
 		];
 		// Um zoom ou foco a cada ~1,2 s dentro de cada cena, para manter o ritmo sem repetir efeito.
 		const extra = [1.2, 2.2, 4.3, 5.4, 7.7, 8.7, 10.7, 11.8, 14.2, 15.4, 16.2, 18.2, 19.4, 21.7, 22.9, 25.2, 26.4, 27.2].map((em, i) =>
-			i % 2 === 0 ? {tipo: 'zoom' as const, em, escala: 1.12, suave: true} : {tipo: 'foco' as const, em, duracao: 0.3},
+			i % 2 === 0 ? {tipo: 'zoom' as const, em, escala: 1.12, suave: 0.5} : {tipo: 'foco' as const, em, duracao: 0.3},
 		);
 		return [...base, ...extra].sort((a, b) => a.em - b.em);
 	},
@@ -111,20 +111,14 @@ export const tiktokShopLives: Edit = {
 			],
 		},
 		{
-			tipo: 'cenario',
+			tipo: 'numero',
 			de: 17,
-			sons: [{em: 18.1, som: 'pro_tick', ganho: 0.6}, {em: 19.2, som: 'pro_tick', ganho: 0.5}],
 			ate: 20.5,
-			superficie: 'escuro',
-			luz: 'nenhuma',
-			pequeno: 'Moda e beleza no Brasil',
-			grande: '+150%',
-			abaixo: 'em seis meses',
-			estiloTexto: 'neutro',
-			posTexto: 0.45,
+			sons: [{em: 18.1, som: 'pro_tick', ganho: 0.6}, {em: 19.2, som: 'pro_tick', ganho: 0.5}],
+			valor: '+150%',
+			legenda: 'em moda e beleza no Brasil em seis meses',
+			fundo: 'verde',
 			som: 'impacto',
-			camera: {de: [-0.2, 0, 8.4], ate: [0.2, 0, 7.5]},
-			objetos: [{tipo: 'moeda', x: 0.7, y: 0.7, escala: 1, girar: 0.6}],
 		},
 		{
 			tipo: 'cenario',
