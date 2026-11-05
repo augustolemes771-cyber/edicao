@@ -1,4 +1,4 @@
-import type {Edit} from '../../motor/plano';
+import type {Edit, EfeitoCamera} from '../../motor/plano';
 import transcricao from './transcricao.json';
 
 // Notícias de 2026 sobre lives no TikTok Shop (fontes em docs/tiktok-shop-lives/roteiro.md).
@@ -10,8 +10,8 @@ export const tiktokShopLives: Edit = {
 	verificarCurva: false,
 	regraCamera: false,
 	transcricao,
-	camera: () => {
-		const base = [
+	camera: (): EfeitoCamera[] => {
+		const base: EfeitoCamera[] = [
 			{tipo: 'foco', em: 0},
 			{tipo: 'chicote', em: 3},
 			{tipo: 'mergulho', em: 6.5},
@@ -20,7 +20,7 @@ export const tiktokShopLives: Edit = {
 			{tipo: 'vazamento', em: 17},
 			{tipo: 'chicote', em: 20.5},
 			{tipo: 'foco', em: 24, duracao: 0.4},
-		] as const;
+		];
 		// Um zoom ou foco a cada ~1,2 s dentro de cada cena, para manter o ritmo sem repetir efeito.
 		const extra = [1.2, 2.2, 4.3, 5.4, 7.7, 8.7, 10.7, 11.8, 14.2, 15.4, 16.2, 18.2, 19.4, 21.7, 22.9, 25.2, 26.4, 27.2].map((em, i) =>
 			i % 2 === 0 ? {tipo: 'zoom' as const, em, escala: 1.12, suave: true} : {tipo: 'foco' as const, em, duracao: 0.3},
@@ -63,19 +63,14 @@ export const tiktokShopLives: Edit = {
 			objetos: [{tipo: 'notas', x: 0.55, y: 0.7, escala: 1, entra: 'desliza', giro: [Math.PI / 2.3, 0, -0.5]}],
 		},
 		{
-			tipo: 'cenario',
+			tipo: 'numero',
 			de: 6.5,
-			sons: [{em: 7.6, som: 'pro_pop', ganho: 0.6}, {em: 8.7, som: 'pro_tick', ganho: 0.5}],
 			ate: 9.5,
-			superficie: 'escuro',
-			luz: 'nenhuma',
-			pequeno: 'Lives por dia',
-			grande: '20x mais',
-			estiloTexto: 'neutro',
-			posTexto: 0.44,
+			sons: [{em: 7.6, som: 'pro_pop', ganho: 0.6}, {em: 8.7, som: 'pro_tick', ganho: 0.5}],
+			valor: '20x',
+			legenda: 'mais lives por dia no Brasil',
+			fundo: 'grade',
 			som: 'pro_whoosh',
-			camera: {de: [0.3, 0, 8.4], ate: [-0.2, 0, 7.4]},
-			objetos: [{tipo: 'relogio', x: -0.7, y: 0.75, z: 0.3, escala: 1}],
 		},
 		{
 			tipo: 'cenario',
