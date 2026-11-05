@@ -31,6 +31,7 @@ import {historia2} from './historia-2/edit';
 import {tiktokShopLives} from './tiktok-shop-lives/edit';
 import {vanessa0411Ad02} from './vanessa-0411-ad02/edit';
 import {vanessa0411Ad01} from './vanessa-0411-ad01/edit';
+import {testeFelipao} from './teste-felipao/edit';
 
 // Cada projeto novo entra aqui. O nome vira o id da composição no Studio e no render.
 export const projetos: Record<string, Edit> = {
@@ -66,4 +67,5 @@ export const projetos: Record<string, Edit> = {
 	'tiktok-shop-lives': tiktokShopLives,
 	'vanessa-0411-ad02': vanessa0411Ad02,
 	'vanessa-0411-ad01': vanessa0411Ad01,
+	'teste-felipao': testeFelipao,
 };
