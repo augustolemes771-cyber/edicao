@@ -10,20 +10,28 @@ export const tiktokShopLives: Edit = {
 	verificarCurva: false,
 	regraCamera: false,
 	transcricao,
-	camera: () => [
-		{tipo: 'foco', em: 0},
-		{tipo: 'chicote', em: 3},
-		{tipo: 'mergulho', em: 6.5},
-		{tipo: 'flash', em: 9.5},
-		{tipo: 'iris', em: 13},
-		{tipo: 'vazamento', em: 17},
-		{tipo: 'chicote', em: 20.5},
-		{tipo: 'foco', em: 24, duracao: 0.4},
-	],
+	camera: () => {
+		const base = [
+			{tipo: 'foco', em: 0},
+			{tipo: 'chicote', em: 3},
+			{tipo: 'mergulho', em: 6.5},
+			{tipo: 'flash', em: 9.5},
+			{tipo: 'iris', em: 13},
+			{tipo: 'vazamento', em: 17},
+			{tipo: 'chicote', em: 20.5},
+			{tipo: 'foco', em: 24, duracao: 0.4},
+		] as const;
+		// Um zoom ou foco a cada ~1,2 s dentro de cada cena, para manter o ritmo sem repetir efeito.
+		const extra = [1.2, 2.2, 4.3, 5.4, 7.7, 8.7, 10.7, 11.8, 14.2, 15.4, 16.2, 18.2, 19.4, 21.7, 22.9, 25.2, 26.4, 27.2].map((em, i) =>
+			i % 2 === 0 ? {tipo: 'zoom' as const, em, escala: 1.12, suave: true} : {tipo: 'foco' as const, em, duracao: 0.3},
+		);
+		return [...base, ...extra].sort((a, b) => a.em - b.em);
+	},
 	cenas: () => [
 		{
 			tipo: 'cenario',
 			de: 0,
+			sons: [{em: 1.1, som: 'pro_tick', ganho: 0.6}, {em: 2.2, som: 'pro_tick', ganho: 0.5}],
 			ate: 3,
 			superficie: 'escuro',
 			luz: 'nenhuma',
@@ -41,6 +49,7 @@ export const tiktokShopLives: Edit = {
 		{
 			tipo: 'cenario',
 			de: 3,
+			sons: [{em: 4.1, som: 'pro_tick', ganho: 0.6}, {em: 5.2, som: 'pro_tick', ganho: 0.5}],
 			ate: 6.5,
 			superficie: 'escuro',
 			luz: 'nenhuma',
@@ -56,6 +65,7 @@ export const tiktokShopLives: Edit = {
 		{
 			tipo: 'cenario',
 			de: 6.5,
+			sons: [{em: 7.6, som: 'pro_pop', ganho: 0.6}, {em: 8.7, som: 'pro_tick', ganho: 0.5}],
 			ate: 9.5,
 			superficie: 'escuro',
 			luz: 'nenhuma',
@@ -70,6 +80,7 @@ export const tiktokShopLives: Edit = {
 		{
 			tipo: 'cenario',
 			de: 9.5,
+			sons: [{em: 10.6, som: 'pro_tick', ganho: 0.6}, {em: 11.7, som: 'pro_tick', ganho: 0.5}],
 			ate: 13,
 			superficie: 'escuro',
 			luz: 'nenhuma',
@@ -88,6 +99,7 @@ export const tiktokShopLives: Edit = {
 		{
 			tipo: 'cenario',
 			de: 13,
+			sons: [{em: 14.1, som: 'pro_pop', ganho: 0.6}, {em: 15.2, som: 'pro_tick', ganho: 0.5}],
 			ate: 17,
 			superficie: 'escuro',
 			luz: 'nenhuma',
@@ -106,6 +118,7 @@ export const tiktokShopLives: Edit = {
 		{
 			tipo: 'cenario',
 			de: 17,
+			sons: [{em: 18.1, som: 'pro_tick', ganho: 0.6}, {em: 19.2, som: 'pro_tick', ganho: 0.5}],
 			ate: 20.5,
 			superficie: 'escuro',
 			luz: 'nenhuma',
@@ -121,6 +134,7 @@ export const tiktokShopLives: Edit = {
 		{
 			tipo: 'cenario',
 			de: 20.5,
+			sons: [{em: 21.6, som: 'pro_pop', ganho: 0.6}, {em: 22.7, som: 'pro_tick', ganho: 0.5}],
 			ate: 24,
 			superficie: 'escuro',
 			luz: 'nenhuma',
@@ -136,6 +150,7 @@ export const tiktokShopLives: Edit = {
 		{
 			tipo: 'cenario',
 			de: 24,
+			sons: [{em: 25.1, som: 'pro_pulso', ganho: 0.6}, {em: 26.2, som: 'pro_tick', ganho: 0.5}],
 			ate: 28,
 			superficie: 'escuro',
 			luz: 'nenhuma',
