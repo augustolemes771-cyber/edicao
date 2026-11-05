@@ -1,7 +1,23 @@
-// Cenas do tiktokshop-1: notícia com motions, estilo "prova real" (print de manchete + gráfico + CTA).
+// Cenas do tiktokshop-1: notícia com motions, estilo "prova real" (print de manchete + gráfico + CTA),
+// com flash de corte, partículas no estouro dos números e dinheiro 3D nas cenas de valor.
 import React from 'react';
 import type {CenaPeca, Pecas} from '../../pecas/peca';
-import {Camera, CartaoData, CartaoNoticia, COR, CTAFixo, Fundo, GraficoRanking, Numero, TextoGrande, usePeca, Vinheta} from './ilustracao';
+import {
+	Camera,
+	CartaoData,
+	CartaoNoticia,
+	COR,
+	CTAFixo,
+	DinheiroGirando,
+	Flash,
+	Fundo,
+	GraficoRanking,
+	Numero,
+	Particulas,
+	TextoGrande,
+	usePeca,
+	Vinheta,
+} from './ilustracao';
 
 // 1. "Enquanto você rolava o feed agora, tem gente comum faturando milhões fazendo live no TikTok."
 export const tkAbertura: React.FC<{cena: CenaPeca}> = ({cena}) => {
@@ -13,6 +29,7 @@ export const tkAbertura: React.FC<{cena: CenaPeca}> = ({cena}) => {
 				<TextoGrande texto="tem gente comum faturando MILHÕES fazendo live no TikTok" p={Math.min(1, p)} tamanho={56} />
 			</Camera>
 			<Vinheta />
+			<Flash cena={cena} />
 		</Fundo>
 	);
 };
@@ -28,6 +45,7 @@ export const tkChegada: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			</Camera>
 			<Vinheta />
 			<TextoGrande texto="o TikTok Shop chegou no Brasil" p={Math.min(1, p)} tamanho={44} />
+			<Flash cena={cena} />
 		</Fundo>
 	);
 };
@@ -35,17 +53,20 @@ export const tkChegada: React.FC<{cena: CenaPeca}> = ({cena}) => {
 // 3. "Em um ano, já faturou cinco bilhões e trezentos milhões de reais. Quase dez mil por cento."
 export const tkFaturamento: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const {mola} = usePeca(cena);
-	const n = mola(0, 110, 14);
+	const n = mola(0, 90, 11);
 	const n2 = mola(14, 120, 13);
 	return (
 		<Fundo>
+			<DinheiroGirando tipo="moeda" p={Math.min(1, n)} />
 			<Camera cena={cena} zoom={[1, 1.2]}>
-				<Numero valor="R$ 5,3 BI" rotulo="EM 1 ANO NO BRASIL" p={Math.min(1, n)} top={300} />
+				<Numero valor="R$ 5,3 BI" rotulo="EM 1 ANO NO BRASIL" p={n} top={300} />
 			</Camera>
+			<Particulas p={n} />
 			<Vinheta />
 			<div style={{opacity: Math.min(1, n2)}}>
 				<CTAFixo texto="+9.900% de crescimento" p={Math.min(1, n2)} />
 			</div>
+			<Flash cena={cena} />
 		</Fundo>
 	);
 };
@@ -67,19 +88,23 @@ export const tkCuritiba: React.FC<{cena: CenaPeca}> = ({cena}) => {
 				/>
 			</Camera>
 			<Vinheta />
+			<Flash cena={cena} />
 		</Fundo>
 	);
 };
 
 export const tkCriadoraSozinha: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const {mola} = usePeca(cena);
-	const n = mola(0, 110, 14);
+	const n = mola(0, 90, 11);
 	return (
 		<Fundo>
+			<DinheiroGirando tipo="notas" p={Math.min(1, n)} />
 			<Camera cena={cena} zoom={[1, 1.2]}>
-				<Numero valor="R$ 1,7 MI" rotulo="SÓ UMA CRIADORA, SOZINHA" p={Math.min(1, n)} top={300} />
+				<Numero valor="R$ 1,7 MI" rotulo="SÓ UMA CRIADORA, SOZINHA" p={n} top={300} />
 			</Camera>
+			<Particulas p={n} />
 			<Vinheta />
+			<Flash cena={cena} />
 		</Fundo>
 	);
 };
@@ -87,13 +112,15 @@ export const tkCriadoraSozinha: React.FC<{cena: CenaPeca}> = ({cena}) => {
 // 6. "Mais de 200 criadores no Brasil já ultrapassaram 1 milhão de reais."
 export const tk200Criadores: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const {mola} = usePeca(cena);
-	const n = mola(0, 110, 14);
+	const n = mola(0, 90, 11);
 	return (
 		<Fundo>
 			<Camera cena={cena} zoom={[1, 1.18]}>
-				<Numero valor="+200" rotulo="CRIADORES JÁ PASSARAM DE R$ 1 MILHÃO" p={Math.min(1, n)} top={300} tamanho={130} />
+				<Numero valor="+200" rotulo="CRIADORES JÁ PASSARAM DE R$ 1 MILHÃO" p={n} top={300} tamanho={130} />
 			</Camera>
+			<Particulas p={n} cor={COR.verde} />
 			<Vinheta />
+			<Flash cena={cena} />
 		</Fundo>
 	);
 };
@@ -116,19 +143,23 @@ export const tkGraficoLives: React.FC<{cena: CenaPeca}> = ({cena}) => {
 				/>
 			</Camera>
 			<Vinheta />
+			<Flash cena={cena} />
 		</Fundo>
 	);
 };
 
 export const tkRecordeLive: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const {mola} = usePeca(cena);
-	const n = mola(0, 110, 14);
+	const n = mola(0, 90, 11);
 	return (
 		<Fundo>
+			<DinheiroGirando tipo="moeda" p={Math.min(1, n)} />
 			<Camera cena={cena} zoom={[1, 1.2]}>
-				<Numero valor="R$ 100 MIL" rotulo="VENDIDOS NUMA ÚNICA LIVE" p={Math.min(1, n)} top={300} />
+				<Numero valor="R$ 100 MIL" rotulo="VENDIDOS NUMA ÚNICA LIVE" p={n} top={300} />
 			</Camera>
+			<Particulas p={n} />
 			<Vinheta />
+			<Flash cena={cena} />
 		</Fundo>
 	);
 };
@@ -150,6 +181,7 @@ export const tkGlobal: React.FC<{cena: CenaPeca}> = ({cena}) => {
 				/>
 			</Camera>
 			<Vinheta />
+			<Flash cena={cena} />
 		</Fundo>
 	);
 };
@@ -164,6 +196,7 @@ export const tkPergunta: React.FC<{cena: CenaPeca}> = ({cena}) => {
 				<TextoGrande texto="você vai estar VENDENDO, ou só assistindo quem vende?" p={Math.min(1, p)} tamanho={54} cor={COR.rosa} />
 			</Camera>
 			<Vinheta />
+			<Flash cena={cena} cor="#ffffff" />
 		</Fundo>
 	);
 };
@@ -178,8 +211,10 @@ export const tkCTAFinal: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			<Camera cena={cena} zoom={[1, 1.08]}>
 				<TextoGrande texto="VEM SER CREATOR" p={Math.min(1, p)} tamanho={70} />
 			</Camera>
+			<Particulas p={p} cor={COR.rosa} y={820} />
 			<Vinheta />
 			<CTAFixo texto="Comenta 'LIVE' e vem pra M4" p={Math.min(1, p2)} />
+			<Flash cena={cena} />
 		</Fundo>
 	);
 };
