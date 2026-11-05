@@ -426,7 +426,8 @@ export const DinheiroGirando: React.FC<{tipo: 'moeda' | 'notas'; p: number}> = (
 	if (p <= 0.01) return null;
 	return (
 		<div style={{position: 'absolute', inset: 0, opacity: Math.min(1, p * 1.4)}}>
-			<ThreeCanvas width={width} height={height} gl={{alpha: true, antialias: true}} camera={{fov: 35, position: [0, 0, 8], near: 0.1, far: 50}} style={{position: 'absolute', inset: 0}}>
+			{/* antialias desligado: no software rasterizer (sem placa de vídeo na nuvem) isso é o maior custo por quadro */}
+			<ThreeCanvas width={width} height={height} gl={{alpha: true, antialias: false}} camera={{fov: 35, position: [0, 0, 8], near: 0.1, far: 50}} style={{position: 'absolute', inset: 0}}>
 				<ambientLight intensity={0.8} />
 				<directionalLight position={[4, 6, 5]} intensity={1.6} />
 				<directionalLight position={[-4, -2, -4]} intensity={0.4} />
