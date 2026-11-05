@@ -83,10 +83,10 @@ def palavra(txt, depois=0):
             return x
 c1 = palavra('mostrar', 100)
 c2 = palavra('brasil', 100)
-ass.append(f'Dialogue: 2,{ts(mapa(c1["s"]))},{ts(mapa(c2["e"]) + 0.3)},Card,,0,0,0,,{{\\pos(540,1010)\\fad(120,120)\\fscx80\\fscy80\\t(0,180,\\fscx100\\fscy100)}}MELÃO DE{{\\N}}SÃO CAETANO{{\\N}}{{\\fs44}}ORIGINAL ✔')
+ass.append(f'Dialogue: 2,{ts(mapa(c1["s"]))},{ts(mapa(c2["e"]) + 0.3)},Card,,0,0,0,,{{\\pos(540,1010)\\fad(120,120)\\fscx80\\fscy80\\t(0,180,\\fscx100\\fscy100)}}MELÃO DE\\NSÃO CAETANO\\N{{\\fs44}}ORIGINAL ✔')
 c3 = palavra('coloca', 113)
 c4 = palavra('faz', 118)
-ass.append(f'Dialogue: 2,{ts(mapa(c3["s"]))},{ts(mapa(c4["e"]) + 0.2)},Card,,0,0,0,,{{\\pos(540,1010)\\fad(120,120)}}MELÃO DE{{\\N}}SÃO CAETANO')
+ass.append(f'Dialogue: 2,{ts(mapa(c3["s"]))},{ts(mapa(c4["e"]) + 0.2)},Card,,0,0,0,,{{\\pos(540,1010)\\fad(120,120)}}MELÃO DE\\NSÃO CAETANO')
 
 # Seta laranja apontando para o botão (embaixo, à esquerda, onde o TikTok Shop põe o produto) até o fim.
 s0 = mapa(palavra('mostrar', 100)['s'])
