@@ -8,7 +8,6 @@ import {
 	CartaoNoticia,
 	COR,
 	CTAFixo,
-	DinheiroGirando,
 	Flash,
 	Fundo,
 	GraficoRanking,
@@ -57,7 +56,6 @@ export const tkFaturamento: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const n2 = mola(14, 120, 13);
 	return (
 		<Fundo>
-			<DinheiroGirando tipo="moeda" p={Math.min(1, n)} cena={cena} />
 			<Camera cena={cena} zoom={[1, 1.2]}>
 				<Numero valor="R$ 5,3 BI" rotulo="EM 1 ANO NO BRASIL" p={n} top={300} />
 			</Camera>
@@ -98,7 +96,6 @@ export const tkCriadoraSozinha: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const n = mola(0, 90, 11);
 	return (
 		<Fundo>
-			<DinheiroGirando tipo="notas" p={Math.min(1, n)} cena={cena} />
 			<Camera cena={cena} zoom={[1, 1.2]}>
 				<Numero valor="R$ 1,7 MI" rotulo="SÓ UMA CRIADORA, SOZINHA" p={n} top={300} />
 			</Camera>
@@ -153,7 +150,6 @@ export const tkRecordeLive: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const n = mola(0, 90, 11);
 	return (
 		<Fundo>
-			<DinheiroGirando tipo="moeda" p={Math.min(1, n)} cena={cena} />
 			<Camera cena={cena} zoom={[1, 1.2]}>
 				<Numero valor="R$ 100 MIL" rotulo="VENDIDOS NUMA ÚNICA LIVE" p={n} top={300} />
 			</Camera>

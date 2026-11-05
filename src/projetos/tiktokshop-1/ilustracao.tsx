@@ -417,8 +417,12 @@ export const CTAFixo: React.FC<{texto: string; p: number}> = ({texto, p}) => {
 	);
 };
 
-// Moeda/cédula 3D girando atrás do número — único elemento 3D do vídeo, só nas cenas de dinheiro
-// (contido de propósito: WebGL na nuvem é lento sem placa de vídeo; usar em excesso travaria o render).
+// Moeda/cédula 3D girando atrás do número — testado e tirado das cenas (ver cenas.tsx) porque o WebGL
+// nessa nuvem sem placa de vídeo (--gl=swangle) é não só lento (~0,4 quadros/s mesmo fora da cena 3D,
+// contra ~3,2 com o GL padrão) como trava o render com "Page crashed!" de forma determinística em
+// pelo menos uma janela deste projeto, mesmo com o canvas já desmontado (p<=0.01 ou fora da janela de
+// 1,4s). Sem --gl=swangle o WebGL nem inicializa (crasha também). Fica pronto pra religar se um dia
+// essa nuvem tiver GPU real, ou pra testar localmente numa máquina com placa de vídeo.
 export const DinheiroGirando: React.FC<{tipo: 'moeda' | 'notas'; p: number; cena: CenaPeca}> = ({tipo, p, cena}) => {
 	const frame = useCurrentFrame();
 	const {width, height, fps} = useVideoConfig();
