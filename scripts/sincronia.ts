@@ -37,7 +37,7 @@ const cpu = path.join(home, '.cache/edicao/whisper.cpp-1.7/Release/whisper-cli.e
 const exe = existsSync(cuda) ? cuda : existsSync(cpu) ? cpu : 'whisper-cli';
 const modelo = path.join(home, '.cache/edicao/whisper.cpp/ggml-large-v3-turbo.bin');
 const wav = path.join(tmp, 'a.wav');
-execFileSync('ffmpeg', ['-v', 'error', '-y', '-i', render, '-ac', '1', '-ar', '16000', wav]);
+execFileSync('ffmpeg', ['-v', 'error', '-y', '-i', render, '-vn', '-ac', '1', '-ar', '16000', wav]);
 execFileSync(exe, ['-m', modelo, '-l', 'pt', '-dtw', 'large.v3.turbo', '-oj', '-ojf', '-of', path.join(tmp, 'a'), '-f', wav, '-np'], {stdio: 'ignore'});
 const bruto = JSON.parse(readFileSync(path.join(tmp, 'a.json'), 'utf8'));
 rmSync(tmp, {recursive: true, force: true});

@@ -147,7 +147,9 @@ export const escolherModelo = (pedido, {projetoNovo = false} = {}) => {
 	if (decisao || projetoNovo) return {modelo: 'opus', esforco: 'medium', motivo: 'decisão de estilo ou roteiro'};
 	const criacao = /do zero|cria(r)? (uma )?(pe[cç]a|cena|efeito|anima|template|tema)|3d|blender|redesenh|refaz/.test(t) || t.length > 500;
 	if (criacao) return {modelo: 'sonnet', esforco: 'medium', motivo: 'criação de peça ou cena'};
-	const leve = t.length < 160 && (/\?\s*$/.test(t) || /^(gera|gerar|faz|fazer|roda|rodar) (a )?pr[eé]via|^(status|o que falta|quanto falta|lista|mostra|renomeia|troca|muda|tira|coloca)/.test(t));
-	if (leve) return {modelo: 'haiku', esforco: 'low', motivo: 'pergunta ou ajuste simples'};
+	// Haiku só para pergunta e comando que não mexe no edit.ts: em ajuste (troca/muda/tira/coloca) ele errava âncora e tempo,
+	// e refazer custava mais que o Sonnet com esforço baixo (rápido do mesmo jeito).
+	const leve = t.length < 160 && (/\?\s*$/.test(t) || /^(gera|gerar|faz|fazer|roda|rodar) (a )?pr[eé]via|^(status|o que falta|quanto falta|lista|mostra)/.test(t));
+	if (leve) return {modelo: 'haiku', esforco: 'low', motivo: 'pergunta ou comando simples'};
 	return {modelo: 'sonnet', esforco: 'low', motivo: 'ajuste de edição'};
 };

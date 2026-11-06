@@ -65,7 +65,7 @@ if (ficha.temAudio) {
 		}
 	});
 	audio.rms = db.filter((_, i) => i % 2 === 0).map(r1); // a cada 100 ms
-	const lufs = ff(['-i', arquivo, '-af', 'ebur128=peak=true', '-f', 'null', '-']).stderr.match(/I:\s+(-?[\d.]+) LUFS/g);
+	const lufs = ff(['-i', arquivo, '-vn', '-af', 'ebur128=peak=true', '-f', 'null', '-']).stderr.match(/I:\s+(-?[\d.]+) LUFS/g);
 	audio.lufs = lufs ? lufs[lufs.length - 1].replace(/\D*(-?[\d.]+).*/, '$1') : null;
 }
 writeFileSync(path.join(saida, 'audio.json'), JSON.stringify(audio));

@@ -26,9 +26,13 @@ for (const v of videos) {
 	const destino = path.join(leve, v.replace(/\.[^.]+$/, '.mp4'));
 	if (existsSync(destino) && statSync(destino).mtimeMs >= statSync(orig).mtimeMs) continue;
 	const temp = destino.replace(/\.mp4$/, '.parte.mp4');
+	// Outra cópia desta mesma já em andamento (Studio, envio da mídia e prévia chamam este script): espera ela terminar.
+	const t0 = Date.now();
+	while (existsSync(temp) && Date.now() - statSync(temp).mtimeMs < 60000 && Date.now() - t0 < 900000) Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 1000);
+	if (existsSync(destino) && statSync(destino).mtimeMs >= statSync(orig).mtimeMs) continue;
 	// Lado menor em 720, quadro-chave a cada 0,5 s (avançar e voltar no Studio fica instantâneo).
 	const filtro = "scale='if(gt(iw,ih),-2,720)':'if(gt(iw,ih),720,-2)'";
-	const comum = ['-hide_banner', '-loglevel', 'error', '-stats', '-y', '-i', orig, '-vf', filtro, '-g', '15', '-c:a', 'aac', '-b:a', '128k', '-movflags', '+faststart'];
+	const comum = ['-hide_banner', '-loglevel', 'error', '-stats', '-y', '-i', orig, '-vf', filtro, '-g', '15', '-bf', '0', '-c:a', 'aac', '-b:a', '128k', '-movflags', '+faststart'];
 	console.log(`Cópia leve: ${v}${nvenc ? ' (placa NVIDIA)' : ''}...`);
 	let r = nvenc ? spawnSync('ffmpeg', [...comum, '-c:v', 'h264_nvenc', '-preset', 'p4', '-cq', '26', temp], {stdio: 'inherit'}) : {status: 1};
 	if (r.status !== 0) r = spawnSync('ffmpeg', [...comum, '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '26', temp], {stdio: 'inherit'});

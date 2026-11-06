@@ -191,7 +191,7 @@ if (!existsSync(folha)) spawnSync('ffmpeg', ['-hide_banner', '-loglevel', 'error
 
 // 4. Áudio: pausa morta (> 0,6 s em silêncio) e estouro.
 andar('audio', 0, {}, true);
-const a = spawnSync('ffmpeg', ['-hide_banner', '-nostats', '-i', video, '-af', 'silencedetect=noise=-38dB:d=0.6,volumedetect', '-f', 'null', '-'], {encoding: 'utf8'}).stderr ?? '';
+const a = spawnSync('ffmpeg', ['-hide_banner', '-nostats', '-i', video, '-vn', '-af', 'silencedetect=noise=-38dB:d=0.6,volumedetect', '-f', 'null', '-'], {encoding: 'utf8'}).stderr ?? '';
 const pausas = [...a.matchAll(/silence_start: ([\d.]+)[\s\S]*?silence_duration: ([\d.]+)/g)].map((x) => [Number(x[1]), Number(x[2])]);
 // Cartão final sem fala não é pausa morta.
 const finalDe = m.cenas.find((c) => c.tipo === 'final')?.de ?? Infinity;

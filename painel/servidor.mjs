@@ -111,6 +111,7 @@ const salvarGit = (mensagem) => {
 // Sincronização com a nuvem (Preferências › Sincronizar, ligada por padrão): a cada 20 s envia os arquivos de projeto feitos
 // aqui (ajustes manuais, transcrições, edit.ts, biblioteca; mídia nunca vai) e puxa o que uma sessão do Claude na nuvem
 // enviou para a mesma branch. O player recompila sozinho com o que chegar.
+let cacheClaude = null;
 const sinc = {em: 0, recebidos: 0, enviados: 0, erro: null, painelMudou: false};
 const sincronizar = async () => {
 	if (!cfg.config().sincronizar || process.env.SEM_SALVAR || salvando) return;
@@ -123,17 +124,27 @@ const sincronizar = async () => {
 			await gitAsync('fetch', '-q', 'origin');
 			const atras = Number((await gitAsync('rev-list', '--count', 'HEAD..@{u}')).trim()) || 0;
 			if (atras) {
+				// Antes era pull --rebase: o rebase troca a pasta inteira pela versão da nuvem e depois reaplica os commits daqui,
+				// então arquivos sumiam por um instante (Studio, tsc e render quebravam) e, com conflito, isso se repetia a cada 20 s.
+				// Agora testa o merge sem tocar na pasta (merge-tree); com conflito, para e avisa; sem conflito, merge normal
+				// (só os arquivos que mudaram na nuvem são escritos).
+				const conflitos = await new Promise((ok) =>
+					execFile('git', ['merge-tree', '--write-tree', '--name-only', '--no-messages', 'HEAD', '@{u}'], {cwd: raiz, encoding: 'utf8', windowsHide: true}, (e, saida) =>
+						ok(e ? String(saida || '').trim().split('\n').slice(1).filter(Boolean) : null),
+					),
+				);
+				if (conflitos) throw Object.assign(new Error(`Conflito com a nuvem em: ${conflitos.slice(0, 6).join(', ') || 'arquivos do projeto'}. Peça ao Claude para juntar as duas versões (nada foi perdido).`), {conflito: true});
 				const mudou = (await gitAsync('diff', '--name-only', 'HEAD', '@{u}')).split('\n');
-				await gitAsync('pull', '-q', '--rebase', '--autostash');
+				await gitAsync('merge', '-q', '--no-edit', '@{u}');
 				if (mudou.some((f) => /^painel\/(?!web\/)|^package(-lock)?\.json$/.test(f))) sinc.painelMudou = true;
 			}
 			const frente = Number((await gitAsync('rev-list', '--count', '@{u}..HEAD')).trim()) || 0;
 			if (frente) await gitAsync('push', '-q');
 			Object.assign(sinc, {em: Date.now(), recebidos: sinc.recebidos + atras, enviados: sinc.enviados + frente, erro: null, ultimaRecebida: atras ? Date.now() : sinc.ultimaRecebida});
 		} catch (e) {
-			// Conflito no pull: desfaz o rebase e avisa (nada se perde: os commits daqui continuam no PC).
-			await gitAsync('rebase', '--abort').catch(() => {});
-			sinc.erro = String(e.stderr || e.message).trim().split('\n').slice(-3).join(' ').slice(0, 300);
+			// Merge que falhou no meio (ex.: arquivo não salvo que a nuvem também mudou): desfaz e avisa. Nada se perde.
+			if (!e.conflito) await gitAsync('merge', '--abort').catch(() => {});
+			sinc.erro = e.conflito ? e.message : String(e.stderr || e.message).trim().split('\n').slice(-3).join(' ').slice(0, 300);
 		}
 	})();
 	salvando = trava.then(() => '');
@@ -714,7 +725,13 @@ createServer(async (req, res) => {
 			let rel = '';
 			try { rel = decodeURIComponent(p.slice(8)); } catch { res.writeHead(400); return res.end(); }
 			// public/pack/<arquivo>: modelo do pack usado numa cena (ex.: celular3d), servido do pack deste PC.
-			const f = p.startsWith('/public/pack/') ? acharPack(rel.slice('pack/'.length)) : dentro(p.startsWith('/player/') ? player.pasta : path.join(raiz, 'public'), rel);
+			let f = p.startsWith('/public/pack/') ? acharPack(rel.slice('pack/'.length)) : dentro(p.startsWith('/player/') ? player.pasta : path.join(raiz, 'public'), rel);
+			// O player pede a cópia leve (_leve/<nome>.mp4); se ela ainda não existe, serve o original (mesmo nome, .mp4/.mov...).
+			if (f && /[\\/]_leve[\\/][^\\/]+\.mp4$/.test(f) && !existsSync(f)) {
+				const pasta = path.dirname(path.dirname(f)), base = path.basename(f, '.mp4');
+				const orig = existsSync(pasta) && readdirSync(pasta).find((n) => path.parse(n).name === base && /\.(mp4|mov|m4v|webm)$/i.test(n));
+				if (orig) f = path.join(pasta, orig);
+			}
 			if (!f) { res.writeHead(403); return res.end(); }
 			return arquivo(req, res, f);
 		}
@@ -906,6 +923,8 @@ createServer(async (req, res) => {
 				rmSync(tmp, {force: true});
 				throw e;
 			}
+			// Vídeo novo do projeto: já faz a cópia leve em segundo plano (Studio fluido e prévia 2x mais rápida desde a primeira).
+			if (tipo === 'midias' && /\.(mp4|mov|m4v|webm)$/i.test(nome)) spawn(process.execPath, [path.join(raiz, 'scripts/proxy.mjs'), proj], {cwd: raiz, stdio: 'ignore', windowsHide: true}).on('error', () => {});
 			return json(res, {ok: true, nome});
 		}
 		if (p === '/api/midia/apagar' && req.method === 'POST') {
@@ -931,6 +950,8 @@ createServer(async (req, res) => {
 			return json(res, {id});
 		}
 		if (p === '/api/claude') {
+			// Logado há menos de 2 min: devolve o mesmo (cada consulta abria 2 processos do claude, ~2 s no Windows).
+			if (cacheClaude && Date.now() - cacheClaude.em < 120000) return json(res, cacheClaude.r);
 			const instalado = await testar('claude', ['--version']);
 			if (!instalado) return json(res, {instalado, logado: false});
 			// Lê o status para mostrar qual conta está conectada (o e-mail, se o Claude informar).
@@ -943,7 +964,9 @@ createServer(async (req, res) => {
 				pr.on('close', (c) => fim({c, saida}));
 			});
 			const email = st.saida.match(/[\w.+-]+@[\w-]+(\.[\w-]+)+/)?.[0] ?? null;
-			return json(res, {instalado, logado: st.c === 0, email: st.c === 0 ? email : null});
+			const r = {instalado, logado: st.c === 0, email: st.c === 0 ? email : null};
+			cacheClaude = r.logado ? {em: Date.now(), r} : null;
+			return json(res, r);
 		}
 		if (p === '/api/claude/trocar' && req.method === 'POST') {
 			// Sai da conta atual e abre o login no navegador para entrar com outra.
@@ -952,6 +975,7 @@ createServer(async (req, res) => {
 			return json(res, {ok: true});
 		}
 		if (p === '/api/claude/instalar' && req.method === 'POST') {
+			cacheClaude = null;
 			const ok = await new Promise((fim) => {
 				const pr = rodar('npm', ['i', '-g', '@anthropic-ai/claude-code'], {stdio: 'ignore'});
 				pr.on('error', () => fim(false));
@@ -960,6 +984,7 @@ createServer(async (req, res) => {
 			return json(res, {ok, instalado: ok && (await testar('claude', ['--version']))});
 		}
 		if (p === '/api/claude/entrar' && req.method === 'POST') {
+			cacheClaude = null;
 			// Abre o login no navegador; o painel confere o status até terminar.
 			rodar('claude', ['auth', 'login'], {stdio: 'ignore', detached: true}).on('error', () => {}).unref();
 			return json(res, {ok: true});
@@ -1061,7 +1086,7 @@ createServer(async (req, res) => {
 			// Baixa a versão nova, reabre o arquivo de iniciar deste PC (que confere as dependências e abre o painel) e encerra este processo.
 			// O pull acontece antes, para o .bat não ser reescrito enquanto roda.
 			let saida = '';
-			try { saida = git('pull', '--rebase', '--autostash'); } catch (e) { saida = String(e.stderr || e.message).slice(-300); }
+			try { saida = git('pull', '--no-rebase', '--no-edit', '--autostash'); } catch (e) { saida = String(e.stderr || e.message).slice(-300); }
 			const [cmd, ...a] = ehWin ? ['cmd', '/c', 'start', '', 'Painel - Instalar e Abrir.bat'] : process.platform === 'darwin' ? ['open', 'Abrir Painel.command'] : ['bash', 'scripts/abrir-painel.sh'];
 			spawn(cmd, a, {cwd: raiz, stdio: 'ignore', detached: true}).on('error', () => {}).unref();
 			json(res, {ok: true, saida});
@@ -1075,7 +1100,7 @@ createServer(async (req, res) => {
 			setTimeout(() => process.exit(75), 300);
 			return;
 		}
-		if (p === '/api/sync/atualizar' && req.method === 'POST') return json(res, {saida: git('pull', '--rebase', '--autostash')});
+		if (p === '/api/sync/atualizar' && req.method === 'POST') return json(res, {saida: git('pull', '--no-rebase', '--no-edit', '--autostash')});
 		if (p === '/api/sync/salvar' && req.method === 'POST') {
 			const {mensagem} = await corpo(req);
 			return json(res, {saida: await salvarGit(mensagem)});

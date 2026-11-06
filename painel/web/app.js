@@ -2175,6 +2175,9 @@ function mostrarSinc(sc) {
 	const s = sc.em ? Math.round((Date.now() - sc.em) / 1000) : null;
 	b.querySelector('span').textContent = !ligado ? 'Nuvem desligada' : sc.erro ? 'Nuvem: erro' : s === null ? 'Nuvem...' : `Nuvem há ${s < 60 ? s + ' s' : Math.round(s / 60) + ' min'}`;
 	b.title = sc.erro ? `Não sincronizou: ${sc.erro}` : `Recebidas ${sc.recebidos} e enviadas ${sc.enviados} atualizações nesta sessão. Clique para sincronizar agora.`;
+	// Erro novo de sincronização (ex.: conflito com a nuvem) aparece uma vez como aviso, não só no tooltip.
+	if (sc.erro && sc.erro !== mostrarSinc.ultimoErro) aviso(`Nuvem não sincronizou: ${sc.erro}`, 'erro', {ms: 9000});
+	mostrarSinc.ultimoErro = sc.erro;
 	if (sc.painelMudou && !avisouPainel) { avisouPainel = true; aviso('Chegou uma atualização do próprio painel. Clique em Atualizar (topo) quando puder.', 'info', {ms: 8000}); }
 }
 $('#stNuvem').onclick = async () => { try { mostrarSinc(await api('/api/sinc', {})); aviso('Sincronizado com a nuvem.', 'ok', {ms: 1800}); } catch (e) { avisoErro(e, 'Não sincronizei'); } };

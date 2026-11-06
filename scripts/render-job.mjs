@@ -29,6 +29,7 @@ const res = Number(arg('res', '720'));
 const de = arg('de');
 const ate = arg('ate');
 const FPS = 30;
+let usarLeve = false;
 // Quadro JPEG preto 256x256 para testar o codificador da placa.
 const QUADRO_TESTE = '/9j/4AAQSkZJRgABAgAAAQABAAD//gAQTGF2YzYwLjMxLjEwMgD/2wBDAAg+Pkk+SVVVVVVVVWRdZGhoaGRkZGRoaGhwcHCDg4NwcHBoaHBwfHyDg4+Tj4eHg4eTk5ubm7q6srLZ2eD/////xABLAAEBAAAAAAAAAAAAAAAAAAAACAEBAAAAAAAAAAAAAAAAAAAAABABAAAAAAAAAAAAAAAAAAAAABEBAAAAAAAAAAAAAAAAAAAAAP/AABEIAQABAAMBIgACEQADEQD/2gAMAwEAAhEDEQA/AJ/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB//9k=';
 const ehWin = process.platform === 'win32';
@@ -78,7 +79,7 @@ const ligarPublico = (destino) => {
 		if (!existsSync(de)) return;
 		if (statSync(de).isDirectory()) {
 			for (const nome of readdirSync(de)) {
-				if (nome === 'referencias' || nome === '_leve' || nome.endsWith('.parte')) continue;
+				if (nome === 'referencias' || (nome === '_leve' && !usarLeve) || nome.endsWith('.parte')) continue;
 				if (rel === 'projetos' && !process.env.PUBLICO_INTEIRO && nome !== projeto) continue;
 				ligar(path.join(rel, nome));
 			}
@@ -138,7 +139,9 @@ if (!projeto || !/^[a-z0-9-]+$/.test(projeto)) falhar('Projeto inválido');
 if (![540, 720, 1080].includes(res)) falhar('Resolução da prévia: 540, 720 ou 1080');
 mkdirSync('out', {recursive: true});
 
-const temFfmpeg = spawnSync('ffmpeg', ['-version'], {shell: ehWin}).status === 0;
+const temFfmpeg = spawnSync('ffmpeg', ['-version'], {windowsHide: true}).status === 0;
+// tsx direto pelo node (sem npx nem shell): ~1 s a menos por chamada e sem o aviso DEP0190 poluindo os erros.
+const tsx = (args, o = {}) => spawnSync(process.execPath, [path.join(raiz, 'node_modules/tsx/dist/cli.mjs'), ...args], {cwd: raiz, encoding: 'utf8', windowsHide: true, ...o});
 const inicio = Date.now();
 // Tempo de cada etapa, para a linha de resumo no fim ({"tempos": {...}} e um aviso legível).
 const tempos = {};
@@ -203,7 +206,7 @@ try {
 	if (tipo === 'final') {
 		etapa('conferir');
 		emitir({fase: 'conferindo', pct: 0});
-		const r = spawnSync('npx', ['tsx', 'scripts/conferir.ts', projeto], {shell: ehWin, encoding: 'utf8'});
+		const r = tsx(['scripts/conferir.ts', projeto]);
 		if (r.status !== 0) falhar('O conferir achou erros. Corrija antes do render final:\n' + (r.stdout || r.stderr || '').slice(-400));
 	}
 
@@ -215,6 +218,23 @@ try {
 		emitir({fase: 'medindo as pausas do áudio', pct: 0});
 		const r = spawnSync(process.execPath, [path.join(raiz, 'scripts/silencios.mjs'), projeto], {encoding: 'utf8'});
 		if (r.status !== 0) emitir({aviso: 'Não consegui medir as pausas do áudio: os cortes ficam pelo tempo das palavras.'});
+	}
+
+	// Prévia em 540/720: usa a cópia leve 720p (scripts/proxy.mjs) em vez do original. Decodificar o vídeo 1440p/4K do celular
+	// era o gargalo (entrevista-3: 9 -> 21 q/s com a cópia). Faz/atualiza a cópia se faltar (~6 s com a NVIDIA para 2 min de vídeo).
+	// O final sempre usa o original. SEM_LEVE=1 desliga.
+	const nomeVideo = (readFileSync(path.join(raiz, 'src/projetos', projeto, 'edit.ts'), 'utf8').match(/^\s*video:\s*['"]([^'"/]+)['"]/m) ?? [])[1];
+	const arqOrig = nomeVideo && path.join(raiz, 'public/projetos', projeto, nomeVideo);
+	if (tipo !== 'final' && res <= 720 && !process.env.SEM_LEVE && temFfmpeg && arqOrig && existsSync(arqOrig)) {
+		const arqLeve = path.join(raiz, 'public/projetos', projeto, '_leve', nomeVideo.replace(/\.[^.]+$/, '.mp4'));
+		const emDia = () => existsSync(arqLeve) && statSync(arqLeve).mtimeMs >= statSync(arqOrig).mtimeMs;
+		if (!emDia()) {
+			etapa('copia leve');
+			emitir({fase: 'fazendo a cópia leve do vídeo (uma vez)', pct: 1});
+			spawnSync(process.execPath, [path.join(raiz, 'scripts/proxy.mjs'), projeto], {encoding: 'utf8', timeout: 900000});
+		}
+		usarLeve = emDia();
+		if (usarLeve) emitir({aviso: 'Prévia com a cópia leve do vídeo (720p): mais rápida; o final usa o original.'});
 	}
 
 	// 2. Empacotar o projeto (webpack), ou reaproveitar o bundle guardado do mesmo código.
@@ -265,7 +285,7 @@ try {
 	const browserExecutable = process.env.BROWSER || null;
 	const gl = ['angle', 'angle-egl', 'egl', 'swangle', 'swiftshader', 'vulkan'].includes(process.env.GL) ? process.env.GL : 'angle';
 	const chromiumOptions = {gl};
-	const inputProps = {projeto, duracaoFonte: 0};
+	const inputProps = {projeto, duracaoFonte: 0, ...(usarLeve ? {leve: true} : {})};
 	// Porta livre pedida ao sistema: com o Studio do painel escutando em 0.0.0.0:3000, o Remotion achava a 3000 livre
 	// (testa só 127.0.0.1) e o render abria a página do Studio ("not a valid Remotion project").
 	const port = await new Promise((ok) => {
@@ -387,13 +407,29 @@ try {
 			finalRel = finalRel.replace(/\.mp4$/, `-${new Date().toTimeString().slice(0, 5).replace(':', 'h')}.mp4`);
 			emitir({aviso: `O vídeo final anterior está aberto em outro programa; esta versão sai como ${finalRel}.`});
 		}
+		// Conferência de sincronia (padrão em todo final; SEM_SINCRONIA=1 desliga): transcreve o áudio do render com DTW e lista os
+		// pontos em que fala e efeitos/legenda podem estar mais de 0,6 s fora. Só avisa: a correção (sincronia.ts --aplicar ou ajuste
+		// à mão) vem depois de alguém ouvir o ponto, porque o Whisper sozinho às vezes erra a direção.
+		// Roda em paralelo com a mixagem, sobre o bruto (o tempo da fala é o mesmo do final): antes somava o tempo do Whisper ao final.
+		const sincronia = process.env.SEM_SINCRONIA
+			? null
+			: new Promise((ok) => {
+					let saida = '';
+					const pr = spawn(process.execPath, [path.join(raiz, 'node_modules/tsx/dist/cli.mjs'), 'scripts/sincronia.ts', projeto, '--video', temFfmpeg ? brutoRel : finalRel], {cwd: raiz, windowsHide: true});
+					const limite = setTimeout(() => pr.kill(), 300000);
+					pr.stdout.on('data', (d) => (saida += d));
+					pr.stderr.resume();
+					pr.on('error', () => ok({status: 1, saida}));
+					pr.on('close', (status) => (clearTimeout(limite), ok({status, saida})));
+				});
 		if (!temFfmpeg) {
 			renameSync(brutoRel, finalRel);
 			emitir({aviso: 'ffmpeg não encontrado: o áudio ficou sem a normalização de -14 LUFS.'});
 		} else {
 			etapa('mixar');
 			emitir({fase: 'mixando', pct: 91});
-			const medir = spawnSync('ffmpeg', ['-hide_banner', '-nostats', '-i', brutoRel, '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11:print_format=json', '-f', 'null', '-'], {shell: false, encoding: 'utf8'});
+			// -vn: só o áudio é medido (antes decodificava o vídeo 4K inteiro à toa nesta passada).
+			const medir = spawnSync('ffmpeg', ['-hide_banner', '-nostats', '-vn', '-i', brutoRel, '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11:print_format=json', '-f', 'null', '-'], {shell: false, encoding: 'utf8'});
 			const json = /\{[\s\S]*\}/.exec(medir.stderr ?? '')?.[0];
 			const m = json ? JSON.parse(json) : null;
 			emitir({fase: 'mixando', pct: 95});
@@ -405,19 +441,16 @@ try {
 				f.on('close', (c) => (c === 0 ? ok() : erro(new Error('ffmpeg falhou na mixagem'))));
 				f.on('error', erro);
 			});
-			rmSync(brutoRel, {force: true});
 		}
-		// Conferência de sincronia (padrão em todo final; SEM_SINCRONIA=1 desliga): transcreve o áudio do render com DTW e lista os
-		// pontos em que fala e efeitos/legenda podem estar mais de 0,6 s fora. Só avisa: a correção (sincronia.ts --aplicar ou ajuste
-		// à mão) vem depois de alguém ouvir o ponto, porque o Whisper sozinho às vezes erra a direção.
-		if (!process.env.SEM_SINCRONIA) {
+		if (sincronia) {
 			etapa('sincronia');
 			emitir({fase: 'conferindo a sincronia da fala', pct: 98});
-			const s = spawnSync('npx', ['tsx', 'scripts/sincronia.ts', projeto, '--video', finalRel], {cwd: raiz, shell: true, encoding: 'utf8', timeout: 300000});
-			const linhas = (s.stdout ?? '').trim().split('\n').filter(Boolean);
+			const s = await sincronia;
+			const linhas = s.saida.trim().split('\n').filter(Boolean);
 			if (s.status === 0 && linhas.length) emitir({aviso: `Sincronia: ${linhas.slice(0, 12).join('\n')}`});
 			else emitir({aviso: 'Não consegui conferir a sincronia da fala (scripts/sincronia.ts).'});
 		}
+		if (temFfmpeg) rmSync(brutoRel, {force: true});
 		// Com o Drive vinculado (scripts/drive.mjs config), o vídeo final também vai para a pasta do Drive.
 		if (existsSync(path.join(raiz, '.painel/drive.json'))) {
 			etapa('drive');
