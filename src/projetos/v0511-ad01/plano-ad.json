@@ -1,6 +1,50 @@
-{"split":[{"de":0.1,"ate":6.9,"video":".painel/vanessa/ref/ref-0411-0511.mp4","inicio":2}],
- "fotos":[{"de":9.8,"ate":12.2,"img":".painel/vanessa/ref/klickpin-labios.jpg","modo":"topo"},
-  {"de":12.6,"ate":16.0,"img":".painel/vanessa/ref/ref-0411-0511.mp4@15","modo":"topo"},
-  {"de":17.4,"ate":20.9,"img":".painel/vanessa/ref/ref-0411-0511.mp4@24.5","modo":"topo"}],
- "produto":[{"de":99.4,"ate":105.9},{"de":127.6,"ate":131.9}],
- "headline":null,"legenda":"meio"}
+{
+ "split": [
+  {
+   "de": 0.1,
+   "ate": 3.8,
+   "video": ".painel/vanessa/ref/ref-0411-0511.mp4",
+   "inicio": 0,
+   "len": 1.5
+  },
+  {
+   "de": 3.8,
+   "ate": 9.7,
+   "video": ".painel/vanessa/ref/ref-0411-0511.mp4",
+   "inicio": 2,
+   "len": 4
+  }
+ ],
+ "fotos": [
+  {
+   "de": 9.7,
+   "ate": 12.1,
+   "img": ".painel/vanessa/ref/klickpin-labios.jpg",
+   "modo": "topo"
+  },
+  {
+   "de": 12.1,
+   "ate": 16.3,
+   "img": ".painel/vanessa/ref/ref-0411-0511.mp4@24.5",
+   "modo": "topo"
+  },
+  {
+   "de": 17.4,
+   "ate": 24.4,
+   "img": ".painel/vanessa/ref/ref-0411-0511.mp4@27",
+   "modo": "topo"
+  }
+ ],
+ "produto": [
+  {
+   "de": 99.4,
+   "ate": 105.9
+  },
+  {
+   "de": 127.6,
+   "ate": 131.9
+  }
+ ],
+ "headline": null,
+ "legenda": "meio"
+}
