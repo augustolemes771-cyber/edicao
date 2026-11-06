@@ -2,6 +2,9 @@
 //   {"fase":"empacotando"|"renderizando"|"mixando", "pct":0..100, "quadros":n, "total":n, "eta":segundos}
 //   {"fim":true, "saida":"out/..."}  ou  {"erro":"mensagem"}
 // Uso: node scripts/render-job.mjs --projeto P --tipo previa|final [--res 540|720|1080] [--de SEG] [--ate SEG]
+//      node scripts/render-job.mjs --projeto P --tipo still --em SEG|--quadro N [--escala 0.4] [--saida out/x.jpg]
+//      (npm run still -- P --em 12.5): um quadro com o bundle em cache e só as mídias do projeto (o `npx remotion still`
+//      copiava a public inteira, ~9 GB, para o temporário a cada still).
 // Variável BROWSER: caminho de um Chrome/headless_shell (na nuvem, onde o Remotion não baixa o dele).
 // Variável GL: renderizador WebGL do Chrome (padrão 'angle'; no pod Linux com placa NVIDIA, 'angle-egl' ou 'egl').
 // Variável HW=0: não tenta o codificador da placa de vídeo.
@@ -12,7 +15,7 @@ import net from 'node:net';
 import os from 'node:os';
 import path from 'node:path';
 import {bundle} from '@remotion/bundler';
-import {RenderInternals, renderMedia, selectComposition} from '@remotion/renderer';
+import {RenderInternals, renderMedia, renderStill, selectComposition} from '@remotion/renderer';
 import {preferirGpuForte} from './gpu-forte.mjs';
 
 const raiz = path.resolve(import.meta.dirname, '..');
@@ -223,9 +226,13 @@ try {
 	// Prévia em 540/720: usa a cópia leve 720p (scripts/proxy.mjs) em vez do original. Decodificar o vídeo 1440p/4K do celular
 	// era o gargalo (entrevista-3: 9 -> 21 q/s com a cópia). Faz/atualiza a cópia se faltar (~6 s com a NVIDIA para 2 min de vídeo).
 	// O final sempre usa o original. SEM_LEVE=1 desliga.
-	const nomeVideo = (readFileSync(path.join(raiz, 'src/projetos', projeto, 'edit.ts'), 'utf8').match(/^\s*video:\s*['"]([^'"/]+)['"]/m) ?? [])[1];
+	const textoEdit = existsSync(path.join(raiz, 'src/projetos', projeto, 'edit.ts')) ? readFileSync(path.join(raiz, 'src/projetos', projeto, 'edit.ts'), 'utf8') : '';
+	const nomeVideo = (textoEdit.match(/^\s*video:\s*['"]([^'"/]+)['"]/m) ?? [])[1];
 	const arqOrig = nomeVideo && path.join(raiz, 'public/projetos', projeto, nomeVideo);
-	if (tipo !== 'final' && res <= 720 && !process.env.SEM_LEVE && temFfmpeg && arqOrig && existsSync(arqOrig)) {
+	if (tipo === 'still') {
+		const arqLeve = arqOrig && path.join(raiz, 'public/projetos', projeto, '_leve', nomeVideo.replace(/\.[^.]+$/, '.mp4'));
+		usarLeve = !process.env.SEM_LEVE && Number(arg('escala', '0.4')) <= 0.67 && !!arqLeve && existsSync(arqLeve) && existsSync(arqOrig) && statSync(arqLeve).mtimeMs >= statSync(arqOrig).mtimeMs;
+	} else if (tipo !== 'final' && res <= 720 && !process.env.SEM_LEVE && temFfmpeg && arqOrig && existsSync(arqOrig)) {
 		const arqLeve = path.join(raiz, 'public/projetos', projeto, '_leve', nomeVideo.replace(/\.[^.]+$/, '.mp4'));
 		const emDia = () => existsSync(arqLeve) && statSync(arqLeve).mtimeMs >= statSync(arqOrig).mtimeMs;
 		if (!emDia()) {
@@ -306,6 +313,17 @@ try {
 		if (!(fim >= ini)) falhar('Trecho inválido (--de / --ate)');
 		frameRange = [ini, fim];
 		sufixo = `-${de ?? 0}s-${ate ?? 'fim'}s`;
+	}
+	if (tipo === 'still') {
+		const q = arg('quadro') != null ? Number(arg('quadro')) : Math.round(Number(arg('em', '0')) * FPS);
+		const quadro = Math.max(0, Math.min(composition.durationInFrames - 1, Number.isFinite(q) ? q : 0));
+		const saida = arg('saida', `out/still-${projeto}.jpg`);
+		etapa('still');
+		await renderStill({serveUrl, composition, inputProps, port, frame: quadro, output: path.join(raiz, saida), imageFormat: 'jpeg', jpegQuality: 90, scale: Number(arg('escala', '0.4')) || 0.4, browserExecutable, chromiumOptions, timeoutInMilliseconds: 60000, overwrite: true});
+		resumoTempos();
+		emitir({fim: true, saida, quadro});
+		limparBundle();
+		process.exit(0);
 	}
 	const nQuadros = frameRange ? frameRange[1] - frameRange[0] + 1 : composition.durationInFrames;
 	let brutoRel = tipo === 'final' ? `out/${projeto}-bruto.mp4` : `out/${projeto}-preview${sufixo}.mp4`;

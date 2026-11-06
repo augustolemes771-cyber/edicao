@@ -4,7 +4,8 @@
 import {execFileSync} from 'node:child_process';
 import {existsSync, mkdirSync, rmSync, writeFileSync} from 'node:fs';
 import path from 'node:path';
-import {bundle} from '@remotion/bundler';
+// @ts-expect-error módulo .mjs sem tipos
+import {empacotarLeve} from './publico.mjs';
 import {openBrowser, renderStill, selectComposition} from '@remotion/renderer';
 import {formatar, montar} from '../src/motor/plano';
 import {projetos} from '../src/projetos';
@@ -62,7 +63,7 @@ rmSync(saida, {recursive: true, force: true});
 mkdirSync(saida, {recursive: true});
 
 console.log(`Prévias de ${nome}: ${escolhidos.length} imagens (${m.cenas.length} cenas, ${formatar(m.duracaoEditada)})`);
-const serveUrl = await bundle({entryPoint: path.join(raiz, 'src/index.ts')});
+const {serveUrl} = await empacotarLeve(raiz, nome);
 const browserExecutable = process.env.BROWSER || null;
 const gl = ['angle', 'angle-egl', 'egl', 'swangle', 'swiftshader', 'vulkan'].includes(process.env.GL ?? '') ? (process.env.GL as 'angle') : 'angle';
 const chromiumOptions = {gl};

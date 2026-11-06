@@ -84,7 +84,7 @@ export const textoPrefs = (p) => {
 	const legenda = p.legendaPadrao === 'auto' ? IA_DECIDE : p.legendaPadrao;
 	const amostras = p.amostras
 		? `- AMOSTRAS LIGADAS: em cada decisão de estilo que mude o resultado (abertura/gancho, tipografia, paleta, legenda, efeito principal, transições), ANTES de aplicar,
-  gere 2 ou 3 opções como imagens estáticas do mesmo momento (ex.: npx remotion still <projeto> out/amostra-<projeto>-a.jpg --frame=<quadro> --scale=0.5,
+  gere 2 ou 3 opções como imagens estáticas do mesmo momento (ex.: npm run still -- <projeto> --quadro <quadro> --escala 0.5 --saida out/amostra-<projeto>-a.jpg,
   uma variação por vez no edit.ts) e mostre cada uma numa linha própria exatamente assim: [[amostra:A|out/amostra-<projeto>-a.jpg|descrição curta da opção]].
   Depois PARE e espere o usuário escolher. Volte o edit.ts para a opção escolhida.`
 		: '- Amostras desligadas: decida sozinho e siga até a prévia, sem parar para perguntar o que dá para decidir (a não ser o plano do modo participativo, se estiver ligado).';
@@ -95,7 +95,7 @@ export const textoPrefs = (p) => {
   render) até o usuário dizer que está pronto. Logo depois de preparar o vídeo, rode \`node scripts/proxy.mjs <projeto>\` (cópia leve para o
   Studio; pode rodar em segundo plano). A cada mudança no edit.ts: rode a análise de qualidade sem render
   (\`npx tsx scripts/qualidade.ts <projeto>\`, ou com --de/--ate do trecho mexido) e corrija os ✗ e os ⚠ que dá para resolver; se criou um
-  efeito NOVO, confira com no máximo 1 still leve daquele momento (npx remotion still <projeto> out/still-<projeto>.jpg --frame=<quadro> --scale=0.4)
+  efeito NOVO, confira com no máximo 1 still leve daquele momento (npm run still -- <projeto> --quadro <quadro>, sai em out/still-<projeto>.jpg; nunca npx remotion still, que copia 9 GB)
   e leia a imagem. Termine dizendo em até 3 linhas o que mudou e onde (min:seg), e escreva numa linha própria exatamente [[studio:<segundo>]]
   (o segundo do primeiro trecho mudado) para o painel mostrar o botão de abrir no Studio. Quando o usuário disser "pronto"/"pode renderizar",
   aplique as pendências e rode o render final (o painel tem o botão; ou npm run final se ele pedir), no pod se estiver ligado.

@@ -35,7 +35,7 @@ estão em `docs/referencias/desmontagem.md`.
    `b.say('em menos')` ou o segundo argumento.
 6. **Conferir:** `npm run conferir -- <nome>`: 0 erro de âncora, 0 impacto depois de t2, curva dentro da faixa
    (no horizontal), fundos ~70% grade e ~20% verde.
-7. **Olhar:** renderizar stills (`npx remotion still <nome> out/x.jpg --frame=N --scale=0.5`) dos momentos de
+7. **Olhar:** renderizar stills (`npm run still -- <nome> --quadro N --escala 0.5 --saida out/x.jpg`, ou `--em <segundo>`) dos momentos de
    cada cena. Auditar: nada cortado na borda, nada sobre o rosto, nada adiantado à fala, tela gravada livre.
 8. **Prévia:** `npm run preview -- <nome>` e enviar `out/<nome>-preview.mp4` para aprovação.
 9. **Final:** `npm run render -- <nome>` só depois da aprovação. Sai em 4K, 50 Mbps, -14 LUFS e -1,5 dBTP.
@@ -137,8 +137,9 @@ e deixe o pedido em `docs/agentes/NOTAS.md`. Conferir `duracaoEditada <= duraç�
 
 - A tela vertical mostra ~5,1 unidades de largura no plano do texto 3D (câmera fov 35, z 14,5): `Linha3D` com `largura` ≤ 4,4.
   Texto 3D nunca no caminho de objeto 3D que sobe ou cai (caixa, troféu): conferir no quadro final da animação.
-- `remotion still` copia a `public` inteira (~8 GB) para o temporário e não apaga: um still por vez e apagar a pasta
-  `remotion-webpack-bundle-*` depois. Para conferir um render pronto, tirar quadros do mp4 com o ffmpeg (1 s, sem bundle).
+- Still: sempre `npm run still -- <projeto> --quadro N` (ou `--em <segundo>`; `--escala`, `--saida`): usa o bundle em cache e só as
+  mídias do projeto (~10 s). O `npx remotion still` copia a `public` inteira (~9 GB) para o temporário e não apaga: não usar.
+  Para conferir um render pronto, tirar quadros do mp4 com o ffmpeg (1 s, sem bundle).
 - Peça nova de projeto (`src/projetos/<p>/pecas.tsx`) só aparece depois de entrar em `src/pecas/registro.ts`.
 
 ## Player do painel (02/11/2026)

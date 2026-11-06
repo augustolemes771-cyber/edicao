@@ -4,7 +4,8 @@
 import {execFileSync} from 'node:child_process';
 import {mkdirSync, rmSync} from 'node:fs';
 import path from 'node:path';
-import {bundle} from '@remotion/bundler';
+// @ts-expect-error módulo .mjs sem tipos
+import {empacotarLeve} from './publico.mjs';
 import {renderStill, selectComposition} from '@remotion/renderer';
 
 const args = process.argv.slice(2);
@@ -14,7 +15,7 @@ const escala = Number(args[args.indexOf('--escala') + 1]) || 0.3;
 const pasta = path.join('out', 'conferir', `${nome}-momentos`);
 rmSync(pasta, {recursive: true, force: true});
 mkdirSync(pasta, {recursive: true});
-const serveUrl = await bundle({entryPoint: path.resolve('src/index.ts')});
+const {serveUrl} = await empacotarLeve(path.resolve('.'), nome);
 const composition = await selectComposition({serveUrl, id: nome});
 for (const [i, s] of segundos.entries()) {
 	const frame = Math.min(composition.durationInFrames - 1, Math.round(s * composition.fps));

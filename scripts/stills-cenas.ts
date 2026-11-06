@@ -5,7 +5,8 @@
 import {execFileSync} from 'node:child_process';
 import {mkdirSync, rmSync} from 'node:fs';
 import path from 'node:path';
-import {bundle} from '@remotion/bundler';
+// @ts-expect-error módulo .mjs sem tipos
+import {empacotarLeve} from './publico.mjs';
 import {renderStill, selectComposition} from '@remotion/renderer';
 import {montar} from '../src/motor/plano';
 import {projetos} from '../src/projetos';
@@ -25,7 +26,7 @@ const alvo = m.cenas.filter((c) => todas || c.tipo === 'peca' || ['numero3d', 'f
 const pasta = path.join('out', 'conferir', fim ? `${nome}-fim` : nome);
 rmSync(pasta, {recursive: true, force: true});
 mkdirSync(pasta, {recursive: true});
-const serveUrl = await bundle({entryPoint: path.resolve('src/index.ts')});
+const {serveUrl} = await empacotarLeve(path.resolve('.'), nome);
 const composition = await selectComposition({serveUrl, id: nome});
 const fotos: string[] = [];
 for (const [i, c] of alvo.entries()) {

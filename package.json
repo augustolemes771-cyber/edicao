@@ -25,7 +25,8 @@
     "qualidade": "tsx scripts/qualidade.ts",
     "bloco": "tsx scripts/bloco.ts",
     "auditar": "node scripts/auditar.mjs",
-    "analisar-referencia": "node scripts/analisar-referencia.mjs"
+    "analisar-referencia": "node scripts/analisar-referencia.mjs",
+    "still": "node scripts/render-job.mjs --tipo still"
   },
   "dependencies": {
     "@react-three/fiber": "9.2.0",
