@@ -127,8 +127,9 @@ hl = plano.get('headline')
 if hl and hl.get('texto'):
     a, b = editado(hl.get('de', 0)), editado(hl.get('ate', 5))
     # Caixinha de pergunta (sticker do TikTok/Instagram): faixa de cima colorida e caixa branca com a pergunta em preto.
-    ev.append(f'Dialogue: 2,{ts(a)},{ts(b)},CaixaTopo,,0,0,0,,{{\\pos(540,330)}}Faça uma pergunta')
-    ev.append(f'Dialogue: 2,{ts(a)},{ts(b)},Caixa,,0,0,0,,{{\\pos(540,440)}}{hl["texto"]}')
+    yh = hl.get('y', 330)
+    ev.append(f'Dialogue: 2,{ts(a)},{ts(b)},CaixaTopo,,0,0,0,,{{\\pos(540,{yh})}}Faça uma pergunta')
+    ev.append(f'Dialogue: 2,{ts(a)},{ts(b)},Caixa,,0,0,0,,{{\\pos(540,{yh + 110})}}{hl["texto"]}')
 ass = f"""[Script Info]
 ScriptType: v4.00+
 PlayResX: 1080
@@ -137,7 +138,7 @@ WrapStyle: 0
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Leg,Arial Black,72,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,3,14,0,5,60,60,0,1
+Style: Leg,Arial Black,{72 if plano.get('estiloLegenda') != 'contorno' else 66},&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,{3 if plano.get('estiloLegenda') != 'contorno' else 1},{14 if plano.get('estiloLegenda') != 'contorno' else 7},0,5,60,60,0,1
 Style: Seta,Arial,10,&H00168CFF,&H00168CFF,&H00FFFFFF,&H00000000,0,0,0,0,100,100,0,0,1,5,0,7,0,0,0,1
 Style: Caixa,Arial,58,&H00111111,&H00111111,&H00FFFFFF,&H00000000,-1,0,0,0,100,100,0,0,3,34,0,5,90,90,0,1
 Style: CaixaTopo,Arial,40,&H00FFFFFF,&H00FFFFFF,&H00573DF0,&H00000000,-1,0,0,0,100,100,0,0,3,26,0,5,90,90,0,1
@@ -160,9 +161,9 @@ os.makedirs('out/ass/img', exist_ok=True)
 # Caixa da foto dentro do quadro da referência (576x1024), medida nos quadros: a foto é uma sobreposição pequena.
 # (arquivo, segundo) mais próximo ganha; sem entrada = quadro todo.
 CAIXAS = {
-    'fotos-1793746004942': {7: (314, 250, 128, 38), 10: (278, 362, 250, 48), 20: (285, 246, 51, 80), 21: (285, 246, 51, 80)},
-    'ref-0411-0511': {15: (336, 224, 118, 656), 24.5: (336, 224, 118, 656)},
-    'fotos-comprasdamariii': {2: (304, 272, 16, 304), 4: (304, 272, 16, 304), 11: (304, 272, 16, 304)},
+    'fotos-1793746004942': {7: (314, 250, 128, 38), 10: (278, 362, 250, 48), 20.75: (284, 222, 146, 81), 21.75: (319, 165, 257, 81)},
+    'ref-0411-0511': {24.5: (327, 185, 154, 666), 27: (328, 200, 115, 666)},
+    'fotos-comprasdamariii': {1: (434, 192, 19, 316), 4: (308, 154, 96, 262), 11.5: (293, 288, 104, 312)},
     'dicasdoshop1': {12.5: (352, 176, 64, 640)},
 }
 # Vídeo de referência que já é tela dividida: só a metade de cima dele vai para o nosso topo.
@@ -171,12 +172,12 @@ def caixa(v, s):
     c = CAIXAS.get(os.path.splitext(os.path.basename(v))[0])
     if not c: return None
     return c[min(c, key=lambda k: abs(k - float(s)))]
-def quadro(spec):
+def quadro(spec, crop=None):
     png = f'out/ass/img/{proj}-{len(camadas)}.png'
     if '@' in spec:
         v, s = spec.rsplit('@', 1)
         cx = caixa(v, s)
-        vf = (f'crop={cx[0]}:{cx[1]}:{cx[2]}:{cx[3]},' if cx else '')
+        vf = f'crop={crop},' if crop else (f'crop={cx[0]}:{cx[1]}:{cx[2]}:{cx[3]},' if cx else '')
         subprocess.run(['ffmpeg', '-v', 'error', '-y', '-ss', s, '-i', v, '-frames:v', '1', '-vf', vf + 'scale=1080:960:force_original_aspect_ratio=decrease,pad=1080:960:(ow-iw)/2:(oh-ih)/2:white', png])
     else:
         subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', spec, '-frames:v', '1', '-vf', 'scale=1080:960:force_original_aspect_ratio=decrease,pad=1080:960:(ow-iw)/2:(oh-ih)/2:white', png])
@@ -188,23 +189,26 @@ if plano.get('produto') and not os.path.exists(prod_png):
                     '-frames:v', '1', prod_png])
 itens = []
 for s_ in plano.get('split', []):
-    itens.append(('video', s_['video'], s_['de'], s_['ate'], 'topo', s_.get('inicio', 0), s_.get('loop', False)))
+    itens.append(('video', s_['video'], s_['de'], s_['ate'], 'topo', s_.get('inicio', 0), s_.get('loop', False), s_.get('crop'), s_.get('len')))
 for f_ in plano.get('fotos', []):
-    itens.append(('img', f_['img'], f_['de'], f_['ate'], f_.get('modo', 'topo'), 0, False))
+    itens.append(('img', f_['img'], f_['de'], f_['ate'], f_.get('modo', 'topo'), 0, False, f_.get('crop'), None))
 for p_ in plano.get('produto', []):
-    itens.append(('img', prod_png, p_['de'], p_['ate'], 'topo', 0, False))
+    itens.append(('img', prod_png, p_['de'], p_['ate'], 'topo', 0, False, None, None))
 # Ordem: split por baixo, fotos e produto por cima.
-for tipo, arq, de, ate, modo, ini, loop in itens:
+for tipo, arq, de, ate, modo, ini, loop, crop, ln in itens:
     a, b = editado(max(0, de)), editado(min(dur, ate))
     if b - a < 0.1: continue
     n = len(camadas) + 1
     W_, H_ = (1080, 960) if modo == 'topo' else (1080, 1920)
     if tipo == 'img':
-        entradas += ['-loop', '1', '-t', f'{b - a + 0.1:.2f}', '-i', quadro(arq)]
+        entradas += ['-loop', '1', '-t', f'{b - a + 0.1:.2f}', '-i', quadro(arq, crop)]
     else:
-        entradas += (['-stream_loop', '-1'] if loop else []) + ['-ss', str(ini), '-t', f'{b - a + 0.1:.2f}', '-i', arq]
+        entradas += (['-stream_loop', '-1'] if loop else []) + ['-ss', str(ini), '-t', f'{(ln if ln else b - a) + 0.1:.2f}', '-i', arq]
     tr = TOPO_REF.get(os.path.splitext(os.path.basename(arq))[0]) if tipo == 'video' else None
-    camadas.append((n, a, b, W_, H_, f'crop={tr[0]}:{tr[1]}:{tr[2]}:{tr[3]},' if tr else ''))
+    cr = f'crop={crop},' if (crop and tipo == 'video') else (f'crop={tr[0]}:{tr[1]}:{tr[2]}:{tr[3]},' if tr else '')
+    # Trecho curto da referência (len) repetido até cobrir o intervalo.
+    if tipo == 'video' and ln: cr = f'fps=30,loop=loop=-1:size={int(ln * 30)}:start=0,' + cr
+    camadas.append((n, a, b, W_, H_, cr))
     if modo == 'topo': topo.append((a, b))
 graf = [f"[0:v]select='{sel}',setpts=N/FRAME_RATE/TB,scale=1080:1920,format=yuv420p[base0]"]
 ult = 'base0'
