@@ -96,6 +96,7 @@ const Base: React.FC<{edit: Edit; montagem: Montagem; pessoa?: boolean}> = ({edi
 						{/* OffthreadVideo extrai os quadros com o ffmpeg: o Video do @remotion/media travava no Windows. */}
 						<OffthreadVideo
 							src={fonte}
+							toneMapped={false}
 							trimBefore={Math.round(ini * fps)}
 							style={{width: '100%', height: '100%', objectFit: 'cover'}}
 						/>
