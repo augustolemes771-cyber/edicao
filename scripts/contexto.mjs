@@ -6,6 +6,7 @@ import path from 'node:path';
 import {criarConfig, textoPrefs} from '../painel/config.mjs';
 import {lerJson} from '../painel/comum.mjs';
 import {criarPendencias, textoPendencias} from '../painel/pendencias.mjs';
+import {textoCapacidade} from './capacidade.mjs';
 
 const raiz = path.resolve(import.meta.dirname, '..');
 const estado = path.join(raiz, '.painel');
@@ -17,6 +18,7 @@ const linhas = [`Contexto do painel${projeto ? ` para "${projeto}"` : ''} (o usu
 linhas.push(`- Tema: ${tema}. Siga as regras de biblioteca/temas/${tema}/aprendizado.md e registre lá as lições novas ("- AAAA-MM-DD (projeto): lição").`);
 if (projeto && !existsSync(path.join(raiz, 'src/projetos', projeto))) linhas.push(`- O projeto "${projeto}" ainda não existe: crie com npm run novo e coloque-o em "projetos" de biblioteca/temas/${tema}/tema.json.`);
 linhas.push(textoPrefs(criarConfig(raiz, estado).prefs()));
+linhas.push(textoCapacidade());
 if (projeto) {
 	const abertas = criarPendencias(estado).abertas(projeto);
 	linhas.push(abertas.length ? `PENDÊNCIAS deixadas no painel (aplique antes de qualquer render e marque: node scripts/pendencias.mjs ${projeto} feito <id> ...):\n${textoPendencias(abertas)}` : '- Sem pendências abertas no painel.');

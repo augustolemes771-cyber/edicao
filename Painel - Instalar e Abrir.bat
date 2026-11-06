@@ -25,7 +25,7 @@ if not exist "%PASTA%\.git" (
 if not exist "%PASTA%\.git" goto falha
 cd /d "%PASTA%"
 git checkout claude/upbeat-pascal-lv0g2w
-git pull --rebase --autostash
+git pull --ff-only --autostash
 powershell -NoProfile -Command "$s=(New-Object -ComObject WScript.Shell).CreateShortcut([Environment]::GetFolderPath('Desktop')+'\Painel de Edicao.lnk'); $s.TargetPath='%PASTA%\Painel - Instalar e Abrir.bat'; $s.WorkingDirectory='%PASTA%'; $s.Save()" >nul 2>&1
 if not exist node_modules (
   echo Primeira vez: instalando, pode demorar alguns minutos...

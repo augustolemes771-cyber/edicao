@@ -95,7 +95,7 @@ export const textoPrefs = (p) => {
   render) até o usuário dizer que está pronto. Logo depois de preparar o vídeo, rode \`node scripts/proxy.mjs <projeto>\` (cópia leve para o
   Studio; pode rodar em segundo plano). A cada mudança no edit.ts: rode a análise de qualidade sem render
   (\`npx tsx scripts/qualidade.ts <projeto>\`, ou com --de/--ate do trecho mexido) e corrija os ✗ e os ⚠ que dá para resolver; se criou um
-  efeito NOVO, confira com no máximo 1 still leve daquele momento (npm run still -- <projeto> --quadro <quadro>, sai em out/still-<projeto>.jpg; nunca npx remotion still, que copia 9 GB)
+  efeito NOVO, confira com no máximo 1 still leve daquele momento (npm run still -- <projeto> --quadro <quadro>, sai em out/still-<projeto>-<quadro>.jpg; nunca npx remotion still, que copia 9 GB)
   e leia a imagem. Termine dizendo em até 3 linhas o que mudou e onde (min:seg), e escreva numa linha própria exatamente [[studio:<segundo>]]
   (o segundo do primeiro trecho mudado) para o painel mostrar o botão de abrir no Studio. Quando o usuário disser "pronto"/"pode renderizar",
   aplique as pendências e rode o render final (o painel tem o botão; ou npm run final se ele pedir), no pod se estiver ligado.

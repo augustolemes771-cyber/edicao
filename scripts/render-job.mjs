@@ -317,7 +317,7 @@ try {
 	if (tipo === 'still') {
 		const q = arg('quadro') != null ? Number(arg('quadro')) : Math.round(Number(arg('em', '0')) * FPS);
 		const quadro = Math.max(0, Math.min(composition.durationInFrames - 1, Number.isFinite(q) ? q : 0));
-		const saida = arg('saida', `out/still-${projeto}.jpg`);
+		const saida = arg('saida', `out/still-${projeto}-${quadro}.jpg`);
 		etapa('still');
 		await renderStill({serveUrl, composition, inputProps, port, frame: quadro, output: path.join(raiz, saida), imageFormat: 'jpeg', jpegQuality: 90, scale: Number(arg('escala', '0.4')) || 0.4, browserExecutable, chromiumOptions, timeoutInMilliseconds: 60000, overwrite: true});
 		resumoTempos();
@@ -353,7 +353,9 @@ try {
 		imageFormat: 'jpeg',
 		jpegQuality: 95,
 		// CONC (o pod passa o nº de núcleos): usa todos, não só metade como o padrão do Remotion.
-		concurrency: Number(process.env.CONC) > 0 ? Number(process.env.CONC) : null,
+		// Prévia fora do pod: 4 abas. Medido aqui (i5 12 threads + RTX 3050): 4 abas = 21,2 q/s, 6 (padrão) = 21,5, 10 = 20,0;
+		// com 4 sobra CPU e memória para o Studio e o resto do PC. O final fica no padrão (4 abas eram 4% mais lentas no 4K).
+		concurrency: Number(process.env.CONC) > 0 ? Number(process.env.CONC) : tipo === 'final' ? null : Math.min(4, os.cpus().length),
 		...(Number(process.env.CONC) > 0 ? {offthreadVideoCacheSizeInBytes: Math.floor(os.totalmem() * 0.4), offthreadVideoThreads: Number(process.env.CONC)} : {}),
 		// Vídeo 4K do iPhone (~1 GB): buscar um quadro com várias threads passava dos 28 s padrão e o final caía (depoimento-2).
 		timeoutInMilliseconds: tipo === 'final' ? 120000 : 60000,
