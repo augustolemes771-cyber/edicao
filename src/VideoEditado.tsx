@@ -33,6 +33,8 @@ const useFonteStudio = (pasta: string, video?: string) => {
 	if (video.includes('/')) return staticFile(`${pasta}/${video}`);
 	// O render-job só manda {leve: true} depois de conferir que a cópia existe e está em dia (o bundle não lista a public).
 	if (leveNoRender) return staticFile(`${pasta}/_leve/${video.replace(/\.[^.]+$/, '.mp4')}`);
+	// Player do painel: pede a cópia leve; o servidor do painel devolve o original enquanto ela não existe.
+	if (getRemotionEnvironment().isPlayer && !isRendering) return staticFile(`${pasta}/_leve/${video.replace(/\.[^.]+$/, '.mp4')}`);
 	if (!isStudio || isRendering) return staticFile(`${pasta}/${video}`);
 	const arquivos = getStaticFiles();
 	const versao = (nome: string) => {
