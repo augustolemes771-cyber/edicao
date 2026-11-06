@@ -1,6 +1,7 @@
 import React, {useMemo} from 'react';
 import {
 	AbsoluteFill,
+	getInputProps,
 	getRemotionEnvironment,
 	getStaticFiles,
 	interpolate,
@@ -22,12 +23,14 @@ export type PropsVideo = {projeto: string; duracaoFonte: number};
 
 const VOLUME_SFX = dbParaGanho(-15);
 
-// Studio: assiste com a cópia leve (720p, scripts/proxy.mjs) quando ela existe; o render sempre usa o original.
+// Studio: assiste com a cópia leve (720p, scripts/proxy.mjs) quando ela existe. O render final usa o original; a prévia
+// em 540/720 recebe {leve: true} (render-job) e também usa a cópia leve: decodificar o original 1440p/4K era o gargalo.
 // A URL leva a data do arquivo (?v=): vídeo ou cópia leve refeitos não ficam presos no cache do navegador.
 const useFonteStudio = (pasta: string, video?: string) => {
 	const {isStudio, isRendering} = getRemotionEnvironment();
 	if (!video) return '';
-	if (!isStudio || isRendering || video.includes('/')) return staticFile(`${pasta}/${video}`);
+	const leveNoRender = isRendering && (getInputProps() as {leve?: boolean}).leve === true;
+	if ((!isStudio && !leveNoRender) || (isRendering && !leveNoRender) || video.includes('/')) return staticFile(`${pasta}/${video}`);
 	const arquivos = getStaticFiles();
 	const versao = (nome: string) => {
 		const a = arquivos.find((f) => f.name === nome);
