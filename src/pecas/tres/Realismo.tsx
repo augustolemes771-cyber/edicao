@@ -15,7 +15,14 @@ import {RoomEnvironment} from 'three/examples/jsm/environments/RoomEnvironment.j
 
 // Solta o delayRender só depois que o three desenhou com o recurso já na cena (2 quadros de animação depois do commit);
 // soltar logo ao carregar fazia o Remotion capturar o quadro antes do modelo aparecer.
+// O canvas do @remotion/three só redesenha quando o quadro muda: força um desenho com o recurso novo antes de soltar.
 const useLiberarDepoisDeDesenhar = (espera: number | null, pronto: boolean) => {
+	const {invalidate, advance} = useThree();
+	useEffect(() => {
+		if (!pronto) return;
+		invalidate();
+		advance(performance.now());
+	}, [pronto, invalidate, advance]);
 	useEffect(() => {
 		if (espera === null || !pronto) return;
 		let r2 = 0;
@@ -135,7 +142,6 @@ const carregarModelo = (id: string) => {
 				const m = (o as THREE.Mesh).material as THREE.MeshStandardMaterial | undefined;
 				if (m && 'envMapIntensity' in m) m.envMapIntensity = 1.2;
 			});
-			console.log('[modelo]', id, JSON.stringify(tam), JSON.stringify(centro));
 			prontos.set(id, grupo);
 			return grupo;
 		});
@@ -177,7 +183,6 @@ export const Modelo: React.FC<{
 	ajustar?: (g: THREE.Group) => void;
 }> = ({id, tamanho = 1, position, rotation, scale = 1, ajustar}) => {
 	const obj = useModelo(id, ajustar);
-	console.log('[modelo-render]', id, Boolean(obj));
 	if (!obj) return null;
 	return (
 		<group position={position} rotation={rotation} scale={tamanho * scale}>
