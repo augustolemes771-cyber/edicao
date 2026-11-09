@@ -141,8 +141,8 @@ export const p2Entre: Edit = {
 				modo: 'cheia',
 				esconderLegenda: true,
 				som: 'pro_whoosh',
-				dados: {marcos: [b.at('primeira'), b.at('viral'), b.say('de visualizações').fim - 0.15]},
-				sons: [{em: b.say('de visualizações').fim - 0.15, som: 'pro_pop', ganho: 0.8}],
+				dados: {marcos: [b.at('primeira'), b.at('viral'), b.at('visualizações') + 0.3]},
+				sons: [{em: b.at('visualizações') + 0.3, som: 'pro_pop', ganho: 0.8}],
 			},
 			// 2. R$ 15 mil no bolso dela, em ouro 3D acima das cabeças
 			{
@@ -162,7 +162,7 @@ export const p2Entre: Edit = {
 			{
 				tipo: 'presoClt',
 				de: b.at('mulher') - 0.1,
-				ate: b.say('não quer aparecer').inicio - 0.05,
+				ate: b.at('aparecer') - 0.05,
 				em: b.at('presa'),
 				emCadeado: b.at('CLT'),
 				som: 'pro_pouso',
@@ -171,11 +171,11 @@ export const p2Entre: Edit = {
 			{
 				tipo: 'peca',
 				nome: 'e2SemRosto',
-				de: b.say('não quer aparecer').inicio - 0.05,
+				de: b.at('aparecer') - 0.05,
 				ate: b.say('O que você tem a dizer').inicio - 0.05,
 				esconderLegenda: true,
 				som: 'pro_whoosh_curto',
-				dados: {marcos: [b.at('aparecer')]},
+				dados: {marcos: [b.at('aparecer') + 0.15]},
 			},
 			{tipo: 'peca', nome: 'v14Interroga', de: b.say('O que você tem a dizer').inicio - 0.05, ate: b.at('pessoas') + 0.45, som: 'pro_whoosh_curto'},
 			// 5. "coisas do nicho do meu dia a dia"
@@ -249,7 +249,7 @@ export const p2Entre: Edit = {
 				tipo: 'peca',
 				nome: 'e2Riscos',
 				de: b.at('Boa'),
-				ate: b.say('própria casa').fim + 0.3,
+				ate: Math.min(b.say('própria casa').fim + 0.3, b.at('Fazendo') - 0.1),
 				esconderLegenda: true,
 				som: 'pro_whoosh_curto',
 				dados: {
@@ -338,7 +338,7 @@ export const p2Entre: Edit = {
 				tipo: 'motion3d',
 				modelo: 'barreira',
 				de: b.say('mercado digital').inicio - 0.1,
-				ate: b.say('entrada possível').fim + 0.3,
+				ate: Math.min(b.say('entrada possível').fim + 0.3, b.say('Você pode ter').inicio - 0.1),
 				linhas: [
 					{texto: 'MÍNIMA', em: b.at('mínima'), metal: 'ouro'},
 					{texto: 'BARREIRA', em: b.at('barreira'), metal: 'branco'},
