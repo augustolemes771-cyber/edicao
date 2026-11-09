@@ -315,7 +315,7 @@ export const p2Entre: Edit = {
 				coracoes: true,
 				comentarios: [
 					{nome: 'ana.paula', texto: 'quero esse!'},
-					{nome: 'julio_r', texto: 'comprei 2 😍'},
+					{nome: 'julio_r', texto: 'comprei 2!'},
 				],
 				som: 'pro_msg',
 			},
@@ -339,8 +339,8 @@ export const p2Entre: Edit = {
 				de: b.say('mercado digital').inicio - 0.1,
 				ate: b.say('entrada possível').fim + 0.3,
 				linhas: [
-					{texto: 'BARREIRA', em: b.at('mínima'), metal: 'branco'},
-					{texto: 'MÍNIMA', em: b.at('barreira'), metal: 'ouro'},
+					{texto: 'MÍNIMA', em: b.at('mínima'), metal: 'ouro'},
+					{texto: 'BARREIRA', em: b.at('barreira'), metal: 'branco'},
 				],
 				marcos: [b.at('entrada')],
 				chip: 'TIKTOK SHOP',
