@@ -69,20 +69,21 @@ export const p2Entre: Edit = {
 	extraFim: 2.8,
 	silencios: silencios as Trecho[],
 	transcricao,
-	trechos: (o) => {
-		const lista: Trecho[] = (Object.keys(F) as (keyof typeof F)[]).map((k) => [o.say(F[k][0]).inicio - 0.05, o.say(F[k][1]).fim + 0.05]);
-		lista[0][0] = Math.max(0, lista[0][0]);
-		// Trechos colados no original (na ordem) viram um só: não repete palavra.
-		for (let i = lista.length - 1; i > 0; i--) {
-			const vao = lista[i][0] - lista[i - 1][1];
-			if (vao < 0.4 && lista[i][0] > lista[i - 1][0]) lista.splice(i - 1, 2, [lista[i - 1][0], lista[i][1]]);
-		}
-		// Tira as pausas medidas que caem dentro de um trecho, com 0,04 s de ar de cada lado.
+	trechos: () => {
+		// Bordas fixas nos vales de energia da voz (o Whisper errava de 0,45 a 1,5 s nestes pontos; 08/11/2026).
+		// Do Marcos ao fim do Erick é um bloco só (inclui o "É isso" do Danilow, que emenda bem com "Não precisa de estoque").
+		const lista: Trecho[] = [
+			[0.3, 54.86], // Laura: gancho, pergunta, resposta, rotina, liberdade (até "bom demais")
+			[67.1, 170.48], // Marcos (8 milhões → barreira) + Danilow (zero barreira) + mentoria + Erick
+			[177.2, 225.45], // comunidade MVM → "não volta mais no formato original"
+			[59.06, 65.84], // CTA da Laura (cita Danilow, Laura e MVM)
+		];
+		// Tira as pausas medidas (≥ 0,3 s) que caem dentro de um trecho, com 0,04 s de ar de cada lado.
 		const cortado: Trecho[] = [];
 		for (const [a, z] of lista) {
 			let comeco = a;
 			for (const [s0, s1] of silencios as Trecho[]) {
-				if (s0 <= comeco + 0.25 || s1 >= z - 0.25 || s1 - s0 < 0.25) continue;
+				if (s0 <= comeco + 0.25 || s1 >= z - 0.25 || s1 - s0 < 0.3) continue;
 				cortado.push([comeco, s0 + 0.04]);
 				comeco = s1 - 0.04;
 			}
