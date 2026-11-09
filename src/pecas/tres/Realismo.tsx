@@ -13,6 +13,22 @@ import {RGBELoader} from 'three/examples/jsm/loaders/RGBELoader.js';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import {RoomEnvironment} from 'three/examples/jsm/environments/RoomEnvironment.js';
 
+// Solta o delayRender só depois que o three desenhou com o recurso já na cena (2 quadros de animação depois do commit);
+// soltar logo ao carregar fazia o Remotion capturar o quadro antes do modelo aparecer.
+const useLiberarDepoisDeDesenhar = (espera: number | null, pronto: boolean) => {
+	useEffect(() => {
+		if (espera === null || !pronto) return;
+		let r2 = 0;
+		const r1 = requestAnimationFrame(() => {
+			r2 = requestAnimationFrame(() => continueRender(espera));
+		});
+		return () => {
+			cancelAnimationFrame(r1);
+			cancelAnimationFrame(r2);
+		};
+	}, [espera, pronto]);
+};
+
 // ── Luz de estúdio ────────────────────────────────────────────────────────────────────────────────────────────────
 let hdr: THREE.DataTexture | null = null;
 let hdrPromessa: Promise<THREE.DataTexture | null> | null = null;
@@ -34,14 +50,11 @@ const carregarHdr = () => {
 export const AmbienteEstudio: React.FC<{intensidade?: number}> = ({intensidade = 1}) => {
 	const {gl, scene} = useThree();
 	const [tex, setTex] = useState<THREE.DataTexture | null>(hdr);
+	const [espera] = useState(() => (hdr ? null : delayRender('HDRI de estúdio')));
 	useEffect(() => {
-		if (tex) return;
-		const h = delayRender('HDRI de estúdio');
-		carregarHdr().then((t) => {
-			setTex(t);
-			continueRender(h);
-		});
-	}, [tex]);
+		if (!tex) carregarHdr().then((t) => (t ? setTex(t) : espera !== null && continueRender(espera)));
+	}, [tex, espera]);
+	useLiberarDepoisDeDesenhar(espera, Boolean(tex));
 	useMemo(() => {
 		const pmrem = new THREE.PMREMGenerator(gl);
 		scene.environment = tex ? pmrem.fromEquirectangular(tex).texture : pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
@@ -133,14 +146,17 @@ const carregarModelo = (id: string) => {
 // Devolve um clone do modelo (cada uso pode ter cor/posição própria) ou null enquanto carrega (o render espera).
 export const useModelo = (id: string, ajustar?: (g: THREE.Group) => void) => {
 	const [base, setBase] = useState<THREE.Group | null>(prontos.get(id) ?? null);
+	const [espera] = useState(() => (prontos.has(id) ? null : delayRender(`modelo 3D ${id}`)));
 	useEffect(() => {
 		if (base) return;
-		const h = delayRender(`modelo 3D ${id}`);
 		carregarModelo(id)
 			.then((g) => setBase(g))
-			.catch((e) => console.error(`Não carreguei o modelo ${id}`, e))
-			.finally(() => continueRender(h));
-	}, [id, base]);
+			.catch((e) => {
+				console.error(`Não carreguei o modelo ${id}`, e);
+				if (espera !== null) continueRender(espera);
+			});
+	}, [id, base, espera]);
+	useLiberarDepoisDeDesenhar(espera, Boolean(base));
 	return useMemo(() => {
 		if (!base) return null;
 		const c = base.clone(true);
