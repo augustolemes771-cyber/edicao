@@ -75,7 +75,7 @@ export const p2Entre: Edit = {
 		// Trechos colados no original (na ordem) viram um só: não repete palavra.
 		for (let i = lista.length - 1; i > 0; i--) {
 			const vao = lista[i][0] - lista[i - 1][1];
-			if (vao >= 0 && vao < 0.4) lista.splice(i - 1, 2, [lista[i - 1][0], lista[i][1]]);
+			if (vao < 0.4 && lista[i][0] > lista[i - 1][0]) lista.splice(i - 1, 2, [lista[i - 1][0], lista[i][1]]);
 		}
 		// Tira as pausas medidas que caem dentro de um trecho, com 0,04 s de ar de cada lado.
 		const cortado: Trecho[] = [];
@@ -375,7 +375,7 @@ export const p2Entre: Edit = {
 			{
 				tipo: 'celular3d',
 				de: b.at('absurda') - 0.3,
-				ate: b.say('pra você fazer').fim + 0.3,
+				ate: Math.min(b.say('pra você fazer').fim + 0.3, b.say('E o produto ali').inicio - 0.08),
 				linhas: [
 					{texto: 'SÓ UM', em: b.at('precisa')},
 					{texto: 'CELULAR', em: b.at('celular')},
@@ -397,7 +397,7 @@ export const p2Entre: Edit = {
 			{
 				tipo: 'alertas',
 				de: ini(b, 'zero') - 0.05,
-				ate: fim(b, 'zero') + 0.3,
+				ate: Math.min(fim(b, 'zero') + 0.3, ini(b, 'mentoria') - 0.05),
 				variante: 'escura',
 				itens: [
 					{texto: 'SEM ESTOQUE', em: b.at('estoque'), icone: 'x'},
@@ -586,7 +586,7 @@ export const p2Entre: Edit = {
 				tipo: 'peca',
 				nome: 'v14Mente',
 				de: b.at('Resumindo') - 0.1,
-				ate: b.say('formato original').fim + 0.3,
+				ate: Math.min(b.say('formato original').fim + 0.3, ini(b, 'cta') - 0.05),
 				modo: 'cheia',
 				esconderLegenda: true,
 				som: 'pro_whoosh',
