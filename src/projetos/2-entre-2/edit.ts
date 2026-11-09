@@ -440,7 +440,7 @@ export const p2Entre2: Edit = {
 			// ── CTA ───────────────────────────────────────────────────────────────
 			{
 				tipo: 'chips',
-				de: ini(b, 'cta') - 0.3,
+				de: ini(b, 'cta') - 0.02,
 				ate: b.say('Se tiver alguma dúvida').inicio - 0.05,
 				itens: [
 					{texto: 'CURTE', em: b.at('curte')},
