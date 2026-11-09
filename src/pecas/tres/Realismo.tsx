@@ -128,8 +128,11 @@ const prontos = new Map<string, THREE.Group>();
 const carregarModelo = (id: string) => {
 	let p = cacheModelos.get(id);
 	if (!p) {
-		p = new GLTFLoader().loadAsync(staticFile(`modelos3d/${id}/${id}.gltf`)).then((g) => {
+		// "arquivo#parte": usa só os nós cujo nome contém a parte (ex.: 'vintage_suitcase#suitcase_01' = só a 1ª das duas malas).
+		const [arq, parte] = id.split('#');
+		p = new GLTFLoader().loadAsync(staticFile(`modelos3d/${arq}/${arq}.gltf`)).then((g) => {
 			const raiz = g.scene;
+			if (parte) for (const filho of [...raiz.children]) if (!filho.name.includes(parte)) raiz.remove(filho);
 			// Centraliza na origem e normaliza o maior lado para 1.
 			const caixa = new THREE.Box3().setFromObject(raiz);
 			const tam = caixa.getSize(new THREE.Vector3());
