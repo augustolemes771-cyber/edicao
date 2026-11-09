@@ -135,6 +135,7 @@ const carregarModelo = (id: string) => {
 				const m = (o as THREE.Mesh).material as THREE.MeshStandardMaterial | undefined;
 				if (m && 'envMapIntensity' in m) m.envMapIntensity = 1.2;
 			});
+			console.log('[modelo]', id, JSON.stringify(tam), JSON.stringify(centro));
 			prontos.set(id, grupo);
 			return grupo;
 		});
@@ -176,6 +177,7 @@ export const Modelo: React.FC<{
 	ajustar?: (g: THREE.Group) => void;
 }> = ({id, tamanho = 1, position, rotation, scale = 1, ajustar}) => {
 	const obj = useModelo(id, ajustar);
+	console.log('[modelo-render]', id, Boolean(obj));
 	if (!obj) return null;
 	return (
 		<group position={position} rotation={rotation} scale={tamanho * scale}>
