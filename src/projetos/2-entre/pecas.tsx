@@ -812,7 +812,7 @@ const e2Balanca: React.FC<{cena: CenaPeca}> = ({cena}) => {
 						<mesh position={[ex(-1), ey(-1) - corda + 0.17, 0]} rotation={[0, frame * 0.02, 0]} scale={kl} material={matRoxo}>
 							<boxGeometry args={[0.36, 0.36, 0.36]} />
 						</mesh>
-						<mesh position={[ex(1), ey(1) - corda + 0.08 + 0.12 * pe, 0]} scale={(0.16 + 0.17 * pe) * kr * 3} material={matOuro}>
+						<mesh position={[ex(1), ey(1) - corda + 0.08 + 0.12 * pe, 0]} scale={(0.2 + 0.08 * pe) * kr} material={matOuro}>
 							<sphereGeometry args={[1, 32, 24]} />
 						</mesh>
 					</group>
