@@ -147,3 +147,14 @@ e deixe o pedido em `docs/agentes/NOTAS.md`. Conferir `duracaoEditada <= duraç�
 - Peça ou cena não pode chamar `getInputProps()` direto: dentro do `<Player>` do painel ele lança erro e o player inteiro fica
   preto daquele ponto em diante (aconteceu no Texto3D, aos 30 s do depoimento-4-1). Se precisar, use try/catch como o `auditando()`
   de `src/pecas/tres/Texto3D.tsx`.
+
+## 3D realista (08/11/2026, pedido do usuário: "objetos mais realistas sem aumentar muito o tempo")
+
+- `src/pecas/tres/Realismo.tsx`: luz de estúdio real (HDRI `public/hdri/estudio.hdr`) já entra em toda cena que usa `Luzes`;
+  `comRugosidade(material)` tira o "liso perfeito" do metal de código; `SombraContato` põe sombra macia no chão; `FILTRO_3D`
+  (brilho leve dos realces + sombra) no wrapper do canvas, em CSS, porque o bloom do three apaga o brilho com fundo transparente.
+- Objeto de cena = modelo real CC0 do Poly Haven (`<Modelo id="brass_pan_01" tamanho={…} />`, arquivos em `public/modelos3d/<id>/`),
+  não primitivas. Baixar com a API (`https://api.polyhaven.com/files/<id>`, gltf 1k + include). `id#parte` usa só os nós com esse nome
+  (o vintage_suitcase traz duas malas). Já baixados: brass_pan_01, vintage_suitcase, lightbulb_01, cardboard_box_01, rock_07, picke_dirty_01.
+- O canvas do @remotion/three só redesenha quando o quadro muda: recurso carregado depois precisa de `advance()` antes de soltar o
+  delayRender (já feito no `useModelo`/`AmbienteEstudio`), senão o quadro sai sem o objeto. Log do navegador no still: `LOG_NAVEGADOR=1`.

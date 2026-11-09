@@ -319,7 +319,7 @@ try {
 		const quadro = Math.max(0, Math.min(composition.durationInFrames - 1, Number.isFinite(q) ? q : 0));
 		const saida = arg('saida', `out/still-${projeto}-${quadro}.jpg`);
 		etapa('still');
-		await renderStill({serveUrl, composition, inputProps, port, frame: quadro, output: path.join(raiz, saida), imageFormat: 'jpeg', jpegQuality: 90, scale: Number(arg('escala', '0.4')) || 0.4, browserExecutable, chromiumOptions, timeoutInMilliseconds: 60000, overwrite: true});
+		await renderStill({serveUrl, composition, inputProps, port, frame: quadro, output: path.join(raiz, saida), imageFormat: 'jpeg', jpegQuality: 90, scale: Number(arg('escala', '0.4')) || 0.4, browserExecutable, chromiumOptions, timeoutInMilliseconds: 60000, overwrite: true, onBrowserLog: process.env.LOG_NAVEGADOR ? (l) => console.error('[navegador]', l.type, l.text) : undefined});
 		resumoTempos();
 		emitir({fim: true, saida, quadro});
 		limparBundle();
