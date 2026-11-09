@@ -11,6 +11,7 @@ import type {CenaPeca, Pecas} from '../../pecas/peca';
 import {FundoMotion, GradeReta} from '../../pecas/FundoMotion';
 import {Linha3D, Luzes} from '../../pecas/tres/Texto3D';
 import type {Metal} from '../../pecas/tres/Texto3D';
+import {comRugosidade, FILTRO_3D, Modelo, SombraContato} from '../../pecas/tres/Realismo';
 import {playfair, poppins} from '../../motor/tema';
 
 type Item = {texto: string; em: number; icone?: string; metal?: Metal};
@@ -31,9 +32,10 @@ const wx = (px: number) => (px - 540) / K;
 const wy = (px: number) => (960 - px) / K;
 const suave = (x: number) => 1 - Math.pow(1 - Math.min(1, Math.max(0, x)), 3);
 
-const matOuro = new THREE.MeshPhysicalMaterial({color: '#e9b44c', metalness: 1, roughness: 0.22, clearcoat: 0.6, clearcoatRoughness: 0.15, envMapIntensity: 1.5});
-const matOuroEscuro = new THREE.MeshPhysicalMaterial({color: '#9a6a1c', metalness: 1, roughness: 0.3, envMapIntensity: 1.2});
-const matRoxo = new THREE.MeshPhysicalMaterial({color: '#5b34a8', metalness: 0.3, roughness: 0.25, clearcoat: 1, clearcoatRoughness: 0.1, envMapIntensity: 1});
+// Metais com microrrugosidade (Realismo.tsx): o reflexo do HDRI de estúdio quebra de leve, como metal de verdade.
+const matOuro = comRugosidade(new THREE.MeshPhysicalMaterial({color: '#e9b44c', metalness: 1, roughness: 0.26, clearcoat: 0.6, clearcoatRoughness: 0.15, envMapIntensity: 1.5}), 0.3);
+const matOuroEscuro = comRugosidade(new THREE.MeshPhysicalMaterial({color: '#9a6a1c', metalness: 1, roughness: 0.34, envMapIntensity: 1.2}), 0.4);
+const matRoxo = comRugosidade(new THREE.MeshPhysicalMaterial({color: '#5b34a8', metalness: 0.3, roughness: 0.3, clearcoat: 1, clearcoatRoughness: 0.12, envMapIntensity: 1}), 0.2);
 const matVidro = new THREE.MeshPhysicalMaterial({color: '#cdb8ff', metalness: 0, roughness: 0.05, transmission: 0.6, transparent: true, opacity: 0.35, envMapIntensity: 1});
 const matOuroDuplo = new THREE.MeshPhysicalMaterial({color: '#e9b44c', metalness: 1, roughness: 0.25, clearcoat: 0.5, clearcoatRoughness: 0.2, envMapIntensity: 1.4, side: THREE.DoubleSide});
 const matRocha = new THREE.MeshPhysicalMaterial({color: '#6a5a8c', metalness: 0.1, roughness: 0.6, flatShading: true, envMapIntensity: 0.8});
@@ -86,7 +88,7 @@ const indiceAtual = (itens: Item[], frame: number, q: (t: number) => number) => 
 const Canvas: React.FC<{children: React.ReactNode; sombra?: boolean}> = ({children, sombra = true}) => {
 	const {width, height} = useVideoConfig();
 	return (
-		<AbsoluteFill style={{filter: sombra ? 'drop-shadow(0 22px 30px rgba(12,4,28,0.6))' : undefined}}>
+		<AbsoluteFill style={{filter: sombra ? FILTRO_3D : undefined}}>
 			<ThreeCanvas width={width} height={height} gl={GL} camera={CAMERA} style={{position: 'absolute', inset: 0}}>
 				{children}
 			</ThreeCanvas>
@@ -676,13 +678,10 @@ const e2Panela: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			<VeuBaixo k={entra} />
 			<Canvas>
 				<Luzes quadro={frame} batidas={[fp + 14, fv]} />
-				<group position={[-0.25, wy(1335) + cai * 1.5, 0]} scale={1.35 * vis * (0.7 + 0.3 * vis)} rotation={[0.55, gira * Math.PI * 2 - 0.4, 0]}>
-					<Panela />
+				<group position={[-0.1, wy(1335) + cai * 1.5, 0]} scale={Math.max(0.001, vis * (0.7 + 0.3 * vis))} rotation={[0.5, gira * Math.PI * 2 - 0.5, 0]}>
+					<Modelo id="brass_pan_01" tamanho={2.6} />
 				</group>
-				<mesh position={[-0.25, wy(1335) - 0.62, -0.3]} rotation={[-Math.PI / 2.3, 0, 0]}>
-					<circleGeometry args={[0.8, 40]} />
-					<meshBasicMaterial color="#120826" transparent opacity={0.3 * vis * (1 - cai)} />
-				</mesh>
+				<SombraContato x={-0.1} y={wy(1335) - 0.45} z={-0.3} largura={2.4} altura={cai * 1.5} opacidade={0.7 * vis} />
 			</Canvas>
 			{kN > 0 ? (
 				<div style={{position: 'absolute', left: 140, width: 800, top: 1020, height: 170, borderRadius: 40, background: 'linear-gradient(180deg, rgba(36,18,70,0.95), rgba(20,10,40,0.95))', boxShadow: 'inset 0 0 0 2px rgba(232,194,122,0.7), 0 18px 40px rgba(8,2,20,0.55)', display: 'flex', alignItems: 'center', gap: 28, padding: '0 36px', opacity: Math.min(1, kN), transform: `translateY(${(1 - kN) * -50}px)`}}>
@@ -718,17 +717,10 @@ const e2Banner: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			{frame < f0 + 10 ? (
 				<Canvas>
 					<Luzes quadro={frame} batidas={[3]} />
-					<group position={[0, wy(1250), 0]} scale={1.15 * escala} rotation={[0.4, frame * 0.05 + enc * 3, 0]}>
-						<mesh material={matOuro}>
-							<boxGeometry args={[1.5, 1.1, 1.1]} />
-						</mesh>
-						<mesh material={matRoxo}>
-							<boxGeometry args={[0.24, 1.12, 1.12]} />
-						</mesh>
-						<mesh material={matRoxo}>
-							<boxGeometry args={[1.52, 0.24, 1.12]} />
-						</mesh>
+					<group position={[0, wy(1250), 0]} scale={Math.max(0.001, escala)} rotation={[0.4, frame * 0.05 + enc * 3, 0]}>
+						<Modelo id="cardboard_box_01" tamanho={1.9} />
 					</group>
+					<SombraContato y={wy(1250) - 0.75} z={-0.4} largura={2} opacidade={0.6 * escala} />
 				</Canvas>
 			) : null}
 			{kB > 0 ? (
@@ -850,22 +842,13 @@ const e2Minerar: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			<Canvas>
 				<Luzes quadro={frame} batidas={[f0, h2, f1]} />
 				{abre ? <pointLight position={[0, yR + 0.3, 2.5]} intensity={30 * Math.min(1, pCx)} distance={9} color="#ffd98a" /> : null}
-				<mesh position={[batida * 0.04 * Math.sin(frame * 3), yR, 0]} scale={[1.15 * kRocha * pEnt, 0.8 * kRocha * pEnt, 0.9 * kRocha * pEnt]} rotation={[0.2, 0.3, 0]} material={matRocha}>
-					<dodecahedronGeometry args={[1, 0]} />
-				</mesh>
-				<group position={[1.0, yR - 0.3, 0.5]} rotation={[0, 0, ang]} scale={Math.max(0.001, kPick)}>
-					<mesh position={[0, 0.65, 0]} material={matOuroEscuro}>
-						<cylinderGeometry args={[0.07, 0.07, 1.3, 16]} />
-					</mesh>
-					<mesh position={[0, 1.3, 0]} material={matOuro}>
-						<boxGeometry args={[1.0, 0.16, 0.16]} />
-					</mesh>
-					<mesh position={[-0.55, 1.3, 0]} rotation={[0, 0, Math.PI / 2]} material={matOuro}>
-						<coneGeometry args={[0.08, 0.2, 16]} />
-					</mesh>
-					<mesh position={[0.55, 1.3, 0]} rotation={[0, 0, -Math.PI / 2]} material={matOuro}>
-						<coneGeometry args={[0.08, 0.2, 16]} />
-					</mesh>
+				<group position={[batida * 0.04 * Math.sin(frame * 3), yR, 0]} scale={Math.max(0.001, kRocha * pEnt)} rotation={[0.2, 0.3, 0]}>
+					<Modelo id="rock_07" tamanho={2.3} />
+				</group>
+				<SombraContato y={yR - 0.7} z={-0.4} largura={2.6} opacidade={0.6 * kRocha * pEnt} />
+				{/* Picareta real: o cabo gira em torno da mão (base), a ponta bate na rocha. */}
+				<group position={[1.15, yR - 0.35, 0.5]} rotation={[0, 0, ang]} scale={Math.max(0.001, kPick)}>
+					<Modelo id="picke_dirty_01" tamanho={1.7} position={[0, 0.75, 0]} rotation={[0, 0, 0]} />
 				</group>
 				{abre
 					? FRAGMENTOS.map((f, i) => {
@@ -880,13 +863,7 @@ const e2Minerar: React.FC<{cena: CenaPeca}> = ({cena}) => {
 					: null}
 				{abre ? (
 					<group position={[0, yR + 0.05 + Math.sin(frame / 8) * 0.03, 0.3]} scale={Math.max(0.001, pCx)} rotation={[0.3, frame * 0.05, 0]}>
-						<mesh material={matOuro}>
-							<boxGeometry args={[1.1, 0.85, 0.85]} />
-						</mesh>
-						<mesh position={[0, 0, 0]}>
-							<boxGeometry args={[0.2, 0.87, 0.87]} />
-							<meshPhysicalMaterial color="#fff1c9" emissive="#ffcf6a" emissiveIntensity={0.9} metalness={0.4} roughness={0.3} />
-						</mesh>
+						<Modelo id="cardboard_box_01" tamanho={1.4} />
 					</group>
 				) : null}
 			</Canvas>
@@ -1011,44 +988,16 @@ const e2Mala: React.FC<{cena: CenaPeca}> = ({cena}) => {
 				<Luzes quadro={frame} batidas={[f0, f1]} />
 				{frame >= f1 ? <pointLight position={[cx, wy(330), 3]} intensity={25 * lampada} distance={8} color="#ffd98a" /> : null}
 				<group position={[cx + (1 - p) * -3, wy(485), 0]} scale={0.8 * Math.max(0.001, p)} rotation={[0.28, -0.4, 0]}>
-					<mesh geometry={geoMalaCorpo} material={matRoxo} />
-					{[-0.55, 0.55].map((x) => (
-						<mesh key={x} position={[x, 0, 0.44]} material={matOuro}>
-							<boxGeometry args={[0.13, 0.97, 0.03]} />
-						</mesh>
-					))}
-					{[-1, 1].flatMap((sx) =>
-						[-1, 1].map((sy) => (
-							<mesh key={`${sx}${sy}`} position={[sx * 0.9, sy * 0.43, 0.37]} material={matOuro}>
-								<boxGeometry args={[0.22, 0.22, 0.16]} />
-							</mesh>
-						)),
-					)}
-					<mesh position={[0, 0.2, 0.46]} material={matOuroEscuro}>
-						<boxGeometry args={[0.3, 0.2, 0.05]} />
-					</mesh>
-					<group position={[0, 0.475, -0.4]} rotation={[-abre * 1.9, 0, 0]}>
-						<mesh geometry={geoMalaTampa} material={matRoxo} position={[0, 0.2, 0.4]} />
-						<mesh position={[0, 0.4, 0.4]} material={matOuro}>
-							<torusGeometry args={[0.28, 0.035, 12, 32, Math.PI]} />
-						</mesh>
-						{[-0.55, 0.55].map((x) => (
-							<mesh key={x} position={[x, 0.2, 0.44]} material={matOuro}>
-								<boxGeometry args={[0.13, 0.42, 0.03]} />
-							</mesh>
-						))}
+					{/* Mala de viagem real (vintage_suitcase): no "insight" dá um pulinho e a lâmpada real sobe acesa de dentro dela. */}
+					<group position={[0, abre * 0.12 * Math.max(0, 1 - (frame - f1) / 12), 0]} rotation={[0, 0, Math.sin(Math.min(1, Math.max(0, frame - f1) / 12) * Math.PI * 2) * 0.05]}>
+						<Modelo id="vintage_suitcase" tamanho={2.2} />
 					</group>
 					{lampada > 0 ? (
-						<group position={[0, 0.4 + lampada * 1.05, 0]} scale={Math.max(0.001, lampada)}>
-							<mesh position={[0, 0.2, 0]}>
-								<sphereGeometry args={[0.32, 40, 32]} />
-								<meshPhysicalMaterial color="#fff1c9" emissive="#ffcf6a" emissiveIntensity={1.3} metalness={0.1} roughness={0.12} clearcoat={1} />
-							</mesh>
-							<mesh position={[0, -0.12, 0]} material={matOuro}>
-								<cylinderGeometry args={[0.15, 0.12, 0.2, 24]} />
-							</mesh>
-							<mesh position={[0, -0.28, 0]} material={matOuroEscuro}>
-								<cylinderGeometry args={[0.1, 0.1, 0.1, 24]} />
+						<group position={[0, 0.55 + lampada * 0.95, 0.2]} scale={Math.max(0.001, lampada)}>
+							<Modelo id="lightbulb_01" tamanho={0.95} rotation={[0, frame * 0.04, 0]} />
+							<mesh position={[0, 0.12, 0]}>
+								<sphereGeometry args={[0.16, 24, 20]} />
+								<meshBasicMaterial color="#ffe2a0" transparent opacity={0.85} />
 							</mesh>
 						</group>
 					) : null}
