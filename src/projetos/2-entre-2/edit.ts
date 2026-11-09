@@ -14,6 +14,7 @@ import transcricao from './transcricao.json';
 
 const F = {
 	marcos: ['8 milhões faturados', 'muito, muito bom'],
+	zero: ['Não precisa de estoque', 'zero barreira de entrada'],
 	mentoria: ['Nós temos a mentoria', 'poder evoluir'],
 	erick1: ['Cara, acho que uma das maiores', 'é isso aí'],
 	comunidade: ['Se você quiser aprender', 'formato original'],
