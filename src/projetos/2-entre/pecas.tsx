@@ -679,7 +679,7 @@ const e2Panela: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			<Canvas>
 				<Luzes quadro={frame} batidas={[fp + 14, fv]} />
 				<group position={[-0.1, wy(1335) + cai * 1.5, 0]} scale={Math.max(0.001, vis * (0.7 + 0.3 * vis))} rotation={[0.5, gira * Math.PI * 2 - 0.5, 0]}>
-					<Modelo id="brass_pan_01" tamanho={3.4} />
+					<Modelo id="brass_pan_01" tamanho={4.2} position={[0.5, 0, 0]} />
 				</group>
 				<SombraContato x={-0.1} y={wy(1335) - 0.45} z={-0.3} largura={2.4} altura={cai * 1.5} opacidade={0.7 * vis} />
 			</Canvas>
