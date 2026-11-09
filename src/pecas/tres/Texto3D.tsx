@@ -7,7 +7,7 @@ import {getInputProps, Internals, interpolate, random, spring, useVideoConfig} f
 import * as THREE from 'three';
 import {FontLoader} from 'three/examples/jsm/loaders/FontLoader.js';
 import {TextGeometry} from 'three/examples/jsm/geometries/TextGeometry.js';
-import {RoomEnvironment} from 'three/examples/jsm/environments/RoomEnvironment.js';
+import {AmbienteEstudio, comRugosidade} from './Realismo';
 import fonteJson from '../../../public/fontes/montserrat-black.typeface.json';
 
 // getInputProps() lança erro dentro do <Player> do painel (derrubava o player inteiro e a tela ficava preta): só lê no render/Studio.
@@ -40,13 +40,13 @@ const materiais = (metal: Metal) => {
 	}
 	if (metal === 'ouro') {
 		return [
-			new THREE.MeshPhysicalMaterial({color: '#e9b44c', metalness: 1, roughness: 0.22, clearcoat: 0.6, clearcoatRoughness: 0.15, envMapIntensity: 1.5}),
-			new THREE.MeshPhysicalMaterial({color: '#9a6a1c', metalness: 1, roughness: 0.3, envMapIntensity: 1.2}),
+			comRugosidade(new THREE.MeshPhysicalMaterial({color: '#e9b44c', metalness: 1, roughness: 0.24, clearcoat: 0.6, clearcoatRoughness: 0.15, envMapIntensity: 1.5}), 0.25),
+			comRugosidade(new THREE.MeshPhysicalMaterial({color: '#9a6a1c', metalness: 1, roughness: 0.32, envMapIntensity: 1.2}), 0.4),
 		];
 	}
 	return [
 		new THREE.MeshPhysicalMaterial({color: '#fffdf8', metalness: 0.05, roughness: 0.28, clearcoat: 1, clearcoatRoughness: 0.08, envMapIntensity: 0.9}),
-		new THREE.MeshPhysicalMaterial({color: '#d9a441', metalness: 1, roughness: 0.25, envMapIntensity: 1.4}),
+		comRugosidade(new THREE.MeshPhysicalMaterial({color: '#d9a441', metalness: 1, roughness: 0.27, envMapIntensity: 1.4}), 0.4),
 	];
 };
 
@@ -214,14 +214,8 @@ export const Faiscas: React.FC<{quadro: number; inicio: number; y: number; cor: 
 	);
 };
 
-const Ambiente: React.FC = () => {
-	const {gl, scene} = useThree();
-	useMemo(() => {
-		const pmrem = new THREE.PMREMGenerator(gl);
-		scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-	}, [gl, scene]);
-	return null;
-};
+// Luz de estúdio real (HDRI) em todas as cenas 3D que usam Luzes (src/pecas/tres/Realismo.tsx, 08/11/2026).
+const Ambiente: React.FC = () => <AmbienteEstudio />;
 
 // Câmera com travelling lento e tremor que decai a cada batida.
 export const CameraTremor: React.FC<{quadro: number; batidas: number[]; z0?: number; z1?: number; duracao: number}> = ({
