@@ -424,7 +424,7 @@ export const p2Entre: Edit = {
 			{
 				tipo: 'gradeAntesDepois',
 				de: b.say('como foi antes').inicio - 0.1,
-				ate: b.say('é depois').fim + 0.4,
+				ate: Math.min(b.say('é depois').fim + 0.4, b.say('O que você aprendeu').inicio - 0.1),
 				titulo: [{texto: 'A MENTORIA', em: b.at('mentoria', 2)}],
 				antes: {texto: 'ANTES', em: b.at('antes')},
 				depois: {texto: 'DEPOIS', em: b.at('depois')},
