@@ -141,8 +141,8 @@ export const p2Entre: Edit = {
 				modo: 'cheia',
 				esconderLegenda: true,
 				som: 'pro_whoosh',
-				dados: {marcos: [b.at('primeira'), b.at('viral'), b.at('visualizações') + 0.3]},
-				sons: [{em: b.at('visualizações') + 0.3, som: 'pro_pop', ganho: 0.8}],
+				dados: {marcos: [b.at('primeira'), b.at('viral'), b.at('visualizações')]},
+				sons: [{em: b.at('visualizações'), som: 'pro_pop', ganho: 0.8}],
 			},
 			// 2. R$ 15 mil no bolso dela, em ouro 3D acima das cabeças
 			{
