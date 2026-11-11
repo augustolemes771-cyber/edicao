@@ -1,0 +1,89 @@
+{
+ "_roteiro": "Vanessa - Roteiros: AD 03 - Magnésio 3 em 1 (ref ssstik.io_1793733227341.mp4)",
+ "split": [
+  {
+   "de": 2.35,
+   "ate": 5.85,
+   "video": ".painel/vanessa/ref/ref-magnesio.mp4",
+   "inicio": 0,
+   "len": 2.0,
+   "crop": "576:384:0:0"
+  },
+  {
+   "de": 5.85,
+   "ate": 8.75,
+   "video": ".painel/vanessa/ref/ref-magnesio.mp4",
+   "inicio": 2.0,
+   "len": 4.4,
+   "crop": "576:384:0:0"
+  }
+ ],
+ "fotos": [
+  {
+   "de": 0,
+   "ate": 2.35,
+   "img": ".painel/vanessa/ref/ref-magnesio.mp4@7.6",
+   "crop": "420:280:78:666",
+   "modo": "caixa",
+   "box": [
+    160,
+    1290,
+    720,
+    480
+   ]
+  },
+  {
+   "de": 8.75,
+   "ate": 12.25,
+   "img": ".painel/vanessa/ref/ref-magnesio.mp4@13",
+   "crop": "308:202:134:672",
+   "modo": "caixa",
+   "box": [
+    240,
+    1250,
+    600,
+    394
+   ]
+  },
+  {
+   "de": 12.25,
+   "ate": 14.7,
+   "img": ".painel/vanessa/ref/ref-magnesio.mp4@15.5",
+   "crop": "324:212:126:658",
+   "modo": "caixa",
+   "box": [
+    240,
+    1250,
+    600,
+    393
+   ]
+  },
+  {
+   "de": 14.7,
+   "ate": 17.15,
+   "img": ".painel/vanessa/ref/ref-magnesio.mp4@24.5",
+   "crop": "268:174:170:672",
+   "modo": "caixa",
+   "box": [
+    240,
+    1250,
+    600,
+    390
+   ]
+  }
+ ],
+ "produto": [
+  {
+   "de": 96.6,
+   "ate": 105.8,
+   "img": ".painel/vanessa/ref/magnesio-covitta.png"
+  },
+  {
+   "de": 116.0,
+   "ate": 121.95,
+   "img": ".painel/vanessa/ref/magnesio-covitta.png"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio"
+}
