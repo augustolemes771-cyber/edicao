@@ -3,10 +3,19 @@
  "split": [],
  "fotos": [],
  "produto": [
-  {"de": 48.9, "ate": 56.6, "img": ".painel/vanessa/ref/rejuvex-ultra.jpg"},
-  {"de": 69.7, "ate": 73.8, "img": ".painel/vanessa/ref/rejuvex-ultra.jpg"}
+  {
+   "de": 48.9,
+   "ate": 56.6,
+   "img": ".painel/vanessa/ref/rejuvex-ultra.jpg"
+  },
+  {
+   "de": 69.7,
+   "ate": 73.8,
+   "img": ".painel/vanessa/ref/rejuvex-ultra.jpg"
+  }
  ],
  "headline": null,
  "legenda": "meio",
- "estiloLegenda": "roxo"
+ "estiloLegenda": "roxo",
+ "legendaY": 1500
 }

@@ -1,11 +1,29 @@
 {
  "_roteiro": "Vanessa - Roteiros: AD 02 - Rejuvex (legenda e especialista: ssstik.io_1793992915014.mp4)",
- "manter": [[4.35, 15.5]],
+ "manter": [
+  [
+   5.15,
+   16.3
+  ]
+ ],
  "split": [
-  {"de": 4.35, "ate": 15.5, "video": ".painel/vanessa/ref/ref-rejuvex-especialista.mp4", "inicio": 4.0, "crop": "576:512:0:0", "audio": true}
+  {
+   "de": 5.15,
+   "ate": 16.3,
+   "video": ".painel/vanessa/ref/ref-rejuvex-especialista.mp4",
+   "inicio": 4.0,
+   "crop": "576:512:0:0",
+   "audio": true
+  }
  ],
  "fotos": [],
- "produto": [{"de": 19.2, "ate": 25.9, "img": ".painel/vanessa/ref/rejuvex-ultra.jpg"}],
+ "produto": [
+  {
+   "de": 19.2,
+   "ate": 25.9,
+   "img": ".painel/vanessa/ref/rejuvex-ultra.jpg"
+  }
+ ],
  "headline": null,
  "legenda": "meio",
  "estiloLegenda": "roxo"
