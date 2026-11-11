@@ -2,16 +2,16 @@
  "_roteiro": "Vanessa - Roteiros: AD 04 - Magnésio 3 em 1 (ref ssstik.io_1793733227341.mp4)",
  "split": [
   {
-   "de": 3.65,
-   "ate": 6.55,
+   "de": 4.05,
+   "ate": 6.8,
    "video": ".painel/vanessa/ref/ref-magnesio.mp4",
    "inicio": 0,
    "len": 2.0,
    "crop": "576:384:0:0"
   },
   {
-   "de": 6.55,
-   "ate": 9.75,
+   "de": 6.8,
+   "ate": 10.95,
    "video": ".painel/vanessa/ref/ref-magnesio.mp4",
    "inicio": 2.0,
    "len": 4.4,
@@ -21,7 +21,7 @@
  "fotos": [
   {
    "de": 0,
-   "ate": 1.8,
+   "ate": 2.0,
    "img": ".painel/vanessa/ref/ref-magnesio.mp4@15.5",
    "crop": "324:212:126:658",
    "modo": "caixa",
@@ -33,8 +33,8 @@
    ]
   },
   {
-   "de": 1.8,
-   "ate": 3.65,
+   "de": 2.0,
+   "ate": 4.05,
    "img": ".painel/vanessa/ref/ref-magnesio.mp4@24.5",
    "crop": "268:174:170:672",
    "modo": "caixa",
@@ -46,8 +46,8 @@
    ]
   },
   {
-   "de": 9.75,
-   "ate": 12.85,
+   "de": 10.95,
+   "ate": 14.4,
    "img": ".painel/vanessa/ref/ref-magnesio.mp4@7.6",
    "crop": "420:280:78:666",
    "modo": "caixa",
@@ -59,8 +59,8 @@
    ]
   },
   {
-   "de": 12.85,
-   "ate": 17.45,
+   "de": 14.4,
+   "ate": 17.77,
    "img": ".painel/vanessa/ref/ref-magnesio.mp4@13",
    "crop": "308:202:134:672",
    "modo": "caixa",
