@@ -22,4 +22,5 @@ import {pecas as efEspectador} from '../projetos/efeito-espectador/pecas';
 import {pecas as teste} from '../projetos/teste/pecas';
 import {pecas as ad03} from '../projetos/ad-03/pecas';
 import {pecas as p2Entre} from '../projetos/2-entre/pecas';
-export const PECAS: Pecas = {...teste, ...p2Entre, ...ad03, ...e3v3, ...e3v5, ...e3v7, ...e3v11, ...e3v12, ...e3v14, ...d33, ...d34, ...d32, ...d31, ...rig1, ...gota1, ...hist2, ...d41, ...d42, ...d43, ...expStanford, ...efEspectador};
+import {pecas as p223} from '../projetos/223/pecas';
+export const PECAS: Pecas = {...teste, ...p2Entre, ...p223, ...ad03, ...e3v3, ...e3v5, ...e3v7, ...e3v11, ...e3v12, ...e3v14, ...d33, ...d34, ...d32, ...d31, ...rig1, ...gota1, ...hist2, ...d41, ...d42, ...d43, ...expStanford, ...efEspectador};
