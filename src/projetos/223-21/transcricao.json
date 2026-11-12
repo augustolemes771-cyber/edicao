@@ -1,0 +1,842 @@
+[
+ {
+  "text": " o",
+  "startMs": 520,
+  "endMs": 520,
+  "timestampMs": null,
+  "confidence": 0.9999998807907247
+ },
+ {
+  "text": " pontapé",
+  "startMs": 540,
+  "endMs": 940,
+  "timestampMs": null,
+  "confidence": 0.9918470800037175
+ },
+ {
+  "text": " inicial",
+  "startMs": 980,
+  "endMs": 1380,
+  "timestampMs": null,
+  "confidence": 0.999974847472739
+ },
+ {
+  "text": " pra",
+  "startMs": 1440,
+  "endMs": 1500,
+  "timestampMs": null,
+  "confidence": 0.9999699601613475
+ },
+ {
+  "text": " eles",
+  "startMs": 1560,
+  "endMs": 1740,
+  "timestampMs": null,
+  "confidence": 0.9999924898711537
+ },
+ {
+  "text": " dentro",
+  "startMs": 1760,
+  "endMs": 2000,
+  "timestampMs": null,
+  "confidence": 0.9999986886995842
+ },
+ {
+  "text": " do",
+  "startMs": 2020,
+  "endMs": 2020,
+  "timestampMs": null,
+  "confidence": 0.9999997615814777
+ },
+ {
+  "text": " shopping.",
+  "startMs": 2060,
+  "endMs": 2440,
+  "timestampMs": null,
+  "confidence": 0.9994697511323286
+ },
+ {
+  "text": " No",
+  "startMs": 2640,
+  "endMs": 2720,
+  "timestampMs": null,
+  "confidence": 0.9706877714009485
+ },
+ {
+  "text": " Brasil,",
+  "startMs": 2760,
+  "endMs": 3160,
+  "timestampMs": null,
+  "confidence": 0.9982849857181786
+ },
+ {
+  "text": " tem",
+  "startMs": 3240,
+  "endMs": 3360,
+  "timestampMs": null,
+  "confidence": 0.9999957084838798
+ },
+ {
+  "text": " alguma",
+  "startMs": 3400,
+  "endMs": 3780,
+  "timestampMs": null,
+  "confidence": 0.9968011512856115
+ },
+ {
+  "text": " já",
+  "startMs": 3840,
+  "endMs": 3940,
+  "timestampMs": null,
+  "confidence": 0.9999369422603869
+ },
+ {
+  "text": " que",
+  "startMs": 3960,
+  "endMs": 4060,
+  "timestampMs": null,
+  "confidence": 0.9999984502816872
+ },
+ {
+  "text": " funciona",
+  "startMs": 4120,
+  "endMs": 4520,
+  "timestampMs": null,
+  "confidence": 0.9999184674950152
+ },
+ {
+  "text": " desse,",
+  "startMs": 4580,
+  "endMs": 4800,
+  "timestampMs": null,
+  "confidence": 0.9851660264249876
+ },
+ {
+  "text": " nesse",
+  "startMs": 4840,
+  "endMs": 5000,
+  "timestampMs": null,
+  "confidence": 0.9959171307059718
+ },
+ {
+  "text": " modelo",
+  "startMs": 5040,
+  "endMs": 5220,
+  "timestampMs": null,
+  "confidence": 0.999866145891075
+ },
+ {
+  "text": " de",
+  "startMs": 5260,
+  "endMs": 5300,
+  "timestampMs": null,
+  "confidence": 0.9999976158197796
+ },
+ {
+  "text": " negócio",
+  "startMs": 5340,
+  "endMs": 5640,
+  "timestampMs": null,
+  "confidence": 0.998294525285351
+ },
+ {
+  "text": " ou",
+  "startMs": 5660,
+  "endMs": 5700,
+  "timestampMs": null,
+  "confidence": 0.6790185475330255
+ },
+ {
+  "text": " vocês",
+  "startMs": 5740,
+  "endMs": 5860,
+  "timestampMs": null,
+  "confidence": 0.9232693150532019
+ },
+ {
+  "text": " se",
+  "startMs": 5900,
+  "endMs": 5980,
+  "timestampMs": null,
+  "confidence": 0.22570475301363052
+ },
+ {
+  "text": " baseiam",
+  "startMs": 6020,
+  "endMs": 6160,
+  "timestampMs": null,
+  "confidence": 0.7540109443771437
+ },
+ {
+  "text": " em",
+  "startMs": 6180,
+  "endMs": 6220,
+  "timestampMs": null,
+  "confidence": 0.9769897617725714
+ },
+ {
+  "text": " outros",
+  "startMs": 6280,
+  "endMs": 6420,
+  "timestampMs": null,
+  "confidence": 0.9913173842609192
+ },
+ {
+  "text": " países?",
+  "startMs": 6480,
+  "endMs": 7000,
+  "timestampMs": null,
+  "confidence": 0.9863197339882345
+ },
+ {
+  "text": " Não,",
+  "startMs": 7220,
+  "endMs": 7540,
+  "timestampMs": null,
+  "confidence": 0.9997409674086364
+ },
+ {
+  "text": " tem",
+  "startMs": 7680,
+  "endMs": 7860,
+  "timestampMs": null,
+  "confidence": 0.9999977350285647
+ },
+ {
+  "text": " sim,",
+  "startMs": 7940,
+  "endMs": 8180,
+  "timestampMs": null,
+  "confidence": 0.9999958872987679
+ },
+ {
+  "text": " tem.",
+  "startMs": 8240,
+  "endMs": 8360,
+  "timestampMs": null,
+  "confidence": 0.999986022938085
+ },
+ {
+  "text": " Tem?",
+  "startMs": 8380,
+  "endMs": 8540,
+  "timestampMs": null,
+  "confidence": 0.999964059805857
+ },
+ {
+  "text": " No",
+  "startMs": 8700,
+  "endMs": 8700,
+  "timestampMs": null,
+  "confidence": 0.9999980926550052
+ },
+ {
+  "text": " Brás",
+  "startMs": 8740,
+  "endMs": 9200,
+  "timestampMs": null,
+  "confidence": 0.9799474564020213
+ },
+ {
+  "text": " tem.",
+  "startMs": 9260,
+  "endMs": 9620,
+  "timestampMs": null,
+  "confidence": 0.9927081017910249
+ },
+ {
+  "text": " Começou",
+  "startMs": 10040,
+  "endMs": 10400,
+  "timestampMs": null,
+  "confidence": 0.9956107585580963
+ },
+ {
+  "text": " lá-",
+  "startMs": 10560,
+  "endMs": 10560,
+  "timestampMs": null,
+  "confidence": 0.8098633762119753
+ },
+ {
+  "text": " No",
+  "startMs": 10560,
+  "endMs": 10560,
+  "timestampMs": null,
+  "confidence": 0.999997854237364
+ },
+ {
+  "text": " Brás",
+  "startMs": 10560,
+  "endMs": 10600,
+  "timestampMs": null,
+  "confidence": 0.9999156104345712
+ },
+ {
+  "text": " tem?",
+  "startMs": 10620,
+  "endMs": 11060,
+  "timestampMs": null,
+  "confidence": 0.9999693355204173
+ },
+ {
+  "text": " Tem.",
+  "startMs": 11100,
+  "endMs": 11820,
+  "timestampMs": null,
+  "confidence": 0.9999198383737686
+ },
+ {
+  "text": " E-",
+  "startMs": 12440,
+  "endMs": 12440,
+  "timestampMs": null,
+  "confidence": 0.9683421943258806
+ },
+ {
+  "text": " Eu",
+  "startMs": 12480,
+  "endMs": 12540,
+  "timestampMs": null,
+  "confidence": 0.9999673377228697
+ },
+ {
+  "text": " vejo",
+  "startMs": 12580,
+  "endMs": 12720,
+  "timestampMs": null,
+  "confidence": 0.99998766206653
+ },
+ {
+  "text": " umas",
+  "startMs": 12760,
+  "endMs": 12920,
+  "timestampMs": null,
+  "confidence": 0.9999856951922049
+ },
+ {
+  "text": " lives",
+  "startMs": 12960,
+  "endMs": 13280,
+  "timestampMs": null,
+  "confidence": 0.9995753185166357
+ },
+ {
+  "text": " em",
+  "startMs": 13320,
+  "endMs": 13440,
+  "timestampMs": null,
+  "confidence": 0.9999995231630692
+ },
+ {
+  "text": " fábrica,",
+  "startMs": 13540,
+  "endMs": 14020,
+  "timestampMs": null,
+  "confidence": 0.9999024373930099
+ },
+ {
+  "text": " a",
+  "startMs": 14060,
+  "endMs": 14100,
+  "timestampMs": null,
+  "confidence": 0.5418626181937993
+ },
+ {
+  "text": " pessoa",
+  "startMs": 14120,
+  "endMs": 14300,
+  "timestampMs": null,
+  "confidence": 0.9995026678855368
+ },
+ {
+  "text": " vendendo",
+  "startMs": 14340,
+  "endMs": 14540,
+  "timestampMs": null,
+  "confidence": 0.9999871256379411
+ },
+ {
+  "text": " dentro",
+  "startMs": 14580,
+  "endMs": 14740,
+  "timestampMs": null,
+  "confidence": 0.9999866487378297
+ },
+ {
+  "text": " da",
+  "startMs": 14880,
+  "endMs": 14880,
+  "timestampMs": null,
+  "confidence": 0.9995959246540267
+ },
+ {
+  "text": " fábrica.",
+  "startMs": 14960,
+  "endMs": 15580,
+  "timestampMs": null,
+  "confidence": 0.9670105002631958
+ },
+ {
+  "text": " Sim!",
+  "startMs": 15620,
+  "endMs": 15700,
+  "timestampMs": null,
+  "confidence": 0.825031553989684
+ },
+ {
+  "text": " Os",
+  "startMs": 15760,
+  "endMs": 15860,
+  "timestampMs": null,
+  "confidence": 0.9999778275635193
+ },
+ {
+  "text": " próprios",
+  "startMs": 15900,
+  "endMs": 16200,
+  "timestampMs": null,
+  "confidence": 0.7723996688636584
+ },
+ {
+  "text": " fabricantes",
+  "startMs": 16220,
+  "endMs": 16780,
+  "timestampMs": null,
+  "confidence": 0.7548556417882919
+ },
+ {
+  "text": " ali,",
+  "startMs": 16820,
+  "endMs": 17000,
+  "timestampMs": null,
+  "confidence": 0.9978814879583869
+ },
+ {
+  "text": " né.",
+  "startMs": 17040,
+  "endMs": 17040,
+  "timestampMs": null,
+  "confidence": 0.9887789736137662
+ },
+ {
+  "text": " A",
+  "startMs": 17140,
+  "endMs": 17140,
+  "timestampMs": null,
+  "confidence": 0.999998927117538
+ },
+ {
+  "text": " galera,",
+  "startMs": 17180,
+  "endMs": 17440,
+  "timestampMs": null,
+  "confidence": 0.9999936990152865
+ },
+ {
+  "text": " ela",
+  "startMs": 17480,
+  "endMs": 17660,
+  "timestampMs": null,
+  "confidence": 0.9999890328655274
+ },
+ {
+  "text": " vende",
+  "startMs": 17720,
+  "endMs": 17980,
+  "timestampMs": null,
+  "confidence": 0.9981756176165572
+ },
+ {
+  "text": " dentro",
+  "startMs": 18020,
+  "endMs": 18260,
+  "timestampMs": null,
+  "confidence": 0.9996379732967621
+ },
+ {
+  "text": " de",
+  "startMs": 18300,
+  "endMs": 18320,
+  "timestampMs": null,
+  "confidence": 0.99995696730009
+ },
+ {
+  "text": " galpão.",
+  "startMs": 18320,
+  "endMs": 19120,
+  "timestampMs": null,
+  "confidence": 0.9999923196036062
+ },
+ {
+  "text": " Dentro",
+  "startMs": 19240,
+  "endMs": 19440,
+  "timestampMs": null,
+  "confidence": 0.9948824434295944
+ },
+ {
+  "text": " de",
+  "startMs": 19460,
+  "endMs": 19500,
+  "timestampMs": null,
+  "confidence": 0.9997664043650315
+ },
+ {
+  "text": " galpão.",
+  "startMs": 19540,
+  "endMs": 19660,
+  "timestampMs": null,
+  "confidence": 0.9999945164137701
+ },
+ {
+  "text": " Isso",
+  "startMs": 19680,
+  "endMs": 19700,
+  "timestampMs": null,
+  "confidence": 0.9990146437009423
+ },
+ {
+  "text": " aí",
+  "startMs": 19700,
+  "endMs": 19700,
+  "timestampMs": null,
+  "confidence": 0.9058541501920412
+ },
+ {
+  "text": " a",
+  "startMs": 19820,
+  "endMs": 19820,
+  "timestampMs": null,
+  "confidence": 0.9999810460826691
+ },
+ {
+  "text": " gente",
+  "startMs": 19880,
+  "endMs": 20080,
+  "timestampMs": null,
+  "confidence": 0.9999970197767496
+ },
+ {
+  "text": " vê",
+  "startMs": 20120,
+  "endMs": 20260,
+  "timestampMs": null,
+  "confidence": 0.9999819997211749
+ },
+ {
+  "text": " muito",
+  "startMs": 20340,
+  "endMs": 20840,
+  "timestampMs": null,
+  "confidence": 0.9999077405224903
+ },
+ {
+  "text": " na,",
+  "startMs": 21260,
+  "endMs": 21520,
+  "timestampMs": null,
+  "confidence": 0.9999979337109658
+ },
+ {
+  "text": " no",
+  "startMs": 21560,
+  "endMs": 21680,
+  "timestampMs": null,
+  "confidence": 0.9999996423722521
+ },
+ {
+  "text": " Brás.",
+  "startMs": 21740,
+  "endMs": 22140,
+  "timestampMs": null,
+  "confidence": 0.9999621892717904
+ },
+ {
+  "text": " E",
+  "startMs": 22720,
+  "endMs": 22800,
+  "timestampMs": null,
+  "confidence": 0.9999997615814777
+ },
+ {
+  "text": " também",
+  "startMs": 22860,
+  "endMs": 23120,
+  "timestampMs": null,
+  "confidence": 0.9999667417142571
+ },
+ {
+  "text": " começou",
+  "startMs": 23160,
+  "endMs": 23500,
+  "timestampMs": null,
+  "confidence": 0.999979258013377
+ },
+ {
+  "text": " agora",
+  "startMs": 23560,
+  "endMs": 23900,
+  "timestampMs": null,
+  "confidence": 0.999998927117538
+ },
+ {
+  "text": " lá",
+  "startMs": 23960,
+  "endMs": 24040,
+  "timestampMs": null,
+  "confidence": 0.9999982118638471
+ },
+ {
+  "text": " em",
+  "startMs": 24060,
+  "endMs": 24140,
+  "timestampMs": null,
+  "confidence": 0.9999705561718785
+ },
+ {
+  "text": " Goiânia,",
+  "startMs": 24180,
+  "endMs": 24700,
+  "timestampMs": null,
+  "confidence": 0.9987725631119396
+ },
+ {
+  "text": " lá",
+  "startMs": 24760,
+  "endMs": 24840,
+  "timestampMs": null,
+  "confidence": 0.999998927117538
+ },
+ {
+  "text": " na",
+  "startMs": 24880,
+  "endMs": 24960,
+  "timestampMs": null,
+  "confidence": 0.9999935627400018
+ },
+ {
+  "text": " quarenta",
+  "startMs": 25000,
+  "endMs": 25280,
+  "timestampMs": null,
+  "confidence": 0.9700807869136127
+ },
+ {
+  "text": " e",
+  "startMs": 25300,
+  "endMs": 25400,
+  "timestampMs": null,
+  "confidence": 0.9999996423722521
+ },
+ {
+  "text": " quatro",
+  "startMs": 25460,
+  "endMs": 25760,
+  "timestampMs": null,
+  "confidence": 0.9979130758127431
+ },
+ {
+  "text": " também.",
+  "startMs": 25820,
+  "endMs": 26100,
+  "timestampMs": null,
+  "confidence": 0.9997521793575418
+ },
+ {
+  "text": " Os",
+  "startMs": 26220,
+  "endMs": 26320,
+  "timestampMs": null,
+  "confidence": 0.9995573335167511
+ },
+ {
+  "text": " shoppings",
+  "startMs": 26360,
+  "endMs": 26880,
+  "timestampMs": null,
+  "confidence": 0.9964925936802361
+ },
+ {
+  "text": " adestraram,",
+  "startMs": 26980,
+  "endMs": 27700,
+  "timestampMs": null,
+  "confidence": 0.9983402855528833
+ },
+ {
+  "text": " né?",
+  "startMs": 27780,
+  "endMs": 27980,
+  "timestampMs": null,
+  "confidence": 0.9982536183213913
+ },
+ {
+  "text": " Compraram",
+  "startMs": 28380,
+  "endMs": 28880,
+  "timestampMs": null,
+  "confidence": 0.9995031385902164
+ },
+ {
+  "text": " essa",
+  "startMs": 28940,
+  "endMs": 29100,
+  "timestampMs": null,
+  "confidence": 0.9999990463265931
+ },
+ {
+  "text": " visão",
+  "startMs": 29160,
+  "endMs": 29560,
+  "timestampMs": null,
+  "confidence": 0.999991297797926
+ },
+ {
+  "text": " de",
+  "startMs": 29600,
+  "endMs": 29700,
+  "timestampMs": null,
+  "confidence": 1
+ },
+ {
+  "text": " live",
+  "startMs": 29760,
+  "endMs": 30040,
+  "timestampMs": null,
+  "confidence": 0.9999904633477849
+ },
+ {
+  "text": " shopping,",
+  "startMs": 30080,
+  "endMs": 30540,
+  "timestampMs": null,
+  "confidence": 0.9999037348863858
+ },
+ {
+  "text": " só",
+  "startMs": 31120,
+  "endMs": 31240,
+  "timestampMs": null,
+  "confidence": 0.9999979734461775
+ },
+ {
+  "text": " que",
+  "startMs": 31259,
+  "endMs": 31340,
+  "timestampMs": null,
+  "confidence": 0.9999998807907247
+ },
+ {
+  "text": " é",
+  "startMs": 31380,
+  "endMs": 31419,
+  "timestampMs": null,
+  "confidence": 0.9999979734461775
+ },
+ {
+  "text": " metade",
+  "startMs": 31460,
+  "endMs": 31919,
+  "timestampMs": null,
+  "confidence": 0.9999957084838798
+ },
+ {
+  "text": " shopping",
+  "startMs": 31979,
+  "endMs": 32360,
+  "timestampMs": null,
+  "confidence": 0.99998354938796
+ },
+ {
+  "text": " físico",
+  "startMs": 32440,
+  "endMs": 32940,
+  "timestampMs": null,
+  "confidence": 0.9999634040871428
+ },
+ {
+  "text": " e",
+  "startMs": 32960,
+  "endMs": 33020,
+  "timestampMs": null,
+  "confidence": 1
+ },
+ {
+  "text": " metade",
+  "startMs": 33080,
+  "endMs": 33720,
+  "timestampMs": null,
+  "confidence": 0.9999692449491794
+ },
+ {
+  "text": " shopping",
+  "startMs": 33800,
+  "endMs": 34360,
+  "timestampMs": null,
+  "confidence": 0.9999933243243502
+ },
+ {
+  "text": " de",
+  "startMs": 34420,
+  "endMs": 34520,
+  "timestampMs": null,
+  "confidence": 0.9999997615814777
+ },
+ {
+  "text": " live",
+  "startMs": 34620,
+  "endMs": 35000,
+  "timestampMs": null,
+  "confidence": 0.9999936819476216
+ },
+ {
+  "text": " mesmo,",
+  "startMs": 35060,
+  "endMs": 35380,
+  "timestampMs": null,
+  "confidence": 0.999983509681288
+ },
+ {
+  "text": " onde",
+  "startMs": 35440,
+  "endMs": 35580,
+  "timestampMs": null,
+  "confidence": 0.9942925955272434
+ },
+ {
+  "text": " tem",
+  "startMs": 35640,
+  "endMs": 35740,
+  "timestampMs": null,
+  "confidence": 0.9999592320834669
+ },
+ {
+  "text": " as",
+  "startMs": 35800,
+  "endMs": 35940,
+  "timestampMs": null,
+  "confidence": 0.9999977350285647
+ },
+ {
+  "text": " baias.",
+  "startMs": 36000,
+  "endMs": 36560,
+  "timestampMs": null,
+  "confidence": 0.9980388506314463
+ },
+ {
+  "text": " Assim,",
+  "startMs": 37060,
+  "endMs": 37340,
+  "timestampMs": null,
+  "confidence": 0.9997516158594351
+ },
+ {
+  "text": " é",
+  "startMs": 37920,
+  "endMs": 37960,
+  "timestampMs": null,
+  "confidence": 0.9999994039539004
+ }
+]
