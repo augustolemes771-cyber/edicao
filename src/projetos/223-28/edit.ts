@@ -14,7 +14,7 @@ const TRECHOS: Trecho[] = [
 	[12.8, 18.0], // "Então eu tenho, por exemplo, essa semana a gente vai focar nesse produto aqui, colágeno, só."
 	[19.1, 20.72], // "Ele vai focar só no colágeno."
 	[20.95, 28.4], // "Só que eu tenho mais dois creator livre, onde eu posso colocar ele no cabelo, um exemplo, e o outro no emagrecimento."
-	[28.85, 30.4], // "Entende? Cada um fica num link ali."
+	[28.85, 30.17], // "Entende? Cada um fica num link" (o "ali" encosta no "Sim" do Danilow)
 ];
 
 export const p22328: Edit = {
@@ -32,15 +32,15 @@ export const p22328: Edit = {
 		altura: 0.656,
 		palavrasPorTela: 4,
 		enfase: [{palavra: 'clichê', estilo: 'serif'}],
-		falantes: (b) => [{de: 0, ate: b.at('ali') + 0.6, nome: 'NARA'}],
+		falantes: (b) => [{de: 0, ate: b.at('link') + 0.6, nome: 'NARA'}],
 	},
 	camera: (b) => [
-		...punches(b, [[b.at('Cada') - 0.6, b.at('ali') + 1]], () => ({x: 0.68, y: 0.36})),
+		...punches(b, [[b.at('Cada') - 0.6, b.at('link') + 1]], () => ({x: 0.68, y: 0.36})),
 		{tipo: 'flash', em: b.at('lançamentos') - 0.04},
 		{tipo: 'flash', em: b.at('emagrecimento') - 0.04},
 	],
 	cenas: (b) => {
-		const fimFala = b.at('ali') + 0.5;
+		const fimFala = b.at('link') + 0.45;
 		const cenas: Cena[] = [
 			{
 				tipo: 'motion3d',
