@@ -307,7 +307,8 @@ const p223Lata: React.FC<{cena: CenaPeca}> = ({cena}) => {
 const p223Relogio: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const {frame, fps, q, entra, sai, d, dur} = useCena(cena);
 	const f0 = q(mc(d, cena, 0, 0.3));
-	const f1 = Math.min(q(mc(d, cena, 1, 2)), dur - 16);
+	// Sem o marco 1 o relógio só mostra as 2 h (a troca para o dinheiro fica para outra cena).
+	const f1 = d.marcos && d.marcos.length > 1 ? Math.min(q(d.marcos[1]), dur - 16) : Infinity;
 	const pEntra = mola(frame, 0, fps, 13);
 	const arco = suave(interpolate(frame, [f0, f0 + 18], [0, 1], lim));
 	const troca = suave(interpolate(frame, [f1, f1 + 8], [0, 1], lim));
