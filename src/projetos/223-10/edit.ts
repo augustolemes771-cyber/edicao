@@ -48,7 +48,7 @@ export const p22310: Edit = {
 		return [
 			...punches(b, [], (t) => (creator(t) ? {x: 0.32, y: 0.4} : {x: 0.68, y: 0.38})),
 			{tipo: 'flash', em: b.at('dobrar') - 0.04},
-			{tipo: 'chicote', em: b.at('Ó') - 0.05},
+			{tipo: 'chicote', em: b.say('nós vamos aplicar').inicio - 0.05},
 			{tipo: 'chicote', em: b.at('Fechou') - 0.05},
 			{tipo: 'flash', em: b.say('dar bom').inicio - 0.04},
 		];
@@ -92,7 +92,7 @@ export const p22310: Edit = {
 			{
 				tipo: 'chips',
 				de: b.at('mesma') - 0.4,
-				ate: b.at('Você') - 0.05,
+				ate: b.say('Você fica').inicio - 0.05,
 				itens: [
 					{texto: 'UMA EMPRESA SÓ', em: b.at('empresa')},
 					{texto: 'NENHUMA OUTRA', em: b.at('outras')},
@@ -103,8 +103,8 @@ export const p22310: Edit = {
 			},
 			{
 				tipo: 'selo',
-				de: b.at('Você') - 0.05,
-				ate: b.at('Ó') - 0.05,
+				de: b.say('Você fica').inicio - 0.05,
+				ate: b.say('nós vamos aplicar').inicio - 0.05,
 				texto: 'NÃO EXPANDE',
 				chip: 'NEM GANHA MAIS',
 				emChip: b.at('ganhar'),
@@ -114,7 +114,7 @@ export const p22310: Edit = {
 			// A estratégia: o mesmo vídeo em várias plataformas
 			{
 				tipo: 'textoLife',
-				de: b.at('Ó') - 0.05,
+				de: b.say('nós vamos aplicar').inicio - 0.05,
 				ate: b.say('usando o mesmo').inicio - 0.05,
 				kicker: 'A ESTRATÉGIA',
 				principal: 'link da Shopee',

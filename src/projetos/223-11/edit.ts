@@ -45,7 +45,7 @@ export const p22311: Edit = {
 		],
 	},
 	camera: (b) => {
-		const pergunta = (t: number) => (t >= b.at('Antes') - 0.05 && t < b.at('produtos') - 0.3) || t >= b.at('Cê') - 0.05;
+		const pergunta = (t: number) => (t >= b.at('Antes') - 0.05 && t < b.at('produtos') - 0.3) || t >= b.say('Cê tá gostando').inicio - 0.05;
 		const cheias: Trecho[] = [[b.at('Corria') - 0.05, b.at('Então') - 0.05]];
 		return [
 			...punches(b, cheias, (t) => (pergunta(t) ? {x: 0.68, y: 0.38} : {x: 0.32, y: 0.4})),
@@ -53,7 +53,7 @@ export const p22311: Edit = {
 			{tipo: 'chicote', em: b.at('Antes') - 0.05},
 			{tipo: 'chicote', em: b.at('produtos') - 0.3},
 			{tipo: 'flash', em: b.at('superou') - 0.04},
-			{tipo: 'chicote', em: b.at('Cê') - 0.05},
+			{tipo: 'chicote', em: b.say('Cê tá gostando').inicio - 0.05},
 		];
 	},
 	cenas: (b) => {
@@ -148,14 +148,14 @@ export const p22311: Edit = {
 				tipo: 'peca',
 				nome: 'e2Praia',
 				de: b.at('Leva') - 0.05,
-				ate: b.at('Cê') - 0.05,
+				ate: b.say('Cê tá gostando').inicio - 0.05,
 				esconderLegenda: true,
 				som: 'pro_whoosh_curto',
 				dados: {marcos: [b.at('menos'), b.say('pra você').inicio]},
 			},
 			{
 				tipo: 'selo',
-				de: b.at('Cê') - 0.05,
+				de: b.say('Cê tá gostando').inicio - 0.05,
 				ate: fimFala + 0.25,
 				texto: 'COM A M4',
 				chip: 'PRA MIM É MELHOR',
