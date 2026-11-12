@@ -144,7 +144,7 @@ export const p2235: Edit = {
 			{
 				tipo: 'numero3d',
 				de: b.at('investindo') - 0.3,
-				ate: b.at('É') - 0.08,
+				ate: b.say('É só definir').inicio - 0.08,
 				texto: 'R$ 1 MIL',
 				rotulo: 'NUMA LIVE',
 				abaixo: 'POR DIA',
@@ -158,7 +158,7 @@ export const p2235: Edit = {
 			{
 				tipo: 'motion3d',
 				modelo: 'liberdade',
-				de: b.at('É') - 0.08,
+				de: b.say('É só definir').inicio - 0.08,
 				ate: b.at('Com') - 0.08,
 				linhas: [
 					{texto: 'PRIORIDADE', em: b.at('prioridade'), metal: 'branco'},
