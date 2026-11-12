@@ -56,11 +56,14 @@ const whisperCuda = async () => {
 		console.log(JSON.stringify({fase: 'instalando o whisper para a placa NVIDIA', pct: null}));
 		// tar do Windows 10+ abre zip; se não abrir, PowerShell.
 		const destino = path.join(pasta, 'build');
-		if (spawnSync('tar', ['-xf', zip, '-C', destino], {windowsHide: true}).status !== 0) {
-			execFileSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', `Expand-Archive -Force -LiteralPath '${zip.replace(/'/g, "''")}' -DestinationPath '${destino.replace(/'/g, "''")}'`], {windowsHide: true});
+		// O Expand-Archive só aceita extensão .zip (12/11: falhava com ".parte" e cada transcrição baixava tudo de novo).
+		const zipOk = zip.replace(/\.parte$/, '');
+		renameSync(zip, zipOk);
+		if (spawnSync('tar', ['-xf', zipOk, '-C', destino], {windowsHide: true}).status !== 0) {
+			execFileSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', `Expand-Archive -Force -LiteralPath '${zipOk.replace(/'/g, "''")}' -DestinationPath '${destino.replace(/'/g, "''")}'`], {windowsHide: true});
 		}
 		renameSync(path.join(destino, 'Release'), path.join(destino, 'bin'));
-		rmSync(zip, {force: true});
+		rmSync(zipOk, {force: true});
 		return existsSync(exe) ? pasta : null;
 	} catch (e) {
 		console.log(JSON.stringify({aviso: `Não instalei o whisper da placa NVIDIA (${String(e?.message ?? e).slice(0, 160)}): transcrevendo na CPU.`}));
@@ -181,6 +184,11 @@ if (process.env.ELEVENLABS_API_KEY) {
 		language: 'pt',
 		splitOnWord: true,
 	};
+	// A biblioteca grava o JSON temporário em <pasta atual>/tmp: com duas transcrições ao mesmo tempo, uma sobrescrevia a
+	// outra. Cada projeto usa a própria pasta (todos os caminhos acima já são absolutos).
+	const pastaTmp = path.join(cache, `tmp-${projeto}`);
+	mkdirSync(pastaTmp, {recursive: true});
+	process.chdir(pastaTmp);
 	let resultado = null;
 	// Windows com placa NVIDIA: whisper.cpp com CUDA (a RTX transcreve em segundos). Se der erro, volta para a CPU.
 	const pastaCuda = await whisperCuda();

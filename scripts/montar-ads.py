@@ -19,6 +19,9 @@ def norm(s):
     s = unicodedata.normalize('NFD', s.lower())
     return re.sub(r'[^a-z0-9%$]', '', ''.join(c for c in s if unicodedata.category(c) != 'Mn'))
 
+arq_plano = f'src/projetos/{proj}/plano-ad.json'
+plano = json.load(open(arq_plano, encoding='utf-8')) if os.path.exists(arq_plano) else {}
+mutar += plano.get('mutar', [])  # palavras mudas pedidas no roteiro (ex.: "retenção e pochete muta")
 T = json.load(open(f'src/projetos/{proj}/transcricao.json', encoding='utf-8'))
 W = [{'t': w['text'].strip(), 'a': w['startMs'] / 1000, 'b': w['endMs'] / 1000} for w in T if w['text'].strip()]
 # Tokens do whisper que vêm colados (pontuação solta): junta na palavra anterior.
@@ -46,14 +49,21 @@ while i < len(W) - N:
         apagar.update(range(i, achou)); i = achou
     else:
         i += 1
+# "cortar" no plano: trechos do bruto que saem inteiros (notas faladas, bastidor: "grava aí").
+for a_, b_ in plano.get('cortar', []):
+    apagar.update(n for n, w in enumerate(W) if a_ <= (w['a'] + w['b']) / 2 <= b_)
 # Frase interrompida (palavra cortada pela metade seguida de recomeço) já cai pela regra acima na maioria dos casos.
 V = [w for n, w in enumerate(W) if n not in apagar]
 
-# Trechos mantidos: junta palavras com pausa <= 0,25 s; folga de 0,06 s antes e 0,10 s depois.
+# Trechos mantidos: as palavras ficam num trecho só (o Whisper erra os limites e cortar pelo intervalo dele comia pedaço
+# de palavra, 11/11 "cansada, estressada"). Só quebra onde saíram palavras de regravação. As pausas saem abaixo, pelo
+# silêncio medido no áudio. Folga de 0,06 s antes da primeira palavra e 0,10 s depois da última.
+fica = [n for n in range(len(W)) if n not in apagar]
 seg = []
-for w in V:
+for k, n in enumerate(fica):
+    w = W[n]
     a, b = max(0, w['a'] - 0.06), min(dur, w['b'] + 0.10)
-    if seg and a - seg[-1][1] <= 0.25:
+    if seg and fica[k - 1] == n - 1:
         seg[-1][1] = max(seg[-1][1], b)
     else:
         seg.append([a, b])
@@ -74,7 +84,9 @@ sil = [(a + 0.08, b - 0.08) for a, b in zip(ini, fim) if b - a > 0.3]
 # Áudio com ruído de fundo: as pausas por energia (scripts/pausas-energia.mjs) valem mais.
 sp = f'src/projetos/{proj}/silencios.json'
 if os.path.exists(sp):
-    sil += [(a, b) for a, b in json.load(open(sp))]
+    # Folga de 0,07 s de cada lado: sem ela o corte encostava na palavra e comia o começo/fim dela ("estressada").
+    # Pausas de scripts/pausas-fala.py (faixa larga, inclui o "s") ou pausas-energia.mjs.
+    sil += [(a + 0.07, b - 0.07) for a, b in json.load(open(sp)) if b - a >= 0.25]
     sil.sort()
 novo = []
 for a, b in seg:
@@ -85,27 +97,64 @@ for a, b in seg:
         cur = max(cur, sb)
     if b - cur > 0.05: novo.append([cur, b])
 seg = novo
+# "manter": trechos do bruto que ficam inteiros mesmo sem fala (ex.: caras e bocas enquanto roda o vídeo do especialista).
+if plano.get('manter'):
+    seg = sorted(seg + [list(x) for x in plano['manter']])
+    junto = []
+    for a, b in seg:
+        if junto and a <= junto[-1][1] + 0.01: junto[-1][1] = max(junto[-1][1], b)
+        else: junto.append([a, b])
+    seg = junto
 total = sum(b - a for a, b in seg)
+os.makedirs('out/ass', exist_ok=True)
+json.dump(seg, open(f'out/ass/{proj}-trechos.json', 'w'))  # trechos mantidos (para conferir os cortes)
 
 # Legenda: 3 palavras por tela, quebra em pontuação; a palavra falada fica amarela.
 def ts(x):
     x = max(0, x); h = int(x // 3600); m = int(x % 3600 // 60); s = x % 60
     return f'{h}:{m:02d}:{s:05.2f}'
+# Estilo "roxo" (ref. ssstik.io_1793992915014): Anton em caixa alta branca, até 6 palavras em 2 linhas, palavra falada com caixa roxa.
+roxo = plano.get('estiloLegenda') == 'roxo'
+# Estilo "vermelho" (ref. ssstik.io_1789378895428): Anton pequeno em caixa alta branca com contorno preto, até 3 palavras,
+# palavra falada numa caixa vermelha, embaixo (~82% da altura). Duas camadas: caixa (só a palavra falada) e texto por cima.
+verm = plano.get('estiloLegenda') == 'vermelho'
 grupos, g = [], []
 for w in V:
     g.append(w)
-    if len(g) == 3 or re.search(r'[.,!?;:]$', w['t']):
+    if len(g) == (6 if roxo else 3) or re.search(r'[.,!?;:]$', w['t']):
         grupos.append(g); g = []
 if g: grupos.append(g)
 ev = []
+# Altura da legenda (pedido do usuário, 12/11): embaixo, fora do alcance da boca; no meio (na emenda) só quando a tela está
+# dividida (split, foto ou produto em "topo"). Durante foto em "caixa" (que ocupa a parte de baixo) também vai para o meio.
+# legendaY no plano troca a altura de baixo.
+Y_BAIXO, Y_MEIO = plano.get('legendaY', 1200), 960  # 1200 = 1/4 abaixo do meio (pedido do usuário, 12/11)
+_div = [(editado(max(0, it['de'])), editado(min(dur, it['ate']))) for k_ in ('split', 'fotos', 'produto') for it in plano.get(k_, [])
+        if (k_ == 'split' or it.get('modo', 'topo') in ('topo', 'caixa'))]
+def altura(a, b):
+    m = (a + b) / 2
+    return Y_MEIO if any(x <= m <= y for x, y in _div) else Y_BAIXO
+POS = lambda a, b: '{\\pos(540,%d)}' % altura(a, b)
 for gi, g in enumerate(grupos):
     fim_g = editado(grupos[gi + 1][0]['a']) if gi + 1 < len(grupos) else editado(g[-1]['b']) + 0.3
+    # Antes de uma pausa longa mantida (ex.: vídeo do especialista), a legenda some 0,5 s depois da última palavra.
+    fim_g = min(fim_g, editado(g[-1]['b']) + 0.5)
     for wi, w in enumerate(g):
         a = editado(w['a'])
         b = editado(g[wi + 1]['a']) if wi + 1 < len(g) else fim_g
         if b - a < 0.02: continue
+        lim = lambda x: re.sub(r'[{}]', '', x['t']).upper().rstrip('.,;:?!')
+        if roxo:
+            txt = ' '.join((r'{\3a&H00&}' if x is w else r'{\3a&HFF&}') + lim(x) for x in g)
+            ev.append(f'Dialogue: 0,{ts(a)},{ts(b)},Roxo,,0,0,0,,' + POS(a, b) + txt)
+            continue
+        if verm:
+            caixa_ = ' '.join((r'{\alpha&H00&}' if x is w else r'{\alpha&HFF&}') + lim(x) for x in g)  # contorno grosso só na palavra falada = caixa
+            ev.append(f'Dialogue: 0,{ts(a)},{ts(b)},VermCaixa,,0,0,0,,' + POS(a, b) + caixa_)
+            ev.append(f'Dialogue: 1,{ts(a)},{ts(b)},Verm,,0,0,0,,' + POS(a, b) + ' '.join(lim(x) for x in g))
+            continue
         txt = ' '.join((r'{\c&H00E6FF&}' if x is w else r'{\c&HFFFFFF&}') + re.sub(r'[{}]', '', x['t']).upper().rstrip('.,;:') for x in g)
-        ev.append(f'Dialogue: 0,{ts(a)},{ts(b)},Leg,,0,0,0,,{txt}')
+        ev.append(f'Dialogue: 0,{ts(a)},{ts(b)},Leg,,0,0,0,,' + POS(a, b) + txt)
 # CTA: primeira menção a carrinho/botão laranja na metade final -> seta pulsando no canto do botão até o fim.
 cta = None
 for n, w in enumerate(V):
@@ -121,8 +170,6 @@ while t < total:
     ev.append(f'Dialogue: 1,{ts(t)},{ts(min(total, t + 0.4))},Seta,,0,0,0,,{{\\pos(150,{y})}}{seta}')
     t += 0.4; up = not up
 # Plano do roteiro (src/projetos/<p>/plano-ad.json): tela dividida, fotos, produto, caixinha de pergunta. Tempos no vídeo bruto.
-arq_plano = f'src/projetos/{proj}/plano-ad.json'
-plano = json.load(open(arq_plano, encoding='utf-8')) if os.path.exists(arq_plano) else {}
 hl = plano.get('headline')
 if hl and hl.get('texto'):
     a, b = editado(hl.get('de', 0)), editado(hl.get('ate', 5))
@@ -139,6 +186,9 @@ WrapStyle: 0
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
 Style: Leg,Arial Black,{72 if plano.get('estiloLegenda') != 'contorno' else 66},&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,{3 if plano.get('estiloLegenda') != 'contorno' else 1},{14 if plano.get('estiloLegenda') != 'contorno' else 7},0,5,60,60,0,1
+Style: Roxo,Anton,104,&H00FFFFFF,&H00FFFFFF,&H00EE2C8A,&H00000000,0,0,0,0,100,100,1,0,3,9,0,5,110,110,0,1
+Style: Verm,Anton,66,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,1,0,1,3.5,0,5,110,110,0,1
+Style: VermCaixa,Anton,66,&H003A20E8,&H003A20E8,&H003A20E8,&H00000000,0,0,0,0,100,100,1,0,1,13,0,5,110,110,0,1
 Style: Seta,Arial,10,&H00168CFF,&H00168CFF,&H00FFFFFF,&H00000000,0,0,0,0,100,100,0,0,1,5,0,7,0,0,0,1
 Style: Caixa,Arial,58,&H00111111,&H00111111,&H00FFFFFF,&H00000000,-1,0,0,0,100,100,0,0,3,34,0,5,90,90,0,1
 Style: CaixaTopo,Arial,40,&H00FFFFFF,&H00FFFFFF,&H00573DF0,&H00000000,-1,0,0,0,100,100,0,0,3,26,0,5,90,90,0,1
@@ -172,63 +222,77 @@ def caixa(v, s):
     c = CAIXAS.get(os.path.splitext(os.path.basename(v))[0])
     if not c: return None
     return c[min(c, key=lambda k: abs(k - float(s)))]
-def quadro(spec, crop=None):
+def quadro(spec, crop=None, tam=(1080, 960)):
     png = f'out/ass/img/{proj}-{len(camadas)}.png'
+    esc = f'scale={tam[0]}:{tam[1]}:force_original_aspect_ratio=decrease,pad={tam[0]}:{tam[1]}:(ow-iw)/2:(oh-ih)/2:white'
     if '@' in spec:
         v, s = spec.rsplit('@', 1)
         cx = caixa(v, s)
         vf = f'crop={crop},' if crop else (f'crop={cx[0]}:{cx[1]}:{cx[2]}:{cx[3]},' if cx else '')
-        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-ss', s, '-i', v, '-frames:v', '1', '-vf', vf + 'scale=1080:960:force_original_aspect_ratio=decrease,pad=1080:960:(ow-iw)/2:(oh-ih)/2:white', png])
+        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-ss', s, '-i', v, '-frames:v', '1', '-vf', vf + esc, png])
     else:
-        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', spec, '-frames:v', '1', '-vf', 'scale=1080:960:force_original_aspect_ratio=decrease,pad=1080:960:(ow-iw)/2:(oh-ih)/2:white', png])
+        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', spec, '-frames:v', '1', '-vf', (f'crop={crop},' if crop else '') + esc, png])
     return png
 prod_png = 'out/ass/img/produto-aqui.png'
-if plano.get('produto') and not os.path.exists(prod_png):
+if any('img' not in p_ for p_ in plano.get('produto', [])) and not os.path.exists(prod_png):
     subprocess.run(['ffmpeg', '-v', 'error', '-y', '-f', 'lavfi', '-i', 'color=white:s=1080x960', '-vf',
                     "drawtext=fontfile=C\\\\:/Windows/Fonts/ariblk.ttf:text='PRODUTO AQUI':fontsize=110:fontcolor=black:x=(w-tw)/2:y=(h-th)/2",
                     '-frames:v', '1', prod_png])
 itens = []
 for s_ in plano.get('split', []):
-    itens.append(('video', s_['video'], s_['de'], s_['ate'], 'topo', s_.get('inicio', 0), s_.get('loop', False), s_.get('crop'), s_.get('len')))
+    itens.append(('video', s_['video'], s_['de'], s_['ate'], 'topo', s_.get('inicio', 0), s_.get('loop', False), s_.get('crop'), s_.get('len'), 'audio' if s_.get('audio') else None))
 for f_ in plano.get('fotos', []):
-    itens.append(('img', f_['img'], f_['de'], f_['ate'], f_.get('modo', 'topo'), 0, False, f_.get('crop'), None))
+    itens.append(('img', f_['img'], f_['de'], f_['ate'], f_.get('modo', 'topo'), 0, False, f_.get('crop'), None, f_.get('box')))
+# Produto: foto real (img) quando houver; sem ela, o aviso "PRODUTO AQUI".
 for p_ in plano.get('produto', []):
-    itens.append(('img', prod_png, p_['de'], p_['ate'], 'topo', 0, False, None, None))
+    itens.append(('img', p_.get('img', prod_png), p_['de'], p_['ate'], p_.get('modo', 'topo'), 0, False, p_.get('crop'), None, p_.get('box')))
 # Ordem: split por baixo, fotos e produto por cima.
-for tipo, arq, de, ate, modo, ini, loop, crop, ln in itens:
+# "caixa": foto numa posição exata do quadro final (box = [x, y, largura, altura] em 1080x1920), sem dividir a tela.
+auds = []
+for tipo, arq, de, ate, modo, ini, loop, crop, ln, box in itens:
     a, b = editado(max(0, de)), editado(min(dur, ate))
     if b - a < 0.1: continue
     n = len(camadas) + 1
-    W_, H_ = (1080, 960) if modo == 'topo' else (1080, 1920)
+    if box == 'audio': auds.append((n, a, b)); box = None
+    W_, H_ = (1080, 960) if modo == 'topo' else (box[2], box[3]) if modo == 'caixa' else (1080, 1920)
     if tipo == 'img':
-        entradas += ['-loop', '1', '-t', f'{b - a + 0.1:.2f}', '-i', quadro(arq, crop)]
+        entradas += ['-loop', '1', '-t', f'{b - a + 0.1:.2f}', '-i', quadro(arq, crop, (W_, H_))]
     else:
         entradas += (['-stream_loop', '-1'] if loop else []) + ['-ss', str(ini), '-t', f'{(ln if ln else b - a) + 0.1:.2f}', '-i', arq]
     tr = TOPO_REF.get(os.path.splitext(os.path.basename(arq))[0]) if tipo == 'video' else None
     cr = f'crop={crop},' if (crop and tipo == 'video') else (f'crop={tr[0]}:{tr[1]}:{tr[2]}:{tr[3]},' if tr else '')
     # Trecho curto da referência (len) repetido até cobrir o intervalo.
     if tipo == 'video' and ln: cr = f'fps=30,loop=loop=-1:size={int(ln * 30)}:start=0,' + cr
-    camadas.append((n, a, b, W_, H_, cr))
+    camadas.append((n, a, b, W_, H_, cr, (box[0], box[1]) if modo == 'caixa' else (0, 0)))
     if modo == 'topo': topo.append((a, b))
 graf = [f"[0:v]select='{sel}',setpts=N/FRAME_RATE/TB,scale=1080:1920,format=yuv420p[base0]"]
 ult = 'base0'
 if topo:
     en = '+'.join(f'between(t,{a:.3f},{b:.3f})' for a, b in topo)
     # Criadora na metade de baixo: recorte 1080x960 centrado no rosto (terço de cima do quadro).
-    graf.append(f"[{ult}]split[bA][bB];[bB]crop=1080:960:0:260[bC];[bA][bC]overlay=0:960:enable='{en}'[base1]")
+    # Recorte da metade de baixo centralizado no rosto (rostoY do plano, medido por scripts/rosto-topo.py); sem ele, 260.
+    cy = min(960, max(0, int(plano['rostoY']) - 480)) if plano.get('rostoY') else 260
+    graf.append(f"[{ult}]split[bA][bB];[bB]crop=1080:960:0:{cy}[bC];[bA][bC]overlay=0:960:enable='{en}'[base1]")
     ult = 'base1'
-for k, (n, a, b, W_, H_, cr) in enumerate(camadas):
-    y = 0
+for k, (n, a, b, W_, H_, cr, (x, y)) in enumerate(camadas):
     graf.append(f"[{n}:v]{cr}scale={W_}:{H_}:force_original_aspect_ratio=increase,crop={W_}:{H_},setsar=1,format=yuv420p,fps=30,setpts=PTS-STARTPTS+{a:.3f}/TB[c{k}]")
-    graf.append(f"[{ult}][c{k}]overlay=0:{y}:eof_action=pass:enable='between(t,{a:.3f},{b:.3f})'[o{k}]")
+    graf.append(f"[{ult}][c{k}]overlay={x}:{y}:eof_action=pass:enable='between(t,{a:.3f},{b:.3f})'[o{k}]")
     ult = f'o{k}'
-graf.append(f"[{ult}]ass='out/ass/{proj}.ass'[v]")
-graf.append(f"[0:a]aselect='{sel}',asetpts=N/SR/TB{vol},loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000[a]")
+graf.append(f"[{ult}]ass='out/ass/{proj}.ass':fontsdir='out/ass/fontes'[v]")
+# Vídeo da referência com o próprio áudio (audio: true): o áudio dele entra no lugar do da criadora naquele intervalo.
+if auds:
+    cala = ''.join(f",volume=enable='between(t,{a:.3f},{b:.3f})':volume=0" for _, a, b in auds)
+    graf.append(f"[0:a]aselect='{sel}',asetpts=N/SR/TB{vol}{cala},aresample=48000[a0]")
+    for k, (n, a, b) in enumerate(auds):
+        graf.append(f"[{n}:a]atrim=0:{b - a:.3f},asetpts=PTS-STARTPTS,aresample=48000,adelay={int(a * 1000)}:all=1[r{k}]")
+    graf.append(''.join(['[a0]'] + [f'[r{k}]' for k in range(len(auds))]) + f"amix=inputs={len(auds) + 1}:normalize=0:duration=first,loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000[a]")
+else:
+    graf.append(f"[0:a]aselect='{sel}',asetpts=N/SR/TB{vol},loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000[a]")
 open(f'out/ass/{proj}-filtro.txt', 'w').write(';'.join(graf))
 os.makedirs(os.path.dirname(saida), exist_ok=True)
 r = subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-y', '-i', fonte, *entradas, '-/filter_complex', f'out/ass/{proj}-filtro.txt',
                     '-map', '[v]', '-map', '[a]', '-r', '30', '-c:v', 'h264_nvenc', '-preset', 'p5', '-cq', '20', '-b:v', '0',
-                    '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', saida])
+                    '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', *(['-t', '2', '-f', 'null'] if '--checar' in args else []), 'NUL' if '--checar' in args else saida])
 print(f'{proj}: {"ok" if r.returncode == 0 else "ERRO"} {total:.1f}s (de {dur:.1f}s), {len(seg)} trechos, {len(apagar)} palavras de regravação cortadas, '
       f'CTA/seta em {cta:.1f}s, {len(mudos)} mudo(s) -> {saida}')
 sys.exit(r.returncode)
