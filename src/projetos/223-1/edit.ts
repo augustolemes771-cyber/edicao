@@ -41,15 +41,15 @@ export const p2231: Edit = {
 			{palavra: 'gravar', estilo: 'serif'},
 		],
 		falantes: (b) => [
-			{de: b.at('costumo') - 0.1, ate: b.at('Por') - 0.05, nome: 'DANILOW'},
-			{de: b.at('Por') - 0.05, ate: b.at('Cara') - 0.05, nome: 'PERGUNTA'},
+			{de: b.at('costumo') - 0.1, ate: b.say('Por quê').inicio - 0.05, nome: 'DANILOW'},
+			{de: b.say('Por quê').inicio - 0.05, ate: b.at('Cara') - 0.05, nome: 'PERGUNTA'},
 			{de: b.at('Cara') - 0.05, ate: b.at('Loucura') - 0.05, nome: 'DANILOW'},
 		],
 	},
 	camera: (b) => [
 		...punches(b, [[b.at('Loucura') - 0.05, b.at('Loucura') + 3]], () => ({x: 0.52, y: 0.36})),
 		{tipo: 'flash', em: b.at('trinta') - 0.04},
-		{tipo: 'chicote', em: b.at('Por') - 0.04},
+		{tipo: 'chicote', em: b.say('Por quê').inicio - 0.04},
 		{tipo: 'chicote', em: b.at('Cara') - 0.04},
 		{tipo: 'flash', em: b.at('democrática') - 0.04},
 	],
@@ -76,7 +76,7 @@ export const p2231: Edit = {
 			{
 				tipo: 'selo',
 				de: b.at('costumo') - 0.02,
-				ate: b.at('Por') - 0.05,
+				ate: b.say('Por quê').inicio - 0.05,
 				texto: 'A MAIS DEMOCRÁTICA',
 				chip: 'TIKTOK SHOP',
 				emChip: b.at('TikTok'),
