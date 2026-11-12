@@ -14,9 +14,9 @@ const TRECHOS: Trecho[] = [
 	[39.6, 48.72], // gancho: "Então de sessenta a cem mil todo mês, com a live, é, sem ser famoso, sem ter produto, sem falar com cliente. Só abre a live e faz."
 	[4.0, 7.48], // "Tá falando pra mim que eu não preciso ser famoso então, pra vender muito TikTok."
 	[7.95, 9.8], // "Não, cara, não precisa ser famoso. Sério? Sério."
-	[13.15, 19.17], // "Por isso que eu falo que é uma plataforma democrática. Sim. Porque qualquer pessoa que não é famosa consegue fazer muita grana."
+	[13.15, 19.06], // "Por isso que eu falo que é uma plataforma democrática. Sim. Porque qualquer pessoa que não é famosa consegue fazer muita grana."
 	[20.34, 21.98], // "Zero famoso, ninguém me conhece."
-	[22.0, 28.78], // "Hoje, a minha empresa, a gente tá mais no TikTok Shop, a gente profissionalizou, né. Nós tamo operação de live, temos operação de vídeo,"
+	[22.0, 28.66], // "Hoje, a minha empresa, a gente tá mais no TikTok Shop, a gente profissionalizou, né. Nós tamo operação de live, temos operação de vídeo,"
 ];
 
 export const p2236: Edit = {
