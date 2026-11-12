@@ -17,8 +17,7 @@ const TRECHOS: Trecho[] = [
 	[7.2, 9.65], // "Não, tem sim, tem. Tem? No Brás tem."
 	[15.74, 19.14], // "Os próprios fabricantes ali, né. A galera, ela vende dentro de galpão."
 	[19.66, 22.16], // "Isso aí a gente vê muito na, no Brás."
-	[22.7, 26.12], // "E também começou agora lá em Goiânia, lá na quarenta e quatro também."
-	[26.2, 28.0], // "Os shoppings adaptaram, né?"
+	[22.7, 28.0], // "E também começou agora lá em Goiânia, lá na quarenta e quatro também. Os shoppings adaptaram, né?" (contínuos)
 	[28.35, 36.6], // "Compraram essa visão de live shopping, só que é metade shopping físico e metade shopping de live mesmo, onde tem as baias."
 ];
 
@@ -44,7 +43,7 @@ export const p22321: Edit = {
 	},
 	camera: (b) => {
 		const danilow = (t: number) => t < b.at('sim') - 0.4;
-		const cheias: Trecho[] = [[b.at('shoppings') - 0.3, b.at('baias') + 1]];
+		const cheias: Trecho[] = [[b.at('metade') - 0.3, b.at('baias') + 1]];
 		return [
 			...punches(b, cheias, (t) => (danilow(t) ? {x: 0.32, y: 0.32} : {x: 0.66, y: 0.33})),
 			{tipo: 'flash', em: b.at('fábrica') - 0.04},
@@ -103,8 +102,18 @@ export const p22321: Edit = {
 				som: 'pro_swipe',
 			},
 			{
-				tipo: 'gradeAntesDepois',
+				tipo: 'selo',
 				de: b.at('shoppings') - 0.3,
+				ate: b.at('metade') - 0.3,
+				texto: 'OS SHOPPINGS ADAPTARAM',
+				chip: 'LIVE SHOPPING',
+				emChip: b.say('de live shopping').inicio + 0.2,
+				esconderLegenda: true,
+				som: 'pro_swipe',
+			},
+			{
+				tipo: 'gradeAntesDepois',
+				de: b.at('metade') - 0.3,
 				ate: fimFala + 0.25,
 				titulo: [{texto: 'O SHOPPING', em: b.at('shoppings')}],
 				antes: {texto: 'METADE', em: b.at('físico'), valor: 'FÍSICO'},
