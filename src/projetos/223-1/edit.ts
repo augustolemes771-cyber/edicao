@@ -66,7 +66,7 @@ export const p2231: Edit = {
 				kicker: 'POR MÊS',
 				sub: 'SEM APARECER',
 				pousa: b.at('trinta'),
-				y: 380,
+				y: 1060,
 				esconderLegenda: true,
 				som: 'pro_whoosh',
 				sons: [{em: b.at('trinta'), som: 'pro_pop', ganho: 0.7}],
