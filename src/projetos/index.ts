@@ -72,6 +72,7 @@ import {p2231} from './223-1/edit';
 import {p8} from './8/edit';
 import {p2233} from './223-3/edit';
 import {p2232} from './223-2/edit';
+import {p2234} from './223-4/edit';
 
 // Cada projeto novo entra aqui. O nome vira o id da composição no Studio e no render.
 export const projetos: Record<string, Edit> = {
@@ -148,4 +149,5 @@ export const projetos: Record<string, Edit> = {
 	'8': p8,
 	'223-3': p2233,
 	'223-2': p2232,
+	'223-4': p2234,
 };
