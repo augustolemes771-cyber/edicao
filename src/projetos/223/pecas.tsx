@@ -173,14 +173,14 @@ const p223Tempo: React.FC<{cena: CenaPeca}> = ({cena}) => {
 				const f = q(it.em);
 				const p = mola(frame, f, fps, 14);
 				const cresce = suave(interpolate(frame, [f, f + 16], [0, 1], lim));
-				const largura = 120 + (anos[i] / 7) * 640 * cresce;
+				const largura = 90 + (anos[i] / 7) * 480 * cresce;
 				const y = 200 + i * 132;
 				return frame >= f - 1 ? (
 					<div key={i} style={{position: 'absolute', left: 90, top: y, opacity: Math.min(1, p * 1.4), transform: `translateX(${(1 - p) * -40}px)`}}>
 						<div style={{fontFamily: poppins, fontWeight: 800, fontSize: 30, letterSpacing: '0.16em', color: i === 0 ? 'rgba(255,255,255,0.8)' : OURO, marginBottom: 8}}>{it.texto}</div>
 						<div style={{display: 'flex', alignItems: 'center', gap: 18}}>
 							<div style={{width: largura, height: 54, borderRadius: 27, background: i === 0 ? 'linear-gradient(90deg, rgba(255,255,255,0.35), rgba(255,255,255,0.7))' : 'linear-gradient(90deg,#C9974A,#F6DB9C)', boxShadow: '0 10px 26px rgba(8,2,20,0.45)'}} />
-							<div style={{fontFamily: playfair, fontStyle: 'italic', fontWeight: 700, fontSize: 46, color: i === 0 ? '#fff' : OURO, opacity: cresce, whiteSpace: 'nowrap'}}>{it.sub ?? subs[i]}</div>
+							<div style={{fontFamily: playfair, fontStyle: 'italic', fontWeight: 700, fontSize: 42, color: i === 0 ? '#fff' : OURO, opacity: cresce, whiteSpace: 'nowrap'}}>{it.sub ?? subs[i]}</div>
 						</div>
 					</div>
 				) : null;
@@ -223,7 +223,7 @@ const p223Mosaico: React.FC<{cena: CenaPeca}> = ({cena}) => {
 						width: celW - 4,
 						height: celH - 4,
 						borderRadius: 4,
-						background: `linear-gradient(180deg, rgba(${110 + tom * 60},${70 + tom * 40},${190 - tom * 30},0.9), rgba(40,20,80,0.9))`,
+						background: `linear-gradient(180deg, rgba(${120 + tom * 70},${60 + tom * 50},${200 - tom * 30},1), rgba(34,16,70,1))`, boxShadow: 'inset 0 0 0 1px rgba(232,194,122,0.25)',
 					}}
 				>
 					<div style={{position: 'absolute', right: 3, top: 3, width: 6, height: 6, borderRadius: 3, background: VERMELHO, opacity: (r + c + Math.floor(frame / 6)) % 4 === 0 ? 0.35 : 1}} />
@@ -235,8 +235,8 @@ const p223Mosaico: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	return (
 		<AbsoluteFill style={{opacity: sai * entra}}>
 			<FundoMotion />
-			<AbsoluteFill style={{opacity: 0.85}}>{cel}</AbsoluteFill>
-			<AbsoluteFill style={{background: 'radial-gradient(ellipse at 50% 48%, rgba(20,8,42,0.92) 0%, rgba(20,8,42,0.75) 30%, rgba(20,8,42,0) 62%)'}} />
+			<AbsoluteFill>{cel}</AbsoluteFill>
+			<AbsoluteFill style={{background: 'radial-gradient(ellipse at 50% 46%, rgba(16,6,34,0.94) 0%, rgba(16,6,34,0.8) 26%, rgba(16,6,34,0) 52%)'}} />
 			<AbsoluteFill style={{background: '#fff', opacity: 0.35 * trava * (frame >= f1 ? 1 : 0)}} />
 			<div style={{position: 'absolute', top: 700, left: 0, right: 0, textAlign: 'center', transform: `scale(${0.7 + 0.3 * pNum})`, opacity: pNum}}>
 				<div style={{display: 'inline-flex', alignItems: 'center', gap: 14, padding: '10px 26px', borderRadius: 999, background: VERMELHO, fontFamily: poppins, fontWeight: 800, fontSize: 36, color: '#fff', letterSpacing: '0.14em'}}>
@@ -285,7 +285,7 @@ const p223Lata: React.FC<{cena: CenaPeca}> = ({cena}) => {
 				</div>
 			</div>
 			{/* etiqueta de preço */}
-			<div style={{position: 'absolute', left: 600, top: 230, opacity: Math.min(1, pPreco * 1.5), transform: `scale(${0.6 + 0.4 * pPreco}) rotate(${-8 + (1 - pPreco) * 30}deg)`}}>
+			<div style={{position: 'absolute', left: 640, top: 190, opacity: Math.min(1, pPreco * 1.5), transform: `scale(${0.6 + 0.4 * pPreco}) rotate(${-8 + (1 - pPreco) * 30}deg)`}}>
 				<div style={{padding: '18px 34px', borderRadius: 22, background: VIDRO, boxShadow: BORDA}}>
 					<div style={{fontFamily: poppins, fontWeight: 700, fontSize: 26, color: 'rgba(255,255,255,0.75)', letterSpacing: '0.18em'}}>TIKTOK SHOP</div>
 					<div style={{fontFamily: poppins, fontWeight: 900, fontSize: 72, color: '#fff', lineHeight: 1.05}}>R$ 39,90</div>
@@ -293,8 +293,8 @@ const p223Lata: React.FC<{cena: CenaPeca}> = ({cena}) => {
 			</div>
 			{/* carimbo */}
 			{frame >= f1 ? (
-				<div style={{position: 'absolute', left: 260, top: 300, transform: `rotate(-14deg) scale(${2.2 - 1.2 * pCarimbo})`, opacity: Math.min(1, pCarimbo * 2)}}>
-					<div style={{padding: '10px 36px', border: `9px solid ${VERMELHO}`, borderRadius: 18, fontFamily: poppins, fontWeight: 900, fontSize: 88, color: VERMELHO, letterSpacing: '0.08em', background: 'rgba(255,255,255,0.12)'}}>VENDIDO</div>
+				<div style={{position: 'absolute', left: 245, top: 380, transform: `rotate(-14deg) scale(${2.2 - 1.2 * pCarimbo})`, opacity: Math.min(1, pCarimbo * 2)}}>
+					<div style={{padding: '10px 36px', border: `9px solid ${VERMELHO}`, borderRadius: 18, fontFamily: poppins, fontWeight: 900, fontSize: 64, color: VERMELHO, letterSpacing: '0.08em', background: 'rgba(255,255,255,0.85)'}}>VENDIDO</div>
 				</div>
 			) : null}
 		</AbsoluteFill>
