@@ -17,8 +17,8 @@ const TRECHOS: Trecho[] = [
 	[20.25, 23.15], // "Até porque loja física é muito limitado."
 	[23.25, 27.32], // "Caldas Novas tá sendo cem mil habitantes, às vezes recebe mais outros cem mil turistas."
 	[27.97, 30.8], // "TikTok Shop, nós temos cem milhões de usuários"
-	[31.3, 36.36], // "cadastrados no TikTok, então é uma capacidade de escala absurda, né."
-	[37.0, 41.26], // "E mais de cinco bi aí de vendas já geradas dentro do TikTok."
+	// contínuos na gravação (separados, o encaixe no silêncio repetia o "Absurda" da empresária):
+	[31.3, 41.26], // "cadastrados no TikTok, então é uma capacidade de escala absurda, né. Absurda. E mais de cinco bi aí de vendas já geradas dentro do TikTok."
 ];
 
 export const p22315: Edit = {
