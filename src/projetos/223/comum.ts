@@ -20,7 +20,7 @@ export const semPausas = (lista: Trecho[], silencios: Trecho[], minimo = 0.3): T
 // Ritmo frenético (preferência do painel: evento a cada 0,3–0,6 s): punch-in em começo de palavra a cada ~passo s fora das
 // telas inteiras, em ciclo médio → close → aberto, até 1,26 (fonte 1080: zoom ≤ 1,35).
 const ESCALAS = [1.1, 1.2, 1.26, 1.06, 1.16, 1.22, 1.03, 1.14];
-export const punches = (b: Busca, fora: Trecho[], centro: (t: number) => {x: number; y: number}, passo = 0.55): EfeitoCamera[] => {
+export const punches = (b: Busca, fora: Trecho[], centro: (t: number) => {x: number; y: number}, passo = 0.42): EfeitoCamera[] => {
 	const lista: EfeitoCamera[] = [];
 	let ultimo = -9;
 	for (const p of b.palavras) {
