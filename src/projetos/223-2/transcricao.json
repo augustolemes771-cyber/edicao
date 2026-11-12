@@ -1,0 +1,2340 @@
+{
+ "language_code": "por",
+ "language_probability": 1,
+ "text": "Todo dia. Porque agora em novembro, é, o TikTok tá investindo muito em live. O TikTok tá investindo cem milhões em cupons pros clientes comprarem em live. E agora é Black Friday, né, que é final de novembro. Por que que eles fazem isso? Presta atenção, a Shopee tem sete anos no mercado. TikTok tem um ano e meio. Ou seja, muita gente não tem confiança em comprar na Shopee. Eles precisam pagar pras pessoas fazerem a primeira compra na, no TikTok, pra eles terem a confiança que chega o produto, pra numa segunda compra, eles ganharem numa segunda compra. Então eles ganham o que a gente chama no CAC, que é, é, quanto que a, que o TikTok paga paa, pro cliente fazer a primeira compra, pra ele comprar ao longo da vida dele. Virar cliente recorrente. Exatamente. Então tem muita gente que não tem confiança no TikTok. Aham. Na Shopee tem muito mais confiança. É porque é novo, né? Agora que a galera tá",
+ "words": [
+  {
+   "text": " ",
+   "start": 0.1,
+   "end": 0.2,
+   "type": "spacing",
+   "logprob": -0.00035386974923312664
+  },
+  {
+   "text": "Todo",
+   "start": 0.74,
+   "end": 0.96,
+   "type": "word",
+   "logprob": -0.0019535997416824102
+  },
+  {
+   "text": " ",
+   "start": 0.96,
+   "end": 1.06,
+   "type": "spacing",
+   "logprob": -0.000007629365427419543
+  },
+  {
+   "text": "dia.",
+   "start": 1.06,
+   "end": 1.18,
+   "type": "word",
+   "logprob": -0.000005930640242013396
+  },
+  {
+   "text": " ",
+   "start": 1.18,
+   "end": 1.18,
+   "type": "spacing",
+   "logprob": -0.0003000047872774303
+  },
+  {
+   "text": "Porque",
+   "start": 1.36,
+   "end": 1.48,
+   "type": "word",
+   "logprob": -0.0002656822034623474
+  },
+  {
+   "text": " ",
+   "start": 1.48,
+   "end": 1.48,
+   "type": "spacing",
+   "logprob": -0.000005483612312673358
+  },
+  {
+   "text": "agora",
+   "start": 1.48,
+   "end": 1.62,
+   "type": "word",
+   "logprob": -0.000005483612312673358
+  },
+  {
+   "text": " ",
+   "start": 1.62,
+   "end": 1.72,
+   "type": "spacing",
+   "logprob": -0.006722453515976667
+  },
+  {
+   "text": "em",
+   "start": 1.72,
+   "end": 1.78,
+   "type": "word",
+   "logprob": -0.006722453515976667
+  },
+  {
+   "text": " ",
+   "start": 1.78,
+   "end": 1.82,
+   "type": "spacing",
+   "logprob": -0.000019907753085135482
+  },
+  {
+   "text": "novembro,",
+   "start": 1.82,
+   "end": 2.38,
+   "type": "word",
+   "logprob": -0.000017722271470195967
+  },
+  {
+   "text": " ",
+   "start": 2.38,
+   "end": 2.52,
+   "type": "spacing",
+   "logprob": -0.0000032186455882765586
+  },
+  {
+   "text": "é,",
+   "start": 2.52,
+   "end": 2.64,
+   "type": "word",
+   "logprob": -0.0000497079573733572
+  },
+  {
+   "text": " ",
+   "start": 2.64,
+   "end": 3.24,
+   "type": "spacing",
+   "logprob": -0.16049827635288239
+  },
+  {
+   "text": "o",
+   "start": 3.24,
+   "end": 3.24,
+   "type": "word",
+   "logprob": -0.16049827635288239
+  },
+  {
+   "text": " ",
+   "start": 3.24,
+   "end": 3.26,
+   "type": "spacing",
+   "logprob": -0.00002610649426060263
+  },
+  {
+   "text": "TikTok",
+   "start": 3.26,
+   "end": 3.56,
+   "type": "word",
+   "logprob": -0.00002610649426060263
+  },
+  {
+   "text": " ",
+   "start": 3.56,
+   "end": 3.6,
+   "type": "spacing",
+   "logprob": -0.00010215714428341016
+  },
+  {
+   "text": "tá",
+   "start": 3.6,
+   "end": 3.66,
+   "type": "word",
+   "logprob": -0.00010215714428341016
+  },
+  {
+   "text": " ",
+   "start": 3.66,
+   "end": 3.68,
+   "type": "spacing",
+   "logprob": -0.0002203936892328784
+  },
+  {
+   "text": "investindo",
+   "start": 3.68,
+   "end": 4.08,
+   "type": "word",
+   "logprob": -0.000132856101345169
+  },
+  {
+   "text": " ",
+   "start": 4.08,
+   "end": 4.12,
+   "type": "spacing",
+   "logprob": -0.000002861018856492592
+  },
+  {
+   "text": "muito",
+   "start": 4.12,
+   "end": 4.32,
+   "type": "word",
+   "logprob": -0.000002861018856492592
+  },
+  {
+   "text": " ",
+   "start": 4.32,
+   "end": 4.34,
+   "type": "spacing",
+   "logprob": 0
+  },
+  {
+   "text": "em",
+   "start": 4.34,
+   "end": 4.38,
+   "type": "word",
+   "logprob": 0
+  },
+  {
+   "text": " ",
+   "start": 4.38,
+   "end": 4.42,
+   "type": "spacing",
+   "logprob": -0.000018596476365928538
+  },
+  {
+   "text": "live.",
+   "start": 4.42,
+   "end": 4.78,
+   "type": "word",
+   "logprob": -0.00001487718109274283
+  },
+  {
+   "text": " ",
+   "start": 4.78,
+   "end": 5.1,
+   "type": "spacing",
+   "logprob": -0.00017534149810671806
+  },
+  {
+   "text": "O",
+   "start": 5.1,
+   "end": 5.12,
+   "type": "word",
+   "logprob": -0.00017534149810671806
+  },
+  {
+   "text": " ",
+   "start": 5.12,
+   "end": 5.58,
+   "type": "spacing",
+   "logprob": -0.15324164927005768
+  },
+  {
+   "text": "TikTok",
+   "start": 5.58,
+   "end": 5.82,
+   "type": "word",
+   "logprob": -0.15324164927005768
+  },
+  {
+   "text": " ",
+   "start": 5.82,
+   "end": 5.86,
+   "type": "spacing",
+   "logprob": -0.0003387354372534901
+  },
+  {
+   "text": "tá",
+   "start": 5.86,
+   "end": 5.919,
+   "type": "word",
+   "logprob": -0.0003387354372534901
+  },
+  {
+   "text": " ",
+   "start": 5.919,
+   "end": 5.94,
+   "type": "spacing",
+   "logprob": -0.0068486714735627174
+  },
+  {
+   "text": "investindo",
+   "start": 5.94,
+   "end": 6.36,
+   "type": "word",
+   "logprob": -0.004112397680364666
+  },
+  {
+   "text": " ",
+   "start": 6.36,
+   "end": 6.419,
+   "type": "spacing",
+   "logprob": -0.0002760506176855415
+  },
+  {
+   "text": "cem",
+   "start": 6.419,
+   "end": 6.539,
+   "type": "word",
+   "logprob": -0.0002760506176855415
+  },
+  {
+   "text": " ",
+   "start": 6.539,
+   "end": 6.6,
+   "type": "spacing",
+   "logprob": -0.00007760223525110632
+  },
+  {
+   "text": "milhões",
+   "start": 6.6,
+   "end": 7.18,
+   "type": "word",
+   "logprob": -0.00007760223525110632
+  },
+  {
+   "text": " ",
+   "start": 7.18,
+   "end": 7.9,
+   "type": "spacing",
+   "logprob": -8.344646857949556e-7
+  },
+  {
+   "text": "em",
+   "start": 7.9,
+   "end": 8,
+   "type": "word",
+   "logprob": -8.344646857949556e-7
+  },
+  {
+   "text": " ",
+   "start": 8,
+   "end": 8.039,
+   "type": "spacing",
+   "logprob": -0.00030012393835932016
+  },
+  {
+   "text": "cupons",
+   "start": 8.039,
+   "end": 8.68,
+   "type": "word",
+   "logprob": -0.0001224522832975102
+  },
+  {
+   "text": " ",
+   "start": 8.68,
+   "end": 8.68,
+   "type": "spacing",
+   "logprob": -0.0002108589978888631
+  },
+  {
+   "text": "pros",
+   "start": 9.36,
+   "end": 9.54,
+   "type": "word",
+   "logprob": -0.0002108589978888631
+  },
+  {
+   "text": " ",
+   "start": 9.54,
+   "end": 9.58,
+   "type": "spacing",
+   "logprob": -0.000024199192921514623
+  },
+  {
+   "text": "clientes",
+   "start": 9.58,
+   "end": 9.92,
+   "type": "word",
+   "logprob": -0.000024199192921514623
+  },
+  {
+   "text": " ",
+   "start": 9.92,
+   "end": 9.96,
+   "type": "spacing",
+   "logprob": -0.005425016395747662
+  },
+  {
+   "text": "comprarem",
+   "start": 9.96,
+   "end": 10.28,
+   "type": "word",
+   "logprob": -0.0036168762792575158
+  },
+  {
+   "text": " ",
+   "start": 10.28,
+   "end": 10.3,
+   "type": "spacing",
+   "logprob": -0.0008120815036818385
+  },
+  {
+   "text": "em",
+   "start": 10.3,
+   "end": 10.32,
+   "type": "word",
+   "logprob": -0.0008120815036818385
+  },
+  {
+   "text": " ",
+   "start": 10.32,
+   "end": 10.34,
+   "type": "spacing",
+   "logprob": -0.0000058412379075889476
+  },
+  {
+   "text": "live.",
+   "start": 10.34,
+   "end": 10.7,
+   "type": "word",
+   "logprob": -0.000004863725098402938
+  },
+  {
+   "text": " ",
+   "start": 10.7,
+   "end": 11.02,
+   "type": "spacing",
+   "logprob": -0.0000770062324590981
+  },
+  {
+   "text": "E",
+   "start": 11.02,
+   "end": 11.06,
+   "type": "word",
+   "logprob": -0.04322975501418114
+  },
+  {
+   "text": " ",
+   "start": 11.06,
+   "end": 11.08,
+   "type": "spacing",
+   "logprob": -0.000003576272320060525
+  },
+  {
+   "text": "agora",
+   "start": 11.08,
+   "end": 11.24,
+   "type": "word",
+   "logprob": -0.000003576272320060525
+  },
+  {
+   "text": " ",
+   "start": 11.24,
+   "end": 11.28,
+   "type": "spacing",
+   "logprob": -0.0004323977918829769
+  },
+  {
+   "text": "é",
+   "start": 11.28,
+   "end": 11.3,
+   "type": "word",
+   "logprob": -0.0004323977918829769
+  },
+  {
+   "text": " ",
+   "start": 11.3,
+   "end": 11.34,
+   "type": "spacing",
+   "logprob": -0.000008583032467868179
+  },
+  {
+   "text": "Black",
+   "start": 11.34,
+   "end": 11.52,
+   "type": "word",
+   "logprob": -0.000008583032467868179
+  },
+  {
+   "text": " ",
+   "start": 11.52,
+   "end": 11.58,
+   "type": "spacing",
+   "logprob": -0.000006079655122448457
+  },
+  {
+   "text": "Friday,",
+   "start": 11.58,
+   "end": 11.96,
+   "type": "word",
+   "logprob": -0.000005756088674908304
+  },
+  {
+   "text": " ",
+   "start": 11.96,
+   "end": 12,
+   "type": "spacing",
+   "logprob": -1.1920928244535389e-7
+  },
+  {
+   "text": "né,",
+   "start": 12,
+   "end": 12.1,
+   "type": "word",
+   "logprob": -0.00016272072873846355
+  },
+  {
+   "text": " ",
+   "start": 12.1,
+   "end": 12.14,
+   "type": "spacing",
+   "logprob": -0.00004935142715112306
+  },
+  {
+   "text": "que",
+   "start": 12.14,
+   "end": 12.18,
+   "type": "word",
+   "logprob": -0.00004935142715112306
+  },
+  {
+   "text": " ",
+   "start": 12.18,
+   "end": 12.2,
+   "type": "spacing",
+   "logprob": -0.0022094857413321733
+  },
+  {
+   "text": "é",
+   "start": 12.22,
+   "end": 12.24,
+   "type": "word",
+   "logprob": -0.0022094857413321733
+  },
+  {
+   "text": " ",
+   "start": 12.24,
+   "end": 12.3,
+   "type": "spacing",
+   "logprob": -0.0011606630869209766
+  },
+  {
+   "text": "final",
+   "start": 12.3,
+   "end": 12.42,
+   "type": "word",
+   "logprob": -0.0011606630869209766
+  },
+  {
+   "text": " ",
+   "start": 12.42,
+   "end": 12.46,
+   "type": "spacing",
+   "logprob": -0.0000023841830625315197
+  },
+  {
+   "text": "de",
+   "start": 12.46,
+   "end": 12.52,
+   "type": "word",
+   "logprob": -0.0000023841830625315197
+  },
+  {
+   "text": " ",
+   "start": 12.52,
+   "end": 12.56,
+   "type": "spacing",
+   "logprob": -0.735853374004364
+  },
+  {
+   "text": "novembro.",
+   "start": 12.62,
+   "end": 12.62,
+   "type": "word",
+   "logprob": -0.6540919542312432
+  },
+  {
+   "text": " ",
+   "start": 12.62,
+   "end": 12.62,
+   "type": "spacing",
+   "logprob": -0.00008201262971851975
+  },
+  {
+   "text": "Por",
+   "start": 12.62,
+   "end": 12.8,
+   "type": "word",
+   "logprob": -0.00013124081306159496
+  },
+  {
+   "text": " ",
+   "start": 12.8,
+   "end": 12.82,
+   "type": "spacing",
+   "logprob": -4.768370445162873e-7
+  },
+  {
+   "text": "que",
+   "start": 12.82,
+   "end": 12.9,
+   "type": "word",
+   "logprob": -4.768370445162873e-7
+  },
+  {
+   "text": " ",
+   "start": 12.9,
+   "end": 12.94,
+   "type": "spacing",
+   "logprob": -0.00018082413589581847
+  },
+  {
+   "text": "que",
+   "start": 12.94,
+   "end": 12.98,
+   "type": "word",
+   "logprob": -0.00018082413589581847
+  },
+  {
+   "text": " ",
+   "start": 12.98,
+   "end": 13,
+   "type": "spacing",
+   "logprob": -0.000013589766240329482
+  },
+  {
+   "text": "eles",
+   "start": 13,
+   "end": 13.12,
+   "type": "word",
+   "logprob": -0.000013589766240329482
+  },
+  {
+   "text": " ",
+   "start": 13.12,
+   "end": 13.14,
+   "type": "spacing",
+   "logprob": -0.000034450891689630225
+  },
+  {
+   "text": "fazem",
+   "start": 13.14,
+   "end": 13.42,
+   "type": "word",
+   "logprob": -0.000034450891689630225
+  },
+  {
+   "text": " ",
+   "start": 13.42,
+   "end": 13.52,
+   "type": "spacing",
+   "logprob": -0.000002264974000354414
+  },
+  {
+   "text": "isso?",
+   "start": 13.52,
+   "end": 13.8,
+   "type": "word",
+   "logprob": -0.000001811979200283531
+  },
+  {
+   "text": " ",
+   "start": 13.8,
+   "end": 14.18,
+   "type": "spacing",
+   "logprob": -0.0003511289251036942
+  },
+  {
+   "text": "Presta",
+   "start": 14.18,
+   "end": 14.36,
+   "type": "word",
+   "logprob": -0.0012058414577040821
+  },
+  {
+   "text": " ",
+   "start": 14.36,
+   "end": 14.42,
+   "type": "spacing",
+   "logprob": -0.000006079655122448457
+  },
+  {
+   "text": "atenção,",
+   "start": 14.42,
+   "end": 14.64,
+   "type": "word",
+   "logprob": -0.0000053345993924480695
+  },
+  {
+   "text": " ",
+   "start": 14.64,
+   "end": 14.7,
+   "type": "spacing",
+   "logprob": -1.1920928244535389e-7
+  },
+  {
+   "text": "a",
+   "start": 14.7,
+   "end": 14.76,
+   "type": "word",
+   "logprob": -1.1920928244535389e-7
+  },
+  {
+   "text": " ",
+   "start": 14.76,
+   "end": 14.8,
+   "type": "spacing",
+   "logprob": -0.0005125877796672285
+  },
+  {
+   "text": "Shopee",
+   "start": 14.8,
+   "end": 15.18,
+   "type": "word",
+   "logprob": -0.00026678419726522407
+  },
+  {
+   "text": " ",
+   "start": 15.18,
+   "end": 15.24,
+   "type": "spacing",
+   "logprob": -0.0000015497195136049413
+  },
+  {
+   "text": "tem",
+   "start": 15.24,
+   "end": 15.36,
+   "type": "word",
+   "logprob": -0.0000015497195136049413
+  },
+  {
+   "text": " ",
+   "start": 15.36,
+   "end": 15.4,
+   "type": "spacing",
+   "logprob": -0.000015139465176616795
+  },
+  {
+   "text": "sete",
+   "start": 15.4,
+   "end": 15.6,
+   "type": "word",
+   "logprob": -0.000015139465176616795
+  },
+  {
+   "text": " ",
+   "start": 15.6,
+   "end": 15.64,
+   "type": "spacing",
+   "logprob": -0.00006961580220377073
+  },
+  {
+   "text": "anos",
+   "start": 15.64,
+   "end": 15.74,
+   "type": "word",
+   "logprob": -0.00006961580220377073
+  },
+  {
+   "text": " ",
+   "start": 15.74,
+   "end": 15.76,
+   "type": "spacing",
+   "logprob": -0.0000027418097943154862
+  },
+  {
+   "text": "no",
+   "start": 15.76,
+   "end": 15.82,
+   "type": "word",
+   "logprob": -0.0000027418097943154862
+  },
+  {
+   "text": " ",
+   "start": 15.82,
+   "end": 15.84,
+   "type": "spacing",
+   "logprob": -0.000003099436753473128
+  },
+  {
+   "text": "mercado.",
+   "start": 15.84,
+   "end": 16.42,
+   "type": "word",
+   "logprob": -0.0000027269083195946564
+  },
+  {
+   "text": " ",
+   "start": 16.42,
+   "end": 17.1,
+   "type": "spacing",
+   "logprob": -0.003659577341750264
+  },
+  {
+   "text": "TikTok",
+   "start": 17.1,
+   "end": 17.5,
+   "type": "word",
+   "logprob": -0.003659577341750264
+  },
+  {
+   "text": " ",
+   "start": 17.5,
+   "end": 17.54,
+   "type": "spacing",
+   "logprob": -0.000051973900554003194
+  },
+  {
+   "text": "tem",
+   "start": 17.54,
+   "end": 17.6,
+   "type": "word",
+   "logprob": -0.000051973900554003194
+  },
+  {
+   "text": " ",
+   "start": 17.6,
+   "end": 17.62,
+   "type": "spacing",
+   "logprob": -0.000013589766240329482
+  },
+  {
+   "text": "um",
+   "start": 17.62,
+   "end": 17.66,
+   "type": "word",
+   "logprob": -0.000013589766240329482
+  },
+  {
+   "text": " ",
+   "start": 17.66,
+   "end": 17.68,
+   "type": "spacing",
+   "logprob": -0.000005006777428206988
+  },
+  {
+   "text": "ano",
+   "start": 17.68,
+   "end": 17.74,
+   "type": "word",
+   "logprob": -0.000005006777428206988
+  },
+  {
+   "text": " ",
+   "start": 17.74,
+   "end": 17.78,
+   "type": "spacing",
+   "logprob": -1.1920928244535389e-7
+  },
+  {
+   "text": "e",
+   "start": 17.78,
+   "end": 17.8,
+   "type": "word",
+   "logprob": -1.1920928244535389e-7
+  },
+  {
+   "text": " ",
+   "start": 17.8,
+   "end": 17.86,
+   "type": "spacing",
+   "logprob": -0.0008431693422608078
+  },
+  {
+   "text": "meio.",
+   "start": 17.86,
+   "end": 18.22,
+   "type": "word",
+   "logprob": -0.0006745354738086462
+  },
+  {
+   "text": " ",
+   "start": 18.22,
+   "end": 18.6,
+   "type": "spacing",
+   "logprob": -0.00008725739462533966
+  },
+  {
+   "text": "Ou",
+   "start": 18.6,
+   "end": 18.66,
+   "type": "word",
+   "logprob": -0.00008725739462533966
+  },
+  {
+   "text": " ",
+   "start": 18.66,
+   "end": 18.7,
+   "type": "spacing",
+   "logprob": -3.576278118089249e-7
+  },
+  {
+   "text": "seja,",
+   "start": 18.7,
+   "end": 18.9,
+   "type": "word",
+   "logprob": -2.861022494471399e-7
+  },
+  {
+   "text": " ",
+   "start": 18.9,
+   "end": 18.94,
+   "type": "spacing",
+   "logprob": -0.000006079655122448457
+  },
+  {
+   "text": "muita",
+   "start": 18.94,
+   "end": 19.12,
+   "type": "word",
+   "logprob": -0.000006079655122448457
+  },
+  {
+   "text": " ",
+   "start": 19.12,
+   "end": 19.16,
+   "type": "spacing",
+   "logprob": -0.000003576272320060525
+  },
+  {
+   "text": "gente",
+   "start": 19.16,
+   "end": 19.32,
+   "type": "word",
+   "logprob": -0.000003576272320060525
+  },
+  {
+   "text": " ",
+   "start": 19.32,
+   "end": 19.38,
+   "type": "spacing",
+   "logprob": -3.576278118089249e-7
+  },
+  {
+   "text": "não",
+   "start": 19.38,
+   "end": 19.5,
+   "type": "word",
+   "logprob": -3.576278118089249e-7
+  },
+  {
+   "text": " ",
+   "start": 19.5,
+   "end": 19.56,
+   "type": "spacing",
+   "logprob": -0.00001645074735279195
+  },
+  {
+   "text": "tem",
+   "start": 19.56,
+   "end": 19.68,
+   "type": "word",
+   "logprob": -0.00001645074735279195
+  },
+  {
+   "text": " ",
+   "start": 19.68,
+   "end": 19.72,
+   "type": "spacing",
+   "logprob": -0.00005745722592109814
+  },
+  {
+   "text": "confiança",
+   "start": 19.72,
+   "end": 20.06,
+   "type": "word",
+   "logprob": -0.00005745722592109814
+  },
+  {
+   "text": " ",
+   "start": 20.06,
+   "end": 20.1,
+   "type": "spacing",
+   "logprob": -0.0000011920922133867862
+  },
+  {
+   "text": "em",
+   "start": 20.1,
+   "end": 20.14,
+   "type": "word",
+   "logprob": -0.0000011920922133867862
+  },
+  {
+   "text": " ",
+   "start": 20.14,
+   "end": 20.16,
+   "type": "spacing",
+   "logprob": -0.00015221867943182588
+  },
+  {
+   "text": "comprar",
+   "start": 20.16,
+   "end": 20.36,
+   "type": "word",
+   "logprob": -0.00015221867943182588
+  },
+  {
+   "text": " ",
+   "start": 20.36,
+   "end": 20.4,
+   "type": "spacing",
+   "logprob": -0.0004334702098276466
+  },
+  {
+   "text": "na",
+   "start": 20.4,
+   "end": 20.48,
+   "type": "word",
+   "logprob": -0.0004334702098276466
+  },
+  {
+   "text": " ",
+   "start": 20.48,
+   "end": 20.52,
+   "type": "spacing",
+   "logprob": -0.00005149708886165172
+  },
+  {
+   "text": "Shopee.",
+   "start": 20.52,
+   "end": 20.96,
+   "type": "word",
+   "logprob": -0.00003305432437628042
+  },
+  {
+   "text": " ",
+   "start": 20.96,
+   "end": 21.54,
+   "type": "spacing",
+   "logprob": -3.576278118089249e-7
+  },
+  {
+   "text": "Eles",
+   "start": 21.54,
+   "end": 21.72,
+   "type": "word",
+   "logprob": -3.576278118089249e-7
+  },
+  {
+   "text": " ",
+   "start": 21.72,
+   "end": 21.76,
+   "type": "spacing",
+   "logprob": -0.0000069141146923357155
+  },
+  {
+   "text": "precisam",
+   "start": 21.76,
+   "end": 22.5,
+   "type": "word",
+   "logprob": -0.0000069141146923357155
+  },
+  {
+   "text": " ",
+   "start": 22.5,
+   "end": 22.58,
+   "type": "spacing",
+   "logprob": -0.00001680836794548668
+  },
+  {
+   "text": "pagar",
+   "start": 22.58,
+   "end": 23.1,
+   "type": "word",
+   "logprob": -0.00001680836794548668
+  },
+  {
+   "text": " ",
+   "start": 23.1,
+   "end": 23.14,
+   "type": "spacing",
+   "logprob": -0.00007497983460780233
+  },
+  {
+   "text": "pras",
+   "start": 23.14,
+   "end": 23.3,
+   "type": "word",
+   "logprob": -0.00007497983460780233
+  },
+  {
+   "text": " ",
+   "start": 23.3,
+   "end": 23.34,
+   "type": "spacing",
+   "logprob": -0.00001537788011773955
+  },
+  {
+   "text": "pessoas",
+   "start": 23.34,
+   "end": 23.88,
+   "type": "word",
+   "logprob": -0.00001537788011773955
+  },
+  {
+   "text": " ",
+   "start": 23.88,
+   "end": 23.92,
+   "type": "spacing",
+   "logprob": -0.0016434985445812345
+  },
+  {
+   "text": "fazerem",
+   "start": 23.92,
+   "end": 24.18,
+   "type": "word",
+   "logprob": -0.00575527038225638
+  },
+  {
+   "text": " ",
+   "start": 24.18,
+   "end": 24.22,
+   "type": "spacing",
+   "logprob": 0
+  },
+  {
+   "text": "a",
+   "start": 24.22,
+   "end": 24.26,
+   "type": "word",
+   "logprob": 0
+  },
+  {
+   "text": " ",
+   "start": 24.26,
+   "end": 24.3,
+   "type": "spacing",
+   "logprob": -0.00021300431399140507
+  },
+  {
+   "text": "primeira",
+   "start": 24.3,
+   "end": 24.52,
+   "type": "word",
+   "logprob": -0.00021300431399140507
+  },
+  {
+   "text": " ",
+   "start": 24.52,
+   "end": 24.56,
+   "type": "spacing",
+   "logprob": -0.0002196785935666412
+  },
+  {
+   "text": "compra",
+   "start": 24.56,
+   "end": 24.76,
+   "type": "word",
+   "logprob": -0.0002196785935666412
+  },
+  {
+   "text": " ",
+   "start": 24.76,
+   "end": 24.8,
+   "type": "spacing",
+   "logprob": -0.5917748212814331
+  },
+  {
+   "text": "na,",
+   "start": 24.8,
+   "end": 24.92,
+   "type": "word",
+   "logprob": -0.39519622130319476
+  },
+  {
+   "text": " ",
+   "start": 24.92,
+   "end": 24.96,
+   "type": "spacing",
+   "logprob": -0.000008702239938429557
+  },
+  {
+   "text": "no",
+   "start": 24.96,
+   "end": 25.04,
+   "type": "word",
+   "logprob": -0.000008702239938429557
+  },
+  {
+   "text": " ",
+   "start": 25.04,
+   "end": 25.08,
+   "type": "spacing",
+   "logprob": -0.000013351351299206726
+  },
+  {
+   "text": "TikTok,",
+   "start": 25.08,
+   "end": 25.58,
+   "type": "word",
+   "logprob": -0.00046543719456946874
+  },
+  {
+   "text": " ",
+   "start": 25.58,
+   "end": 25.62,
+   "type": "spacing",
+   "logprob": -0.0000345700973412022
+  },
+  {
+   "text": "pra",
+   "start": 25.62,
+   "end": 25.68,
+   "type": "word",
+   "logprob": -0.0000345700973412022
+  },
+  {
+   "text": " ",
+   "start": 25.68,
+   "end": 25.72,
+   "type": "spacing",
+   "logprob": -0.000002264974000354414
+  },
+  {
+   "text": "eles",
+   "start": 25.72,
+   "end": 25.82,
+   "type": "word",
+   "logprob": -0.000002264974000354414
+  },
+  {
+   "text": " ",
+   "start": 25.82,
+   "end": 25.86,
+   "type": "spacing",
+   "logprob": -0.00033825874561443925
+  },
+  {
+   "text": "terem",
+   "start": 25.86,
+   "end": 26.04,
+   "type": "word",
+   "logprob": -0.00033825874561443925
+  },
+  {
+   "text": " ",
+   "start": 26.04,
+   "end": 26.04,
+   "type": "spacing",
+   "logprob": -0.00008511180931236595
+  },
+  {
+   "text": "a",
+   "start": 26.04,
+   "end": 26.04,
+   "type": "word",
+   "logprob": -0.00008511180931236595
+  },
+  {
+   "text": " ",
+   "start": 26.04,
+   "end": 26.08,
+   "type": "spacing",
+   "logprob": -0.00019000156316906214
+  },
+  {
+   "text": "confiança",
+   "start": 26.08,
+   "end": 26.5,
+   "type": "word",
+   "logprob": -0.00019000156316906214
+  },
+  {
+   "text": " ",
+   "start": 26.5,
+   "end": 26.52,
+   "type": "spacing",
+   "logprob": -0.0000084638240878121
+  },
+  {
+   "text": "que",
+   "start": 26.52,
+   "end": 26.58,
+   "type": "word",
+   "logprob": -0.0000084638240878121
+  },
+  {
+   "text": " ",
+   "start": 26.58,
+   "end": 26.6,
+   "type": "spacing",
+   "logprob": -0.000008106198947643861
+  },
+  {
+   "text": "chega",
+   "start": 26.6,
+   "end": 26.78,
+   "type": "word",
+   "logprob": -0.000008106198947643861
+  },
+  {
+   "text": " ",
+   "start": 26.78,
+   "end": 26.8,
+   "type": "spacing",
+   "logprob": -2.3841855067985307e-7
+  },
+  {
+   "text": "o",
+   "start": 26.8,
+   "end": 26.86,
+   "type": "word",
+   "logprob": -2.3841855067985307e-7
+  },
+  {
+   "text": " ",
+   "start": 26.86,
+   "end": 26.9,
+   "type": "spacing",
+   "logprob": -0.000023603161025675945
+  },
+  {
+   "text": "produto,",
+   "start": 26.9,
+   "end": 27.38,
+   "type": "word",
+   "logprob": -0.000026270377247783472
+  },
+  {
+   "text": " ",
+   "start": 27.38,
+   "end": 27.78,
+   "type": "spacing",
+   "logprob": -0.000011205610462639015
+  },
+  {
+   "text": "pra",
+   "start": 27.78,
+   "end": 27.92,
+   "type": "word",
+   "logprob": -0.000011205610462639015
+  },
+  {
+   "text": " ",
+   "start": 27.92,
+   "end": 27.98,
+   "type": "spacing",
+   "logprob": -0.0025699466932564974
+  },
+  {
+   "text": "numa",
+   "start": 27.98,
+   "end": 28.12,
+   "type": "word",
+   "logprob": -0.0025699466932564974
+  },
+  {
+   "text": " ",
+   "start": 28.12,
+   "end": 28.18,
+   "type": "spacing",
+   "logprob": -0.000048874615458771586
+  },
+  {
+   "text": "segunda",
+   "start": 28.18,
+   "end": 28.54,
+   "type": "word",
+   "logprob": -0.000048874615458771586
+  },
+  {
+   "text": " ",
+   "start": 28.54,
+   "end": 28.6,
+   "type": "spacing",
+   "logprob": -0.000007152531907195225
+  },
+  {
+   "text": "compra,",
+   "start": 28.6,
+   "end": 28.96,
+   "type": "word",
+   "logprob": -0.000006130741634738765
+  },
+  {
+   "text": " ",
+   "start": 28.96,
+   "end": 29.04,
+   "type": "spacing",
+   "logprob": -0.000008106198947643861
+  },
+  {
+   "text": "eles",
+   "start": 29.04,
+   "end": 29.18,
+   "type": "word",
+   "logprob": -0.000008106198947643861
+  },
+  {
+   "text": " ",
+   "start": 29.18,
+   "end": 29.2,
+   "type": "spacing",
+   "logprob": -0.015271991491317749
+  },
+  {
+   "text": "ganharem",
+   "start": 29.2,
+   "end": 29.4,
+   "type": "word",
+   "logprob": -0.007640287261892809
+  },
+  {
+   "text": " ",
+   "start": 29.4,
+   "end": 29.44,
+   "type": "spacing",
+   "logprob": -0.5760095715522766
+  },
+  {
+   "text": "numa",
+   "start": 29.44,
+   "end": 29.52,
+   "type": "word",
+   "logprob": -0.5760095715522766
+  },
+  {
+   "text": " ",
+   "start": 29.52,
+   "end": 29.58,
+   "type": "spacing",
+   "logprob": -0.000023841574147809297
+  },
+  {
+   "text": "segunda",
+   "start": 29.58,
+   "end": 29.88,
+   "type": "word",
+   "logprob": -0.000023841574147809297
+  },
+  {
+   "text": " ",
+   "start": 29.88,
+   "end": 29.94,
+   "type": "spacing",
+   "logprob": -0.000038980677345534787
+  },
+  {
+   "text": "compra.",
+   "start": 29.94,
+   "end": 30.24,
+   "type": "word",
+   "logprob": -0.00008132610673783347
+  },
+  {
+   "text": " ",
+   "start": 30.24,
+   "end": 30.26,
+   "type": "spacing",
+   "logprob": -0.0000385038583772257
+  },
+  {
+   "text": "Então",
+   "start": 30.26,
+   "end": 30.44,
+   "type": "word",
+   "logprob": -0.0000385038583772257
+  },
+  {
+   "text": " ",
+   "start": 30.44,
+   "end": 30.5,
+   "type": "spacing",
+   "logprob": -0.0016174342017620802
+  },
+  {
+   "text": "eles",
+   "start": 30.5,
+   "end": 30.6,
+   "type": "word",
+   "logprob": -0.0016174342017620802
+  },
+  {
+   "text": " ",
+   "start": 30.6,
+   "end": 30.64,
+   "type": "spacing",
+   "logprob": -0.00011872540198964998
+  },
+  {
+   "text": "ganham",
+   "start": 30.64,
+   "end": 30.88,
+   "type": "word",
+   "logprob": -0.00009983261770685203
+  },
+  {
+   "text": " ",
+   "start": 30.88,
+   "end": 31.34,
+   "type": "spacing",
+   "logprob": -0.01606813259422779
+  },
+  {
+   "text": "o",
+   "start": 31.34,
+   "end": 31.36,
+   "type": "word",
+   "logprob": -0.01606813259422779
+  },
+  {
+   "text": " ",
+   "start": 31.36,
+   "end": 31.4,
+   "type": "spacing",
+   "logprob": -0.0000014305104514278355
+  },
+  {
+   "text": "que",
+   "start": 31.4,
+   "end": 31.42,
+   "type": "word",
+   "logprob": -0.0000014305104514278355
+  },
+  {
+   "text": " ",
+   "start": 31.42,
+   "end": 31.42,
+   "type": "spacing",
+   "logprob": 0
+  },
+  {
+   "text": "a",
+   "start": 31.42,
+   "end": 31.42,
+   "type": "word",
+   "logprob": 0
+  },
+  {
+   "text": " ",
+   "start": 31.42,
+   "end": 31.42,
+   "type": "spacing",
+   "logprob": -0.00000250339189733495
+  },
+  {
+   "text": "gente",
+   "start": 31.42,
+   "end": 31.52,
+   "type": "word",
+   "logprob": -0.00000250339189733495
+  },
+  {
+   "text": " ",
+   "start": 31.52,
+   "end": 31.54,
+   "type": "spacing",
+   "logprob": -0.00015162272029556334
+  },
+  {
+   "text": "chama",
+   "start": 31.54,
+   "end": 31.72,
+   "type": "word",
+   "logprob": -0.00015162272029556334
+  },
+  {
+   "text": " ",
+   "start": 31.72,
+   "end": 31.76,
+   "type": "spacing",
+   "logprob": -0.012004864402115345
+  },
+  {
+   "text": "no",
+   "start": 31.76,
+   "end": 31.82,
+   "type": "word",
+   "logprob": -0.012004864402115345
+  },
+  {
+   "text": " ",
+   "start": 31.82,
+   "end": 31.94,
+   "type": "spacing",
+   "logprob": -0.04026195406913757
+  },
+  {
+   "text": "CAC,",
+   "start": 31.94,
+   "end": 32.66,
+   "type": "word",
+   "logprob": -0.03019646555185318
+  },
+  {
+   "text": " ",
+   "start": 32.66,
+   "end": 32.74,
+   "type": "spacing",
+   "logprob": 0
+  },
+  {
+   "text": "que",
+   "start": 32.74,
+   "end": 32.8,
+   "type": "word",
+   "logprob": 0
+  },
+  {
+   "text": " ",
+   "start": 32.8,
+   "end": 32.9,
+   "type": "spacing",
+   "logprob": -1.1920928244535389e-7
+  },
+  {
+   "text": "é,",
+   "start": 32.9,
+   "end": 33.04,
+   "type": "word",
+   "logprob": -5.9604641222676946e-8
+  },
+  {
+   "text": " ",
+   "start": 33.04,
+   "end": 33.74,
+   "type": "spacing",
+   "logprob": -7.152555099310121e-7
+  },
+  {
+   "text": "é,",
+   "start": 33.74,
+   "end": 33.74,
+   "type": "word",
+   "logprob": -5.364416608699685e-7
+  },
+  {
+   "text": " ",
+   "start": 33.74,
+   "end": 34.18,
+   "type": "spacing",
+   "logprob": -0.5772075653076172
+  },
+  {
+   "text": "quanto",
+   "start": 34.18,
+   "end": 34.38,
+   "type": "word",
+   "logprob": -0.5772075653076172
+  },
+  {
+   "text": " ",
+   "start": 34.38,
+   "end": 34.4,
+   "type": "spacing",
+   "logprob": -0.000164018536452204
+  },
+  {
+   "text": "que",
+   "start": 34.4,
+   "end": 34.44,
+   "type": "word",
+   "logprob": -0.000164018536452204
+  },
+  {
+   "text": " ",
+   "start": 34.44,
+   "end": 34.48,
+   "type": "spacing",
+   "logprob": -0.0008236353169195354
+  },
+  {
+   "text": "a,",
+   "start": 34.56,
+   "end": 34.6,
+   "type": "word",
+   "logprob": -0.00044096348028688226
+  },
+  {
+   "text": " ",
+   "start": 34.6,
+   "end": 34.62,
+   "type": "spacing",
+   "logprob": -0.054890092462301254
+  },
+  {
+   "text": "que",
+   "start": 34.62,
+   "end": 34.66,
+   "type": "word",
+   "logprob": -0.054890092462301254
+  },
+  {
+   "text": " ",
+   "start": 34.66,
+   "end": 34.7,
+   "type": "spacing",
+   "logprob": -0.0000032186455882765586
+  },
+  {
+   "text": "o",
+   "start": 34.7,
+   "end": 34.72,
+   "type": "word",
+   "logprob": -0.0000032186455882765586
+  },
+  {
+   "text": " ",
+   "start": 34.72,
+   "end": 34.76,
+   "type": "spacing",
+   "logprob": -0.000006794906312279636
+  },
+  {
+   "text": "TikTok",
+   "start": 34.76,
+   "end": 35.14,
+   "type": "word",
+   "logprob": -0.000006794906312279636
+  },
+  {
+   "text": " ",
+   "start": 35.14,
+   "end": 35.2,
+   "type": "spacing",
+   "logprob": -0.00013779645087197423
+  },
+  {
+   "text": "paga",
+   "start": 35.2,
+   "end": 35.52,
+   "type": "word",
+   "logprob": -0.00013779645087197423
+  },
+  {
+   "text": " ",
+   "start": 35.52,
+   "end": 35.84,
+   "type": "spacing",
+   "logprob": -0.5446703433990479
+  },
+  {
+   "text": "paa,",
+   "start": 35.84,
+   "end": 36.6,
+   "type": "word",
+   "logprob": -0.8757492303848267
+  },
+  {
+   "text": " ",
+   "start": 36.6,
+   "end": 36.8,
+   "type": "spacing",
+   "logprob": -0.000003099436753473128
+  },
+  {
+   "text": "pro",
+   "start": 36.8,
+   "end": 36.9,
+   "type": "word",
+   "logprob": -0.000003099436753473128
+  },
+  {
+   "text": " ",
+   "start": 36.9,
+   "end": 36.94,
+   "type": "spacing",
+   "logprob": -0.00004565611743601039
+  },
+  {
+   "text": "cliente",
+   "start": 36.94,
+   "end": 37.14,
+   "type": "word",
+   "logprob": -0.00004565611743601039
+  },
+  {
+   "text": " ",
+   "start": 37.14,
+   "end": 37.18,
+   "type": "spacing",
+   "logprob": -0.00002777537883957848
+  },
+  {
+   "text": "fazer",
+   "start": 37.18,
+   "end": 37.32,
+   "type": "word",
+   "logprob": -0.00002777537883957848
+  },
+  {
+   "text": " ",
+   "start": 37.32,
+   "end": 37.34,
+   "type": "spacing",
+   "logprob": 0
+  },
+  {
+   "text": "a",
+   "start": 37.34,
+   "end": 37.38,
+   "type": "word",
+   "logprob": 0
+  },
+  {
+   "text": " ",
+   "start": 37.38,
+   "end": 37.42,
+   "type": "spacing",
+   "logprob": -0.00038938093348406255
+  },
+  {
+   "text": "primeira",
+   "start": 37.42,
+   "end": 37.64,
+   "type": "word",
+   "logprob": -0.00038938093348406255
+  },
+  {
+   "text": " ",
+   "start": 37.64,
+   "end": 37.7,
+   "type": "spacing",
+   "logprob": -0.000010132738680113107
+  },
+  {
+   "text": "compra,",
+   "start": 37.7,
+   "end": 38.14,
+   "type": "word",
+   "logprob": -0.049787261612696705
+  },
+  {
+   "text": " ",
+   "start": 38.14,
+   "end": 38.2,
+   "type": "spacing",
+   "logprob": -0.000012516897186287679
+  },
+  {
+   "text": "pra",
+   "start": 38.2,
+   "end": 38.34,
+   "type": "word",
+   "logprob": -0.000012516897186287679
+  },
+  {
+   "text": " ",
+   "start": 38.34,
+   "end": 38.44,
+   "type": "spacing",
+   "logprob": -4.768370445162873e-7
+  },
+  {
+   "text": "ele",
+   "start": 38.44,
+   "end": 38.6,
+   "type": "word",
+   "logprob": -4.768370445162873e-7
+  },
+  {
+   "text": " ",
+   "start": 38.6,
+   "end": 38.66,
+   "type": "spacing",
+   "logprob": -0.000047444173105759546
+  },
+  {
+   "text": "comprar",
+   "start": 38.66,
+   "end": 39.1,
+   "type": "word",
+   "logprob": -0.000047444173105759546
+  },
+  {
+   "text": " ",
+   "start": 39.1,
+   "end": 39.2,
+   "type": "spacing",
+   "logprob": -2.3841855067985307e-7
+  },
+  {
+   "text": "ao",
+   "start": 39.2,
+   "end": 39.28,
+   "type": "word",
+   "logprob": -2.3841855067985307e-7
+  },
+  {
+   "text": " ",
+   "start": 39.28,
+   "end": 39.32,
+   "type": "spacing",
+   "logprob": -0.000006198863957251888
+  },
+  {
+   "text": "longo",
+   "start": 39.32,
+   "end": 39.48,
+   "type": "word",
+   "logprob": -0.000006198863957251888
+  },
+  {
+   "text": " ",
+   "start": 39.48,
+   "end": 39.5,
+   "type": "spacing",
+   "logprob": -3.576278118089249e-7
+  },
+  {
+   "text": "da",
+   "start": 39.5,
+   "end": 39.6,
+   "type": "word",
+   "logprob": -3.576278118089249e-7
+  },
+  {
+   "text": " ",
+   "start": 39.6,
+   "end": 39.64,
+   "type": "spacing",
+   "logprob": -0.000002861018856492592
+  },
+  {
+   "text": "vida",
+   "start": 39.64,
+   "end": 39.84,
+   "type": "word",
+   "logprob": -0.000002861018856492592
+  },
+  {
+   "text": " ",
+   "start": 39.84,
+   "end": 39.9,
+   "type": "spacing",
+   "logprob": -0.0000058412379075889476
+  },
+  {
+   "text": "dele.",
+   "start": 39.9,
+   "end": 40.14,
+   "type": "word",
+   "logprob": -0.000009536670040688477
+  },
+  {
+   "text": " ",
+   "start": 40.14,
+   "end": 40.18,
+   "type": "spacing",
+   "logprob": -0.00001823885577323381
+  },
+  {
+   "text": "Virar",
+   "start": 40.18,
+   "end": 40.48,
+   "type": "word",
+   "logprob": -0.003726971056312323
+  },
+  {
+   "text": " ",
+   "start": 40.48,
+   "end": 40.52,
+   "type": "spacing",
+   "logprob": -0.00004100715523236431
+  },
+  {
+   "text": "cliente",
+   "start": 40.52,
+   "end": 40.84,
+   "type": "word",
+   "logprob": -0.00004100715523236431
+  },
+  {
+   "text": " ",
+   "start": 40.84,
+   "end": 40.88,
+   "type": "spacing",
+   "logprob": -0.0001454247540095821
+  },
+  {
+   "text": "recorrente.",
+   "start": 40.88,
+   "end": 41.52,
+   "type": "word",
+   "logprob": -0.00006967842554414264
+  },
+  {
+   "text": " ",
+   "start": 41.52,
+   "end": 41.7,
+   "type": "spacing",
+   "logprob": -0.000022291887944447808
+  },
+  {
+   "text": "Exatamente.",
+   "start": 41.7,
+   "end": 42.38,
+   "type": "word",
+   "logprob": -0.0000068056664200743065
+  },
+  {
+   "text": " ",
+   "start": 42.38,
+   "end": 42.44,
+   "type": "spacing",
+   "logprob": -0.000012278481335670222
+  },
+  {
+   "text": "Então",
+   "start": 42.44,
+   "end": 42.62,
+   "type": "word",
+   "logprob": -0.000012278481335670222
+  },
+  {
+   "text": " ",
+   "start": 42.62,
+   "end": 42.68,
+   "type": "spacing",
+   "logprob": -0.0017031225143000484
+  },
+  {
+   "text": "tem",
+   "start": 42.68,
+   "end": 42.74,
+   "type": "word",
+   "logprob": -0.0017031225143000484
+  },
+  {
+   "text": " ",
+   "start": 42.74,
+   "end": 42.78,
+   "type": "spacing",
+   "logprob": -0.00010871296399272978
+  },
+  {
+   "text": "muita",
+   "start": 42.78,
+   "end": 42.96,
+   "type": "word",
+   "logprob": -0.00010871296399272978
+  },
+  {
+   "text": " ",
+   "start": 42.96,
+   "end": 43.02,
+   "type": "spacing",
+   "logprob": -0.001663492526859045
+  },
+  {
+   "text": "gente",
+   "start": 43.02,
+   "end": 43.16,
+   "type": "word",
+   "logprob": -0.001663492526859045
+  },
+  {
+   "text": " ",
+   "start": 43.16,
+   "end": 43.18,
+   "type": "spacing",
+   "logprob": 0
+  },
+  {
+   "text": "que",
+   "start": 43.18,
+   "end": 43.22,
+   "type": "word",
+   "logprob": 0
+  },
+  {
+   "text": " ",
+   "start": 43.22,
+   "end": 43.26,
+   "type": "spacing",
+   "logprob": -0.0000019073468138230965
+  },
+  {
+   "text": "não",
+   "start": 43.26,
+   "end": 43.4,
+   "type": "word",
+   "logprob": -0.0000019073468138230965
+  },
+  {
+   "text": " ",
+   "start": 43.4,
+   "end": 43.44,
+   "type": "spacing",
+   "logprob": -0.000024199192921514623
+  },
+  {
+   "text": "tem",
+   "start": 43.44,
+   "end": 43.56,
+   "type": "word",
+   "logprob": -0.000024199192921514623
+  },
+  {
+   "text": " ",
+   "start": 43.56,
+   "end": 43.6,
+   "type": "spacing",
+   "logprob": -0.00007533743337262422
+  },
+  {
+   "text": "confiança",
+   "start": 43.6,
+   "end": 43.92,
+   "type": "word",
+   "logprob": -0.00007533743337262422
+  },
+  {
+   "text": " ",
+   "start": 43.92,
+   "end": 43.98,
+   "type": "spacing",
+   "logprob": -0.00011014331539627165
+  },
+  {
+   "text": "no",
+   "start": 43.98,
+   "end": 44,
+   "type": "word",
+   "logprob": -0.00011014331539627165
+  },
+  {
+   "text": " ",
+   "start": 44,
+   "end": 44.04,
+   "type": "spacing",
+   "logprob": -0.00002884823152271565
+  },
+  {
+   "text": "TikTok.",
+   "start": 44.04,
+   "end": 44.6,
+   "type": "word",
+   "logprob": -0.000030551162386213294
+  },
+  {
+   "text": " ",
+   "start": 44.6,
+   "end": 44.6,
+   "type": "spacing",
+   "logprob": -0.008614758029580116
+  },
+  {
+   "text": "Aham.",
+   "start": 44.7,
+   "end": 45,
+   "type": "word",
+   "logprob": -0.00011191021257559442
+  },
+  {
+   "text": " ",
+   "start": 45,
+   "end": 45.02,
+   "type": "spacing",
+   "logprob": -0.0000345700973412022
+  },
+  {
+   "text": "Na",
+   "start": 45.02,
+   "end": 45.12,
+   "type": "word",
+   "logprob": -0.000005960446742392378
+  },
+  {
+   "text": " ",
+   "start": 45.12,
+   "end": 45.14,
+   "type": "spacing",
+   "logprob": -0.00011848701251437888
+  },
+  {
+   "text": "Shopee",
+   "start": 45.14,
+   "end": 45.38,
+   "type": "word",
+   "logprob": -0.00011383838136680424
+  },
+  {
+   "text": " ",
+   "start": 45.38,
+   "end": 45.42,
+   "type": "spacing",
+   "logprob": -0.003853991162031889
+  },
+  {
+   "text": "tem",
+   "start": 45.42,
+   "end": 45.5,
+   "type": "word",
+   "logprob": -0.003853991162031889
+  },
+  {
+   "text": " ",
+   "start": 45.5,
+   "end": 45.54,
+   "type": "spacing",
+   "logprob": -0.00001728519782773219
+  },
+  {
+   "text": "muito",
+   "start": 45.54,
+   "end": 45.66,
+   "type": "word",
+   "logprob": -0.00001728519782773219
+  },
+  {
+   "text": " ",
+   "start": 45.66,
+   "end": 45.68,
+   "type": "spacing",
+   "logprob": -0.000007152531907195225
+  },
+  {
+   "text": "mais",
+   "start": 45.68,
+   "end": 45.84,
+   "type": "word",
+   "logprob": -0.000007152531907195225
+  },
+  {
+   "text": " ",
+   "start": 45.84,
+   "end": 45.86,
+   "type": "spacing",
+   "logprob": -0.00008654219709569588
+  },
+  {
+   "text": "confiança.",
+   "start": 45.86,
+   "end": 46.16,
+   "type": "word",
+   "logprob": -0.00007794758201384866
+  },
+  {
+   "text": " ",
+   "start": 46.16,
+   "end": 46.18,
+   "type": "spacing",
+   "logprob": -0.000008106198947643861
+  },
+  {
+   "text": "É",
+   "start": 46.2,
+   "end": 46.22,
+   "type": "word",
+   "logprob": -0.01675872877240181
+  },
+  {
+   "text": " ",
+   "start": 46.22,
+   "end": 46.26,
+   "type": "spacing",
+   "logprob": -0.0001530530134914443
+  },
+  {
+   "text": "porque",
+   "start": 46.26,
+   "end": 46.38,
+   "type": "word",
+   "logprob": -0.0001530530134914443
+  },
+  {
+   "text": " ",
+   "start": 46.38,
+   "end": 46.44,
+   "type": "spacing",
+   "logprob": -8.344646857949556e-7
+  },
+  {
+   "text": "é",
+   "start": 46.44,
+   "end": 46.46,
+   "type": "word",
+   "logprob": -8.344646857949556e-7
+  },
+  {
+   "text": " ",
+   "start": 46.46,
+   "end": 46.58,
+   "type": "spacing",
+   "logprob": -0.00003099393507000059
+  },
+  {
+   "text": "novo,",
+   "start": 46.58,
+   "end": 46.9,
+   "type": "word",
+   "logprob": -0.00002489051546490373
+  },
+  {
+   "text": " ",
+   "start": 46.9,
+   "end": 46.98,
+   "type": "spacing",
+   "logprob": -1.1920928244535389e-7
+  },
+  {
+   "text": "né?",
+   "start": 46.98,
+   "end": 47.04,
+   "type": "word",
+   "logprob": -0.00004362775749674105
+  },
+  {
+   "text": " ",
+   "start": 47.04,
+   "end": 47.08,
+   "type": "spacing",
+   "logprob": -0.00044645831803791225
+  },
+  {
+   "text": "Agora",
+   "start": 47.08,
+   "end": 47.34,
+   "type": "word",
+   "logprob": -0.00044645831803791225
+  },
+  {
+   "text": " ",
+   "start": 47.34,
+   "end": 47.36,
+   "type": "spacing",
+   "logprob": 0
+  },
+  {
+   "text": "que",
+   "start": 47.36,
+   "end": 47.4,
+   "type": "word",
+   "logprob": 0
+  },
+  {
+   "text": " ",
+   "start": 47.4,
+   "end": 47.42,
+   "type": "spacing",
+   "logprob": 0
+  },
+  {
+   "text": "a",
+   "start": 47.42,
+   "end": 47.46,
+   "type": "word",
+   "logprob": 0
+  },
+  {
+   "text": " ",
+   "start": 47.46,
+   "end": 47.48,
+   "type": "spacing",
+   "logprob": -0.00041106835124082863
+  },
+  {
+   "text": "galera",
+   "start": 47.48,
+   "end": 47.76,
+   "type": "word",
+   "logprob": -0.00041106835124082863
+  },
+  {
+   "text": " ",
+   "start": 47.76,
+   "end": 47.82,
+   "type": "spacing",
+   "logprob": -0.0000011920922133867862
+  },
+  {
+   "text": "tá",
+   "start": 47.82,
+   "end": 47.86,
+   "type": "word",
+   "logprob": -0.0000011920922133867862
+  },
+  {
+   "text": " ",
+   "start": 47.86,
+   "end": 47.9,
+   "type": "spacing",
+   "logprob": -0.00023934361524879932
+  }
+ ],
+ "transcription_id": "BDlDT8KmRkXOeu2b4wpl",
+ "audio_duration_secs": 249.8233125
+}
