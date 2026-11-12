@@ -1,0 +1,91 @@
+{
+ "_roteiro": "Maria Clara - Roteiros: AD 03 - Magnésio 3 em 1",
+ "split": [
+  {
+   "de": 1.53,
+   "ate": 3.82,
+   "video": ".painel/vanessa/ref/ref-magnesio.mp4",
+   "inicio": 0,
+   "len": 2.0,
+   "crop": "576:384:0:0"
+  },
+  {
+   "de": 3.82,
+   "ate": 7.38,
+   "video": ".painel/vanessa/ref/ref-magnesio.mp4",
+   "inicio": 2.0,
+   "len": 4.4,
+   "crop": "576:384:0:0"
+  }
+ ],
+ "fotos": [
+  {
+   "de": 0,
+   "ate": 1.53,
+   "img": ".painel/vanessa/ref/ref-magnesio.mp4@7.6",
+   "crop": "420:280:78:666",
+   "modo": "caixa",
+   "box": [
+    180,
+    1290,
+    720,
+    480
+   ]
+  },
+  {
+   "de": 7.38,
+   "ate": 11.2,
+   "img": ".painel/vanessa/ref/ref-magnesio.mp4@13",
+   "crop": "308:202:134:672",
+   "modo": "caixa",
+   "box": [
+    240,
+    1250,
+    600,
+    394
+   ]
+  },
+  {
+   "de": 11.2,
+   "ate": 13.51,
+   "img": ".painel/vanessa/ref/ref-magnesio.mp4@15.5",
+   "crop": "324:212:126:658",
+   "modo": "caixa",
+   "box": [
+    240,
+    1250,
+    600,
+    393
+   ]
+  },
+  {
+   "de": 13.51,
+   "ate": 15.82,
+   "img": ".painel/vanessa/ref/ref-magnesio.mp4@24.5",
+   "crop": "268:174:170:672",
+   "modo": "caixa",
+   "box": [
+    240,
+    1250,
+    600,
+    390
+   ]
+  }
+ ],
+ "produto": [
+  {
+   "de": 122.17,
+   "ate": 126.99,
+   "img": ".painel/vanessa/ref/magnesio-covitta.png",
+   "modo": "topo"
+  },
+  {
+   "de": 157.22,
+   "ate": 165.44,
+   "img": ".painel/vanessa/ref/magnesio-covitta.png",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio"
+}

@@ -1,0 +1,91 @@
+{
+ "_roteiro": "Fernanda - Roteiros: AD 01 - Magnésio 3 em 1",
+ "split": [
+  {
+   "de": 0.3,
+   "ate": 2.04,
+   "video": ".painel/vanessa/ref/ref-magnesio.mp4",
+   "inicio": 0,
+   "len": 2.0,
+   "crop": "576:384:0:0"
+  },
+  {
+   "de": 2.04,
+   "ate": 4.38,
+   "video": ".painel/vanessa/ref/ref-magnesio.mp4",
+   "inicio": 2.0,
+   "len": 4.4,
+   "crop": "576:384:0:0"
+  }
+ ],
+ "fotos": [
+  {
+   "de": 4.38,
+   "ate": 6.38,
+   "img": ".painel/vanessa/ref/ref-magnesio.mp4@7.6",
+   "crop": "420:280:78:666",
+   "modo": "caixa",
+   "box": [
+    180,
+    1290,
+    720,
+    480
+   ]
+  },
+  {
+   "de": 6.38,
+   "ate": 9.6,
+   "img": ".painel/vanessa/ref/ref-magnesio.mp4@13",
+   "crop": "308:202:134:672",
+   "modo": "caixa",
+   "box": [
+    240,
+    1250,
+    600,
+    394
+   ]
+  },
+  {
+   "de": 9.6,
+   "ate": 11.37,
+   "img": ".painel/vanessa/ref/ref-magnesio.mp4@15.5",
+   "crop": "324:212:126:658",
+   "modo": "caixa",
+   "box": [
+    240,
+    1250,
+    600,
+    393
+   ]
+  },
+  {
+   "de": 11.37,
+   "ate": 13.14,
+   "img": ".painel/vanessa/ref/ref-magnesio.mp4@24.5",
+   "crop": "268:174:170:672",
+   "modo": "caixa",
+   "box": [
+    240,
+    1250,
+    600,
+    390
+   ]
+  }
+ ],
+ "produto": [
+  {
+   "de": 88.41,
+   "ate": 91.19,
+   "img": ".painel/vanessa/ref/magnesio-covitta.png",
+   "modo": "topo"
+  },
+  {
+   "de": 111.93,
+   "ate": 115.88,
+   "img": ".painel/vanessa/ref/magnesio-covitta.png",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio"
+}
