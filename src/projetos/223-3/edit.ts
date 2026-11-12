@@ -161,7 +161,7 @@ export const p2233: Edit = {
 				som: 'pro_tick',
 				sons: [{em: b.at('burrada'), som: 'pro_pop', ganho: 0.6}],
 			},
-			{tipo: 'final', de: fimFala + 0.3, ate: fimFala + 3.0, marca: 'MVM', linha2: 'CREATORS', sub: 'TIKTOK SHOP', tres: true, som: 'pro_logo'},
+			{tipo: 'final', de: fimFala + 0.3, ate: fimFala + 3.0, marca: 'MÉTODO', linha2: 'M4', sub: 'TIKTOK SHOP', tres: true, som: 'pro_logo'},
 		];
 		return cenas;
 	},

@@ -151,7 +151,7 @@ export const p2232: Edit = {
 				esconderLegenda: true,
 				som: 'pro_pop',
 			},
-			{tipo: 'final', de: fimFala + 0.3, ate: fimFala + 3.0, marca: 'MVM', linha2: 'CREATORS', sub: 'TIKTOK SHOP', tres: true, som: 'pro_logo'},
+			{tipo: 'final', de: fimFala + 0.3, ate: fimFala + 3.0, marca: 'MÉTODO', linha2: 'M4', sub: 'TIKTOK SHOP', tres: true, som: 'pro_logo'},
 		];
 		return cenas;
 	},
