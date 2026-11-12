@@ -311,7 +311,7 @@ const p223Relogio: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	const f1 = d.marcos && d.marcos.length > 1 ? Math.min(q(d.marcos[1]), dur - 16) : Infinity;
 	const pEntra = mola(frame, 0, fps, 13);
 	const arco = suave(interpolate(frame, [f0, f0 + 18], [0, 1], lim));
-	const troca = suave(interpolate(frame, [f1, f1 + 8], [0, 1], lim));
+	const troca = Number.isFinite(f1) ? suave(interpolate(frame, [f1, f1 + 8], [0, 1], lim)) : 0;
 	const R = 210;
 	const C = 2 * Math.PI * R;
 	const fracao = (2 / 24) * arco;
