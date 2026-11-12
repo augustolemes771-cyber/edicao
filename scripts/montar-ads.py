@@ -134,8 +134,37 @@ _div = [(editado(max(0, it['de'])), editado(min(dur, it['ate']))) for k_ in ('sp
 def altura(a, b):
     m = (a + b) / 2
     return Y_MEIO if any(x <= m <= y for x, y in _div) else Y_BAIXO
-POS = lambda a, b: '{\\pos(540,%d)}' % altura(a, b)
+# Legenda desviando do rosto (pedido do usuário, 12/11): com a câmera perto, a legenda a 1/4 abaixo do meio tampava a cara.
+# Para cada bloco, usa o queixo medido 4x/s (rosto.json, scripts/rosto-legenda.py) e põe a legenda na altura mais perto do
+# centro que fica abaixo do queixo em 85% do trecho; nunca acima de Y_BAIXO. Na tela dividida continua no meio.
+_rp = f'src/projetos/{proj}/rosto.json'
+_ro = json.load(open(_rp)) if os.path.exists(_rp) else None
+MEIA = 125 if roxo else (42 if verm else 52)  # meia altura do bloco de texto (roxo: até 2 linhas)
+def alvo_grupo(g):
+    if not _ro: return Y_BAIXO
+    pa, q = _ro['passo'], _ro['queixo']
+    vs = sorted(v for v in q[int(g[0]['a'] / pa):int(g[-1]['b'] / pa) + 2] if v)
+    if not vs: return Y_BAIXO
+    queixo = vs[min(len(vs) - 1, int(len(vs) * 0.85))]
+    y = queixo + 30 + MEIA
+    return int(min(1700, max(Y_BAIXO, Y_BAIXO + -(-(y - Y_BAIXO) // 60) * 60)))  # degraus de 60 px
+_ys = [alvo_grupo(g) for g in grupos]
+# Suaviza: só muda de altura se a diferença passar de 60 px (para cima só se o bloco vizinho também deixar).
+for i in range(len(_ys)):
+    if i and abs(_ys[i] - _ys[i - 1]) <= 60 and _ys[i] < _ys[i - 1]: _ys[i] = _ys[i - 1]
+_y_atual = [Y_BAIXO]
+_cx = [(editado(max(0, it['de'])), editado(min(dur, it['ate'])), it['box'][1]) for k_ in ('fotos', 'produto')
+       for it in plano.get(k_, []) if it.get('modo') == 'caixa' and it.get('box')]
+def POS(a, b):
+    m = (a + b) / 2
+    cx = next((t for x, y, t in _cx if x <= m <= y), None)
+    if cx is not None:  # foto em caixa na parte de baixo: abaixo do rosto se couber acima da foto; senão, na borda de cima dela
+        y = _y_atual[0] if _y_atual[0] + MEIA + 10 <= cx else cx + MEIA + 10
+    else:
+        y = Y_MEIO if altura(a, b) == Y_MEIO else _y_atual[0]
+    return '{\\pos(540,%d)}' % y
 for gi, g in enumerate(grupos):
+    _y_atual[0] = _ys[gi]
     fim_g = editado(grupos[gi + 1][0]['a']) if gi + 1 < len(grupos) else editado(g[-1]['b']) + 0.3
     # Antes de uma pausa longa mantida (ex.: vídeo do especialista), a legenda some 0,5 s depois da última palavra.
     fim_g = min(fim_g, editado(g[-1]['b']) + 0.5)
