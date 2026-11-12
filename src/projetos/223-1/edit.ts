@@ -27,7 +27,7 @@ export const p2231: Edit = {
 	formato: 'vertical',
 	verificarCurva: false,
 	regraCamera: false,
-	extraFim: 2.6,
+	extraFim: 3.0,
 	silencios: silencios as Trecho[],
 	transcricao,
 	trechos: () => semPausas(TRECHOS, silencios as Trecho[]),
@@ -88,7 +88,7 @@ export const p2231: Edit = {
 				tipo: 'motion3d',
 				modelo: 'celularInternet',
 				de: b.at('Cara') - 0.05,
-				ate: b.say('Consegue fazer').fim + 0.12,
+				ate: b.at('TikTok', 2) - 0.08,
 				linhas: [
 					{texto: 'UM CELULAR', em: b.at('celular'), metal: 'branco'},
 					{texto: '+ INTERNET', em: b.at('internet'), metal: 'ouro'},
@@ -101,7 +101,7 @@ export const p2231: Edit = {
 			// Não precisa nada disso
 			{
 				tipo: 'chips',
-				de: b.say('não precisa nada').inicio - 0.3,
+				de: b.at('TikTok', 2) - 0.04,
 				ate: b.say('investir em tráfego').fim + 0.12,
 				itens: [
 					{texto: 'PRODUTO PRONTO', em: b.at('Já')},
@@ -134,6 +134,7 @@ export const p2231: Edit = {
 					{titulo: 'TikTok Shop', texto: 'Venda sem aparecer', em: b.say('sem aparecer', 2).inicio},
 				],
 				y: 1000,
+				esconderLegenda: true,
 				somItem: 'pro_msg',
 				ganhoItem: 0.5,
 			},
@@ -175,7 +176,7 @@ export const p2231: Edit = {
 				palavras: [{texto: 'LOUCURA!', em: b.at('Loucura'), destaque: true}],
 				som: 'pro_tick',
 			},
-			{tipo: 'final', de: fimFala + 0.35, ate: fimFala + 2.6, marca: 'MVM', linha2: 'CREATORS', sub: 'TIKTOK SHOP', tres: true, som: 'pro_logo'},
+			{tipo: 'final', de: fimFala + 0.35, ate: fimFala + 3.0, marca: 'MVM', linha2: 'CREATORS', sub: 'TIKTOK SHOP', tres: true, som: 'pro_logo'},
 		];
 		return cenas;
 	},
