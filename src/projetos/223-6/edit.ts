@@ -11,12 +11,12 @@ import transcricao from './transcricao.json';
 // → a empresa profissionalizou: operação de live e de vídeo → cartão final.
 
 const TRECHOS: Trecho[] = [
-	[39.6, 48.3], // gancho: "Então de sessenta a cem mil todo mês, com a live, é, sem ser famoso, sem ter produto, sem falar com cliente. Só abre a live e faz."
-	[4.0, 7.3], // "Tá falando pra mim que eu não preciso ser famoso então, pra vender muito TikTok."
+	[39.6, 48.72], // gancho: "Então de sessenta a cem mil todo mês, com a live, é, sem ser famoso, sem ter produto, sem falar com cliente. Só abre a live e faz."
+	[4.0, 7.48], // "Tá falando pra mim que eu não preciso ser famoso então, pra vender muito TikTok."
 	[7.95, 9.8], // "Não, cara, não precisa ser famoso. Sério? Sério."
-	[13.15, 18.9], // "Por isso que eu falo que é uma plataforma democrática. Sim. Porque qualquer pessoa que não é famosa consegue fazer muita grana."
-	[20.3, 21.9], // "Zero famoso, ninguém me conhece."
-	[21.95, 28.85], // "Hoje, a minha empresa, a gente tá mais no TikTok Shop, a gente profissionalizou, né. Nós tamo operação de live, temos operação de vídeo,"
+	[13.15, 19.17], // "Por isso que eu falo que é uma plataforma democrática. Sim. Porque qualquer pessoa que não é famosa consegue fazer muita grana."
+	[20.34, 21.98], // "Zero famoso, ninguém me conhece."
+	[22.0, 28.78], // "Hoje, a minha empresa, a gente tá mais no TikTok Shop, a gente profissionalizou, né. Nós tamo operação de live, temos operação de vídeo,"
 ];
 
 export const p2236: Edit = {
