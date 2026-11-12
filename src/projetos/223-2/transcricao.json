@@ -1,2340 +1,1164 @@
-{
- "language_code": "por",
- "language_probability": 1,
- "text": "Todo dia. Porque agora em novembro, é, o TikTok tá investindo muito em live. O TikTok tá investindo cem milhões em cupons pros clientes comprarem em live. E agora é Black Friday, né, que é final de novembro. Por que que eles fazem isso? Presta atenção, a Shopee tem sete anos no mercado. TikTok tem um ano e meio. Ou seja, muita gente não tem confiança em comprar na Shopee. Eles precisam pagar pras pessoas fazerem a primeira compra na, no TikTok, pra eles terem a confiança que chega o produto, pra numa segunda compra, eles ganharem numa segunda compra. Então eles ganham o que a gente chama no CAC, que é, é, quanto que a, que o TikTok paga paa, pro cliente fazer a primeira compra, pra ele comprar ao longo da vida dele. Virar cliente recorrente. Exatamente. Então tem muita gente que não tem confiança no TikTok. Aham. Na Shopee tem muito mais confiança. É porque é novo, né? Agora que a galera tá",
- "words": [
-  {
-   "text": " ",
-   "start": 0.1,
-   "end": 0.2,
-   "type": "spacing",
-   "logprob": -0.00035386974923312664
-  },
-  {
-   "text": "Todo",
-   "start": 0.74,
-   "end": 0.96,
-   "type": "word",
-   "logprob": -0.0019535997416824102
-  },
-  {
-   "text": " ",
-   "start": 0.96,
-   "end": 1.06,
-   "type": "spacing",
-   "logprob": -0.000007629365427419543
-  },
-  {
-   "text": "dia.",
-   "start": 1.06,
-   "end": 1.18,
-   "type": "word",
-   "logprob": -0.000005930640242013396
-  },
-  {
-   "text": " ",
-   "start": 1.18,
-   "end": 1.18,
-   "type": "spacing",
-   "logprob": -0.0003000047872774303
-  },
-  {
-   "text": "Porque",
-   "start": 1.36,
-   "end": 1.48,
-   "type": "word",
-   "logprob": -0.0002656822034623474
-  },
-  {
-   "text": " ",
-   "start": 1.48,
-   "end": 1.48,
-   "type": "spacing",
-   "logprob": -0.000005483612312673358
-  },
-  {
-   "text": "agora",
-   "start": 1.48,
-   "end": 1.62,
-   "type": "word",
-   "logprob": -0.000005483612312673358
-  },
-  {
-   "text": " ",
-   "start": 1.62,
-   "end": 1.72,
-   "type": "spacing",
-   "logprob": -0.006722453515976667
-  },
-  {
-   "text": "em",
-   "start": 1.72,
-   "end": 1.78,
-   "type": "word",
-   "logprob": -0.006722453515976667
-  },
-  {
-   "text": " ",
-   "start": 1.78,
-   "end": 1.82,
-   "type": "spacing",
-   "logprob": -0.000019907753085135482
-  },
-  {
-   "text": "novembro,",
-   "start": 1.82,
-   "end": 2.38,
-   "type": "word",
-   "logprob": -0.000017722271470195967
-  },
-  {
-   "text": " ",
-   "start": 2.38,
-   "end": 2.52,
-   "type": "spacing",
-   "logprob": -0.0000032186455882765586
-  },
-  {
-   "text": "é,",
-   "start": 2.52,
-   "end": 2.64,
-   "type": "word",
-   "logprob": -0.0000497079573733572
-  },
-  {
-   "text": " ",
-   "start": 2.64,
-   "end": 3.24,
-   "type": "spacing",
-   "logprob": -0.16049827635288239
-  },
-  {
-   "text": "o",
-   "start": 3.24,
-   "end": 3.24,
-   "type": "word",
-   "logprob": -0.16049827635288239
-  },
-  {
-   "text": " ",
-   "start": 3.24,
-   "end": 3.26,
-   "type": "spacing",
-   "logprob": -0.00002610649426060263
-  },
-  {
-   "text": "TikTok",
-   "start": 3.26,
-   "end": 3.56,
-   "type": "word",
-   "logprob": -0.00002610649426060263
-  },
-  {
-   "text": " ",
-   "start": 3.56,
-   "end": 3.6,
-   "type": "spacing",
-   "logprob": -0.00010215714428341016
-  },
-  {
-   "text": "tá",
-   "start": 3.6,
-   "end": 3.66,
-   "type": "word",
-   "logprob": -0.00010215714428341016
-  },
-  {
-   "text": " ",
-   "start": 3.66,
-   "end": 3.68,
-   "type": "spacing",
-   "logprob": -0.0002203936892328784
-  },
-  {
-   "text": "investindo",
-   "start": 3.68,
-   "end": 4.08,
-   "type": "word",
-   "logprob": -0.000132856101345169
-  },
-  {
-   "text": " ",
-   "start": 4.08,
-   "end": 4.12,
-   "type": "spacing",
-   "logprob": -0.000002861018856492592
-  },
-  {
-   "text": "muito",
-   "start": 4.12,
-   "end": 4.32,
-   "type": "word",
-   "logprob": -0.000002861018856492592
-  },
-  {
-   "text": " ",
-   "start": 4.32,
-   "end": 4.34,
-   "type": "spacing",
-   "logprob": 0
-  },
-  {
-   "text": "em",
-   "start": 4.34,
-   "end": 4.38,
-   "type": "word",
-   "logprob": 0
-  },
-  {
-   "text": " ",
-   "start": 4.38,
-   "end": 4.42,
-   "type": "spacing",
-   "logprob": -0.000018596476365928538
-  },
-  {
-   "text": "live.",
-   "start": 4.42,
-   "end": 4.78,
-   "type": "word",
-   "logprob": -0.00001487718109274283
-  },
-  {
-   "text": " ",
-   "start": 4.78,
-   "end": 5.1,
-   "type": "spacing",
-   "logprob": -0.00017534149810671806
-  },
-  {
-   "text": "O",
-   "start": 5.1,
-   "end": 5.12,
-   "type": "word",
-   "logprob": -0.00017534149810671806
-  },
-  {
-   "text": " ",
-   "start": 5.12,
-   "end": 5.58,
-   "type": "spacing",
-   "logprob": -0.15324164927005768
-  },
-  {
-   "text": "TikTok",
-   "start": 5.58,
-   "end": 5.82,
-   "type": "word",
-   "logprob": -0.15324164927005768
-  },
-  {
-   "text": " ",
-   "start": 5.82,
-   "end": 5.86,
-   "type": "spacing",
-   "logprob": -0.0003387354372534901
-  },
-  {
-   "text": "tá",
-   "start": 5.86,
-   "end": 5.919,
-   "type": "word",
-   "logprob": -0.0003387354372534901
-  },
-  {
-   "text": " ",
-   "start": 5.919,
-   "end": 5.94,
-   "type": "spacing",
-   "logprob": -0.0068486714735627174
-  },
-  {
-   "text": "investindo",
-   "start": 5.94,
-   "end": 6.36,
-   "type": "word",
-   "logprob": -0.004112397680364666
-  },
-  {
-   "text": " ",
-   "start": 6.36,
-   "end": 6.419,
-   "type": "spacing",
-   "logprob": -0.0002760506176855415
-  },
-  {
-   "text": "cem",
-   "start": 6.419,
-   "end": 6.539,
-   "type": "word",
-   "logprob": -0.0002760506176855415
-  },
-  {
-   "text": " ",
-   "start": 6.539,
-   "end": 6.6,
-   "type": "spacing",
-   "logprob": -0.00007760223525110632
-  },
-  {
-   "text": "milhões",
-   "start": 6.6,
-   "end": 7.18,
-   "type": "word",
-   "logprob": -0.00007760223525110632
-  },
-  {
-   "text": " ",
-   "start": 7.18,
-   "end": 7.9,
-   "type": "spacing",
-   "logprob": -8.344646857949556e-7
-  },
-  {
-   "text": "em",
-   "start": 7.9,
-   "end": 8,
-   "type": "word",
-   "logprob": -8.344646857949556e-7
-  },
-  {
-   "text": " ",
-   "start": 8,
-   "end": 8.039,
-   "type": "spacing",
-   "logprob": -0.00030012393835932016
-  },
-  {
-   "text": "cupons",
-   "start": 8.039,
-   "end": 8.68,
-   "type": "word",
-   "logprob": -0.0001224522832975102
-  },
-  {
-   "text": " ",
-   "start": 8.68,
-   "end": 8.68,
-   "type": "spacing",
-   "logprob": -0.0002108589978888631
-  },
-  {
-   "text": "pros",
-   "start": 9.36,
-   "end": 9.54,
-   "type": "word",
-   "logprob": -0.0002108589978888631
-  },
-  {
-   "text": " ",
-   "start": 9.54,
-   "end": 9.58,
-   "type": "spacing",
-   "logprob": -0.000024199192921514623
-  },
-  {
-   "text": "clientes",
-   "start": 9.58,
-   "end": 9.92,
-   "type": "word",
-   "logprob": -0.000024199192921514623
-  },
-  {
-   "text": " ",
-   "start": 9.92,
-   "end": 9.96,
-   "type": "spacing",
-   "logprob": -0.005425016395747662
-  },
-  {
-   "text": "comprarem",
-   "start": 9.96,
-   "end": 10.28,
-   "type": "word",
-   "logprob": -0.0036168762792575158
-  },
-  {
-   "text": " ",
-   "start": 10.28,
-   "end": 10.3,
-   "type": "spacing",
-   "logprob": -0.0008120815036818385
-  },
-  {
-   "text": "em",
-   "start": 10.3,
-   "end": 10.32,
-   "type": "word",
-   "logprob": -0.0008120815036818385
-  },
-  {
-   "text": " ",
-   "start": 10.32,
-   "end": 10.34,
-   "type": "spacing",
-   "logprob": -0.0000058412379075889476
-  },
-  {
-   "text": "live.",
-   "start": 10.34,
-   "end": 10.7,
-   "type": "word",
-   "logprob": -0.000004863725098402938
-  },
-  {
-   "text": " ",
-   "start": 10.7,
-   "end": 11.02,
-   "type": "spacing",
-   "logprob": -0.0000770062324590981
-  },
-  {
-   "text": "E",
-   "start": 11.02,
-   "end": 11.06,
-   "type": "word",
-   "logprob": -0.04322975501418114
-  },
-  {
-   "text": " ",
-   "start": 11.06,
-   "end": 11.08,
-   "type": "spacing",
-   "logprob": -0.000003576272320060525
-  },
-  {
-   "text": "agora",
-   "start": 11.08,
-   "end": 11.24,
-   "type": "word",
-   "logprob": -0.000003576272320060525
-  },
-  {
-   "text": " ",
-   "start": 11.24,
-   "end": 11.28,
-   "type": "spacing",
-   "logprob": -0.0004323977918829769
-  },
-  {
-   "text": "é",
-   "start": 11.28,
-   "end": 11.3,
-   "type": "word",
-   "logprob": -0.0004323977918829769
-  },
-  {
-   "text": " ",
-   "start": 11.3,
-   "end": 11.34,
-   "type": "spacing",
-   "logprob": -0.000008583032467868179
-  },
-  {
-   "text": "Black",
-   "start": 11.34,
-   "end": 11.52,
-   "type": "word",
-   "logprob": -0.000008583032467868179
-  },
-  {
-   "text": " ",
-   "start": 11.52,
-   "end": 11.58,
-   "type": "spacing",
-   "logprob": -0.000006079655122448457
-  },
-  {
-   "text": "Friday,",
-   "start": 11.58,
-   "end": 11.96,
-   "type": "word",
-   "logprob": -0.000005756088674908304
-  },
-  {
-   "text": " ",
-   "start": 11.96,
-   "end": 12,
-   "type": "spacing",
-   "logprob": -1.1920928244535389e-7
-  },
-  {
-   "text": "né,",
-   "start": 12,
-   "end": 12.1,
-   "type": "word",
-   "logprob": -0.00016272072873846355
-  },
-  {
-   "text": " ",
-   "start": 12.1,
-   "end": 12.14,
-   "type": "spacing",
-   "logprob": -0.00004935142715112306
-  },
-  {
-   "text": "que",
-   "start": 12.14,
-   "end": 12.18,
-   "type": "word",
-   "logprob": -0.00004935142715112306
-  },
-  {
-   "text": " ",
-   "start": 12.18,
-   "end": 12.2,
-   "type": "spacing",
-   "logprob": -0.0022094857413321733
-  },
-  {
-   "text": "é",
-   "start": 12.22,
-   "end": 12.24,
-   "type": "word",
-   "logprob": -0.0022094857413321733
-  },
-  {
-   "text": " ",
-   "start": 12.24,
-   "end": 12.3,
-   "type": "spacing",
-   "logprob": -0.0011606630869209766
-  },
-  {
-   "text": "final",
-   "start": 12.3,
-   "end": 12.42,
-   "type": "word",
-   "logprob": -0.0011606630869209766
-  },
-  {
-   "text": " ",
-   "start": 12.42,
-   "end": 12.46,
-   "type": "spacing",
-   "logprob": -0.0000023841830625315197
-  },
-  {
-   "text": "de",
-   "start": 12.46,
-   "end": 12.52,
-   "type": "word",
-   "logprob": -0.0000023841830625315197
-  },
-  {
-   "text": " ",
-   "start": 12.52,
-   "end": 12.56,
-   "type": "spacing",
-   "logprob": -0.735853374004364
-  },
-  {
-   "text": "novembro.",
-   "start": 12.62,
-   "end": 12.62,
-   "type": "word",
-   "logprob": -0.6540919542312432
-  },
-  {
-   "text": " ",
-   "start": 12.62,
-   "end": 12.62,
-   "type": "spacing",
-   "logprob": -0.00008201262971851975
-  },
-  {
-   "text": "Por",
-   "start": 12.62,
-   "end": 12.8,
-   "type": "word",
-   "logprob": -0.00013124081306159496
-  },
-  {
-   "text": " ",
-   "start": 12.8,
-   "end": 12.82,
-   "type": "spacing",
-   "logprob": -4.768370445162873e-7
-  },
-  {
-   "text": "que",
-   "start": 12.82,
-   "end": 12.9,
-   "type": "word",
-   "logprob": -4.768370445162873e-7
-  },
-  {
-   "text": " ",
-   "start": 12.9,
-   "end": 12.94,
-   "type": "spacing",
-   "logprob": -0.00018082413589581847
-  },
-  {
-   "text": "que",
-   "start": 12.94,
-   "end": 12.98,
-   "type": "word",
-   "logprob": -0.00018082413589581847
-  },
-  {
-   "text": " ",
-   "start": 12.98,
-   "end": 13,
-   "type": "spacing",
-   "logprob": -0.000013589766240329482
-  },
-  {
-   "text": "eles",
-   "start": 13,
-   "end": 13.12,
-   "type": "word",
-   "logprob": -0.000013589766240329482
-  },
-  {
-   "text": " ",
-   "start": 13.12,
-   "end": 13.14,
-   "type": "spacing",
-   "logprob": -0.000034450891689630225
-  },
-  {
-   "text": "fazem",
-   "start": 13.14,
-   "end": 13.42,
-   "type": "word",
-   "logprob": -0.000034450891689630225
-  },
-  {
-   "text": " ",
-   "start": 13.42,
-   "end": 13.52,
-   "type": "spacing",
-   "logprob": -0.000002264974000354414
-  },
-  {
-   "text": "isso?",
-   "start": 13.52,
-   "end": 13.8,
-   "type": "word",
-   "logprob": -0.000001811979200283531
-  },
-  {
-   "text": " ",
-   "start": 13.8,
-   "end": 14.18,
-   "type": "spacing",
-   "logprob": -0.0003511289251036942
-  },
-  {
-   "text": "Presta",
-   "start": 14.18,
-   "end": 14.36,
-   "type": "word",
-   "logprob": -0.0012058414577040821
-  },
-  {
-   "text": " ",
-   "start": 14.36,
-   "end": 14.42,
-   "type": "spacing",
-   "logprob": -0.000006079655122448457
-  },
-  {
-   "text": "atenção,",
-   "start": 14.42,
-   "end": 14.64,
-   "type": "word",
-   "logprob": -0.0000053345993924480695
-  },
-  {
-   "text": " ",
-   "start": 14.64,
-   "end": 14.7,
-   "type": "spacing",
-   "logprob": -1.1920928244535389e-7
-  },
-  {
-   "text": "a",
-   "start": 14.7,
-   "end": 14.76,
-   "type": "word",
-   "logprob": -1.1920928244535389e-7
-  },
-  {
-   "text": " ",
-   "start": 14.76,
-   "end": 14.8,
-   "type": "spacing",
-   "logprob": -0.0005125877796672285
-  },
-  {
-   "text": "Shopee",
-   "start": 14.8,
-   "end": 15.18,
-   "type": "word",
-   "logprob": -0.00026678419726522407
-  },
-  {
-   "text": " ",
-   "start": 15.18,
-   "end": 15.24,
-   "type": "spacing",
-   "logprob": -0.0000015497195136049413
-  },
-  {
-   "text": "tem",
-   "start": 15.24,
-   "end": 15.36,
-   "type": "word",
-   "logprob": -0.0000015497195136049413
-  },
-  {
-   "text": " ",
-   "start": 15.36,
-   "end": 15.4,
-   "type": "spacing",
-   "logprob": -0.000015139465176616795
-  },
-  {
-   "text": "sete",
-   "start": 15.4,
-   "end": 15.6,
-   "type": "word",
-   "logprob": -0.000015139465176616795
-  },
-  {
-   "text": " ",
-   "start": 15.6,
-   "end": 15.64,
-   "type": "spacing",
-   "logprob": -0.00006961580220377073
-  },
-  {
-   "text": "anos",
-   "start": 15.64,
-   "end": 15.74,
-   "type": "word",
-   "logprob": -0.00006961580220377073
-  },
-  {
-   "text": " ",
-   "start": 15.74,
-   "end": 15.76,
-   "type": "spacing",
-   "logprob": -0.0000027418097943154862
-  },
-  {
-   "text": "no",
-   "start": 15.76,
-   "end": 15.82,
-   "type": "word",
-   "logprob": -0.0000027418097943154862
-  },
-  {
-   "text": " ",
-   "start": 15.82,
-   "end": 15.84,
-   "type": "spacing",
-   "logprob": -0.000003099436753473128
-  },
-  {
-   "text": "mercado.",
-   "start": 15.84,
-   "end": 16.42,
-   "type": "word",
-   "logprob": -0.0000027269083195946564
-  },
-  {
-   "text": " ",
-   "start": 16.42,
-   "end": 17.1,
-   "type": "spacing",
-   "logprob": -0.003659577341750264
-  },
-  {
-   "text": "TikTok",
-   "start": 17.1,
-   "end": 17.5,
-   "type": "word",
-   "logprob": -0.003659577341750264
-  },
-  {
-   "text": " ",
-   "start": 17.5,
-   "end": 17.54,
-   "type": "spacing",
-   "logprob": -0.000051973900554003194
-  },
-  {
-   "text": "tem",
-   "start": 17.54,
-   "end": 17.6,
-   "type": "word",
-   "logprob": -0.000051973900554003194
-  },
-  {
-   "text": " ",
-   "start": 17.6,
-   "end": 17.62,
-   "type": "spacing",
-   "logprob": -0.000013589766240329482
-  },
-  {
-   "text": "um",
-   "start": 17.62,
-   "end": 17.66,
-   "type": "word",
-   "logprob": -0.000013589766240329482
-  },
-  {
-   "text": " ",
-   "start": 17.66,
-   "end": 17.68,
-   "type": "spacing",
-   "logprob": -0.000005006777428206988
-  },
-  {
-   "text": "ano",
-   "start": 17.68,
-   "end": 17.74,
-   "type": "word",
-   "logprob": -0.000005006777428206988
-  },
-  {
-   "text": " ",
-   "start": 17.74,
-   "end": 17.78,
-   "type": "spacing",
-   "logprob": -1.1920928244535389e-7
-  },
-  {
-   "text": "e",
-   "start": 17.78,
-   "end": 17.8,
-   "type": "word",
-   "logprob": -1.1920928244535389e-7
-  },
-  {
-   "text": " ",
-   "start": 17.8,
-   "end": 17.86,
-   "type": "spacing",
-   "logprob": -0.0008431693422608078
-  },
-  {
-   "text": "meio.",
-   "start": 17.86,
-   "end": 18.22,
-   "type": "word",
-   "logprob": -0.0006745354738086462
-  },
-  {
-   "text": " ",
-   "start": 18.22,
-   "end": 18.6,
-   "type": "spacing",
-   "logprob": -0.00008725739462533966
-  },
-  {
-   "text": "Ou",
-   "start": 18.6,
-   "end": 18.66,
-   "type": "word",
-   "logprob": -0.00008725739462533966
-  },
-  {
-   "text": " ",
-   "start": 18.66,
-   "end": 18.7,
-   "type": "spacing",
-   "logprob": -3.576278118089249e-7
-  },
-  {
-   "text": "seja,",
-   "start": 18.7,
-   "end": 18.9,
-   "type": "word",
-   "logprob": -2.861022494471399e-7
-  },
-  {
-   "text": " ",
-   "start": 18.9,
-   "end": 18.94,
-   "type": "spacing",
-   "logprob": -0.000006079655122448457
-  },
-  {
-   "text": "muita",
-   "start": 18.94,
-   "end": 19.12,
-   "type": "word",
-   "logprob": -0.000006079655122448457
-  },
-  {
-   "text": " ",
-   "start": 19.12,
-   "end": 19.16,
-   "type": "spacing",
-   "logprob": -0.000003576272320060525
-  },
-  {
-   "text": "gente",
-   "start": 19.16,
-   "end": 19.32,
-   "type": "word",
-   "logprob": -0.000003576272320060525
-  },
-  {
-   "text": " ",
-   "start": 19.32,
-   "end": 19.38,
-   "type": "spacing",
-   "logprob": -3.576278118089249e-7
-  },
-  {
-   "text": "não",
-   "start": 19.38,
-   "end": 19.5,
-   "type": "word",
-   "logprob": -3.576278118089249e-7
-  },
-  {
-   "text": " ",
-   "start": 19.5,
-   "end": 19.56,
-   "type": "spacing",
-   "logprob": -0.00001645074735279195
-  },
-  {
-   "text": "tem",
-   "start": 19.56,
-   "end": 19.68,
-   "type": "word",
-   "logprob": -0.00001645074735279195
-  },
-  {
-   "text": " ",
-   "start": 19.68,
-   "end": 19.72,
-   "type": "spacing",
-   "logprob": -0.00005745722592109814
-  },
-  {
-   "text": "confiança",
-   "start": 19.72,
-   "end": 20.06,
-   "type": "word",
-   "logprob": -0.00005745722592109814
-  },
-  {
-   "text": " ",
-   "start": 20.06,
-   "end": 20.1,
-   "type": "spacing",
-   "logprob": -0.0000011920922133867862
-  },
-  {
-   "text": "em",
-   "start": 20.1,
-   "end": 20.14,
-   "type": "word",
-   "logprob": -0.0000011920922133867862
-  },
-  {
-   "text": " ",
-   "start": 20.14,
-   "end": 20.16,
-   "type": "spacing",
-   "logprob": -0.00015221867943182588
-  },
-  {
-   "text": "comprar",
-   "start": 20.16,
-   "end": 20.36,
-   "type": "word",
-   "logprob": -0.00015221867943182588
-  },
-  {
-   "text": " ",
-   "start": 20.36,
-   "end": 20.4,
-   "type": "spacing",
-   "logprob": -0.0004334702098276466
-  },
-  {
-   "text": "na",
-   "start": 20.4,
-   "end": 20.48,
-   "type": "word",
-   "logprob": -0.0004334702098276466
-  },
-  {
-   "text": " ",
-   "start": 20.48,
-   "end": 20.52,
-   "type": "spacing",
-   "logprob": -0.00005149708886165172
-  },
-  {
-   "text": "Shopee.",
-   "start": 20.52,
-   "end": 20.96,
-   "type": "word",
-   "logprob": -0.00003305432437628042
-  },
-  {
-   "text": " ",
-   "start": 20.96,
-   "end": 21.54,
-   "type": "spacing",
-   "logprob": -3.576278118089249e-7
-  },
-  {
-   "text": "Eles",
-   "start": 21.54,
-   "end": 21.72,
-   "type": "word",
-   "logprob": -3.576278118089249e-7
-  },
-  {
-   "text": " ",
-   "start": 21.72,
-   "end": 21.76,
-   "type": "spacing",
-   "logprob": -0.0000069141146923357155
-  },
-  {
-   "text": "precisam",
-   "start": 21.76,
-   "end": 22.5,
-   "type": "word",
-   "logprob": -0.0000069141146923357155
-  },
-  {
-   "text": " ",
-   "start": 22.5,
-   "end": 22.58,
-   "type": "spacing",
-   "logprob": -0.00001680836794548668
-  },
-  {
-   "text": "pagar",
-   "start": 22.58,
-   "end": 23.1,
-   "type": "word",
-   "logprob": -0.00001680836794548668
-  },
-  {
-   "text": " ",
-   "start": 23.1,
-   "end": 23.14,
-   "type": "spacing",
-   "logprob": -0.00007497983460780233
-  },
-  {
-   "text": "pras",
-   "start": 23.14,
-   "end": 23.3,
-   "type": "word",
-   "logprob": -0.00007497983460780233
-  },
-  {
-   "text": " ",
-   "start": 23.3,
-   "end": 23.34,
-   "type": "spacing",
-   "logprob": -0.00001537788011773955
-  },
-  {
-   "text": "pessoas",
-   "start": 23.34,
-   "end": 23.88,
-   "type": "word",
-   "logprob": -0.00001537788011773955
-  },
-  {
-   "text": " ",
-   "start": 23.88,
-   "end": 23.92,
-   "type": "spacing",
-   "logprob": -0.0016434985445812345
-  },
-  {
-   "text": "fazerem",
-   "start": 23.92,
-   "end": 24.18,
-   "type": "word",
-   "logprob": -0.00575527038225638
-  },
-  {
-   "text": " ",
-   "start": 24.18,
-   "end": 24.22,
-   "type": "spacing",
-   "logprob": 0
-  },
-  {
-   "text": "a",
-   "start": 24.22,
-   "end": 24.26,
-   "type": "word",
-   "logprob": 0
-  },
-  {
-   "text": " ",
-   "start": 24.26,
-   "end": 24.3,
-   "type": "spacing",
-   "logprob": -0.00021300431399140507
-  },
-  {
-   "text": "primeira",
-   "start": 24.3,
-   "end": 24.52,
-   "type": "word",
-   "logprob": -0.00021300431399140507
-  },
-  {
-   "text": " ",
-   "start": 24.52,
-   "end": 24.56,
-   "type": "spacing",
-   "logprob": -0.0002196785935666412
-  },
-  {
-   "text": "compra",
-   "start": 24.56,
-   "end": 24.76,
-   "type": "word",
-   "logprob": -0.0002196785935666412
-  },
-  {
-   "text": " ",
-   "start": 24.76,
-   "end": 24.8,
-   "type": "spacing",
-   "logprob": -0.5917748212814331
-  },
-  {
-   "text": "na,",
-   "start": 24.8,
-   "end": 24.92,
-   "type": "word",
-   "logprob": -0.39519622130319476
-  },
-  {
-   "text": " ",
-   "start": 24.92,
-   "end": 24.96,
-   "type": "spacing",
-   "logprob": -0.000008702239938429557
-  },
-  {
-   "text": "no",
-   "start": 24.96,
-   "end": 25.04,
-   "type": "word",
-   "logprob": -0.000008702239938429557
-  },
-  {
-   "text": " ",
-   "start": 25.04,
-   "end": 25.08,
-   "type": "spacing",
-   "logprob": -0.000013351351299206726
-  },
-  {
-   "text": "TikTok,",
-   "start": 25.08,
-   "end": 25.58,
-   "type": "word",
-   "logprob": -0.00046543719456946874
-  },
-  {
-   "text": " ",
-   "start": 25.58,
-   "end": 25.62,
-   "type": "spacing",
-   "logprob": -0.0000345700973412022
-  },
-  {
-   "text": "pra",
-   "start": 25.62,
-   "end": 25.68,
-   "type": "word",
-   "logprob": -0.0000345700973412022
-  },
-  {
-   "text": " ",
-   "start": 25.68,
-   "end": 25.72,
-   "type": "spacing",
-   "logprob": -0.000002264974000354414
-  },
-  {
-   "text": "eles",
-   "start": 25.72,
-   "end": 25.82,
-   "type": "word",
-   "logprob": -0.000002264974000354414
-  },
-  {
-   "text": " ",
-   "start": 25.82,
-   "end": 25.86,
-   "type": "spacing",
-   "logprob": -0.00033825874561443925
-  },
-  {
-   "text": "terem",
-   "start": 25.86,
-   "end": 26.04,
-   "type": "word",
-   "logprob": -0.00033825874561443925
-  },
-  {
-   "text": " ",
-   "start": 26.04,
-   "end": 26.04,
-   "type": "spacing",
-   "logprob": -0.00008511180931236595
-  },
-  {
-   "text": "a",
-   "start": 26.04,
-   "end": 26.04,
-   "type": "word",
-   "logprob": -0.00008511180931236595
-  },
-  {
-   "text": " ",
-   "start": 26.04,
-   "end": 26.08,
-   "type": "spacing",
-   "logprob": -0.00019000156316906214
-  },
-  {
-   "text": "confiança",
-   "start": 26.08,
-   "end": 26.5,
-   "type": "word",
-   "logprob": -0.00019000156316906214
-  },
-  {
-   "text": " ",
-   "start": 26.5,
-   "end": 26.52,
-   "type": "spacing",
-   "logprob": -0.0000084638240878121
-  },
-  {
-   "text": "que",
-   "start": 26.52,
-   "end": 26.58,
-   "type": "word",
-   "logprob": -0.0000084638240878121
-  },
-  {
-   "text": " ",
-   "start": 26.58,
-   "end": 26.6,
-   "type": "spacing",
-   "logprob": -0.000008106198947643861
-  },
-  {
-   "text": "chega",
-   "start": 26.6,
-   "end": 26.78,
-   "type": "word",
-   "logprob": -0.000008106198947643861
-  },
-  {
-   "text": " ",
-   "start": 26.78,
-   "end": 26.8,
-   "type": "spacing",
-   "logprob": -2.3841855067985307e-7
-  },
-  {
-   "text": "o",
-   "start": 26.8,
-   "end": 26.86,
-   "type": "word",
-   "logprob": -2.3841855067985307e-7
-  },
-  {
-   "text": " ",
-   "start": 26.86,
-   "end": 26.9,
-   "type": "spacing",
-   "logprob": -0.000023603161025675945
-  },
-  {
-   "text": "produto,",
-   "start": 26.9,
-   "end": 27.38,
-   "type": "word",
-   "logprob": -0.000026270377247783472
-  },
-  {
-   "text": " ",
-   "start": 27.38,
-   "end": 27.78,
-   "type": "spacing",
-   "logprob": -0.000011205610462639015
-  },
-  {
-   "text": "pra",
-   "start": 27.78,
-   "end": 27.92,
-   "type": "word",
-   "logprob": -0.000011205610462639015
-  },
-  {
-   "text": " ",
-   "start": 27.92,
-   "end": 27.98,
-   "type": "spacing",
-   "logprob": -0.0025699466932564974
-  },
-  {
-   "text": "numa",
-   "start": 27.98,
-   "end": 28.12,
-   "type": "word",
-   "logprob": -0.0025699466932564974
-  },
-  {
-   "text": " ",
-   "start": 28.12,
-   "end": 28.18,
-   "type": "spacing",
-   "logprob": -0.000048874615458771586
-  },
-  {
-   "text": "segunda",
-   "start": 28.18,
-   "end": 28.54,
-   "type": "word",
-   "logprob": -0.000048874615458771586
-  },
-  {
-   "text": " ",
-   "start": 28.54,
-   "end": 28.6,
-   "type": "spacing",
-   "logprob": -0.000007152531907195225
-  },
-  {
-   "text": "compra,",
-   "start": 28.6,
-   "end": 28.96,
-   "type": "word",
-   "logprob": -0.000006130741634738765
-  },
-  {
-   "text": " ",
-   "start": 28.96,
-   "end": 29.04,
-   "type": "spacing",
-   "logprob": -0.000008106198947643861
-  },
-  {
-   "text": "eles",
-   "start": 29.04,
-   "end": 29.18,
-   "type": "word",
-   "logprob": -0.000008106198947643861
-  },
-  {
-   "text": " ",
-   "start": 29.18,
-   "end": 29.2,
-   "type": "spacing",
-   "logprob": -0.015271991491317749
-  },
-  {
-   "text": "ganharem",
-   "start": 29.2,
-   "end": 29.4,
-   "type": "word",
-   "logprob": -0.007640287261892809
-  },
-  {
-   "text": " ",
-   "start": 29.4,
-   "end": 29.44,
-   "type": "spacing",
-   "logprob": -0.5760095715522766
-  },
-  {
-   "text": "numa",
-   "start": 29.44,
-   "end": 29.52,
-   "type": "word",
-   "logprob": -0.5760095715522766
-  },
-  {
-   "text": " ",
-   "start": 29.52,
-   "end": 29.58,
-   "type": "spacing",
-   "logprob": -0.000023841574147809297
-  },
-  {
-   "text": "segunda",
-   "start": 29.58,
-   "end": 29.88,
-   "type": "word",
-   "logprob": -0.000023841574147809297
-  },
-  {
-   "text": " ",
-   "start": 29.88,
-   "end": 29.94,
-   "type": "spacing",
-   "logprob": -0.000038980677345534787
-  },
-  {
-   "text": "compra.",
-   "start": 29.94,
-   "end": 30.24,
-   "type": "word",
-   "logprob": -0.00008132610673783347
-  },
-  {
-   "text": " ",
-   "start": 30.24,
-   "end": 30.26,
-   "type": "spacing",
-   "logprob": -0.0000385038583772257
-  },
-  {
-   "text": "Então",
-   "start": 30.26,
-   "end": 30.44,
-   "type": "word",
-   "logprob": -0.0000385038583772257
-  },
-  {
-   "text": " ",
-   "start": 30.44,
-   "end": 30.5,
-   "type": "spacing",
-   "logprob": -0.0016174342017620802
-  },
-  {
-   "text": "eles",
-   "start": 30.5,
-   "end": 30.6,
-   "type": "word",
-   "logprob": -0.0016174342017620802
-  },
-  {
-   "text": " ",
-   "start": 30.6,
-   "end": 30.64,
-   "type": "spacing",
-   "logprob": -0.00011872540198964998
-  },
-  {
-   "text": "ganham",
-   "start": 30.64,
-   "end": 30.88,
-   "type": "word",
-   "logprob": -0.00009983261770685203
-  },
-  {
-   "text": " ",
-   "start": 30.88,
-   "end": 31.34,
-   "type": "spacing",
-   "logprob": -0.01606813259422779
-  },
-  {
-   "text": "o",
-   "start": 31.34,
-   "end": 31.36,
-   "type": "word",
-   "logprob": -0.01606813259422779
-  },
-  {
-   "text": " ",
-   "start": 31.36,
-   "end": 31.4,
-   "type": "spacing",
-   "logprob": -0.0000014305104514278355
-  },
-  {
-   "text": "que",
-   "start": 31.4,
-   "end": 31.42,
-   "type": "word",
-   "logprob": -0.0000014305104514278355
-  },
-  {
-   "text": " ",
-   "start": 31.42,
-   "end": 31.42,
-   "type": "spacing",
-   "logprob": 0
-  },
-  {
-   "text": "a",
-   "start": 31.42,
-   "end": 31.42,
-   "type": "word",
-   "logprob": 0
-  },
-  {
-   "text": " ",
-   "start": 31.42,
-   "end": 31.42,
-   "type": "spacing",
-   "logprob": -0.00000250339189733495
-  },
-  {
-   "text": "gente",
-   "start": 31.42,
-   "end": 31.52,
-   "type": "word",
-   "logprob": -0.00000250339189733495
-  },
-  {
-   "text": " ",
-   "start": 31.52,
-   "end": 31.54,
-   "type": "spacing",
-   "logprob": -0.00015162272029556334
-  },
-  {
-   "text": "chama",
-   "start": 31.54,
-   "end": 31.72,
-   "type": "word",
-   "logprob": -0.00015162272029556334
-  },
-  {
-   "text": " ",
-   "start": 31.72,
-   "end": 31.76,
-   "type": "spacing",
-   "logprob": -0.012004864402115345
-  },
-  {
-   "text": "no",
-   "start": 31.76,
-   "end": 31.82,
-   "type": "word",
-   "logprob": -0.012004864402115345
-  },
-  {
-   "text": " ",
-   "start": 31.82,
-   "end": 31.94,
-   "type": "spacing",
-   "logprob": -0.04026195406913757
-  },
-  {
-   "text": "CAC,",
-   "start": 31.94,
-   "end": 32.66,
-   "type": "word",
-   "logprob": -0.03019646555185318
-  },
-  {
-   "text": " ",
-   "start": 32.66,
-   "end": 32.74,
-   "type": "spacing",
-   "logprob": 0
-  },
-  {
-   "text": "que",
-   "start": 32.74,
-   "end": 32.8,
-   "type": "word",
-   "logprob": 0
-  },
-  {
-   "text": " ",
-   "start": 32.8,
-   "end": 32.9,
-   "type": "spacing",
-   "logprob": -1.1920928244535389e-7
-  },
-  {
-   "text": "é,",
-   "start": 32.9,
-   "end": 33.04,
-   "type": "word",
-   "logprob": -5.9604641222676946e-8
-  },
-  {
-   "text": " ",
-   "start": 33.04,
-   "end": 33.74,
-   "type": "spacing",
-   "logprob": -7.152555099310121e-7
-  },
-  {
-   "text": "é,",
-   "start": 33.74,
-   "end": 33.74,
-   "type": "word",
-   "logprob": -5.364416608699685e-7
-  },
-  {
-   "text": " ",
-   "start": 33.74,
-   "end": 34.18,
-   "type": "spacing",
-   "logprob": -0.5772075653076172
-  },
-  {
-   "text": "quanto",
-   "start": 34.18,
-   "end": 34.38,
-   "type": "word",
-   "logprob": -0.5772075653076172
-  },
-  {
-   "text": " ",
-   "start": 34.38,
-   "end": 34.4,
-   "type": "spacing",
-   "logprob": -0.000164018536452204
-  },
-  {
-   "text": "que",
-   "start": 34.4,
-   "end": 34.44,
-   "type": "word",
-   "logprob": -0.000164018536452204
-  },
-  {
-   "text": " ",
-   "start": 34.44,
-   "end": 34.48,
-   "type": "spacing",
-   "logprob": -0.0008236353169195354
-  },
-  {
-   "text": "a,",
-   "start": 34.56,
-   "end": 34.6,
-   "type": "word",
-   "logprob": -0.00044096348028688226
-  },
-  {
-   "text": " ",
-   "start": 34.6,
-   "end": 34.62,
-   "type": "spacing",
-   "logprob": -0.054890092462301254
-  },
-  {
-   "text": "que",
-   "start": 34.62,
-   "end": 34.66,
-   "type": "word",
-   "logprob": -0.054890092462301254
-  },
-  {
-   "text": " ",
-   "start": 34.66,
-   "end": 34.7,
-   "type": "spacing",
-   "logprob": -0.0000032186455882765586
-  },
-  {
-   "text": "o",
-   "start": 34.7,
-   "end": 34.72,
-   "type": "word",
-   "logprob": -0.0000032186455882765586
-  },
-  {
-   "text": " ",
-   "start": 34.72,
-   "end": 34.76,
-   "type": "spacing",
-   "logprob": -0.000006794906312279636
-  },
-  {
-   "text": "TikTok",
-   "start": 34.76,
-   "end": 35.14,
-   "type": "word",
-   "logprob": -0.000006794906312279636
-  },
-  {
-   "text": " ",
-   "start": 35.14,
-   "end": 35.2,
-   "type": "spacing",
-   "logprob": -0.00013779645087197423
-  },
-  {
-   "text": "paga",
-   "start": 35.2,
-   "end": 35.52,
-   "type": "word",
-   "logprob": -0.00013779645087197423
-  },
-  {
-   "text": " ",
-   "start": 35.52,
-   "end": 35.84,
-   "type": "spacing",
-   "logprob": -0.5446703433990479
-  },
-  {
-   "text": "paa,",
-   "start": 35.84,
-   "end": 36.6,
-   "type": "word",
-   "logprob": -0.8757492303848267
-  },
-  {
-   "text": " ",
-   "start": 36.6,
-   "end": 36.8,
-   "type": "spacing",
-   "logprob": -0.000003099436753473128
-  },
-  {
-   "text": "pro",
-   "start": 36.8,
-   "end": 36.9,
-   "type": "word",
-   "logprob": -0.000003099436753473128
-  },
-  {
-   "text": " ",
-   "start": 36.9,
-   "end": 36.94,
-   "type": "spacing",
-   "logprob": -0.00004565611743601039
-  },
-  {
-   "text": "cliente",
-   "start": 36.94,
-   "end": 37.14,
-   "type": "word",
-   "logprob": -0.00004565611743601039
-  },
-  {
-   "text": " ",
-   "start": 37.14,
-   "end": 37.18,
-   "type": "spacing",
-   "logprob": -0.00002777537883957848
-  },
-  {
-   "text": "fazer",
-   "start": 37.18,
-   "end": 37.32,
-   "type": "word",
-   "logprob": -0.00002777537883957848
-  },
-  {
-   "text": " ",
-   "start": 37.32,
-   "end": 37.34,
-   "type": "spacing",
-   "logprob": 0
-  },
-  {
-   "text": "a",
-   "start": 37.34,
-   "end": 37.38,
-   "type": "word",
-   "logprob": 0
-  },
-  {
-   "text": " ",
-   "start": 37.38,
-   "end": 37.42,
-   "type": "spacing",
-   "logprob": -0.00038938093348406255
-  },
-  {
-   "text": "primeira",
-   "start": 37.42,
-   "end": 37.64,
-   "type": "word",
-   "logprob": -0.00038938093348406255
-  },
-  {
-   "text": " ",
-   "start": 37.64,
-   "end": 37.7,
-   "type": "spacing",
-   "logprob": -0.000010132738680113107
-  },
-  {
-   "text": "compra,",
-   "start": 37.7,
-   "end": 38.14,
-   "type": "word",
-   "logprob": -0.049787261612696705
-  },
-  {
-   "text": " ",
-   "start": 38.14,
-   "end": 38.2,
-   "type": "spacing",
-   "logprob": -0.000012516897186287679
-  },
-  {
-   "text": "pra",
-   "start": 38.2,
-   "end": 38.34,
-   "type": "word",
-   "logprob": -0.000012516897186287679
-  },
-  {
-   "text": " ",
-   "start": 38.34,
-   "end": 38.44,
-   "type": "spacing",
-   "logprob": -4.768370445162873e-7
-  },
-  {
-   "text": "ele",
-   "start": 38.44,
-   "end": 38.6,
-   "type": "word",
-   "logprob": -4.768370445162873e-7
-  },
-  {
-   "text": " ",
-   "start": 38.6,
-   "end": 38.66,
-   "type": "spacing",
-   "logprob": -0.000047444173105759546
-  },
-  {
-   "text": "comprar",
-   "start": 38.66,
-   "end": 39.1,
-   "type": "word",
-   "logprob": -0.000047444173105759546
-  },
-  {
-   "text": " ",
-   "start": 39.1,
-   "end": 39.2,
-   "type": "spacing",
-   "logprob": -2.3841855067985307e-7
-  },
-  {
-   "text": "ao",
-   "start": 39.2,
-   "end": 39.28,
-   "type": "word",
-   "logprob": -2.3841855067985307e-7
-  },
-  {
-   "text": " ",
-   "start": 39.28,
-   "end": 39.32,
-   "type": "spacing",
-   "logprob": -0.000006198863957251888
-  },
-  {
-   "text": "longo",
-   "start": 39.32,
-   "end": 39.48,
-   "type": "word",
-   "logprob": -0.000006198863957251888
-  },
-  {
-   "text": " ",
-   "start": 39.48,
-   "end": 39.5,
-   "type": "spacing",
-   "logprob": -3.576278118089249e-7
-  },
-  {
-   "text": "da",
-   "start": 39.5,
-   "end": 39.6,
-   "type": "word",
-   "logprob": -3.576278118089249e-7
-  },
-  {
-   "text": " ",
-   "start": 39.6,
-   "end": 39.64,
-   "type": "spacing",
-   "logprob": -0.000002861018856492592
-  },
-  {
-   "text": "vida",
-   "start": 39.64,
-   "end": 39.84,
-   "type": "word",
-   "logprob": -0.000002861018856492592
-  },
-  {
-   "text": " ",
-   "start": 39.84,
-   "end": 39.9,
-   "type": "spacing",
-   "logprob": -0.0000058412379075889476
-  },
-  {
-   "text": "dele.",
-   "start": 39.9,
-   "end": 40.14,
-   "type": "word",
-   "logprob": -0.000009536670040688477
-  },
-  {
-   "text": " ",
-   "start": 40.14,
-   "end": 40.18,
-   "type": "spacing",
-   "logprob": -0.00001823885577323381
-  },
-  {
-   "text": "Virar",
-   "start": 40.18,
-   "end": 40.48,
-   "type": "word",
-   "logprob": -0.003726971056312323
-  },
-  {
-   "text": " ",
-   "start": 40.48,
-   "end": 40.52,
-   "type": "spacing",
-   "logprob": -0.00004100715523236431
-  },
-  {
-   "text": "cliente",
-   "start": 40.52,
-   "end": 40.84,
-   "type": "word",
-   "logprob": -0.00004100715523236431
-  },
-  {
-   "text": " ",
-   "start": 40.84,
-   "end": 40.88,
-   "type": "spacing",
-   "logprob": -0.0001454247540095821
-  },
-  {
-   "text": "recorrente.",
-   "start": 40.88,
-   "end": 41.52,
-   "type": "word",
-   "logprob": -0.00006967842554414264
-  },
-  {
-   "text": " ",
-   "start": 41.52,
-   "end": 41.7,
-   "type": "spacing",
-   "logprob": -0.000022291887944447808
-  },
-  {
-   "text": "Exatamente.",
-   "start": 41.7,
-   "end": 42.38,
-   "type": "word",
-   "logprob": -0.0000068056664200743065
-  },
-  {
-   "text": " ",
-   "start": 42.38,
-   "end": 42.44,
-   "type": "spacing",
-   "logprob": -0.000012278481335670222
-  },
-  {
-   "text": "Então",
-   "start": 42.44,
-   "end": 42.62,
-   "type": "word",
-   "logprob": -0.000012278481335670222
-  },
-  {
-   "text": " ",
-   "start": 42.62,
-   "end": 42.68,
-   "type": "spacing",
-   "logprob": -0.0017031225143000484
-  },
-  {
-   "text": "tem",
-   "start": 42.68,
-   "end": 42.74,
-   "type": "word",
-   "logprob": -0.0017031225143000484
-  },
-  {
-   "text": " ",
-   "start": 42.74,
-   "end": 42.78,
-   "type": "spacing",
-   "logprob": -0.00010871296399272978
-  },
-  {
-   "text": "muita",
-   "start": 42.78,
-   "end": 42.96,
-   "type": "word",
-   "logprob": -0.00010871296399272978
-  },
-  {
-   "text": " ",
-   "start": 42.96,
-   "end": 43.02,
-   "type": "spacing",
-   "logprob": -0.001663492526859045
-  },
-  {
-   "text": "gente",
-   "start": 43.02,
-   "end": 43.16,
-   "type": "word",
-   "logprob": -0.001663492526859045
-  },
-  {
-   "text": " ",
-   "start": 43.16,
-   "end": 43.18,
-   "type": "spacing",
-   "logprob": 0
-  },
-  {
-   "text": "que",
-   "start": 43.18,
-   "end": 43.22,
-   "type": "word",
-   "logprob": 0
-  },
-  {
-   "text": " ",
-   "start": 43.22,
-   "end": 43.26,
-   "type": "spacing",
-   "logprob": -0.0000019073468138230965
-  },
-  {
-   "text": "não",
-   "start": 43.26,
-   "end": 43.4,
-   "type": "word",
-   "logprob": -0.0000019073468138230965
-  },
-  {
-   "text": " ",
-   "start": 43.4,
-   "end": 43.44,
-   "type": "spacing",
-   "logprob": -0.000024199192921514623
-  },
-  {
-   "text": "tem",
-   "start": 43.44,
-   "end": 43.56,
-   "type": "word",
-   "logprob": -0.000024199192921514623
-  },
-  {
-   "text": " ",
-   "start": 43.56,
-   "end": 43.6,
-   "type": "spacing",
-   "logprob": -0.00007533743337262422
-  },
-  {
-   "text": "confiança",
-   "start": 43.6,
-   "end": 43.92,
-   "type": "word",
-   "logprob": -0.00007533743337262422
-  },
-  {
-   "text": " ",
-   "start": 43.92,
-   "end": 43.98,
-   "type": "spacing",
-   "logprob": -0.00011014331539627165
-  },
-  {
-   "text": "no",
-   "start": 43.98,
-   "end": 44,
-   "type": "word",
-   "logprob": -0.00011014331539627165
-  },
-  {
-   "text": " ",
-   "start": 44,
-   "end": 44.04,
-   "type": "spacing",
-   "logprob": -0.00002884823152271565
-  },
-  {
-   "text": "TikTok.",
-   "start": 44.04,
-   "end": 44.6,
-   "type": "word",
-   "logprob": -0.000030551162386213294
-  },
-  {
-   "text": " ",
-   "start": 44.6,
-   "end": 44.6,
-   "type": "spacing",
-   "logprob": -0.008614758029580116
-  },
-  {
-   "text": "Aham.",
-   "start": 44.7,
-   "end": 45,
-   "type": "word",
-   "logprob": -0.00011191021257559442
-  },
-  {
-   "text": " ",
-   "start": 45,
-   "end": 45.02,
-   "type": "spacing",
-   "logprob": -0.0000345700973412022
-  },
-  {
-   "text": "Na",
-   "start": 45.02,
-   "end": 45.12,
-   "type": "word",
-   "logprob": -0.000005960446742392378
-  },
-  {
-   "text": " ",
-   "start": 45.12,
-   "end": 45.14,
-   "type": "spacing",
-   "logprob": -0.00011848701251437888
-  },
-  {
-   "text": "Shopee",
-   "start": 45.14,
-   "end": 45.38,
-   "type": "word",
-   "logprob": -0.00011383838136680424
-  },
-  {
-   "text": " ",
-   "start": 45.38,
-   "end": 45.42,
-   "type": "spacing",
-   "logprob": -0.003853991162031889
-  },
-  {
-   "text": "tem",
-   "start": 45.42,
-   "end": 45.5,
-   "type": "word",
-   "logprob": -0.003853991162031889
-  },
-  {
-   "text": " ",
-   "start": 45.5,
-   "end": 45.54,
-   "type": "spacing",
-   "logprob": -0.00001728519782773219
-  },
-  {
-   "text": "muito",
-   "start": 45.54,
-   "end": 45.66,
-   "type": "word",
-   "logprob": -0.00001728519782773219
-  },
-  {
-   "text": " ",
-   "start": 45.66,
-   "end": 45.68,
-   "type": "spacing",
-   "logprob": -0.000007152531907195225
-  },
-  {
-   "text": "mais",
-   "start": 45.68,
-   "end": 45.84,
-   "type": "word",
-   "logprob": -0.000007152531907195225
-  },
-  {
-   "text": " ",
-   "start": 45.84,
-   "end": 45.86,
-   "type": "spacing",
-   "logprob": -0.00008654219709569588
-  },
-  {
-   "text": "confiança.",
-   "start": 45.86,
-   "end": 46.16,
-   "type": "word",
-   "logprob": -0.00007794758201384866
-  },
-  {
-   "text": " ",
-   "start": 46.16,
-   "end": 46.18,
-   "type": "spacing",
-   "logprob": -0.000008106198947643861
-  },
-  {
-   "text": "É",
-   "start": 46.2,
-   "end": 46.22,
-   "type": "word",
-   "logprob": -0.01675872877240181
-  },
-  {
-   "text": " ",
-   "start": 46.22,
-   "end": 46.26,
-   "type": "spacing",
-   "logprob": -0.0001530530134914443
-  },
-  {
-   "text": "porque",
-   "start": 46.26,
-   "end": 46.38,
-   "type": "word",
-   "logprob": -0.0001530530134914443
-  },
-  {
-   "text": " ",
-   "start": 46.38,
-   "end": 46.44,
-   "type": "spacing",
-   "logprob": -8.344646857949556e-7
-  },
-  {
-   "text": "é",
-   "start": 46.44,
-   "end": 46.46,
-   "type": "word",
-   "logprob": -8.344646857949556e-7
-  },
-  {
-   "text": " ",
-   "start": 46.46,
-   "end": 46.58,
-   "type": "spacing",
-   "logprob": -0.00003099393507000059
-  },
-  {
-   "text": "novo,",
-   "start": 46.58,
-   "end": 46.9,
-   "type": "word",
-   "logprob": -0.00002489051546490373
-  },
-  {
-   "text": " ",
-   "start": 46.9,
-   "end": 46.98,
-   "type": "spacing",
-   "logprob": -1.1920928244535389e-7
-  },
-  {
-   "text": "né?",
-   "start": 46.98,
-   "end": 47.04,
-   "type": "word",
-   "logprob": -0.00004362775749674105
-  },
-  {
-   "text": " ",
-   "start": 47.04,
-   "end": 47.08,
-   "type": "spacing",
-   "logprob": -0.00044645831803791225
-  },
-  {
-   "text": "Agora",
-   "start": 47.08,
-   "end": 47.34,
-   "type": "word",
-   "logprob": -0.00044645831803791225
-  },
-  {
-   "text": " ",
-   "start": 47.34,
-   "end": 47.36,
-   "type": "spacing",
-   "logprob": 0
-  },
-  {
-   "text": "que",
-   "start": 47.36,
-   "end": 47.4,
-   "type": "word",
-   "logprob": 0
-  },
-  {
-   "text": " ",
-   "start": 47.4,
-   "end": 47.42,
-   "type": "spacing",
-   "logprob": 0
-  },
-  {
-   "text": "a",
-   "start": 47.42,
-   "end": 47.46,
-   "type": "word",
-   "logprob": 0
-  },
-  {
-   "text": " ",
-   "start": 47.46,
-   "end": 47.48,
-   "type": "spacing",
-   "logprob": -0.00041106835124082863
-  },
-  {
-   "text": "galera",
-   "start": 47.48,
-   "end": 47.76,
-   "type": "word",
-   "logprob": -0.00041106835124082863
-  },
-  {
-   "text": " ",
-   "start": 47.76,
-   "end": 47.82,
-   "type": "spacing",
-   "logprob": -0.0000011920922133867862
-  },
-  {
-   "text": "tá",
-   "start": 47.82,
-   "end": 47.86,
-   "type": "word",
-   "logprob": -0.0000011920922133867862
-  },
-  {
-   "text": " ",
-   "start": 47.86,
-   "end": 47.9,
-   "type": "spacing",
-   "logprob": -0.00023934361524879932
-  }
- ],
- "transcription_id": "BDlDT8KmRkXOeu2b4wpl",
- "audio_duration_secs": 249.8233125
-}
+[
+ {
+  "text": " Todo",
+  "startMs": 740,
+  "endMs": 960,
+  "timestampMs": null,
+  "confidence": 0.9980483072922305
+ },
+ {
+  "text": " dia.",
+  "startMs": 1060,
+  "endMs": 1180,
+  "timestampMs": null,
+  "confidence": 0.9999940693773443
+ },
+ {
+  "text": " Porque",
+  "startMs": 1360,
+  "endMs": 1480,
+  "timestampMs": null,
+  "confidence": 0.9997343530869288
+ },
+ {
+  "text": " agora",
+  "startMs": 1480,
+  "endMs": 1620,
+  "timestampMs": null,
+  "confidence": 0.9999945164027223
+ },
+ {
+  "text": " em",
+  "startMs": 1720,
+  "endMs": 1780,
+  "timestampMs": null,
+  "confidence": 0.9933000916268139
+ },
+ {
+  "text": " novembro,",
+  "startMs": 1820,
+  "endMs": 2380,
+  "timestampMs": null,
+  "confidence": 0.9999822778855684
+ },
+ {
+  "text": " é,",
+  "startMs": 2520,
+  "endMs": 2640,
+  "timestampMs": null,
+  "confidence": 0.9999502932780466
+ },
+ {
+  "text": " o",
+  "startMs": 3240,
+  "endMs": 3240,
+  "timestampMs": null,
+  "confidence": 0.8517192916341879
+ },
+ {
+  "text": " TikTok",
+  "startMs": 3260,
+  "endMs": 3560,
+  "timestampMs": null,
+  "confidence": 0.9999738938465109
+ },
+ {
+  "text": " tá",
+  "startMs": 3600,
+  "endMs": 3660,
+  "timestampMs": null,
+  "confidence": 0.99989784807358
+ },
+ {
+  "text": " investindo",
+  "startMs": 3680,
+  "endMs": 4080,
+  "timestampMs": null,
+  "confidence": 0.9998671527236358
+ },
+ {
+  "text": " muito",
+  "startMs": 4120,
+  "endMs": 4320,
+  "timestampMs": null,
+  "confidence": 0.9999971389852362
+ },
+ {
+  "text": " em",
+  "startMs": 4340,
+  "endMs": 4380,
+  "timestampMs": null,
+  "confidence": 1
+ },
+ {
+  "text": " live.",
+  "startMs": 4420,
+  "endMs": 4780,
+  "timestampMs": null,
+  "confidence": 0.999985122929572
+ },
+ {
+  "text": " O",
+  "startMs": 5100,
+  "endMs": 5120,
+  "timestampMs": null,
+  "confidence": 0.9998246738733153
+ },
+ {
+  "text": " TikTok",
+  "startMs": 5580,
+  "endMs": 5820,
+  "timestampMs": null,
+  "confidence": 0.8579223804434574
+ },
+ {
+  "text": " tá",
+  "startMs": 5860,
+  "endMs": 5919,
+  "timestampMs": null,
+  "confidence": 0.9996613219271174
+ },
+ {
+  "text": " investindo",
+  "startMs": 5940,
+  "endMs": 6360,
+  "timestampMs": null,
+  "confidence": 0.9958960466475321
+ },
+ {
+  "text": " cem",
+  "startMs": 6419,
+  "endMs": 6539,
+  "timestampMs": null,
+  "confidence": 0.9997239874807804
+ },
+ {
+  "text": " milhões",
+  "startMs": 6600,
+  "endMs": 7180,
+  "timestampMs": null,
+  "confidence": 0.9999224007757245
+ },
+ {
+  "text": " em",
+  "startMs": 7900,
+  "endMs": 8000,
+  "timestampMs": null,
+  "confidence": 0.9999991655356624
+ },
+ {
+  "text": " cupons",
+  "startMs": 8039,
+  "endMs": 8680,
+  "timestampMs": null,
+  "confidence": 0.9998775552136773
+ },
+ {
+  "text": " pros",
+  "startMs": 9360,
+  "endMs": 9540,
+  "timestampMs": null,
+  "confidence": 0.9997891632313072
+ },
+ {
+  "text": " clientes",
+  "startMs": 9580,
+  "endMs": 9920,
+  "timestampMs": null,
+  "confidence": 0.9999758010998766
+ },
+ {
+  "text": " comprarem",
+  "startMs": 9960,
+  "endMs": 10280,
+  "timestampMs": null,
+  "confidence": 0.9963896567390058
+ },
+ {
+  "text": " em",
+  "startMs": 10300,
+  "endMs": 10320,
+  "timestampMs": null,
+  "confidence": 0.9991882481452625
+ },
+ {
+  "text": " live.",
+  "startMs": 10340,
+  "endMs": 10700,
+  "timestampMs": null,
+  "confidence": 0.9999951362867295
+ },
+ {
+  "text": " E",
+  "startMs": 11020,
+  "endMs": 11060,
+  "timestampMs": null,
+  "confidence": 0.9576913304028952
+ },
+ {
+  "text": " agora",
+  "startMs": 11080,
+  "endMs": 11240,
+  "timestampMs": null,
+  "confidence": 0.9999964237340748
+ },
+ {
+  "text": " é",
+  "startMs": 11280,
+  "endMs": 11300,
+  "timestampMs": null,
+  "confidence": 0.9995676956785696
+ },
+ {
+  "text": " Black",
+  "startMs": 11340,
+  "endMs": 11520,
+  "timestampMs": null,
+  "confidence": 0.9999914170043662
+ },
+ {
+  "text": " Friday,",
+  "startMs": 11580,
+  "endMs": 11960,
+  "timestampMs": null,
+  "confidence": 0.9999942439278914
+ },
+ {
+  "text": " né,",
+  "startMs": 12000,
+  "endMs": 12100,
+  "timestampMs": null,
+  "confidence": 0.9998372925095612
+ },
+ {
+  "text": " que",
+  "startMs": 12140,
+  "endMs": 12180,
+  "timestampMs": null,
+  "confidence": 0.9999506497906105
+ },
+ {
+  "text": " é",
+  "startMs": 12220,
+  "endMs": 12240,
+  "timestampMs": null,
+  "confidence": 0.9977929533755597
+ },
+ {
+  "text": " final",
+  "startMs": 12300,
+  "endMs": 12420,
+  "timestampMs": null,
+  "confidence": 0.9988400102219596
+ },
+ {
+  "text": " de",
+  "startMs": 12460,
+  "endMs": 12520,
+  "timestampMs": null,
+  "confidence": 0.9999976158197796
+ },
+ {
+  "text": " novembro.",
+  "startMs": 12620,
+  "endMs": 12620,
+  "timestampMs": null,
+  "confidence": 0.5199139539711572
+ },
+ {
+  "text": " Por",
+  "startMs": 12620,
+  "endMs": 12800,
+  "timestampMs": null,
+  "confidence": 0.9998687677986372
+ },
+ {
+  "text": " que",
+  "startMs": 12820,
+  "endMs": 12900,
+  "timestampMs": null,
+  "confidence": 0.9999995231630692
+ },
+ {
+  "text": " que",
+  "startMs": 12940,
+  "endMs": 12980,
+  "timestampMs": null,
+  "confidence": 0.9998191922118028
+ },
+ {
+  "text": " eles",
+  "startMs": 13000,
+  "endMs": 13120,
+  "timestampMs": null,
+  "confidence": 0.9999864103261001
+ },
+ {
+  "text": " fazem",
+  "startMs": 13140,
+  "endMs": 13420,
+  "timestampMs": null,
+  "confidence": 0.9999655497017356
+ },
+ {
+  "text": " isso?",
+  "startMs": 13520,
+  "endMs": 13800,
+  "timestampMs": null,
+  "confidence": 0.9999981880224413
+ },
+ {
+  "text": " Presta",
+  "startMs": 14180,
+  "endMs": 14360,
+  "timestampMs": null,
+  "confidence": 0.9987948852769682
+ },
+ {
+  "text": " atenção,",
+  "startMs": 14420,
+  "endMs": 14640,
+  "timestampMs": null,
+  "confidence": 0.9999946654148365
+ },
+ {
+  "text": " a",
+  "startMs": 14700,
+  "endMs": 14760,
+  "timestampMs": null,
+  "confidence": 0.9999998807907247
+ },
+ {
+  "text": " Shopee",
+  "startMs": 14800,
+  "endMs": 15180,
+  "timestampMs": null,
+  "confidence": 0.9997332513864743
+ },
+ {
+  "text": " tem",
+  "startMs": 15240,
+  "endMs": 15360,
+  "timestampMs": null,
+  "confidence": 0.9999984502816872
+ },
+ {
+  "text": " sete",
+  "startMs": 15400,
+  "endMs": 15600,
+  "timestampMs": null,
+  "confidence": 0.9999848606494245
+ },
+ {
+  "text": " anos",
+  "startMs": 15640,
+  "endMs": 15740,
+  "timestampMs": null,
+  "confidence": 0.9999303866209199
+ },
+ {
+  "text": " no",
+  "startMs": 15760,
+  "endMs": 15820,
+  "timestampMs": null,
+  "confidence": 0.9999972581939645
+ },
+ {
+  "text": " mercado.",
+  "startMs": 15840,
+  "endMs": 16420,
+  "timestampMs": null,
+  "confidence": 0.9999972730953984
+ },
+ {
+  "text": " TikTok",
+  "startMs": 17100,
+  "endMs": 17500,
+  "timestampMs": null,
+  "confidence": 0.9963471107503923
+ },
+ {
+  "text": " tem",
+  "startMs": 17540,
+  "endMs": 17600,
+  "timestampMs": null,
+  "confidence": 0.9999480274500657
+ },
+ {
+  "text": " um",
+  "startMs": 17620,
+  "endMs": 17660,
+  "timestampMs": null,
+  "confidence": 0.9999864103261001
+ },
+ {
+  "text": " ano",
+  "startMs": 17680,
+  "endMs": 17740,
+  "timestampMs": null,
+  "confidence": 0.9999949932351057
+ },
+ {
+  "text": " e",
+  "startMs": 17780,
+  "endMs": 17800,
+  "timestampMs": null,
+  "confidence": 0.9999998807907247
+ },
+ {
+  "text": " meio.",
+  "startMs": 17860,
+  "endMs": 18220,
+  "timestampMs": null,
+  "confidence": 0.9993256919741006
+ },
+ {
+  "text": " Ou",
+  "startMs": 18600,
+  "endMs": 18660,
+  "timestampMs": null,
+  "confidence": 0.9999127464121904
+ },
+ {
+  "text": " seja,",
+  "startMs": 18700,
+  "endMs": 18900,
+  "timestampMs": null,
+  "confidence": 0.9999997138977915
+ },
+ {
+  "text": " muita",
+  "startMs": 18940,
+  "endMs": 19120,
+  "timestampMs": null,
+  "confidence": 0.9999939203633587
+ },
+ {
+  "text": " gente",
+  "startMs": 19160,
+  "endMs": 19320,
+  "timestampMs": null,
+  "confidence": 0.9999964237340748
+ },
+ {
+  "text": " não",
+  "startMs": 19380,
+  "endMs": 19500,
+  "timestampMs": null,
+  "confidence": 0.9999996423722521
+ },
+ {
+  "text": " tem",
+  "startMs": 19560,
+  "endMs": 19680,
+  "timestampMs": null,
+  "confidence": 0.99998354938796
+ },
+ {
+  "text": " confiança",
+  "startMs": 19720,
+  "endMs": 20060,
+  "timestampMs": null,
+  "confidence": 0.9999425444247136
+ },
+ {
+  "text": " em",
+  "startMs": 20100,
+  "endMs": 20140,
+  "timestampMs": null,
+  "confidence": 0.9999988079084972
+ },
+ {
+  "text": " comprar",
+  "startMs": 20160,
+  "endMs": 20360,
+  "timestampMs": null,
+  "confidence": 0.9998477929052435
+ },
+ {
+  "text": " na",
+  "startMs": 20400,
+  "endMs": 20480,
+  "timestampMs": null,
+  "confidence": 0.9995666237248106
+ },
+ {
+  "text": " Shopee.",
+  "startMs": 20520,
+  "endMs": 20960,
+  "timestampMs": null,
+  "confidence": 0.9999669462219118
+ },
+ {
+  "text": " Eles",
+  "startMs": 21540,
+  "endMs": 21720,
+  "timestampMs": null,
+  "confidence": 0.9999996423722521
+ },
+ {
+  "text": " precisam",
+  "startMs": 21760,
+  "endMs": 22500,
+  "timestampMs": null,
+  "confidence": 0.9999930859092101
+ },
+ {
+  "text": " pagar",
+  "startMs": 22580,
+  "endMs": 23100,
+  "timestampMs": null,
+  "confidence": 0.9999831917733143
+ },
+ {
+  "text": " pras",
+  "startMs": 23140,
+  "endMs": 23300,
+  "timestampMs": null,
+  "confidence": 0.9999250229763097
+ },
+ {
+  "text": " pessoas",
+  "startMs": 23340,
+  "endMs": 23880,
+  "timestampMs": null,
+  "confidence": 0.9999846222381212
+ },
+ {
+  "text": " fazerem",
+  "startMs": 23920,
+  "endMs": 24180,
+  "timestampMs": null,
+  "confidence": 0.9942612594598901
+ },
+ {
+  "text": " a",
+  "startMs": 24220,
+  "endMs": 24260,
+  "timestampMs": null,
+  "confidence": 1
+ },
+ {
+  "text": " primeira",
+  "startMs": 24300,
+  "endMs": 24520,
+  "timestampMs": null,
+  "confidence": 0.9997870183698169
+ },
+ {
+  "text": " compra",
+  "startMs": 24560,
+  "endMs": 24760,
+  "timestampMs": null,
+  "confidence": 0.9997803455340087
+ },
+ {
+  "text": " na,",
+  "startMs": 24800,
+  "endMs": 24920,
+  "timestampMs": null,
+  "confidence": 0.6735478618420655
+ },
+ {
+  "text": " no",
+  "startMs": 24960,
+  "endMs": 25040,
+  "timestampMs": null,
+  "confidence": 0.999991297797926
+ },
+ {
+  "text": " TikTok,",
+  "startMs": 25080,
+  "endMs": 25580,
+  "timestampMs": null,
+  "confidence": 0.9995346711045188
+ },
+ {
+  "text": " pra",
+  "startMs": 25620,
+  "endMs": 25680,
+  "timestampMs": null,
+  "confidence": 0.9999654305001977
+ },
+ {
+  "text": " eles",
+  "startMs": 25720,
+  "endMs": 25820,
+  "timestampMs": null,
+  "confidence": 0.9999977350285647
+ },
+ {
+  "text": " terem",
+  "startMs": 25860,
+  "endMs": 26040,
+  "timestampMs": null,
+  "confidence": 0.9996617984574251
+ },
+ {
+  "text": " a",
+  "startMs": 26040,
+  "endMs": 26040,
+  "timestampMs": null,
+  "confidence": 0.999914891812595
+ },
+ {
+  "text": " confiança",
+  "startMs": 26080,
+  "endMs": 26500,
+  "timestampMs": null,
+  "confidence": 0.9998100164859848
+ },
+ {
+  "text": " que",
+  "startMs": 26520,
+  "endMs": 26580,
+  "timestampMs": null,
+  "confidence": 0.9999915362117302
+ },
+ {
+  "text": " chega",
+  "startMs": 26600,
+  "endMs": 26780,
+  "timestampMs": null,
+  "confidence": 0.9999918938339075
+ },
+ {
+  "text": " o",
+  "startMs": 26800,
+  "endMs": 26860,
+  "timestampMs": null,
+  "confidence": 0.9999997615814777
+ },
+ {
+  "text": " produto,",
+  "startMs": 26900,
+  "endMs": 27380,
+  "timestampMs": null,
+  "confidence": 0.9999737299678155
+ },
+ {
+  "text": " pra",
+  "startMs": 27780,
+  "endMs": 27920,
+  "timestampMs": null,
+  "confidence": 0.99998879445232
+ },
+ {
+  "text": " numa",
+  "startMs": 27980,
+  "endMs": 28120,
+  "timestampMs": null,
+  "confidence": 0.9974333527926404
+ },
+ {
+  "text": " segunda",
+  "startMs": 28180,
+  "endMs": 28540,
+  "timestampMs": null,
+  "confidence": 0.9999511265788857
+ },
+ {
+  "text": " compra,",
+  "startMs": 28600,
+  "endMs": 28960,
+  "timestampMs": null,
+  "confidence": 0.9999938692771582
+ },
+ {
+  "text": " eles",
+  "startMs": 29040,
+  "endMs": 29180,
+  "timestampMs": null,
+  "confidence": 0.9999918938339075
+ },
+ {
+  "text": " ganharem",
+  "startMs": 29200,
+  "endMs": 29400,
+  "timestampMs": null,
+  "confidence": 0.9923888255422514
+ },
+ {
+  "text": " numa",
+  "startMs": 29440,
+  "endMs": 29520,
+  "timestampMs": null,
+  "confidence": 0.5621370646467715
+ },
+ {
+  "text": " segunda",
+  "startMs": 29580,
+  "endMs": 29880,
+  "timestampMs": null,
+  "confidence": 0.9999761587100603
+ },
+ {
+  "text": " compra.",
+  "startMs": 29940,
+  "endMs": 30240,
+  "timestampMs": null,
+  "confidence": 0.9999186772001404
+ },
+ {
+  "text": " Então",
+  "startMs": 30260,
+  "endMs": 30440,
+  "timestampMs": null,
+  "confidence": 0.9999614968828868
+ },
+ {
+  "text": " eles",
+  "startMs": 30500,
+  "endMs": 30600,
+  "timestampMs": null,
+  "confidence": 0.998383873139995
+ },
+ {
+  "text": " ganham",
+  "startMs": 30640,
+  "endMs": 30880,
+  "timestampMs": null,
+  "confidence": 0.9999001723654031
+ },
+ {
+  "text": " o",
+  "startMs": 31340,
+  "endMs": 31360,
+  "timestampMs": null,
+  "confidence": 0.9840602711920517
+ },
+ {
+  "text": " que",
+  "startMs": 31400,
+  "endMs": 31420,
+  "timestampMs": null,
+  "confidence": 0.9999985694905718
+ },
+ {
+  "text": " a",
+  "startMs": 31420,
+  "endMs": 31420,
+  "timestampMs": null,
+  "confidence": 1
+ },
+ {
+  "text": " gente",
+  "startMs": 31420,
+  "endMs": 31520,
+  "timestampMs": null,
+  "confidence": 0.9999974966112362
+ },
+ {
+  "text": " chama",
+  "startMs": 31540,
+  "endMs": 31720,
+  "timestampMs": null,
+  "confidence": 0.9998483887738482
+ },
+ {
+  "text": " no",
+  "startMs": 31760,
+  "endMs": 31820,
+  "timestampMs": null,
+  "confidence": 0.9880669064954904
+ },
+ {
+  "text": " CAC,",
+  "startMs": 31940,
+  "endMs": 32660,
+  "timestampMs": null,
+  "confidence": 0.970254893158964
+ },
+ {
+  "text": " que",
+  "startMs": 32740,
+  "endMs": 32800,
+  "timestampMs": null,
+  "confidence": 1
+ },
+ {
+  "text": " é,",
+  "startMs": 32900,
+  "endMs": 33040,
+  "timestampMs": null,
+  "confidence": 0.9999999403953606
+ },
+ {
+  "text": " é,",
+  "startMs": 33740,
+  "endMs": 33740,
+  "timestampMs": null,
+  "confidence": 0.999999463558483
+ },
+ {
+  "text": " quanto",
+  "startMs": 34180,
+  "endMs": 34380,
+  "timestampMs": null,
+  "confidence": 0.561464031179119
+ },
+ {
+  "text": " que",
+  "startMs": 34400,
+  "endMs": 34440,
+  "timestampMs": null,
+  "confidence": 0.9998359949138526
+ },
+ {
+  "text": " a,",
+  "startMs": 34560,
+  "endMs": 34600,
+  "timestampMs": null,
+  "confidence": 0.9995591337298194
+ },
+ {
+  "text": " que",
+  "startMs": 34620,
+  "endMs": 34660,
+  "timestampMs": null,
+  "confidence": 0.946589179522386
+ },
+ {
+  "text": " o",
+  "startMs": 34700,
+  "endMs": 34720,
+  "timestampMs": null,
+  "confidence": 0.9999967813595916
+ },
+ {
+  "text": " TikTok",
+  "startMs": 34760,
+  "endMs": 35140,
+  "timestampMs": null,
+  "confidence": 0.999993205116773
+ },
+ {
+  "text": " paga",
+  "startMs": 35200,
+  "endMs": 35520,
+  "timestampMs": null,
+  "confidence": 0.9998622130426229
+ },
+ {
+  "text": " paa,",
+  "startMs": 35840,
+  "endMs": 36600,
+  "timestampMs": null,
+  "confidence": 0.416549810959819
+ },
+ {
+  "text": " pro",
+  "startMs": 36800,
+  "endMs": 36900,
+  "timestampMs": null,
+  "confidence": 0.9999969005680498
+ },
+ {
+  "text": " cliente",
+  "startMs": 36940,
+  "endMs": 37140,
+  "timestampMs": null,
+  "confidence": 0.9999543449247886
+ },
+ {
+  "text": " fazer",
+  "startMs": 37180,
+  "endMs": 37320,
+  "timestampMs": null,
+  "confidence": 0.9999722250068926
+ },
+ {
+  "text": " a",
+  "startMs": 37340,
+  "endMs": 37380,
+  "timestampMs": null,
+  "confidence": 1
+ },
+ {
+  "text": " primeira",
+  "startMs": 37420,
+  "endMs": 37640,
+  "timestampMs": null,
+  "confidence": 0.9996106948654331
+ },
+ {
+  "text": " compra,",
+  "startMs": 37700,
+  "endMs": 38140,
+  "timestampMs": null,
+  "confidence": 0.9514318090411549
+ },
+ {
+  "text": " pra",
+  "startMs": 38200,
+  "endMs": 38340,
+  "timestampMs": null,
+  "confidence": 0.9999874831811497
+ },
+ {
+  "text": " ele",
+  "startMs": 38440,
+  "endMs": 38600,
+  "timestampMs": null,
+  "confidence": 0.9999995231630692
+ },
+ {
+  "text": " comprar",
+  "startMs": 38660,
+  "endMs": 39100,
+  "timestampMs": null,
+  "confidence": 0.9999525569523512
+ },
+ {
+  "text": " ao",
+  "startMs": 39200,
+  "endMs": 39280,
+  "timestampMs": null,
+  "confidence": 0.9999997615814777
+ },
+ {
+  "text": " longo",
+  "startMs": 39320,
+  "endMs": 39480,
+  "timestampMs": null,
+  "confidence": 0.9999938011552557
+ },
+ {
+  "text": " da",
+  "startMs": 39500,
+  "endMs": 39600,
+  "timestampMs": null,
+  "confidence": 0.9999996423722521
+ },
+ {
+  "text": " vida",
+  "startMs": 39640,
+  "endMs": 39840,
+  "timestampMs": null,
+  "confidence": 0.9999971389852362
+ },
+ {
+  "text": " dele.",
+  "startMs": 39900,
+  "endMs": 40140,
+  "timestampMs": null,
+  "confidence": 0.9999904633754332
+ },
+ {
+  "text": " Virar",
+  "startMs": 40180,
+  "endMs": 40480,
+  "timestampMs": null,
+  "confidence": 0.9962799654802156
+ },
+ {
+  "text": " cliente",
+  "startMs": 40520,
+  "endMs": 40840,
+  "timestampMs": null,
+  "confidence": 0.9999589936855495
+ },
+ {
+  "text": " recorrente.",
+  "startMs": 40880,
+  "endMs": 41520,
+  "timestampMs": null,
+  "confidence": 0.9999303240019409
+ },
+ {
+  "text": " Exatamente.",
+  "startMs": 41700,
+  "endMs": 42380,
+  "timestampMs": null,
+  "confidence": 0.9999931943567384
+ },
+ {
+  "text": " Então",
+  "startMs": 42440,
+  "endMs": 42620,
+  "timestampMs": null,
+  "confidence": 0.9999877215940446
+ },
+ {
+  "text": " tem",
+  "startMs": 42680,
+  "endMs": 42740,
+  "timestampMs": null,
+  "confidence": 0.9982983269758461
+ },
+ {
+  "text": " muita",
+  "startMs": 42780,
+  "endMs": 42960,
+  "timestampMs": null,
+  "confidence": 0.9998912929450474
+ },
+ {
+  "text": " gente",
+  "startMs": 43020,
+  "endMs": 43160,
+  "timestampMs": null,
+  "confidence": 0.9983378903099486
+ },
+ {
+  "text": " que",
+  "startMs": 43180,
+  "endMs": 43220,
+  "timestampMs": null,
+  "confidence": 1
+ },
+ {
+  "text": " não",
+  "startMs": 43260,
+  "endMs": 43400,
+  "timestampMs": null,
+  "confidence": 0.9999980926550052
+ },
+ {
+  "text": " tem",
+  "startMs": 43440,
+  "endMs": 43560,
+  "timestampMs": null,
+  "confidence": 0.9999758010998766
+ },
+ {
+  "text": " confiança",
+  "startMs": 43600,
+  "endMs": 43920,
+  "timestampMs": null,
+  "confidence": 0.9999246654044206
+ },
+ {
+  "text": " no",
+  "startMs": 43980,
+  "endMs": 44000,
+  "timestampMs": null,
+  "confidence": 0.999889862750156
+ },
+ {
+  "text": " TikTok.",
+  "startMs": 44040,
+  "endMs": 44600,
+  "timestampMs": null,
+  "confidence": 0.9999694493042958
+ },
+ {
+  "text": " Aham.",
+  "startMs": 44700,
+  "endMs": 45000,
+  "timestampMs": null,
+  "confidence": 0.9998880960491386
+ },
+ {
+  "text": " Na",
+  "startMs": 45020,
+  "endMs": 45120,
+  "timestampMs": null,
+  "confidence": 0.9999940395710211
+ },
+ {
+  "text": " Shopee",
+  "startMs": 45140,
+  "endMs": 45380,
+  "timestampMs": null,
+  "confidence": 0.9998861680979758
+ },
+ {
+  "text": " tem",
+  "startMs": 45420,
+  "endMs": 45500,
+  "timestampMs": null,
+  "confidence": 0.9961534259303777
+ },
+ {
+  "text": " muito",
+  "startMs": 45540,
+  "endMs": 45660,
+  "timestampMs": null,
+  "confidence": 0.9999827149515604
+ },
+ {
+  "text": " mais",
+  "startMs": 45680,
+  "endMs": 45840,
+  "timestampMs": null,
+  "confidence": 0.9999928474936721
+ },
+ {
+  "text": " confiança.",
+  "startMs": 45860,
+  "endMs": 46160,
+  "timestampMs": null,
+  "confidence": 0.99992205545582
+ },
+ {
+  "text": " É",
+  "startMs": 46200,
+  "endMs": 46220,
+  "timestampMs": null,
+  "confidence": 0.9833809175361927
+ },
+ {
+  "text": " porque",
+  "startMs": 46260,
+  "endMs": 46380,
+  "timestampMs": null,
+  "confidence": 0.9998469586985235
+ },
+ {
+  "text": " é",
+  "startMs": 46440,
+  "endMs": 46460,
+  "timestampMs": null,
+  "confidence": 0.9999991655356624
+ },
+ {
+  "text": " novo,",
+  "startMs": 46580,
+  "endMs": 46900,
+  "timestampMs": null,
+  "confidence": 0.9999751097943014
+ },
+ {
+  "text": " né?",
+  "startMs": 46980,
+  "endMs": 47040,
+  "timestampMs": null,
+  "confidence": 0.9999563731941801
+ },
+ {
+  "text": " Agora",
+  "startMs": 47080,
+  "endMs": 47340,
+  "timestampMs": null,
+  "confidence": 0.9995536413296469
+ },
+ {
+  "text": " que",
+  "startMs": 47360,
+  "endMs": 47400,
+  "timestampMs": null,
+  "confidence": 1
+ },
+ {
+  "text": " a",
+  "startMs": 47420,
+  "endMs": 47460,
+  "timestampMs": null,
+  "confidence": 1
+ },
+ {
+  "text": " galera",
+  "startMs": 47480,
+  "endMs": 47760,
+  "timestampMs": null,
+  "confidence": 0.9995890161257782
+ },
+ {
+  "text": " tá",
+  "startMs": 47820,
+  "endMs": 47860,
+  "timestampMs": null,
+  "confidence": 0.9999988079084972
+ }
+]
