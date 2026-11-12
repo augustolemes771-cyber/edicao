@@ -42,13 +42,13 @@ export const p2232: Edit = {
 	camera: (b) => {
 		const cheias: Trecho[] = [
 			[b.say('Por que').inicio - 0.05, b.at('Presta') - 0.05],
-			[b.at('Então') - 0.05, b.at('Eles') - 0.05],
+			[b.at('Então') - 0.05, b.say('Eles precisam').inicio - 0.05],
 		];
 		return [
 			...punches(b, cheias, () => ({x: 0.56, y: 0.4})),
 			{tipo: 'flash', em: b.at('milhões') - 0.04},
 			{tipo: 'chicote', em: b.at('Presta') - 0.04},
-			{tipo: 'chicote', em: b.at('Eles') - 0.04},
+			{tipo: 'chicote', em: b.say('Eles precisam').inicio - 0.04},
 			{tipo: 'flash', em: b.at('recorrente') - 0.04},
 		];
 	},
@@ -86,7 +86,7 @@ export const p2232: Edit = {
 				ate: b.say('Por que').inicio - 0.05,
 				texto: 'BLACK FRIDAY',
 				chip: 'FIM DE NOVEMBRO',
-				emChip: b.at('final'),
+				emChip: b.at('Friday'),
 				esconderLegenda: true,
 				som: 'pro_swipe',
 			},
@@ -95,11 +95,7 @@ export const p2232: Edit = {
 				tipo: 'frase',
 				de: b.say('Por que').inicio - 0.05,
 				ate: b.at('Presta') - 0.05,
-				palavras: [
-					{texto: 'POR QUE', em: b.say('Por que').inicio},
-					{texto: 'ELES FAZEM', em: b.at('eles')},
-					{texto: 'isso?', em: b.at('isso'), destaque: true},
-				],
+				palavras: [{texto: 'POR QUÊ?', em: b.say('Por que').inicio, destaque: true}],
 				som: 'pro_tick',
 			},
 			// Shopee 7 anos × TikTok 1 ano e meio
@@ -108,6 +104,7 @@ export const p2232: Edit = {
 				nome: 'p223Tempo',
 				de: b.at('Presta') - 0.05,
 				ate: b.say('ano e meio').fim + 0.12,
+				esconderLegenda: true,
 				som: 'pro_whoosh_curto',
 				dados: {
 					itens: [
@@ -121,7 +118,7 @@ export const p2232: Edit = {
 			{
 				tipo: 'gradeAntesDepois',
 				de: b.at('Então') - 0.05,
-				ate: b.at('Eles') - 0.05,
+				ate: b.say('Eles precisam').inicio - 0.05,
 				titulo: [{texto: 'CONFIANÇA', em: b.at('confiança')}],
 				antes: {texto: 'TIKTOK', em: b.at('TikTok', 3), valor: 'POUCA'},
 				depois: {texto: 'SHOPEE', em: b.at('Shopee', 2), valor: 'MUITA'},
@@ -130,7 +127,7 @@ export const p2232: Edit = {
 			// O TikTok paga a 1ª compra: cartas que viram
 			{
 				tipo: 'cards3d',
-				de: b.at('Eles') - 0.05,
+				de: b.say('Eles precisam').inicio - 0.05,
 				ate: b.at('pra', 3) - 0.1,
 				itens: [
 					{texto: '1ª COMPRA PAGA', em: b.at('primeira')},
