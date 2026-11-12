@@ -47,7 +47,6 @@ export const p2238: Edit = {
 	camera: (b) => {
 		const pergunta = (t: number) => t >= b.at('Danlow') - 0.05 && t < b.say('E dancinha').inicio - 0.05;
 		const cheias: Trecho[] = [
-			[0, b.at('Danlow') - 0.05],
 			[b.say('E dancinha').inicio - 0.05, b.at('só') - 0.1],
 		];
 		return [
@@ -67,6 +66,7 @@ export const p2238: Edit = {
 				de: 0,
 				ate: b.at('Danlow') - 0.05,
 				linhas: [
+					{texto: 'TIKTOK SHOP', em: b.at('TikTok'), metal: 'branco'},
 					{texto: 'DIFAMADO', em: b.at('difamado'), metal: 'cinza'},
 					{texto: 'DANCINHA?', em: b.at('dancinha'), metal: 'ouro'},
 				],
