@@ -39,19 +39,19 @@ export const p22317: Edit = {
 		enfase: [{palavra: 'feeling', estilo: 'serif'}],
 		falantes: (b) => [
 			{de: b.at('Tipo') - 0.05, ate: b.at('costumo') - 0.1, nome: 'DANILOW'},
-			{de: b.at('costumo') - 0.1, ate: b.at('Às') - 0.05, nome: 'EMPRESÁRIO'},
-			{de: b.at('Às') - 0.05, ate: b.at('personalidade') + 0.9, nome: 'DANILOW'},
+			{de: b.at('costumo') - 0.1, ate: b.say('nem você falar').inicio - 0.05, nome: 'EMPRESÁRIO'},
+			{de: b.say('nem você falar').inicio - 0.05, ate: b.at('personalidade') + 0.9, nome: 'DANILOW'},
 		],
 	},
 	camera: (b) => {
-		const empresario = (t: number) => t < b.at('Tipo') - 0.05 || (t >= b.at('costumo') - 0.1 && t < b.at('Às') - 0.05);
-		const cheias: Trecho[] = [[b.at('Então') - 0.05, b.at('Às') - 0.05]];
+		const empresario = (t: number) => t < b.at('Tipo') - 0.05 || (t >= b.at('costumo') - 0.1 && t < b.say('nem você falar').inicio - 0.05);
+		const cheias: Trecho[] = [[b.at('Então') - 0.05, b.say('nem você falar').inicio - 0.05]];
 		return [
 			...punches(b, cheias, (t) => (empresario(t) ? {x: 0.36, y: 0.36} : {x: 0.62, y: 0.35})),
 			{tipo: 'flash', em: b.at('comprar') - 0.04},
 			{tipo: 'chicote', em: b.at('Tipo') - 0.05},
 			{tipo: 'chicote', em: b.at('costumo') - 0.1},
-			{tipo: 'chicote', em: b.at('Às') - 0.05},
+			{tipo: 'chicote', em: b.say('nem você falar').inicio - 0.05},
 			{tipo: 'flash', em: b.at('mesmo') - 0.04},
 		];
 	},
@@ -121,7 +121,7 @@ export const p22317: Edit = {
 			{
 				tipo: 'frase',
 				de: b.at('Então') - 0.05,
-				ate: b.at('Às') - 0.05,
+				ate: b.say('nem você falar').inicio - 0.05,
 				palavras: [
 					{texto: 'A VENDA É', em: b.at('venda', 2)},
 					{texto: 'emocional.', em: b.at('emocional'), destaque: true},
@@ -130,7 +130,7 @@ export const p22317: Edit = {
 			},
 			{
 				tipo: 'pilula',
-				de: b.at('Às') - 0.05,
+				de: b.say('nem você falar').inicio - 0.05,
 				ate: b.at('ser') - 0.3,
 				rotulo: 'O SEGREDO',
 				nome: 'identificação',

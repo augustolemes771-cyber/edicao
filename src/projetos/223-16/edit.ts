@@ -8,7 +8,7 @@ import transcricao from './transcricao.json';
 // O empresário (camisa xadrez, à esquerda) pergunta; Danilow (camisa preta, à direita) responde.
 // História: gancho "80/20 do TikTok Shop é produto: é escolher o produto" → "me identifico ou pesquiso o que mais vende?" →
 // "duas formas: produto com identificação ou link que já vende" → "link validado" → "não é só chegar e gravar" → "precisa
-// entender, é coisa simples" → cartão final.
+// entender" → cartão final.
 
 const TRECHOS: Trecho[] = [
 	[6.38, 10.8], // gancho: "Oitenta vinte do TikTok Shop é produto, tanto vídeo quanto live, sabe? É escolher o produto."
@@ -17,7 +17,7 @@ const TRECHOS: Trecho[] = [
 	[24.52, 29.85], // "Como você pode escolher qualquer tipo de produto, estuda seu produto e escolhe um link que já vende."
 	[30.3, 32.3], // "Então é uma forma, um link validado, que a gente fala."
 	[33.42, 36.8], // "Não é só chegar, falar 'quero vender', pegar o meu celular e começar a gravar, não."
-	[40.38, 43.08], // "É, cê precisa entender, cara. É coisa simples."
+	[40.38, 41.84], // "É, cê precisa entender, cara." (o "é coisa simples" passa do fim do trecho convertido)
 ];
 
 export const p22316: Edit = {
@@ -39,24 +39,24 @@ export const p22316: Edit = {
 			{de: b.at('identificar') - 0.6, ate: b.at('Duas') - 0.05, nome: 'PERGUNTA'},
 			{de: b.at('Duas') - 0.05, ate: b.say('Não é só chegar').inicio - 0.05, nome: 'DANILOW'},
 			{de: b.say('Não é só chegar').inicio - 0.05, ate: b.say('cê precisa').inicio - 0.05, nome: 'EMPRESÁRIO'},
-			{de: b.say('cê precisa').inicio - 0.05, ate: b.at('simples') + 0.5, nome: 'DANILOW'},
+			{de: b.say('cê precisa').inicio - 0.05, ate: b.at('entender') + 0.95, nome: 'DANILOW'},
 		],
 	},
 	camera: (b) => {
 		const empresario = (t: number) =>
 			(t >= b.at('identificar') - 0.6 && t < b.at('Duas') - 0.05) || (t >= b.say('Não é só chegar').inicio - 0.05 && t < b.say('cê precisa').inicio - 0.05);
-		const cheias: Trecho[] = [[b.say('cê precisa').inicio - 0.05, b.at('simples') + 1]];
+		const cheias: Trecho[] = [[b.say('cê precisa').inicio - 0.05, b.at('entender') + 2]];
 		return [
 			...punches(b, cheias, (t) => (empresario(t) ? {x: 0.36, y: 0.36} : {x: 0.62, y: 0.35})),
 			{tipo: 'flash', em: b.at('Oitenta') - 0.04},
 			{tipo: 'chicote', em: b.at('identificar') - 0.6},
 			{tipo: 'chicote', em: b.at('Duas') - 0.05},
 			{tipo: 'chicote', em: b.say('Não é só chegar').inicio - 0.05},
-			{tipo: 'flash', em: b.at('simples') - 0.04},
+			{tipo: 'flash', em: b.at('entender') - 0.04},
 		];
 	},
 	cenas: (b) => {
-		const fimFala = b.at('simples') + 0.4;
+		const fimFala = b.at('entender') + 0.9;
 		const cenas: Cena[] = [
 			{
 				tipo: 'numero3d',
@@ -117,8 +117,8 @@ export const p22316: Edit = {
 				de: b.say('cê precisa').inicio - 0.05,
 				ate: fimFala + 0.25,
 				palavras: [
-					{texto: 'PRECISA ENTENDER.', em: b.at('entender', 2)},
-					{texto: 'É simples.', em: b.at('simples'), destaque: true},
+					{texto: 'PRECISA', em: b.at('precisa')},
+					{texto: 'entender.', em: b.at('entender'), destaque: true},
 				],
 				som: 'pro_tick',
 			},
