@@ -44,6 +44,29 @@ import {v0711Ad04} from './v0711-ad04/edit';
 import {v0811Ad02} from './v0811-ad02/edit';
 import {v0811Ad03} from './v0811-ad03/edit';
 import {teste222} from './teste222/edit';
+import {mc1011Ad02} from './mc-1011-ad02/edit';
+import {mc1011Ad03} from './mc-1011-ad03/edit';
+import {mc1011Ad04} from './mc-1011-ad04/edit';
+import {mc0911Ad01} from './mc-0911-ad01/edit';
+import {mc0911Ad02} from './mc-0911-ad02/edit';
+import {mc0911Ad03} from './mc-0911-ad03/edit';
+import {mc0911Ad04} from './mc-0911-ad04/edit';
+import {mc0811Ad02} from './mc-0811-ad02/edit';
+import {mc0811Ad03} from './mc-0811-ad03/edit';
+import {mc0811Ad04} from './mc-0811-ad04/edit';
+import {fe0711Ad1} from './fe-0711-ad1/edit';
+import {fe1011Ad1} from './fe-1011-ad1/edit';
+import {fe0711Ad2} from './fe-0711-ad2/edit';
+import {fe1011Ad2} from './fe-1011-ad2/edit';
+import {fe0711Ad3} from './fe-0711-ad3/edit';
+import {fe0911Ad3} from './fe-0911-ad3/edit';
+import {fe1011Ad3} from './fe-1011-ad3/edit';
+import {fe0511Ad4} from './fe-0511-ad4/edit';
+import {fe0711Ad4} from './fe-0711-ad4/edit';
+import {fe1011Ad4} from './fe-1011-ad4/edit';
+import {la0811Ad03} from './la-0811-ad03/edit';
+import {la0911Ad02} from './la-0911-ad02/edit';
+import {la1111Ad01} from './la-1111-ad01/edit';
 
 // Cada projeto novo entra aqui. O nome vira o id da composição no Studio e no render.
 export const projetos: Record<string, Edit> = {
@@ -92,4 +115,27 @@ export const projetos: Record<string, Edit> = {
 	'v0811-ad02': v0811Ad02,
 	'v0811-ad03': v0811Ad03,
 	'teste222': teste222,
+	'mc-1011-ad02': mc1011Ad02,
+	'mc-1011-ad03': mc1011Ad03,
+	'mc-1011-ad04': mc1011Ad04,
+	'mc-0911-ad01': mc0911Ad01,
+	'mc-0911-ad02': mc0911Ad02,
+	'mc-0911-ad03': mc0911Ad03,
+	'mc-0911-ad04': mc0911Ad04,
+	'mc-0811-ad02': mc0811Ad02,
+	'mc-0811-ad03': mc0811Ad03,
+	'mc-0811-ad04': mc0811Ad04,
+	'fe-0711-ad1': fe0711Ad1,
+	'fe-1011-ad1': fe1011Ad1,
+	'fe-0711-ad2': fe0711Ad2,
+	'fe-1011-ad2': fe1011Ad2,
+	'fe-0711-ad3': fe0711Ad3,
+	'fe-0911-ad3': fe0911Ad3,
+	'fe-1011-ad3': fe1011Ad3,
+	'fe-0511-ad4': fe0511Ad4,
+	'fe-0711-ad4': fe0711Ad4,
+	'fe-1011-ad4': fe1011Ad4,
+	'la-0811-ad03': la0811Ad03,
+	'la-0911-ad02': la0911Ad02,
+	'la-1111-ad01': la1111Ad01,
 };
