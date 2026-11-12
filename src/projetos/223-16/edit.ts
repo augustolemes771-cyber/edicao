@@ -26,7 +26,7 @@ export const p22316: Edit = {
 	formato: 'vertical',
 	verificarCurva: false,
 	regraCamera: false,
-	extraFim: 3.0,
+	extraFim: 3.6,
 	silencios: silencios as Trecho[],
 	transcricao,
 	trechos: () => semPausas(TRECHOS, silencios as Trecho[]),
@@ -98,7 +98,7 @@ export const p22316: Edit = {
 				de: b.at('validado') - 0.5,
 				ate: b.say('Não é só chegar').inicio - 0.05,
 				texto: 'LINK VALIDADO',
-				chip: 'O QUE A GENTE USA',
+				chip: 'JÁ VENDE',
 				emChip: b.at('validado'),
 				esconderLegenda: true,
 				som: 'pro_pop',
@@ -122,7 +122,7 @@ export const p22316: Edit = {
 				],
 				som: 'pro_tick',
 			},
-			{tipo: 'final', de: fimFala + 0.3, ate: fimFala + 3.0, marca: 'MÉTODO', linha2: 'M4', tres: true, som: 'pro_logo'},
+			{tipo: 'final', de: fimFala + 0.3, ate: fimFala + 3.6, marca: 'MÉTODO', linha2: 'M4', tres: true, som: 'pro_logo'},
 		];
 		return cenas;
 	},
