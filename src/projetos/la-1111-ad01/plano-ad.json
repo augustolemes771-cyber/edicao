@@ -1,16 +1,18 @@
 {
- "_roteiro": "Larissa - Roteiros (3 - Shopdalari): AD 01 - NAC Nação Verde (sem foto do produto no Drive: PRODUTO AQUI); retenção e pochete mudas",
+ "_roteiro": "Larissa - Roteiros (3 - Shopdalari): AD 01 - NAC Nação Verde (foto do site da marca, autorizada: não tem no Drive); retenção e pochete mudas",
  "split": [],
  "fotos": [],
  "produto": [
   {
    "de": 64.67,
    "ate": 70.42,
+   "img": ".painel/mcf/ref/nac-nacaoverde.png",
    "modo": "topo"
   },
   {
    "de": 122.5,
    "ate": 129.0,
+   "img": ".painel/mcf/ref/nac-nacaoverde.png",
    "modo": "topo"
   }
  ],

@@ -1,16 +1,18 @@
 {
- "_roteiro": "Fernanda - Roteiros: AD 03 - NAC Nação Verde (sem foto do produto no Drive: PRODUTO AQUI); retenção e pochete mudas",
+ "_roteiro": "Fernanda - Roteiros: AD 03 - NAC Nação Verde (foto do site da marca, autorizada: não tem no Drive); retenção e pochete mudas",
  "split": [],
  "fotos": [],
  "produto": [
   {
    "de": 56.95,
    "ate": 61.12,
+   "img": ".painel/mcf/ref/nac-nacaoverde.png",
    "modo": "topo"
   },
   {
    "de": 105.92,
    "ate": 110.1,
+   "img": ".painel/mcf/ref/nac-nacaoverde.png",
    "modo": "topo"
   }
  ],
