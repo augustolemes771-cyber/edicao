@@ -8,18 +8,17 @@ import transcricao from './transcricao.json';
 // Danilow (camisa preta, à direita) responde a um empresário (camisa xadrez, à esquerda). Rostos em y ≈ 0,30–0,36.
 // História: gancho "faz R$ 30 mil por mês sem aparecer" → "a plataforma mais democrática. Por quê?" → celular + internet →
 // sem estoque, sem contrato, sem tráfego, 2 mil seguidores → aparecendo ou não, só gravar → amigo meu faz 20, 30 mil →
-// "pega o produto, filma, não aparece" (visor de câmera) → R$ 30 MIL → "loucura, loucura" → cartão final.
+// "pega o produto, filma, não aparece" (visor de câmera) → R$ 30 MIL → "loucura!" → cartão final.
 
 const TRECHOS: Trecho[] = [
 	[32.1, 35.55], // gancho: "Pega o produto, filma o produto, não aparece, não nada, faz trinta mil reais por mês."
-	[13.8, 17.85], // "eu costumo falar que a TikTok Shop é a plataforma mais democrática. Por quê?"
+	[13.62, 17.85], // "eu costumo falar que a TikTok Shop é a plataforma mais democrática. Por quê?"
 	[18.15, 21.24], // "Cara, qualquer pessoa que tem um celular com internet. Consegue fazer."
-	[2.86, 7.4], // "No TikTok Shop não precisa nada disso... não precisa investir em tráfego."
-	[7.62, 8.63], // "É só criar uma conta"
-	[9.42, 10.62], // "Ter dois mil seguidores, que não é difícil ter."
+	[3.0, 7.4], // "TikTok Shop não precisa nada disso... não precisa investir em tráfego." (vale de energia antes do "TikTok")
+	// "É só criar uma conta, ter dois mil seguidores" saiu: está colado na fala do outro, sem vale para cortar limpo.
 	[22.25, 24.92], // "Aparecendo, sem aparecer, é só pegar um celular e gravar o vídeo."
-	[25.95, 31.2], // "Tem amigo meu, faz vinte, trinta mil, sem aparecer... pega o produto aqui ó."
-	[32.1, 36.62], // "Pega o produto, filma o produto, não aparece... faz trinta mil reais por mês. Loucura, loucura."
+	[25.92, 31.2], // "Tem amigo meu, faz vinte, trinta mil, sem aparecer... pega o produto aqui ó."
+	[32.1, 36.04], // "Pega o produto, filma o produto, não aparece... faz trinta mil reais por mês. Loucura!" (o 2º "loucura" encosta no "Tá")
 ];
 
 export const p2231: Edit = {
@@ -54,7 +53,7 @@ export const p2231: Edit = {
 		{tipo: 'flash', em: b.at('democrática') - 0.04},
 	],
 	cenas: (b) => {
-		const fimFala = b.say('Loucura, loucura').fim;
+		const fimFala = b.say('Loucura').fim;
 		const cenas: Cena[] = [
 			// Gancho: o dígito gira e pousa no "trinta"
 			{
@@ -114,17 +113,6 @@ export const p2231: Edit = {
 				som: 'pro_tick',
 				sons: [{em: b.at('investir'), som: 'pro_tick', ganho: 0.6}],
 			},
-			// Criar uma conta e ter 2 mil seguidores
-			{
-				tipo: 'contador',
-				de: b.at('criar') - 0.2,
-				ate: b.say('difícil ter').fim + 0.1,
-				rotulo: 'SEGUIDORES',
-				valor: 2000,
-				em: b.at('dois'),
-				esconderLegenda: true,
-				som: 'pro_swipe',
-			},
 			// Aparecendo ou sem aparecer: silhueta atrás do celular e a câmera riscada
 			{
 				tipo: 'peca',
@@ -141,9 +129,9 @@ export const p2231: Edit = {
 				de: b.say('Tem amigo').inicio - 0.05,
 				ate: b.say('pega o produto aqui').inicio - 0.08,
 				itens: [
-					{titulo: 'TikTok Shop', texto: 'Comissão do mês: R$ 20.000', em: b.at('vinte')},
-					{titulo: 'TikTok Shop', texto: 'Comissão do mês: R$ 30.000', em: b.at('trinta', 2)},
-					{titulo: 'TikTok Shop', texto: 'Nova venda · vídeo sem rosto', em: b.say('sem aparecer', 2).inicio},
+					{titulo: 'TikTok Shop', texto: 'R$ 20 mil no mês', em: b.at('vinte')},
+					{titulo: 'TikTok Shop', texto: 'R$ 30 mil no mês', em: b.at('trinta', 2)},
+					{titulo: 'TikTok Shop', texto: 'Venda sem aparecer', em: b.say('sem aparecer', 2).inicio},
 				],
 				y: 1000,
 				somItem: 'pro_msg',
@@ -183,14 +171,11 @@ export const p2231: Edit = {
 			{
 				tipo: 'frase',
 				de: b.at('Loucura') - 0.03,
-				ate: fimFala + 0.25,
-				palavras: [
-					{texto: 'LOUCURA,', em: b.at('Loucura')},
-					{texto: 'loucura.', em: b.at('Loucura', 2), destaque: true},
-				],
+				ate: fimFala + 0.3,
+				palavras: [{texto: 'LOUCURA!', em: b.at('Loucura'), destaque: true}],
 				som: 'pro_tick',
 			},
-			{tipo: 'final', de: fimFala + 0.3, ate: fimFala + 2.6, marca: 'MVM', linha2: 'CREATORS', sub: 'TIKTOK SHOP', tres: true, som: 'pro_logo'},
+			{tipo: 'final', de: fimFala + 0.35, ate: fimFala + 2.6, marca: 'MVM', linha2: 'CREATORS', sub: 'TIKTOK SHOP', tres: true, som: 'pro_logo'},
 		];
 		return cenas;
 	},
