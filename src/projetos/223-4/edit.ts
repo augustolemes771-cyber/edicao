@@ -168,7 +168,7 @@ export const p2234: Edit = {
 				som: 'pro_whoosh',
 				sons: [{em: b.at('desculpa'), som: 'pro_pop', ganho: 0.6}],
 			},
-			{tipo: 'final', de: fimFala + 0.35, ate: fimFala + 3.0, marca: 'MÉTODO', linha2: 'M4', sub: 'TIKTOK SHOP', tres: true, som: 'pro_logo'},
+			{tipo: 'final', de: fimFala + 0.35, ate: fimFala + 3.0, marca: 'MÉTODO', linha2: 'M4', tres: true, som: 'pro_logo'},
 		];
 		return cenas;
 	},
