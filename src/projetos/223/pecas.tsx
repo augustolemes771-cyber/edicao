@@ -354,4 +354,245 @@ const p223Relogio: React.FC<{cena: CenaPeca}> = ({cena}) => {
 	);
 };
 
-export const pecas: Pecas = {p223Visor, p223Cupons, p223Tempo, p223Mosaico, p223Lata, p223Relogio};
+// ---------------------------------------------------------------------------------------------------------------------
+// Fundo de meia tela (metade de baixo com véu roxo e grade), usado pelas peças que ficam na faixa da legenda.
+const MeiaTela: React.FC<{k: number}> = ({k}) => (
+	<>
+		<AbsoluteFill style={{opacity: k, background: 'linear-gradient(180deg, rgba(30,15,58,0) 44%, rgba(30,15,58,0.62) 53%, rgba(24,11,48,0.82) 100%)'}} />
+		<AbsoluteFill style={{opacity: k}}>
+			<GradeReta topo={0.5} />
+		</AbsoluteFill>
+	</>
+);
+const Rotulo: React.FC<{texto: string; cor?: string; tamanho?: number}> = ({texto, cor = '#fff', tamanho = 34}) => (
+	<div style={{fontFamily: poppins, fontWeight: 800, fontSize: tamanho, letterSpacing: '0.12em', color: cor, whiteSpace: 'nowrap'}}>{texto}</div>
+);
+const Avatar: React.FC<{tam: number; cor: string; brilho?: number}> = ({tam, cor, brilho = 0}) => (
+	<svg width={tam} height={tam * 1.2} viewBox="0 0 50 60" style={{filter: brilho > 0 ? `drop-shadow(0 0 ${10 * brilho}px rgba(232,194,122,${0.9 * brilho}))` : undefined}}>
+		<circle cx={25} cy={16} r={11} fill={cor} />
+		<path d="M4 58 C4 38 14 31 25 31 C36 31 46 38 46 58 Z" fill={cor} />
+	</svg>
+);
+
+// 7. Meio a meio (223-8, "15 homens, 15 mulheres: é 50, 50"): duas colunas de 15 bonecos que enchem uma de cada lado no tempo
+//    de cada palavra (itens[0] e itens[1]) e, no marco 0, a pílula "50 / 50" sobe entre elas. Metade de baixo.
+const p223MeioAMeio: React.FC<{cena: CenaPeca}> = ({cena}) => {
+	const {frame, fps, q, entra, sai, d, dur} = useCena(cena);
+	const itens = itensOu(d, cena, ['15 HOMENS', '15 MULHERES'], 0.8);
+	const f2 = Math.min(q(mc(d, cena, 0, 1.8)), dur - 12);
+	const lado = (i: number) => {
+		const f = q(itens[i]?.em ?? cena.de + 0.3 + i * 0.8);
+		const x0 = i === 0 ? 120 : 600;
+		return (
+			<div key={i} style={{position: 'absolute', left: x0, top: 1030, width: 360}}>
+				<div style={{marginBottom: 14, opacity: suave(interpolate(frame, [f, f + 8], [0, 1], lim)), textAlign: 'center'}}>
+					<Rotulo texto={itens[i]?.texto ?? ''} cor={i === 0 ? '#fff' : OURO} tamanho={36} />
+				</div>
+				<div style={{display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center'}}>
+					{Array.from({length: 15}, (_, k) => {
+						const p = mola(frame, f + k * 1.2, fps, 12);
+						return (
+							<div key={k} style={{transform: `scale(${p})`, opacity: Math.min(1, p * 1.5)}}>
+								<Avatar tam={56} cor={i === 0 ? 'rgba(255,255,255,0.88)' : OURO} />
+							</div>
+						);
+					})}
+				</div>
+			</div>
+		);
+	};
+	const p50 = mola(frame, f2, fps, 10);
+	return (
+		<AbsoluteFill style={{opacity: sai, pointerEvents: 'none'}}>
+			<MeiaTela k={entra} />
+			{lado(0)}
+			{lado(1)}
+			<div style={{position: 'absolute', left: 538, top: 1040, width: 4, height: 360, background: 'linear-gradient(180deg, rgba(232,194,122,0), rgba(232,194,122,0.8), rgba(232,194,122,0))', opacity: entra}} />
+			{frame >= f2 ? <Pilula texto={d.texto ?? '50 / 50'} k={p50} y={1440} tamanho={58} ouro /> : null}
+		</AbsoluteFill>
+	);
+};
+
+// 8. Espalhar (223-10, "o mesmo vídeo em outras plataformas"): um cartão de vídeo no centro da metade de baixo; no marco 0 ele
+//    se copia em três que deslizam para os lados com as pílulas das plataformas (itens: rótulos no tempo da fala).
+const CartaoVideo: React.FC = () => (
+	<div style={{width: 200, height: 300, borderRadius: 26, background: 'linear-gradient(180deg,#4b2a86,#24113f)', boxShadow: BORDA, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+		<div style={{width: 0, height: 0, borderTop: '30px solid transparent', borderBottom: '30px solid transparent', borderLeft: `48px solid ${OURO}`, marginLeft: 10}} />
+	</div>
+);
+const p223Espalha: React.FC<{cena: CenaPeca}> = ({cena}) => {
+	const {frame, fps, q, entra, sai, d} = useCena(cena);
+	const itens = itensOu(d, cena, ['TIKTOK', 'SHOPEE', '+ CANAIS'], 0.6);
+	const f0 = q(mc(d, cena, 0, 0.6));
+	const pEntra = mola(frame, 0, fps, 12);
+	const abre = mola(frame, f0, fps, 13);
+	const xs = [-320, 0, 320];
+	return (
+		<AbsoluteFill style={{opacity: sai, pointerEvents: 'none'}}>
+			<MeiaTela k={entra} />
+			{xs.map((dx, i) => {
+				const x = 540 + dx * abre - 100;
+				const fi = Math.max(q(itens[i]?.em ?? cena.de + 1), f0);
+				const kR = mola(frame, fi, fps, 12);
+				return (
+					<div key={i} style={{position: 'absolute', left: x, top: 1060, opacity: i === 1 ? pEntra : Math.min(1, abre * 1.4), transform: `scale(${i === 1 ? 0.8 + 0.2 * pEntra : 0.85 + 0.15 * abre}) rotate(${dx * 0.02 * abre}deg)`}}>
+						<CartaoVideo />
+						<div style={{position: 'absolute', top: 318, left: 100, transform: `translateX(-50%) translateY(${(1 - kR) * 16}px)`, opacity: frame >= fi ? kR : 0}}>
+							<div style={{padding: '10px 26px', borderRadius: 999, background: i === 1 ? 'linear-gradient(180deg,#F6DB9C,#D9A84E)' : VIDRO, boxShadow: BORDA}}>
+								<Rotulo texto={itens[i]?.texto ?? ''} cor={i === 1 ? ROXO : '#fff'} tamanho={30} />
+							</div>
+						</div>
+					</div>
+				);
+			})}
+			<Pilula texto={d.texto ?? 'MESMO VÍDEO'} k={pEntra} y={950} tamanho={40} />
+		</AbsoluteFill>
+	);
+};
+
+// 9. Rótulo (223-13, "rerotulação: produto A vira produto B, mesma coisa"): pote de vidro com rótulo "A" acima da cabeça; no
+//    marco 0 o rótulo vira (giro 3D) e aparece "B" em ouro; no marco 1 a pílula "MESMO PRODUTO" bate embaixo.
+const p223Rotulo: React.FC<{cena: CenaPeca}> = ({cena}) => {
+	const {frame, fps, q, sai, d, dur} = useCena(cena);
+	const pEntra = mola(frame, 0, fps, 11);
+	const f0 = q(mc(d, cena, 0, 1));
+	const f1 = Math.min(q(mc(d, cena, 1, 2)), dur - 12);
+	const giro = suave(interpolate(frame, [f0, f0 + 12], [0, 1], lim)) * 180;
+	const ladoB = giro > 90;
+	const flutua = Math.sin(frame / 14) * 6;
+	return (
+		<AbsoluteFill style={{opacity: sai, pointerEvents: 'none'}}>
+			<AbsoluteFill style={{background: 'linear-gradient(180deg, rgba(30,15,58,0.8) 0%, rgba(30,15,58,0.45) 22%, rgba(30,15,58,0) 30%)', opacity: pEntra}} />
+			<div style={{position: 'absolute', left: 410, top: 170 + flutua + (1 - pEntra) * -300, width: 260, height: 330, opacity: Math.min(1, pEntra * 1.5), filter: 'drop-shadow(0 20px 28px rgba(0,0,0,0.5))'}}>
+				<div style={{position: 'absolute', left: 30, top: 0, width: 200, height: 54, borderRadius: 14, background: 'linear-gradient(90deg,#3a1f6b,#7a52c4 40%,#3a1f6b)'}} />
+				<div style={{position: 'absolute', left: 0, top: 46, width: 260, height: 284, borderRadius: 40, background: 'linear-gradient(90deg, rgba(255,255,255,0.18), rgba(255,255,255,0.42) 25%, rgba(255,255,255,0.12) 60%, rgba(255,255,255,0.3))', boxShadow: 'inset 0 0 0 3px rgba(255,255,255,0.35)'}} />
+				<div style={{position: 'absolute', left: 20, top: 120, width: 220, height: 150, perspective: 900}}>
+					<div style={{width: '100%', height: '100%', transform: `rotateY(${giro}deg)`, transformStyle: 'preserve-3d', position: 'relative'}}>
+						<div style={{position: 'absolute', inset: 0, backfaceVisibility: 'hidden', borderRadius: 14, background: 'linear-gradient(180deg,#f4f4f8,#c9c9d2)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', opacity: ladoB ? 0 : 1}}>
+							<Rotulo texto="PRODUTO" cor="#4a2a86" tamanho={22} />
+							<div style={{fontFamily: poppins, fontWeight: 900, fontSize: 84, color: ROXO, lineHeight: 1}}>A</div>
+						</div>
+						<div style={{position: 'absolute', inset: 0, backfaceVisibility: 'hidden', transform: 'rotateY(180deg)', borderRadius: 14, background: 'linear-gradient(180deg,#FBE3A6,#D9A84E)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', opacity: ladoB ? 1 : 0}}>
+							<Rotulo texto="NOVO RÓTULO" cor={ROXO} tamanho={22} />
+							<div style={{fontFamily: playfair, fontStyle: 'italic', fontWeight: 700, fontSize: 92, color: ROXO, lineHeight: 1}}>B</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			{frame >= f1 ? <Pilula texto={d.texto ?? 'MESMO PRODUTO'} k={mola(frame, f1, fps, 11)} y={540} tamanho={40} /> : null}
+		</AbsoluteFill>
+	);
+};
+
+// 10. Escala (223-15, "100 mil habitantes... 100 milhões de usuários"): tela inteira; no marco 0 um círculo pequeno com o número
+//     menor; no marco 1 um círculo dourado gigante cresce e engole a tela com o número maior. itens[0..1]: {texto, sub}.
+const p223Escala: React.FC<{cena: CenaPeca}> = ({cena}) => {
+	const {frame, fps, q, entra, sai, d, dur} = useCena(cena);
+	const f0 = q(mc(d, cena, 0, 0.2));
+	const f1 = Math.min(q(mc(d, cena, 1, 1.6)), dur - 18);
+	const pA = mola(frame, f0, fps, 12);
+	const pB = suave(interpolate(frame, [f1, f1 + 16], [0, 1], lim));
+	const rB = 40 + pB * 820;
+	const textos = [d.itens?.[0]?.texto ?? '100 MIL', d.itens?.[0]?.sub ?? 'habitantes', d.itens?.[1]?.texto ?? '100 MILHÕES', d.itens?.[1]?.sub ?? 'de usuários'];
+	return (
+		<AbsoluteFill style={{opacity: sai * entra}}>
+			<FundoMotion />
+			{frame >= f1 ? (
+				<div style={{position: 'absolute', left: 540 - rB, top: 960 - rB, width: rB * 2, height: rB * 2, borderRadius: '50%', background: 'radial-gradient(circle at 40% 35%, #F6DB9C 0%, #D9A84E 45%, #8f5f1c 100%)', boxShadow: '0 0 80px rgba(232,194,122,0.5)'}} />
+			) : null}
+			<div style={{position: 'absolute', left: 410, top: 830 - pB * 520, width: 260, height: 260, borderRadius: '50%', background: VIDRO, boxShadow: BORDA, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', transform: `scale(${pA * (1 - 0.35 * pB)})`}}>
+				<div style={{fontFamily: poppins, fontWeight: 900, fontSize: 60, color: '#fff', lineHeight: 1}}>{textos[0]}</div>
+				<div style={{fontFamily: playfair, fontStyle: 'italic', fontWeight: 700, fontSize: 34, color: OURO}}>{textos[1]}</div>
+			</div>
+			<div style={{position: 'absolute', top: 880, left: 0, right: 0, textAlign: 'center', opacity: pB, transform: `scale(${0.8 + 0.2 * pB})`}}>
+				<div style={{fontFamily: poppins, fontWeight: 900, fontSize: 120, color: ROXO, lineHeight: 1}}>{textos[2]}</div>
+				<div style={{fontFamily: playfair, fontStyle: 'italic', fontWeight: 700, fontSize: 64, color: ROXO}}>{textos[3]}</div>
+			</div>
+		</AbsoluteFill>
+	);
+};
+
+// 11. Algoritmo (223-9, "o TikTok sabe quem é o público daquele produto"): metade de baixo com 18 bonecos; o link do produto
+//     entra no centro; no marco 0 saem linhas douradas até os 6 que já engajaram, que acendem em ouro; no marco 1 a pílula
+//     "PÚBLICO CERTO" bate.
+const PESSOAS = Array.from({length: 18}, (_, i) => ({x: 150 + (i % 6) * 140 + ((Math.floor(i / 6) % 2) * 50 - 25), y: 1050 + Math.floor(i / 6) * 150, alvo: [1, 4, 6, 9, 13, 16].includes(i)}));
+const p223Algoritmo: React.FC<{cena: CenaPeca}> = ({cena}) => {
+	const {frame, fps, q, entra, sai, d, dur} = useCena(cena);
+	const f0 = q(mc(d, cena, 0, 0.8));
+	const f1 = Math.min(q(mc(d, cena, 1, 1.8)), dur - 12);
+	const pLink = mola(frame, 0, fps, 12);
+	const linhas = suave(interpolate(frame, [f0, f0 + 14], [0, 1], lim));
+	const cx = 540;
+	const cy = 1210;
+	return (
+		<AbsoluteFill style={{opacity: sai, pointerEvents: 'none'}}>
+			<MeiaTela k={entra} />
+			<svg width={1080} height={1920} style={{position: 'absolute', inset: 0}}>
+				{PESSOAS.filter((p) => p.alvo).map((p, i) => (
+					<line key={i} x1={cx} y1={cy} x2={cx + (p.x + 28 - cx) * linhas} y2={cy + (p.y + 34 - cy) * linhas} stroke={OURO} strokeWidth={4} strokeLinecap="round" opacity={0.85} />
+				))}
+			</svg>
+			{PESSOAS.map((p, i) => {
+				const aceso = p.alvo ? suave(interpolate(frame, [f0 + 10, f0 + 16], [0, 1], lim)) : 0;
+				return (
+					<div key={i} style={{position: 'absolute', left: p.x, top: p.y, opacity: (0.45 + 0.55 * aceso) * entra, transform: `scale(${1 + 0.15 * aceso})`}}>
+						<Avatar tam={56} cor={aceso > 0.5 ? OURO : 'rgba(255,255,255,0.6)'} brilho={aceso} />
+					</div>
+				);
+			})}
+			<div style={{position: 'absolute', left: cx, top: cy, transform: `translate(-50%, -50%) scale(${0.6 + 0.4 * pLink})`, opacity: pLink}}>
+				<div style={{padding: '14px 30px', borderRadius: 999, background: 'linear-gradient(180deg,#F6DB9C,#D9A84E)', boxShadow: '0 12px 30px rgba(12,4,28,0.5)', display: 'flex', alignItems: 'center', gap: 12}}>
+					<svg width={40} height={40} viewBox="0 0 24 24" fill="none" stroke={ROXO} strokeWidth={2.6} strokeLinecap="round">
+						<path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1" />
+						<path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1" />
+					</svg>
+					<Rotulo texto="LINK DO PRODUTO" cor={ROXO} tamanho={30} />
+				</div>
+			</div>
+			{frame >= f1 ? <Pilula texto={d.texto ?? 'PÚBLICO CERTO'} k={mola(frame, f1, fps, 11)} y={1500} tamanho={42} /> : null}
+		</AbsoluteFill>
+	);
+};
+
+// 12. Apartamento (223-14, "apartamento de 40 m², quatro lives simultâneas"): planta baixa dourada acima da cabeça com 4
+//     cômodos; no marco 0 aparece "40 m²" e, a partir do marco 1, cada cômodo acende com o selo AO VIVO, um a um.
+const p223Apto: React.FC<{cena: CenaPeca}> = ({cena}) => {
+	const {frame, fps, q, sai, d, dur} = useCena(cena);
+	const pEntra = mola(frame, 0, fps, 12);
+	const f0 = q(mc(d, cena, 0, 0.5));
+	const f1 = Math.min(q(mc(d, cena, 1, 1.4)), dur - 24);
+	const W = 600;
+	const H = 330;
+	const y0 = 170;
+	const comodos = [
+		{x: 0, y: 0},
+		{x: 300, y: 0},
+		{x: 0, y: 165},
+		{x: 300, y: 165},
+	];
+	return (
+		<AbsoluteFill style={{opacity: sai, pointerEvents: 'none'}}>
+			<AbsoluteFill style={{background: 'linear-gradient(180deg, rgba(30,15,58,0.88) 0%, rgba(30,15,58,0.6) 24%, rgba(30,15,58,0) 32%)', opacity: pEntra}} />
+			<div style={{position: 'absolute', left: 540 - W / 2, top: y0, width: W, height: H, transform: `perspective(1200px) rotateX(${(1 - pEntra) * 50 + 18}deg) scale(${0.85 + 0.15 * pEntra})`, opacity: pEntra}}>
+				{comodos.map((c, i) => {
+					const fi = f1 + i * 5;
+					const luz = suave(interpolate(frame, [fi, fi + 6], [0, 1], lim));
+					return (
+						<div key={i} style={{position: 'absolute', left: c.x, top: c.y, width: 300, height: 165, border: `5px solid ${OURO}`, background: `rgba(${46 + luz * 60},${24 + luz * 30},${86 + luz * 40},${0.6 + 0.3 * luz})`, boxShadow: luz > 0 ? `inset 0 0 40px rgba(232,194,122,${0.5 * luz})` : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+							<div style={{opacity: luz, transform: `scale(${0.7 + 0.3 * luz})`, display: 'flex', alignItems: 'center', gap: 10, padding: '8px 18px', borderRadius: 999, background: VERMELHO}}>
+								<div style={{width: 14, height: 14, borderRadius: 7, background: '#fff'}} />
+								<Rotulo texto="AO VIVO" tamanho={26} />
+							</div>
+						</div>
+					);
+				})}
+			</div>
+			<div style={{position: 'absolute', left: 0, right: 0, top: y0 + H + 40, textAlign: 'center', opacity: suave(interpolate(frame, [f0, f0 + 8], [0, 1], lim))}}>
+				<span style={{fontFamily: poppins, fontWeight: 900, fontSize: 64, backgroundImage: OURO_TEXTO, WebkitBackgroundClip: 'text', color: 'transparent'}}>40 m²</span>
+				<span style={{fontFamily: playfair, fontStyle: 'italic', fontWeight: 700, fontSize: 46, color: '#fff', marginLeft: 18}}>{d.texto ?? '4 lives ao mesmo tempo'}</span>
+			</div>
+		</AbsoluteFill>
+	);
+};
+
+export const pecas: Pecas = {p223Visor, p223Cupons, p223Tempo, p223Mosaico, p223Lata, p223Relogio, p223MeioAMeio, p223Espalha, p223Rotulo, p223Escala, p223Algoritmo, p223Apto};
