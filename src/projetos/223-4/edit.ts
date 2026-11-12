@@ -12,12 +12,16 @@ import transcricao from './transcricao.json';
 // Não tem desculpa." → cartão final.
 
 const TRECHOS: Trecho[] = [
-	[161.13, 165.98], // gancho: "Cara, tem um cara vendendo bosta em lata no TikTok, cara. Bosta em lata no TikTok Shop."
-	[166.03, 172.3], // "Galera, rapaziada, isso aqui eu fiquei sabendo hoje, tá? Eu tô há um ano e meio no TikTok Shop, não sabia dessa parada."
+	// gancho + sequência (contínuos na gravação; separados, o encaixe no silêncio repetia o "Shop"):
+	// "Cara, tem um cara vendendo bosta em lata no TikTok, cara. Bosta em lata no TikTok Shop. Galera, rapaziada, isso aqui eu
+	// fiquei sabendo hoje, tá? Eu tô há um ano e meio no TikTok Shop, não sabia dessa parada."
+	[161.13, 172.3],
 	[173.2, 176.4], // "A Nara trouxe pra gente, tem gente vendendo bosta em lata."
 	[180.56, 183.08], // "mas às vezes o cara tá assim: pô, meu produto não vende."
 	[1.69, 5.3], // Nara: "A gente vende TV, computador, nós vendemos gerador."
-	[5.55, 10.87], // Nara: "Ontem, ontem a gente vendeu vinte e dois gerador de dois mil e quinhentos reais, com banner, sem produto."
+	// A pausa medida em 8,85–9,45 cobre o fim de "reais,": corte à mão depois da palavra.
+	[5.55, 9.0], // Nara: "Ontem, ontem a gente vendeu vinte e dois gerador de dois mil e quinhentos reais,"
+	[9.42, 10.87], // "com banner, sem produto."
 	[183.08, 186.85], // "Galera, tem um cara vendendo bosta, tá? Não tem desculpa."
 ];
 
