@@ -262,7 +262,9 @@ export const Vitoria: React.FC<{cena: De<'vitoria'>}> = ({cena}) => {
 	const vis = entra * sai;
 
 	// Caça-níquel: o dígito final gira por uma volta inteira (0 a 9) e para nele no tempo "pousa", com desfoque de movimento.
-	const alvo = Number(cena.numero);
+	// Número de mais de um dígito ("30"): os da frente ficam fixos e só o último gira (antes aparecia só o "0").
+	const fixos = cena.numero.slice(0, -1);
+	const alvo = Number(cena.numero.slice(-1));
 	const passos = 10 + alvo;
 	const pr = interpolate(t, [0.05, pousa], [0, 1], lim);
 	const giro = (1 - Math.pow(1 - pr, 4)) * passos;
@@ -328,6 +330,9 @@ export const Vitoria: React.FC<{cena: De<'vitoria'>}> = ({cena}) => {
 			{/* R$ pequeno + dígito gigante girando */}
 			<div style={{position: 'absolute', left: 0, width: 1080, top: yc - altura / 2, height: altura, display: 'flex', justifyContent: 'center', alignItems: 'center', transform: `scale(${soco})`, filter: 'drop-shadow(0 8px 22px rgba(0,0,0,0.5)) drop-shadow(0 0 30px rgba(255,196,80,0.45))'}}>
 				{cena.prefixo ? <span style={{fontFamily: playfair, fontStyle: 'italic', fontWeight: 700, fontSize: 110, alignSelf: 'flex-start', marginTop: 40, marginRight: 10, ...textoOuro}}>{cena.prefixo}</span> : null}
+				{fixos ? (
+					<span style={{height: altura, lineHeight: `${altura}px`, fontFamily: playfair, fontStyle: 'italic', fontWeight: 700, fontSize: tamNum, paddingLeft: '0.08em', ...textoOuro}}>{fixos}</span>
+				) : null}
 				<div style={{height: altura, overflow: 'hidden', position: 'relative'}}>
 					<div style={{transform: `translateY(${-(giro % 10) * altura}px)`}}>
 						{Array.from({length: 11}, (_, d) => (
