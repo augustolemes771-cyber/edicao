@@ -1,0 +1,37 @@
+{
+ "_roteiro": "Maria Clara - Roteiros: AD 01 - Rejuvex (11 s abertos depois de \"explica\": ela emendou sem as caras e bocas)",
+ "manter": [
+  [
+   6.35,
+   17.5
+  ]
+ ],
+ "split": [
+  {
+   "de": 6.35,
+   "ate": 17.5,
+   "video": ".painel/vanessa/ref/ref-rejuvex-especialista.mp4",
+   "inicio": 4.0,
+   "crop": "576:512:0:0",
+   "audio": true
+  }
+ ],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 62.85,
+   "ate": 66.35,
+   "img": ".painel/mcf/ref/rejuvex-ultra-drive.jpg",
+   "modo": "topo"
+  },
+  {
+   "de": 74.14,
+   "ate": 86.11,
+   "img": ".painel/mcf/ref/rejuvex-ultra-drive.jpg",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "roxo"
+}

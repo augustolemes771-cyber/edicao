@@ -1,0 +1,59 @@
+{
+ "_roteiro": "Fernanda - Roteiros: AD 04 - Complexo B Revita (ref ssstik.io_1793733227341)",
+ "split": [
+  {
+   "de": 3.54,
+   "ate": 10.84,
+   "video": ".painel/vanessa/ref/ref-magnesio.mp4",
+   "inicio": 0,
+   "len": 2.0,
+   "crop": "576:384:0:0"
+  },
+  {
+   "de": 21.36,
+   "ate": 24.52,
+   "video": ".painel/vanessa/ref/ref-magnesio.mp4",
+   "inicio": 2.0,
+   "len": 4.4,
+   "crop": "576:384:0:0"
+  }
+ ],
+ "fotos": [
+  {
+   "de": 0.0,
+   "ate": 3.54,
+   "img": ".painel/vanessa/ref/ref-magnesio.mp4@13",
+   "crop": "308:202:134:672",
+   "modo": "topo"
+  },
+  {
+   "de": 50.5,
+   "ate": 57.1,
+   "img": ".painel/mcf/ref/klickpin-labios.jpg",
+   "modo": "topo"
+  },
+  {
+   "de": 111.62,
+   "ate": 115.16,
+   "img": ".painel/vanessa/ref/ref-magnesio.mp4@15.5",
+   "crop": "324:212:126:658",
+   "modo": "topo"
+  }
+ ],
+ "produto": [
+  {
+   "de": 94.43,
+   "ate": 100.92,
+   "img": ".painel/mcf/ref/revita-complexo-b.webp",
+   "modo": "topo"
+  },
+  {
+   "de": 125.94,
+   "ate": 133.74,
+   "img": ".painel/mcf/ref/revita-complexo-b.webp",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio"
+}

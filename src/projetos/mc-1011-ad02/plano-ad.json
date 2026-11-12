@@ -1,0 +1,32 @@
+{
+ "_roteiro": "Maria Clara - Roteiros: AD 02 - Composto Meno",
+ "split": [],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 170.33,
+   "ate": 182.52,
+   "img": ".painel/mcf/ref/composto-meno.jpg",
+   "modo": "topo"
+  },
+  {
+   "de": 207.25,
+   "ate": 209.32,
+   "img": ".painel/mcf/ref/composto-meno.jpg",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "cortar": [
+  [
+   172.58999999999997,
+   174.47
+  ],
+  [
+   205.70999999999998,
+   207.01000000000002
+  ]
+ ]
+}
