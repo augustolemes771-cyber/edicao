@@ -1,0 +1,91 @@
+{
+ "_roteiro": "Lorena - roteiros: 07/11 AD 04 - Magnésio 3 em 1 (vídeo 07.11 2)",
+ "split": [
+  {
+   "de": 4.02,
+   "ate": 6.74,
+   "video": ".painel/vanessa/ref/ref-magnesio.mp4",
+   "inicio": 0,
+   "len": 2.0,
+   "crop": "576:384:0:0"
+  },
+  {
+   "de": 6.74,
+   "ate": 10.24,
+   "video": ".painel/vanessa/ref/ref-magnesio.mp4",
+   "inicio": 2.0,
+   "len": 4.4,
+   "crop": "576:384:0:0"
+  }
+ ],
+ "fotos": [
+  {
+   "de": 0,
+   "ate": 2.01,
+   "img": ".painel/vanessa/ref/ref-magnesio.mp4@15.5",
+   "crop": "324:212:126:658",
+   "modo": "caixa",
+   "box": [
+    240,
+    1250,
+    600,
+    393
+   ]
+  },
+  {
+   "de": 2.01,
+   "ate": 4.02,
+   "img": ".painel/vanessa/ref/ref-magnesio.mp4@24.5",
+   "crop": "268:174:170:672",
+   "modo": "caixa",
+   "box": [
+    240,
+    1250,
+    600,
+    390
+   ]
+  },
+  {
+   "de": 10.24,
+   "ate": 11.68,
+   "img": ".painel/vanessa/ref/ref-magnesio.mp4@7.6",
+   "crop": "420:280:78:666",
+   "modo": "caixa",
+   "box": [
+    180,
+    1290,
+    720,
+    480
+   ]
+  },
+  {
+   "de": 11.68,
+   "ate": 17.58,
+   "img": ".painel/vanessa/ref/ref-magnesio.mp4@13",
+   "crop": "308:202:134:672",
+   "modo": "caixa",
+   "box": [
+    240,
+    1250,
+    600,
+    394
+   ]
+  }
+ ],
+ "produto": [
+  {
+   "de": 108.93,
+   "ate": 118.24,
+   "img": ".painel/mcf/ref/covitta-magnesio.jpg",
+   "modo": "topo"
+  },
+  {
+   "de": 135.9,
+   "ate": 142.68,
+   "img": ".painel/mcf/ref/covitta-magnesio.jpg",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio"
+}

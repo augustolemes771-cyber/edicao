@@ -1,0 +1,33 @@
+{
+ "_roteiro": "Lívia - Roteiros (3 - Livia): 09/11 AD 01 - Colágeno Body Action (foto do link do produto no roteiro)",
+ "split": [],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 53.26,
+   "ate": 57.62,
+   "img": ".painel/mcf/ref/colageno-bodyaction.png",
+   "modo": "topo"
+  },
+  {
+   "de": 130.58,
+   "ate": 143.4,
+   "img": ".painel/mcf/ref/colageno-bodyaction.png",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "semRegravacao": true,
+ "cortar": [
+  [
+   128.08,
+   130.53
+  ],
+  [
+   111.33,
+   113.59
+  ]
+ ]
+}

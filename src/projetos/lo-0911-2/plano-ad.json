@@ -1,0 +1,28 @@
+{
+ "_roteiro": "Lorena - roteiros: 09/11 AD 02 - Composto Meno",
+ "split": [],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 140.3,
+   "ate": 149.42,
+   "img": ".painel/mcf/ref/composto-meno.jpg",
+   "modo": "topo"
+  },
+  {
+   "de": 181.48,
+   "ate": 193.3,
+   "img": ".painel/mcf/ref/composto-meno.jpg",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "cortar": [
+  [
+   158.04,
+   166.71
+  ]
+ ]
+}
