@@ -41,7 +41,11 @@ const FRACAO = Number(process.env.FRACAO ?? 0.35);
 const limiar = chao + FRACAO * (fala - chao);
 
 const arqTranscricao = path.join(pasta, 'transcricao.json');
-const palavras = existsSync(arqTranscricao) ? JSON.parse(readFileSync(arqTranscricao, 'utf8')) : [];
+const lida = existsSync(arqTranscricao) ? JSON.parse(readFileSync(arqTranscricao, 'utf8')) : [];
+// Aceita o formato do Whisper (lista com startMs/endMs) e o do Scribe ({words: [{start, end, type}]}).
+const palavras = Array.isArray(lida)
+	? lida
+	: (lida.words ?? []).filter((w) => w.type === 'word').map((w) => ({text: w.text, startMs: w.start * 1000, endMs: w.end * 1000}));
 const quedas = [];
 let ini = -1;
 for (let k = 0; k <= db.length; k++) {

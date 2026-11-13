@@ -39,7 +39,8 @@ N = 9
 k = [norm(w['t']) for w in W]
 apagar = set()
 i = 0
-while i < len(W) - N:
+# "semRegravacao": a copy repete frases de propósito (anáfora: "quando essa região aqui perde colágeno..."), não é regravação.
+while i < len(W) - N and not plano.get('semRegravacao'):
     alvo = k[i:i + N]
     achou = None
     for j in range(i + 3, min(len(W) - N, i + 30)):

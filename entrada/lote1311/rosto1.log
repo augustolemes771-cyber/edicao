@@ -1,0 +1,11 @@
+[ WARN:0@0.093] global net_impl_backend.cpp:345 cv::dnn::dnn5_v20260605::Net::Impl::setPreferableTarget Targets are not supported by the new graph engine for now
+la-0911-ad03: 500 quadros, rosto em 500; queixo mediano 1119
+la-1111-ad02: 400 quadros, rosto em 400; queixo mediano 963
+la-1111-ad03: 270 quadros, rosto em 270; queixo mediano 995
+ka-1211-ad01: 512 quadros, rosto em 512; queixo mediano 1212
+ka-1211-ad02: 402 quadros, rosto em 394; queixo mediano 1179
+ka-1211-ad03: 527 quadros, rosto em 527; queixo mediano 1040
+ka-1311-ad01: 364 quadros, rosto em 362; queixo mediano 1282
+ka-1311-ad02: 506 quadros, rosto em 506; queixo mediano 903
+ka-1311-ad03: 527 quadros, rosto em 527; queixo mediano 1101
+ka-1311-ad04: 239 quadros, rosto em 239; queixo mediano 1115
