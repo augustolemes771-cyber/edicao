@@ -102,6 +102,31 @@ import {p22330} from './223-30/edit';
 import {p22331} from './223-31/edit';
 import {p22332} from './223-32/edit';
 import {p2323} from './2323/edit';
+import {la0911Ad03} from './la-0911-ad03/edit';
+import {la1111Ad02} from './la-1111-ad02/edit';
+import {la1111Ad03} from './la-1111-ad03/edit';
+import {ka1211Ad01} from './ka-1211-ad01/edit';
+import {ka1211Ad02} from './ka-1211-ad02/edit';
+import {ka1211Ad03} from './ka-1211-ad03/edit';
+import {ka1311Ad01} from './ka-1311-ad01/edit';
+import {ka1311Ad02} from './ka-1311-ad02/edit';
+import {ka1311Ad03} from './ka-1311-ad03/edit';
+import {ka1311Ad04} from './ka-1311-ad04/edit';
+import {v0911Ad03} from './v0911-ad03/edit';
+import {v0911Ad04} from './v0911-ad04/edit';
+import {v1011Ad01} from './v1011-ad01/edit';
+import {v1011Ad02} from './v1011-ad02/edit';
+import {v1011Ad03} from './v1011-ad03/edit';
+import {v1011Ad04} from './v1011-ad04/edit';
+import {v1011Ad05} from './v1011-ad05/edit';
+import {lo12111} from './lo-1211-1/edit';
+import {lo12112} from './lo-1211-2/edit';
+import {lo12113} from './lo-1211-3/edit';
+import {lo13111} from './lo-1311-1/edit';
+import {lo13112} from './lo-1311-2/edit';
+import {lo13113} from './lo-1311-3/edit';
+import {li081102} from './li-0811-02/edit';
+import {li091101} from './li-0911-01/edit';
 
 // Cada projeto novo entra aqui. O nome vira o id da composição no Studio e no render.
 export const projetos: Record<string, Edit> = {
@@ -208,4 +233,29 @@ export const projetos: Record<string, Edit> = {
 	'223-31': p22331,
 	'223-32': p22332,
 	'2323': p2323,
+	'la-0911-ad03': la0911Ad03,
+	'la-1111-ad02': la1111Ad02,
+	'la-1111-ad03': la1111Ad03,
+	'ka-1211-ad01': ka1211Ad01,
+	'ka-1211-ad02': ka1211Ad02,
+	'ka-1211-ad03': ka1211Ad03,
+	'ka-1311-ad01': ka1311Ad01,
+	'ka-1311-ad02': ka1311Ad02,
+	'ka-1311-ad03': ka1311Ad03,
+	'ka-1311-ad04': ka1311Ad04,
+	'v0911-ad03': v0911Ad03,
+	'v0911-ad04': v0911Ad04,
+	'v1011-ad01': v1011Ad01,
+	'v1011-ad02': v1011Ad02,
+	'v1011-ad03': v1011Ad03,
+	'v1011-ad04': v1011Ad04,
+	'v1011-ad05': v1011Ad05,
+	'lo-1211-1': lo12111,
+	'lo-1211-2': lo12112,
+	'lo-1211-3': lo12113,
+	'lo-1311-1': lo13111,
+	'lo-1311-2': lo13112,
+	'lo-1311-3': lo13113,
+	'li-0811-02': li081102,
+	'li-0911-01': li091101,
 };
