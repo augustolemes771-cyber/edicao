@@ -25,13 +25,22 @@ const useLiberarDepoisDeDesenhar = (espera: number | null, pronto: boolean) => {
 	}, [pronto, invalidate, advance]);
 	useEffect(() => {
 		if (espera === null || !pronto) return;
+		let solto = false;
+		const soltar = () => {
+			if (solto) return;
+			solto = true;
+			continueRender(espera);
+		};
 		let r2 = 0;
 		const r1 = requestAnimationFrame(() => {
-			r2 = requestAnimationFrame(() => continueRender(espera));
+			r2 = requestAnimationFrame(soltar);
 		});
+		// Rede de segurança: sem rAF (aba em segundo plano no render), solta mesmo assim.
+		const t = setTimeout(soltar, 1500);
 		return () => {
 			cancelAnimationFrame(r1);
 			cancelAnimationFrame(r2);
+			clearTimeout(t);
 		};
 	}, [espera, pronto]);
 };
