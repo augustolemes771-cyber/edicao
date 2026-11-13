@@ -99,92 +99,85 @@
  },
  {
   "text": " E",
-  "startMs": 5760,
-  "endMs": 6700,
+  "startMs": 23100,
+  "endMs": 23182,
   "timestampMs": null,
   "confidence": 0.720093
  },
  {
   "text": " é",
-  "startMs": 6700,
-  "endMs": 7110,
+  "startMs": 23182,
+  "endMs": 23263,
   "timestampMs": null,
   "confidence": 0.999941
  },
  {
   "text": " por",
-  "startMs": 7110,
-  "endMs": 8460,
+  "startMs": 23263,
+  "endMs": 23509,
   "timestampMs": null,
   "confidence": 0.999987
  },
  {
   "text": " isso",
-  "startMs": 8460,
-  "endMs": 10260,
+  "startMs": 23509,
+  "endMs": 23835,
   "timestampMs": null,
   "confidence": 0.999977
  },
  {
   "text": " que",
-  "startMs": 10260,
-  "endMs": 11540,
+  "startMs": 23835,
+  "endMs": 24080,
   "timestampMs": null,
   "confidence": 0.999998
  },
  {
   "text": " eu",
-  "startMs": 11540,
-  "endMs": 12500,
+  "startMs": 24080,
+  "endMs": 24244,
   "timestampMs": null,
   "confidence": 0.999947
  },
  {
   "text": " indico",
-  "startMs": 12500,
-  "endMs": 15200,
+  "startMs": 24244,
+  "endMs": 24734,
   "timestampMs": null,
   "confidence": 0.999765
  },
  {
   "text": " pra",
-  "startMs": 15200,
-  "endMs": 16550,
+  "startMs": 24734,
+  "endMs": 24979,
   "timestampMs": null,
   "confidence": 0.611318
  },
  {
   "text": " você",
-  "startMs": 16550,
-  "endMs": 18800,
+  "startMs": 24979,
+  "endMs": 25306,
   "timestampMs": null,
   "confidence": 0.999746
  },
  {
   "text": " o",
-  "startMs": 18800,
-  "endMs": 19250,
+  "startMs": 25306,
+  "endMs": 25388,
   "timestampMs": null,
   "confidence": 0.999861
  },
  {
-  "text": " Regio",
-  "startMs": 19250,
-  "endMs": 21490,
+  "text": " Rejuvex",
+  "startMs": 25388,
+  "endMs": 25960,
   "timestampMs": null,
   "confidence": 0.67321
  },
  {
-  "text": " Vex",
-  "startMs": 21490,
-  "endMs": 22830,
-  "timestampMs": null,
-  "confidence": 0.885073
- },
- {
   "text": " Ultra.",
-  "startMs": 22830,
-  "endMs": 26500,
+  "startMs": 25960,
+  "endMs": 26450,
   "timestampMs": null,
   "confidence": 0.981427
  },
@@ -917,18 +910,11 @@
   "confidence": 0.999996
  },
  {
-  "text": " Regio",
+  "text": " Rejuvex",
   "startMs": 65820,
-  "endMs": 66120,
-  "timestampMs": null,
-  "confidence": 0.998668
- },
- {
-  "text": " Vex",
-  "startMs": 66120,
   "endMs": 66310,
   "timestampMs": null,
-  "confidence": 0.999316
+  "confidence": 0.998668
  },
  {
   "text": " Ultra,",

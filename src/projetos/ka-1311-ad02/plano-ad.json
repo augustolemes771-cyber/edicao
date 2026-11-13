@@ -1,0 +1,28 @@
+{
+ "_roteiro": "Karol - Roteiros: 13/11 AD 02 - Tetra Magnésio",
+ "split": [],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 42.68,
+   "ate": 47.4,
+   "img": ".painel/mcf/ref/tetramagnesio-quantum.webp",
+   "modo": "topo"
+  },
+  {
+   "de": 103.08,
+   "ate": 108.72,
+   "img": ".painel/mcf/ref/tetramagnesio-quantum.webp",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "cortar": [
+  [
+   74.76,
+   77.43
+  ]
+ ]
+}

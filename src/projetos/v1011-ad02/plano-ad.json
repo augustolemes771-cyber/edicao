@@ -1,0 +1,37 @@
+{
+ "_roteiro": "Vanessa - Roteiros: 10/11 AD 02 - Rejuvex (vídeo do especialista depois de \"explica\")",
+ "manter": [
+  [
+   5.81,
+   16.96
+  ]
+ ],
+ "split": [
+  {
+   "de": 5.81,
+   "ate": 16.96,
+   "video": ".painel/vanessa/ref/ref-rejuvex-especialista.mp4",
+   "inicio": 4.0,
+   "crop": "576:512:0:0",
+   "audio": true
+  }
+ ],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 61.94,
+   "ate": 64.88,
+   "img": ".painel/mcf/ref/rejuvex-ultra-drive.jpg",
+   "modo": "topo"
+  },
+  {
+   "de": 70.29,
+   "ate": 78.24,
+   "img": ".painel/mcf/ref/rejuvex-ultra-drive.jpg",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "roxo"
+}

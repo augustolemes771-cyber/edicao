@@ -1,0 +1,28 @@
+{
+ "_roteiro": "Larissa - Roteiros (3 - Shopdalari): 09/11 AD 03 - Composto Meno",
+ "split": [],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 39.62,
+   "ate": 47.42,
+   "img": ".painel/mcf/ref/composto-meno.jpg",
+   "modo": "topo"
+  },
+  {
+   "de": 100.62,
+   "ate": 107.42,
+   "img": ".painel/mcf/ref/composto-meno.jpg",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "cortar": [
+  [
+   59.76,
+   67.71
+  ]
+ ]
+}

@@ -1,0 +1,27 @@
+{
+ "_roteiro": "Karol - Roteiros: 13/11 AD 03 - NAC Nação Verde (foto do site da marca, autorizada em 12/11); retenção e pochete mudas",
+ "split": [],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 51.86,
+   "ate": 59.08,
+   "img": ".painel/mcf/ref/nac-nacaoverde.png",
+   "modo": "topo"
+  },
+  {
+   "de": 111.32,
+   "ate": 116.6,
+   "img": ".painel/mcf/ref/nac-nacaoverde.png",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "mutar": [
+  "retencao",
+  "redencao",
+  "pochete"
+ ]
+}
