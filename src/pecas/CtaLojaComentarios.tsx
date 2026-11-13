@@ -87,9 +87,9 @@ const Sacola: React.FC<{quadro: number}> = ({quadro}) => {
 	const mFaixa = useMemo(() => brilhante('#ffffff', 0.05, 0.2), []);
 	const p = spring({frame: quadro, fps, config: {damping: 11, stiffness: 120, mass: 0.8}});
 	const t = quadro / fps;
-	const giro = (1 - p) * -4 + t * 1.6;
+	const giro = (1 - p) * -6.3 + Math.sin(t * 1.7) * 0.55;
 	return (
-		<group position={[0, 2.95 + Math.sin(t * 2.4) * 0.06, (1 - p) * 9]} rotation={[0.12, giro, (1 - p) * 0.8 + Math.sin(t * 1.8) * 0.06]} scale={0.92 * (0.3 + 0.7 * p)}>
+		<group position={[0, 3.05 + Math.sin(t * 2.4) * 0.06, (1 - p) * 9]} rotation={[0.12, giro, (1 - p) * 0.8 + Math.sin(t * 1.8) * 0.06]} scale={0.92 * (0.3 + 0.7 * p)}>
 			<mesh geometry={corpo} material={mCorpo} />
 			{/* faixa branca no corpo */}
 			<mesh position={[0, -0.05, 0]} material={mFaixa}>
@@ -113,7 +113,7 @@ const Balao: React.FC<{quadro: number; inicio: number}> = ({quadro, inicio}) => 
 	const p = spring({frame: l, fps, config: {damping: 8, stiffness: 160, mass: 0.7}});
 	const t = l / fps;
 	return (
-		<group position={[0.15, -2.72, 0]} rotation={[0.1 + Math.sin(t * 1.9) * 0.05, -0.25 + Math.sin(t * 1.4) * 0.12 + (1 - p) * 2.2, (1 - p) * -0.6]} scale={0.95 * p}>
+		<group position={[0.1, -3.0, 0]} rotation={[0.1 + Math.sin(t * 1.9) * 0.05, -0.25 + Math.sin(t * 1.4) * 0.12 + (1 - p) * 2.2, (1 - p) * -0.6]} scale={0.72 * p}>
 			<mesh geometry={geo} material={mBalao} />
 			{[-0.62, 0, 0.62].map((x, i) => {
 				const pulo = Math.max(0, Math.sin(t * 7 - i * 0.9)) * 0.1;
@@ -137,7 +137,7 @@ const Seta: React.FC<{quadro: number; inicio: number}> = ({quadro, inicio}) => {
 	const t = l / fps;
 	const quica = Math.abs(Math.sin(t * 6.5)) * 0.22 * Math.min(1, l / 10);
 	return (
-		<group position={[0, -4.0 - quica + (1 - p) * 1.4, 0.2]} rotation={[0, Math.sin(t * 2.2) * 0.5, 0]} scale={0.62 * p}>
+		<group position={[0, -4.05 - quica + (1 - p) * 1.4, 0.2]} rotation={[0, Math.sin(t * 2.2) * 0.5, 0]} scale={0.5 * p}>
 			<mesh geometry={geo} material={mat} />
 		</group>
 	);
@@ -158,7 +158,7 @@ const Estouro: React.FC<{quadro: number; inicio: number}> = ({quadro, inicio}) =
 	const l = (quadro - inicio) / fps;
 	if (l < 0 || l > 0.9) return null;
 	return (
-		<group position={[0.15, -2.72, 0.6]}>
+		<group position={[0.1, -3.0, 0.6]}>
 			{dados.map((d, i) => {
 				if (l > d.vida) return null;
 				const f = 1 - l / d.vida;
@@ -234,10 +234,10 @@ const Fundo: React.FC<{quadro: number}> = ({quadro}) => {
 
 // ── Composição ────────────────────────────────────────────────────────────────────────────────────────────────────
 const LINHAS = [
-	{texto: 'O LINK DA', metal: 'branco', y: 1.5, batida: 0, ate: 24, largura: 3.7},
-	{texto: 'LOJA OFICIAL', metal: 'branco', y: 0.62, batida: 4, ate: 32, largura: 4.6},
-	{texto: 'ESTÁ NOS', metal: 'ouro', y: -0.42, batida: 11, ate: 40, largura: 3.5},
-	{texto: 'COMENTÁRIOS', metal: 'ouro', y: -1.3, batida: 16, ate: 48, largura: 4.7},
+	{texto: 'O LINK DA', metal: 'branco', y: 1.75, batida: 0, ate: 24, largura: 3.7},
+	{texto: 'LOJA OFICIAL', metal: 'branco', y: 0.87, batida: 4, ate: 32, largura: 4.6},
+	{texto: 'ESTÁ NOS', metal: 'ouro', y: -0.17, batida: 11, ate: 40, largura: 3.5},
+	{texto: 'COMENTÁRIOS', metal: 'ouro', y: -1.05, batida: 16, ate: 48, largura: 4.7},
 ] as const;
 
 const BALAO = 20;
@@ -258,7 +258,8 @@ export const CtaLojaComentarios: React.FC = () => {
 			>
 				<CameraTremor quadro={frame} batidas={[BALAO]} z0={15.2} z1={14.4} duracao={CTA_DURACAO} />
 				<Luzes quadro={frame} batidas={[0, 11]} />
-				<pointLight position={[0, -2.5, 4]} intensity={18} distance={10} color="#ff8fc0" />
+				<pointLight position={[0, -3, 4]} intensity={18} distance={10} color="#ff8fc0" />
+				<pointLight position={[0, -0.6, 5]} intensity={40} distance={9} color="#fff0c8" />
 				<Sacola quadro={frame} />
 				{LINHAS.map((l) => (
 					<Linha3D
