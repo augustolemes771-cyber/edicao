@@ -1,0 +1,33 @@
+{
+ "_roteiro": "Mariana - Roteiros (3 - Shop.Mari): 10/11 AD 03 - NAC Nação Verde; retenção e pochete mudas",
+ "split": [],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 56.7,
+   "ate": 65.22,
+   "img": ".painel/mcf/ref/nac-nacaoverde.png",
+   "modo": "topo"
+  },
+  {
+   "de": 126.1,
+   "ate": 132.68,
+   "img": ".painel/mcf/ref/nac-nacaoverde.png",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "mutar": [
+  "retencao",
+  "redencao",
+  "pochete"
+ ],
+ "cortar": [
+  [
+   109.78,
+   118.09
+  ]
+ ]
+}
