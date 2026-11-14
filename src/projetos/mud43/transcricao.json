@@ -1,0 +1,37 @@
+[
+ {
+  "text": "vem",
+  "startMs": 120,
+  "endMs": 230,
+  "timestampMs": null,
+  "confidence": 0.838749
+ },
+ {
+  "text": " a",
+  "startMs": 230,
+  "endMs": 300,
+  "timestampMs": null,
+  "confidence": 0.998393
+ },
+ {
+  "text": " retenção",
+  "startMs": 300,
+  "endMs": 1080,
+  "timestampMs": null,
+  "confidence": 0.998908
+ },
+ {
+  "text": " de",
+  "startMs": 1080,
+  "endMs": 1180,
+  "timestampMs": null,
+  "confidence": 0.973708
+ },
+ {
+  "text": " líquido",
+  "startMs": 1180,
+  "endMs": 1600,
+  "timestampMs": null,
+  "confidence": 0.947524
+ }
+]
