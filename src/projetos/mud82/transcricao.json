@@ -1,0 +1,65 @@
+[
+ {
+  "text": "aquela",
+  "startMs": 0,
+  "endMs": 210,
+  "timestampMs": null,
+  "confidence": 0.0665831
+ },
+ {
+  "text": " imunidade",
+  "startMs": 210,
+  "endMs": 540,
+  "timestampMs": null,
+  "confidence": 0.990686
+ },
+ {
+  "text": " baixa,",
+  "startMs": 540,
+  "endMs": 1140,
+  "timestampMs": null,
+  "confidence": 0.9632
+ },
+ {
+  "text": " aquela",
+  "startMs": 1140,
+  "endMs": 1460,
+  "timestampMs": null,
+  "confidence": 0.560152
+ },
+ {
+  "text": " paciência",
+  "startMs": 1460,
+  "endMs": 2000,
+  "timestampMs": null,
+  "confidence": 0.590346
+ },
+ {
+  "text": " que",
+  "startMs": 2000,
+  "endMs": 2260,
+  "timestampMs": null,
+  "confidence": 0.562628
+ },
+ {
+  "text": " não",
+  "startMs": 2260,
+  "endMs": 2690,
+  "timestampMs": null,
+  "confidence": 0.997107
+ },
+ {
+  "text": " sai",
+  "startMs": 2690,
+  "endMs": 3000,
+  "timestampMs": null,
+  "confidence": 0.987075
+ },
+ {
+  "text": " de",
+  "startMs": 3000,
+  "endMs": 3000,
+  "timestampMs": null,
+  "confidence": 0.559707
+ }
+]
