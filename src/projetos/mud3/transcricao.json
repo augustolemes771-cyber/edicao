@@ -1,0 +1,93 @@
+[
+ {
+  "text": "E",
+  "startMs": 20,
+  "endMs": 380,
+  "timestampMs": null,
+  "confidence": 0.678039
+ },
+ {
+  "text": " quando",
+  "startMs": 380,
+  "endMs": 700,
+  "timestampMs": null,
+  "confidence": 0.992282
+ },
+ {
+  "text": " o",
+  "startMs": 700,
+  "endMs": 810,
+  "timestampMs": null,
+  "confidence": 0.999462
+ },
+ {
+  "text": " corpo",
+  "startMs": 810,
+  "endMs": 1330,
+  "timestampMs": null,
+  "confidence": 0.99918
+ },
+ {
+  "text": " fica",
+  "startMs": 1330,
+  "endMs": 1920,
+  "timestampMs": null,
+  "confidence": 0.614748
+ },
+ {
+  "text": " sem,",
+  "startMs": 1920,
+  "endMs": 2560,
+  "timestampMs": null,
+  "confidence": 0.997687
+ },
+ {
+  "text": " vem",
+  "startMs": 2560,
+  "endMs": 2770,
+  "timestampMs": null,
+  "confidence": 0.780969
+ },
+ {
+  "text": " a",
+  "startMs": 2770,
+  "endMs": 2820,
+  "timestampMs": null,
+  "confidence": 0.999704
+ },
+ {
+  "text": " retenção",
+  "startMs": 2820,
+  "endMs": 3490,
+  "timestampMs": null,
+  "confidence": 0.998972
+ },
+ {
+  "text": " de",
+  "startMs": 3490,
+  "endMs": 3570,
+  "timestampMs": null,
+  "confidence": 0.999643
+ },
+ {
+  "text": " líquido,",
+  "startMs": 3570,
+  "endMs": 4260,
+  "timestampMs": null,
+  "confidence": 0.999213
+ },
+ {
+  "text": " a",
+  "startMs": 4260,
+  "endMs": 4290,
+  "timestampMs": null,
+  "confidence": 0.99358
+ },
+ {
+  "text": " imunidade.",
+  "startMs": 4290,
+  "endMs": 5000,
+  "timestampMs": null,
+  "confidence": 0.995222
+ }
+]
