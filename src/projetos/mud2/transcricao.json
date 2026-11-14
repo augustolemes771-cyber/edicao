@@ -1,0 +1,93 @@
+[
+ {
+  "text": "de",
+  "startMs": 10,
+  "endMs": 120,
+  "timestampMs": null,
+  "confidence": 0.894992
+ },
+ {
+  "text": " líquido,",
+  "startMs": 120,
+  "endMs": 790,
+  "timestampMs": null,
+  "confidence": 0.996622
+ },
+ {
+  "text": " aquela",
+  "startMs": 790,
+  "endMs": 1060,
+  "timestampMs": null,
+  "confidence": 0.791337
+ },
+ {
+  "text": " imunidade",
+  "startMs": 1060,
+  "endMs": 1580,
+  "timestampMs": null,
+  "confidence": 0.993485
+ },
+ {
+  "text": " baixa",
+  "startMs": 1580,
+  "endMs": 2140,
+  "timestampMs": null,
+  "confidence": 0.923845
+ },
+ {
+  "text": " aquela",
+  "startMs": 2140,
+  "endMs": 2730,
+  "timestampMs": null,
+  "confidence": 0.996499
+ },
+ {
+  "text": " pochete",
+  "startMs": 2730,
+  "endMs": 3440,
+  "timestampMs": null,
+  "confidence": 0.998706
+ },
+ {
+  "text": " que",
+  "startMs": 3440,
+  "endMs": 3590,
+  "timestampMs": null,
+  "confidence": 0.958782
+ },
+ {
+  "text": " não",
+  "startMs": 3590,
+  "endMs": 3780,
+  "timestampMs": null,
+  "confidence": 0.999274
+ },
+ {
+  "text": " sai",
+  "startMs": 3780,
+  "endMs": 3940,
+  "timestampMs": null,
+  "confidence": 0.995249
+ },
+ {
+  "text": " de",
+  "startMs": 3940,
+  "endMs": 4040,
+  "timestampMs": null,
+  "confidence": 0.857348
+ },
+ {
+  "text": " jeito",
+  "startMs": 4040,
+  "endMs": 4310,
+  "timestampMs": null,
+  "confidence": 0.995906
+ },
+ {
+  "text": " nenhum",
+  "startMs": 4310,
+  "endMs": 4500,
+  "timestampMs": null,
+  "confidence": 0.985361
+ }
+]
