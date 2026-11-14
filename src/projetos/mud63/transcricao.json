@@ -1,0 +1,23 @@
+[
+ {
+  "text": "Eu",
+  "startMs": 0,
+  "endMs": 50,
+  "timestampMs": null,
+  "confidence": 0.964917
+ },
+ {
+  "text": " tenho",
+  "startMs": 50,
+  "endMs": 230,
+  "timestampMs": null,
+  "confidence": 1
+ },
+ {
+  "text": " essa",
+  "startMs": 230,
+  "endMs": 380,
+  "timestampMs": null,
+  "confidence": 0.363268
+ }
+]
