@@ -232,6 +232,10 @@ open(arq_ass, 'w', encoding='utf-8').write(ass)
 
 # Mudo: as palavras pedidas (ex.: pochete), no tempo editado.
 mudos = [(editado(w['a']) - 0.03, editado(w['b']) + 0.03) for w in V if any(norm(w['t']).startswith(norm(m)) for m in mutar)]
+# "mudosBruto": janelas medidas na energia do bruto (o Whisper erra a posição da palavra em até 1 s e o mudo caía na vizinha,
+# 14/11 Mariana "aquela pochete"). Quando existe, vale no lugar das janelas do Whisper.
+if plano.get('mudosBruto'):
+    mudos = [(editado(a), editado(b)) for a, b in plano['mudosBruto']]
 sel = '+'.join(f'between(t,{a:.3f},{b:.3f})' for a, b in seg)
 vol = ''.join(f",volume=enable='between(t,{a:.3f},{b:.3f})':volume=0" for a, b in mudos)
 # Camadas do plano. Cada item vira uma entrada do ffmpeg (foto: quadro extraído da referência; vídeo: trecho da referência)
