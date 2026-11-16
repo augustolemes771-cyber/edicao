@@ -1,0 +1,29 @@
+{
+ "_roteiro": "Mariana - Roteiros: 13/11 AD 03 - NAC Nação Verde (sem produto na mão: B-roll); \"Legenda por Sônia Ruberti\" final (inventado pelo Whisper) cortado; \"mesmo barulho do começo\" pendente: sem pack de SFX",
+ "split": [],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 71.32,
+   "ate": 77.62,
+   "img": ".painel/mcf/ref/nac-nacaoverde.png",
+   "modo": "topo"
+  },
+  {
+   "de": 130.42,
+   "ate": 143.82,
+   "img": ".painel/mcf/ref/nac-nacaoverde.png",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "semRegravacao": true,
+ "cortar": [
+  [
+   145.14,
+   9999
+  ]
+ ]
+}
