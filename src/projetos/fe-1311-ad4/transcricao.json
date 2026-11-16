@@ -371,18 +371,11 @@
   "confidence": 0.999497
  },
  {
-  "text": " mono",
+  "text": " monohidratada",
   "startMs": 16770,
-  "endMs": 17070,
-  "timestampMs": null,
-  "confidence": 0.88415
- },
- {
-  "text": " hidratada",
-  "startMs": 17070,
   "endMs": 17680,
   "timestampMs": null,
-  "confidence": 0.410386
+  "confidence": 0.88415
  },
  {
   "text": " 100%",
@@ -546,7 +539,7 @@
   "confidence": 0.708628
  },
  {
-  "text": " EMP,",
+  "text": " GMP,",
   "startMs": 26280,
   "endMs": 26560,
   "timestampMs": null,

@@ -1,0 +1,37 @@
+{
+ "_roteiro": "Larissa - Roteiros: 13/11 AD 04 - Creatina Soldiers; pochete muda",
+ "split": [],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 23.5,
+   "ate": 28.5,
+   "img": ".painel/mcf/ref/creatina-soldiers.jpg",
+   "modo": "topo"
+  },
+  {
+   "de": 64.58,
+   "ate": 70.06,
+   "img": ".painel/mcf/ref/creatina-soldiers.jpg",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "mutar": [
+  "pochete"
+ ],
+ "cortar": [
+  [
+   80.84,
+   85.29
+  ]
+ ],
+ "mudosBruto": [
+  [
+   16.87,
+   17.35
+  ]
+ ]
+}

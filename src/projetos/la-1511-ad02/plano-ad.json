@@ -1,0 +1,32 @@
+{
+ "_roteiro": "Larissa - Roteiros: 15/11 AD 02 - Mounjar Natural (não é o AD 01 Psyllium)",
+ "split": [],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 143.26,
+   "ate": 146.78,
+   "img": ".painel/mcf/ref/mounjar-natural.png",
+   "modo": "topo"
+  },
+  {
+   "de": 248.62,
+   "ate": 256.54,
+   "img": ".painel/mcf/ref/mounjar-natural.png",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "cortar": [
+  [
+   174.3,
+   177.63
+  ],
+  [
+   202.56,
+   215.07
+  ]
+ ]
+}

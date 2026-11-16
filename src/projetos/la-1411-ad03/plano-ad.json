@@ -1,0 +1,32 @@
+{
+ "_roteiro": "Larissa - Roteiros: 14/11 AD 03 - NAC Nação Verde (barulho do começo pendente: sem pack de SFX); \"Beijo\" final (fora do roteiro) cortado",
+ "split": [],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 79.5,
+   "ate": 83.92,
+   "img": ".painel/mcf/ref/nac-nacaoverde.png",
+   "modo": "topo"
+  },
+  {
+   "de": 139.26,
+   "ate": 149.52,
+   "img": ".painel/mcf/ref/nac-nacaoverde.png",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "cortar": [
+  [
+   119.16,
+   124.09
+  ],
+  [
+   149.47,
+   9999
+  ]
+ ]
+}

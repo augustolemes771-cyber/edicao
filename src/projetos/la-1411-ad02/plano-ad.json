@@ -1,0 +1,28 @@
+{
+ "_roteiro": "Larissa - Roteiros: 14/11 AD 02 - NAC Nação Verde",
+ "split": [],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 32.86,
+   "ate": 35.38,
+   "img": ".painel/mcf/ref/nac-nacaoverde.png",
+   "modo": "topo"
+  },
+  {
+   "de": 96.48,
+   "ate": 99.0,
+   "img": ".painel/mcf/ref/nac-nacaoverde.png",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "cortar": [
+  [
+   98.95,
+   9999
+  ]
+ ]
+}
