@@ -1,0 +1,29 @@
+{
+ "_roteiro": "Lorena - Roteiros (lorena): AD 02 - NAC Always Fit (pasta 14.11 feito); 1ª tomada \"e também leva gripes e dor de cabeça\" cortada (fica \"E leva também a gripes e dores de garganta\")",
+ "split": [],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 38.55,
+   "ate": 44.95,
+   "img": ".painel/mcf/ref/nac-alwaysfit.jpg",
+   "modo": "topo"
+  },
+  {
+   "de": 75.98,
+   "ate": 95.74,
+   "img": ".painel/mcf/ref/nac-alwaysfit.jpg",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "semRegravacao": true,
+ "cortar": [
+  [
+   26.32,
+   32.06
+  ]
+ ]
+}

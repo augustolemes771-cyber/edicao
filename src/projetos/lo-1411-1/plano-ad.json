@@ -1,0 +1,35 @@
+{
+ "_roteiro": "Lorena - Roteiros (lorena): AD 01 - NAC Always Fit (pasta 14.11 feito); falsa partida \"Pessoal, gente, não é pra...\" cortada",
+ "split": [],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 89.7,
+   "ate": 95.32,
+   "img": ".painel/mcf/ref/nac-alwaysfit.jpg",
+   "modo": "topo"
+  },
+  {
+   "de": 158.32,
+   "ate": 166.98,
+   "img": ".painel/mcf/ref/nac-alwaysfit.jpg",
+   "modo": "topo"
+  },
+  {
+   "de": 192.46,
+   "ate": 201.12,
+   "img": ".painel/mcf/ref/nac-alwaysfit.jpg",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "semRegravacao": true,
+ "cortar": [
+  [
+   123.2,
+   126.5
+  ]
+ ]
+}
