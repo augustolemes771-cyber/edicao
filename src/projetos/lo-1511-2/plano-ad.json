@@ -1,0 +1,29 @@
+{
+ "_roteiro": "Lorena - Roteiros (lorena): AD 02 - Mounjar Natural (pasta 15.11; sem B-roll no começo \"papel higiênico\" pois é AD 02); 1 tomada repetida (\"então, se o seu intestino não funcionou como funciona\") cortada, \"Tá?\" solto do fim cortado",
+ "split": [],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 140.16,
+   "ate": 171.56,
+   "img": ".painel/mcf/ref/mounjar-natural.png",
+   "modo": "topo"
+  },
+  {
+   "de": 225.52,
+   "ate": 232.39,
+   "img": ".painel/mcf/ref/mounjar-natural.png",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "semRegravacao": true,
+ "cortar": [
+  [
+   209.25,
+   212.67
+  ]
+ ]
+}
