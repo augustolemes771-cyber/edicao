@@ -1,0 +1,33 @@
+{
+ "_roteiro": "Larissa - Roteiros: 15/11 AD 01 (FIZ REPETIDO, regravação) - Mounjarin Psyllium; sem produto na mão: B-roll no produto e no CTA; CTA final regravado (fica a última tomada); \"Beijo\" final cortado",
+ "split": [],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 140.54,
+   "ate": 144.88,
+   "img": ".painel/mcf/ref/mounjarin-psyllium.webp",
+   "modo": "topo"
+  },
+  {
+   "de": 202.68,
+   "ate": 239.14,
+   "img": ".painel/mcf/ref/mounjarin-psyllium.webp",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "semRegravacao": true,
+ "cortar": [
+  [
+   210.68,
+   231.39
+  ],
+  [
+   239.09,
+   9999
+  ]
+ ]
+}
