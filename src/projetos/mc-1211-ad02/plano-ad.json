@@ -1,0 +1,28 @@
+{
+ "_roteiro": "Maria Clara - Roteiros (mclara): AD 02 - NAC Nação Verde; B-roll; \"Obrigado\" final cortado",
+ "split": [],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 32.95,
+   "ate": 36.86,
+   "img": ".painel/mcf/ref/nac-nacaoverde.png",
+   "modo": "topo"
+  },
+  {
+   "de": 98.06,
+   "ate": 100.44,
+   "img": ".painel/mcf/ref/nac-nacaoverde.png",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "cortar": [
+  [
+   100.4,
+   9999
+  ]
+ ]
+}

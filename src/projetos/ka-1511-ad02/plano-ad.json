@@ -1,0 +1,28 @@
+{
+ "_roteiro": "Karol - Roteiros (karol): AD 02 - Mounjar Natural; B-roll; \"Obrigado\" final cortado",
+ "split": [],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 133.05,
+   "ate": 160.02,
+   "img": ".painel/mcf/ref/mounjar-natural.png",
+   "modo": "topo"
+  },
+  {
+   "de": 199.98,
+   "ate": 214.56,
+   "img": ".painel/mcf/ref/mounjar-natural.png",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "cortar": [
+  [
+   214.6,
+   9999
+  ]
+ ]
+}
