@@ -1,0 +1,29 @@
+{
+ "_roteiro": "Mariana - Roteiros (3 - Shop.Mari): 15/11 AD 01 - Psyllium (Mounjarin Psyllium, Etron); 2 regravações do fim cortadas",
+ "split": [],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 157.03,
+   "ate": 169.18,
+   "img": ".painel/mcf/ref/mounjarin-psyllium.webp",
+   "modo": "topo"
+  },
+  {
+   "de": 223.05,
+   "ate": 252.52,
+   "img": ".painel/mcf/ref/mounjarin-psyllium.webp",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "semRegravacao": true,
+ "cortar": [
+  [
+   227.46,
+   238.95
+  ]
+ ]
+}

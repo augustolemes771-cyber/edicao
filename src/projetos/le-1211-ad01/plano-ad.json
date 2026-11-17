@@ -1,0 +1,29 @@
+{
+ "_roteiro": "Letícia - Roteiros: 12/11 AD 01 - Mounjarin Psyllium (\"sem headline e praticamente sem edição\"); 1 regravação cortada",
+ "split": [],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 168.23,
+   "ate": 172.4,
+   "img": ".painel/mcf/ref/mounjarin-psyllium.webp",
+   "modo": "topo"
+  },
+  {
+   "de": 232.61,
+   "ate": 250.8,
+   "img": ".painel/mcf/ref/mounjarin-psyllium.webp",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "semRegravacao": true,
+ "cortar": [
+  [
+   210.28,
+   212.96
+  ]
+ ]
+}

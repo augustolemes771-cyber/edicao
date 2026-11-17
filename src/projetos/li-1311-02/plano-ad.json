@@ -1,0 +1,29 @@
+{
+ "_roteiro": "Lívia - Roteiros (3 - Livia): 13/11 AD 02 - NAC Nação Verde; 1 regravação cortada",
+ "split": [],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 21.07,
+   "ate": 31.14,
+   "img": ".painel/mcf/ref/nac-nacaoverde.png",
+   "modo": "topo"
+  },
+  {
+   "de": 72.43,
+   "ate": 88.46,
+   "img": ".painel/mcf/ref/nac-nacaoverde.png",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "semRegravacao": true,
+ "cortar": [
+  [
+   34.22,
+   37.24
+  ]
+ ]
+}

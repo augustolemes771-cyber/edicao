@@ -1,0 +1,41 @@
+{
+ "_roteiro": "Aline - Roteiro: AD 02 - Complexo B Always Fit 08/11; 4 regravações cortadas",
+ "split": [],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 58.61,
+   "ate": 69.48,
+   "img": ".painel/mcf/ref/complexo-b-alwaysfit.jpg",
+   "modo": "topo"
+  },
+  {
+   "de": 148.53,
+   "ate": 172.84,
+   "img": ".painel/mcf/ref/complexo-b-alwaysfit.jpg",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "semRegravacao": true,
+ "cortar": [
+  [
+   76.8,
+   83.87
+  ],
+  [
+   103.8,
+   112.23
+  ],
+  [
+   127.36,
+   131.01
+  ],
+  [
+   140.03,
+   148.53
+  ]
+ ]
+}

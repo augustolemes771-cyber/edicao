@@ -1,0 +1,38 @@
+{
+ "_roteiro": "Letícia - Roteiros: 12/11 AD 02 - Rejuvex: vídeo do especialista (ssstik 1793992915014) depois de \"explica\", legenda roxa",
+ "split": [
+  {
+   "de": 6.3,
+   "ate": 17.45,
+   "video": ".painel/vanessa/ref/ref-rejuvex-especialista.mp4",
+   "inicio": 4.0,
+   "crop": "576:512:0:0",
+   "audio": true
+  }
+ ],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 19.1,
+   "ate": 26.78,
+   "img": ".painel/mcf/ref/rejuvex-ultra-drive.jpg",
+   "modo": "topo"
+  },
+  {
+   "de": 80.87,
+   "ate": 86.16,
+   "img": ".painel/mcf/ref/rejuvex-ultra-drive.jpg",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "roxo",
+ "semRegravacao": true,
+ "manter": [
+  [
+   6.3,
+   17.45
+  ]
+ ]
+}

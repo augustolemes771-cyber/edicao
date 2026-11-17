@@ -1,0 +1,29 @@
+{
+ "_roteiro": "Lívia - Roteiros (3 - Livia): 15/11 AD 02 - Mounjar Natural; 1 regravação cortada",
+ "split": [],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 129.19,
+   "ate": 138.88,
+   "img": ".painel/mcf/ref/mounjar-natural.png",
+   "modo": "topo"
+  },
+  {
+   "de": 201.71,
+   "ate": 221.84,
+   "img": ".painel/mcf/ref/mounjar-natural.png",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "semRegravacao": true,
+ "cortar": [
+  [
+   85.08,
+   90.6
+  ]
+ ]
+}

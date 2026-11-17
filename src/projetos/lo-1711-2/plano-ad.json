@@ -1,0 +1,31 @@
+{
+ "_roteiro": "Lorena - roteiros: 17.11 2 = AD 02 - Fit Hair; criadora recortada na frente do vídeo de fundo ssstik 1794837485678 de \"Porque muita mulher\" até o produto",
+ "split": [],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 29.95,
+   "ate": 39.42,
+   "img": ".painel/mcf/ref/fit-hair.jpg",
+   "modo": "topo"
+  },
+  {
+   "de": 77.75,
+   "ate": 87.86,
+   "img": ".painel/mcf/ref/fit-hair.jpg",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "semRegravacao": true,
+ "fundo": [
+  {
+   "de": 6.55,
+   "ate": 25.9,
+   "video": ".painel/lote1711/ref/fundo-fithair-1794837485678.mp4",
+   "inicio": 0
+  }
+ ]
+}

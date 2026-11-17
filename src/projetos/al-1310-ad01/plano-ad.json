@@ -1,0 +1,41 @@
+{
+ "_roteiro": "Aline - Roteiro: AD 01 - Complexo B Revita 13/10; tela dividida com a foto dos pés da ref no começo; 2 regravações cortadas",
+ "split": [],
+ "fotos": [
+  {
+   "de": 0,
+   "ate": 3.85,
+   "img": ".painel/lote1711/ref/revita-compraslari-1785074504217.mp4@1.0",
+   "crop": "576:480:0:0",
+   "modo": "topo"
+  }
+ ],
+ "produto": [
+  {
+   "de": 62.57,
+   "ate": 74.72,
+   "img": ".painel/mcf/ref/revita-complexo-b.webp",
+   "modo": "topo"
+  },
+  {
+   "de": 128.97,
+   "ate": 145.48,
+   "img": ".painel/mcf/ref/revita-complexo-b.webp",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "semRegravacao": true,
+ "cortar": [
+  [
+   53.88,
+   62.57
+  ],
+  [
+   123.42,
+   128.97
+  ]
+ ]
+}

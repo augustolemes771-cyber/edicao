@@ -1,0 +1,46 @@
+{
+ "_roteiro": "Aline - Roteiro: AD 02 - Complexo B Revita 13/10; tela dividida com os clipes de falta de energia/disposição baixa/desânimo da ref Sil_Skin_Care; 1 regravação cortada",
+ "split": [
+  {
+   "de": 0,
+   "ate": 4.41,
+   "video": ".painel/lote1711/ref/sil-skin-care.mp4",
+   "inicio": 4.67,
+   "crop": "576:450:0:0"
+  },
+  {
+   "de": 4.41,
+   "ate": 13.39,
+   "video": ".painel/lote1711/ref/sil-skin-care.mp4",
+   "inicio": 4.67,
+   "crop": "576:450:0:0",
+   "loop": true,
+   "len": 4.35
+  }
+ ],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 61.45,
+   "ate": 70.86,
+   "img": ".painel/mcf/ref/revita-complexo-b.webp",
+   "modo": "topo"
+  },
+  {
+   "de": 88.59,
+   "ate": 107.42,
+   "img": ".painel/mcf/ref/revita-complexo-b.webp",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "semRegravacao": true,
+ "cortar": [
+  [
+   57.44,
+   61.45
+  ]
+ ]
+}
