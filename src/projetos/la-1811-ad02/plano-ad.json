@@ -1,17 +1,17 @@
 {
- "_roteiro": "Larissa - Roteiros (3 - Shopdalari): 18/11 AD 02 - Creatina Soufit (foto da loja oficial); abertura de caras e bocas mantida (0-23 s) com o vídeo de fundo ssstik 1794857012751 inteiro atrás da criadora recortada",
+ "_roteiro": "Larissa - Roteiros (3 - Shopdalari): 18/11 AD 02 - Creatina Soufit (foto da loja oficial); abertura de caras e bocas mantida (0-23 s) + 2,6 s repetidos dela apontando (11,4-14,0) para durar o vídeo de fundo ssstik 1794857012751 inteiro (áudio dele); a fala dela começa depois do fundo (bruto-sem-enchimento.mov guardado)",
  "split": [],
  "fotos": [],
  "produto": [
   {
-   "de": 65.53,
-   "ate": 69.48,
+   "de": 68.13,
+   "ate": 72.08,
    "img": ".painel/mcf/ref/creatina-soufit.png",
    "modo": "topo"
   },
   {
-   "de": 92.22,
-   "ate": 121.06,
+   "de": 94.82,
+   "ate": 123.66,
    "img": ".painel/mcf/ref/creatina-soufit.png",
    "modo": "topo"
   }
@@ -23,7 +23,7 @@
  "manter": [
   [
    0.3,
-   25.9
+   25.65
   ]
  ],
  "fundo": [
