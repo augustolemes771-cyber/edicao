@@ -136,6 +136,50 @@ import {lo09113} from './lo-0911-3/edit';
 import {metadados} from './metadados/edit';
 import {p232323} from './232323/edit';
 import {p3232} from './3232/edit';
+import {al0811Ad01} from './al-0811-ad01/edit';
+import {al0811Ad02} from './al-0811-ad02/edit';
+import {al0811Ad03} from './al-0811-ad03/edit';
+import {al0811Ad04} from './al-0811-ad04/edit';
+import {al1310Ad01} from './al-1310-ad01/edit';
+import {al1310Ad02} from './al-1310-ad02/edit';
+import {al1310Ad03} from './al-1310-ad03/edit';
+import {la1711Ad01} from './la-1711-ad01/edit';
+import {la1711Ad02} from './la-1711-ad02/edit';
+import {la1711Ad03} from './la-1711-ad03/edit';
+import {la1811Ad01} from './la-1811-ad01/edit';
+import {la1811Ad02} from './la-1811-ad02/edit';
+import {la1811Ad03} from './la-1811-ad03/edit';
+import {le1211Ad01} from './le-1211-ad01/edit';
+import {le1211Ad02} from './le-1211-ad02/edit';
+import {le1211Ad03} from './le-1211-ad03/edit';
+import {le1211Ad04} from './le-1211-ad04/edit';
+import {le1211Ad05} from './le-1211-ad05/edit';
+import {li131101} from './li-1311-01/edit';
+import {li131102} from './li-1311-02/edit';
+import {li131103} from './li-1311-03/edit';
+import {li151101} from './li-1511-01/edit';
+import {li151102} from './li-1511-02/edit';
+import {li151103} from './li-1511-03/edit';
+import {li151104} from './li-1511-04/edit';
+import {li161101} from './li-1611-01/edit';
+import {li161102} from './li-1611-02/edit';
+import {li161103} from './li-1611-03/edit';
+import {li161104} from './li-1611-04/edit';
+import {lo16112} from './lo-1611-2/edit';
+import {lo17111} from './lo-1711-1/edit';
+import {lo17112} from './lo-1711-2/edit';
+import {ma1511Ad01} from './ma-1511-ad01/edit';
+import {mc1511Ad03} from './mc-1511-ad03/edit';
+import {mc1511Ad04} from './mc-1511-ad04/edit';
+import {v1511Ad01} from './v1511-ad01/edit';
+import {v1511Ad02} from './v1511-ad02/edit';
+import {v1511Ad03} from './v1511-ad03/edit';
+import {v1511Ad04} from './v1511-ad04/edit';
+import {v1611Ad01} from './v1611-ad01/edit';
+import {v1611Ad02} from './v1611-ad02/edit';
+import {v1611Ad03} from './v1611-ad03/edit';
+import {v1611Ad04} from './v1611-ad04/edit';
+import {v1711Ad01} from './v1711-ad01/edit';
 
 // Cada projeto novo entra aqui. O nome vira o id da composição no Studio e no render.
 export const projetos: Record<string, Edit> = {
@@ -276,4 +320,48 @@ export const projetos: Record<string, Edit> = {
 	'metadados': metadados,
 	'232323': p232323,
 	'3232': p3232,
+	'al-0811-ad01': al0811Ad01,
+	'al-0811-ad02': al0811Ad02,
+	'al-0811-ad03': al0811Ad03,
+	'al-0811-ad04': al0811Ad04,
+	'al-1310-ad01': al1310Ad01,
+	'al-1310-ad02': al1310Ad02,
+	'al-1310-ad03': al1310Ad03,
+	'la-1711-ad01': la1711Ad01,
+	'la-1711-ad02': la1711Ad02,
+	'la-1711-ad03': la1711Ad03,
+	'la-1811-ad01': la1811Ad01,
+	'la-1811-ad02': la1811Ad02,
+	'la-1811-ad03': la1811Ad03,
+	'le-1211-ad01': le1211Ad01,
+	'le-1211-ad02': le1211Ad02,
+	'le-1211-ad03': le1211Ad03,
+	'le-1211-ad04': le1211Ad04,
+	'le-1211-ad05': le1211Ad05,
+	'li-1311-01': li131101,
+	'li-1311-02': li131102,
+	'li-1311-03': li131103,
+	'li-1511-01': li151101,
+	'li-1511-02': li151102,
+	'li-1511-03': li151103,
+	'li-1511-04': li151104,
+	'li-1611-01': li161101,
+	'li-1611-02': li161102,
+	'li-1611-03': li161103,
+	'li-1611-04': li161104,
+	'lo-1611-2': lo16112,
+	'lo-1711-1': lo17111,
+	'lo-1711-2': lo17112,
+	'ma-1511-ad01': ma1511Ad01,
+	'mc-1511-ad03': mc1511Ad03,
+	'mc-1511-ad04': mc1511Ad04,
+	'v1511-ad01': v1511Ad01,
+	'v1511-ad02': v1511Ad02,
+	'v1511-ad03': v1511Ad03,
+	'v1511-ad04': v1511Ad04,
+	'v1611-ad01': v1611Ad01,
+	'v1611-ad02': v1611Ad02,
+	'v1611-ad03': v1611Ad03,
+	'v1611-ad04': v1611Ad04,
+	'v1711-ad01': v1711Ad01,
 };
