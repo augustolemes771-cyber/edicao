@@ -23,15 +23,17 @@
  "manter": [
   [
    0.3,
-   23.05
+   25.9
   ]
  ],
  "fundo": [
   {
    "de": 0.3,
    "ate": 25.6,
+   "dur": 25.24,
    "video": ".painel/lote1711/ref/fundo-creatina-1794857012751.mp4",
-   "inicio": 0
+   "inicio": 0,
+   "audio": "troca"
   }
  ],
  "rostoY": 665

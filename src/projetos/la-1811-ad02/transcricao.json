@@ -1,115 +1,408 @@
 [
  {
-  "text": "A",
-  "startMs": 23100,
-  "endMs": 23367,
-  "timestampMs": null,
-  "confidence": 0.635477
+  "text": " A",
+  "startMs": 420,
+  "endMs": 540
  },
  {
   "text": " ação",
-  "startMs": 23387,
-  "endMs": 23655,
-  "timestampMs": null,
-  "confidence": 0.764948
+  "startMs": 560,
+  "endMs": 860
  },
  {
   "text": " da",
-  "startMs": 23675,
-  "endMs": 23942,
-  "timestampMs": null,
-  "confidence": 0.999495
+  "startMs": 899,
+  "endMs": 960
  },
  {
   "text": " creatina",
-  "startMs": 23962,
-  "endMs": 24230,
-  "timestampMs": null,
-  "confidence": 0.976445
+  "startMs": 1040,
+  "endMs": 1640
  },
  {
   "text": " não",
-  "startMs": 24250,
-  "endMs": 24517,
-  "timestampMs": null,
-  "confidence": 0.993815
+  "startMs": 1700,
+  "endMs": 1780
  },
  {
   "text": " é",
-  "startMs": 24537,
-  "endMs": 24805,
-  "timestampMs": null,
-  "confidence": 0.999859
- },
- {
-  "text": " só",
-  "startMs": 24825,
-  "endMs": 25092,
-  "timestampMs": null,
-  "confidence": 0.999327
+  "startMs": 1820,
+  "endMs": 1880
  },
  {
   "text": " durante",
-  "startMs": 25112,
-  "endMs": 25380,
-  "timestampMs": null,
-  "confidence": 0.997988
+  "startMs": 1960,
+  "endMs": 2440
  },
  {
   "text": " o",
-  "startMs": 25400,
-  "endMs": 25667,
-  "timestampMs": null,
-  "confidence": 0.997739
+  "startMs": 2840,
+  "endMs": 2860
  },
  {
   "text": " momento",
-  "startMs": 25687,
-  "endMs": 25955,
-  "timestampMs": null,
-  "confidence": 0.995072
- },
- {
-  "text": " em",
-  "startMs": 25975,
-  "endMs": 26242,
-  "timestampMs": null,
-  "confidence": 0.991858
+  "startMs": 2920,
+  "endMs": 3179
  },
  {
   "text": " que",
-  "startMs": 26262,
-  "endMs": 26530,
-  "timestampMs": null,
-  "confidence": 0.999645
+  "startMs": 3219,
+  "endMs": 3239
+ },
+ {
+  "text": " cê",
+  "startMs": 3260,
+  "endMs": 3340
+ },
+ {
+  "text": " tá",
+  "startMs": 3360,
+  "endMs": 3480
+ },
+ {
+  "text": " treinando",
+  "startMs": 3520,
+  "endMs": 3860
+ },
+ {
+  "text": " apenas.",
+  "startMs": 3900,
+  "endMs": 4280
+ },
+ {
+  "text": " A",
+  "startMs": 4460,
+  "endMs": 4520
+ },
+ {
+  "text": " ação",
+  "startMs": 4580,
+  "endMs": 4819
+ },
+ {
+  "text": " da",
+  "startMs": 4859,
+  "endMs": 4920
+ },
+ {
+  "text": " creatina",
+  "startMs": 4979,
+  "endMs": 5359
+ },
+ {
+  "text": " ela",
+  "startMs": 5399,
+  "endMs": 5460
+ },
+ {
+  "text": " é",
+  "startMs": 5500,
+  "endMs": 5540
+ },
+ {
+  "text": " sistêmica",
+  "startMs": 5600,
+  "endMs": 6100
+ },
+ {
+  "text": " no",
+  "startMs": 6120,
+  "endMs": 6180
+ },
+ {
+  "text": " seu",
+  "startMs": 6220,
+  "endMs": 6380
+ },
+ {
+  "text": " corpo.",
+  "startMs": 6420,
+  "endMs": 6740
+ },
+ {
+  "text": " Por",
+  "startMs": 6780,
+  "endMs": 6859
+ },
+ {
+  "text": " exemplo,",
+  "startMs": 6899,
+  "endMs": 7300
  },
  {
   "text": " você",
-  "startMs": 26550,
-  "endMs": 26817,
-  "timestampMs": null,
-  "confidence": 0.99826
+  "startMs": 7340,
+  "endMs": 7540
+ },
+ {
+  "text": " não",
+  "startMs": 7580,
+  "endMs": 7760
+ },
+ {
+  "text": " precisa",
+  "startMs": 7780,
+  "endMs": 8320
+ },
+ {
+  "text": " usar",
+  "startMs": 8380,
+  "endMs": 8580
+ },
+ {
+  "text": " creatina",
+  "startMs": 8660,
+  "endMs": 9100
+ },
+ {
+  "text": " pré-treino.",
+  "startMs": 9340,
+  "endMs": 9820
+ },
+ {
+  "text": " Você",
+  "startMs": 9980,
+  "endMs": 10220
+ },
+ {
+  "text": " precisa",
+  "startMs": 10240,
+  "endMs": 10540
+ },
+ {
+  "text": " usar",
+  "startMs": 10580,
+  "endMs": 10800
+ },
+ {
+  "text": " creatina",
+  "startMs": 10820,
+  "endMs": 11220
+ },
+ {
+  "text": " todos",
+  "startMs": 11400,
+  "endMs": 11620
+ },
+ {
+  "text": " os",
+  "startMs": 11660,
+  "endMs": 11760
+ },
+ {
+  "text": " dias.",
+  "startMs": 11800,
+  "endMs": 12080
+ },
+ {
+  "text": " Você",
+  "startMs": 12220,
+  "endMs": 12400
+ },
+ {
+  "text": " não",
+  "startMs": 12440,
+  "endMs": 12540
+ },
+ {
+  "text": " precisa",
+  "startMs": 12580,
+  "endMs": 12780
+ },
+ {
+  "text": " tomar",
+  "startMs": 12820,
+  "endMs": 13040
+ },
+ {
+  "text": " creatina",
+  "startMs": 13060,
+  "endMs": 13440
+ },
+ {
+  "text": " no",
+  "startMs": 13460,
+  "endMs": 13540
+ },
+ {
+  "text": " mesmo",
+  "startMs": 13600,
+  "endMs": 13880
+ },
+ {
+  "text": " horário.",
+  "startMs": 13900,
+  "endMs": 14260
+ },
+ {
+  "text": " Você",
+  "startMs": 14380,
+  "endMs": 14560
+ },
+ {
+  "text": " pode",
+  "startMs": 14580,
+  "endMs": 14720
+ },
+ {
+  "text": " tomar",
+  "startMs": 14760,
+  "endMs": 14960
+ },
+ {
+  "text": " creatina",
+  "startMs": 15000,
+  "endMs": 15380
+ },
+ {
+  "text": " todos",
+  "startMs": 15600,
+  "endMs": 15800
+ },
+ {
+  "text": " os",
+  "startMs": 15840,
+  "endMs": 15960
+ },
+ {
+  "text": " dias.",
+  "startMs": 15980,
+  "endMs": 16239
+ },
+ {
+  "text": " O",
+  "startMs": 16340,
+  "endMs": 16379
+ },
+ {
+  "text": " segredo",
+  "startMs": 16500,
+  "endMs": 16900
  },
  {
   "text": " está",
-  "startMs": 26837,
-  "endMs": 27105,
-  "timestampMs": null,
-  "confidence": 0.997606
+  "startMs": 16920,
+  "endMs": 17300
  },
  {
-  "text": " treinando,",
-  "startMs": 27125,
-  "endMs": 27392,
-  "timestampMs": null,
-  "confidence": 0.994554
+  "text": " na",
+  "startMs": 17340,
+  "endMs": 17480
  },
  {
-  "text": " amiga.",
-  "startMs": 27412,
-  "endMs": 27680,
-  "timestampMs": null,
-  "confidence": 0.982289
+  "text": " quantidade,",
+  "startMs": 17520,
+  "endMs": 18120
+ },
+ {
+  "text": " de",
+  "startMs": 18300,
+  "endMs": 18360
+ },
+ {
+  "text": " três",
+  "startMs": 18500,
+  "endMs": 18740
+ },
+ {
+  "text": " a",
+  "startMs": 18780,
+  "endMs": 18860
+ },
+ {
+  "text": " cinco",
+  "startMs": 18920,
+  "endMs": 19120
+ },
+ {
+  "text": " gramas,",
+  "startMs": 19200,
+  "endMs": 19520
+ },
+ {
+  "text": " pelo",
+  "startMs": 19620,
+  "endMs": 19760
+ },
+ {
+  "text": " menos,",
+  "startMs": 19820,
+  "endMs": 20100
+ },
+ {
+  "text": " na",
+  "startMs": 20380,
+  "endMs": 20480
+ },
+ {
+  "text": " frequência,",
+  "startMs": 20620,
+  "endMs": 21200
+ },
+ {
+  "text": " todos",
+  "startMs": 21360,
+  "endMs": 21540
+ },
+ {
+  "text": " os",
+  "startMs": 21580,
+  "endMs": 21680
+ },
+ {
+  "text": " dias,",
+  "startMs": 21720,
+  "endMs": 21920
+ },
+ {
+  "text": " inclusive",
+  "startMs": 22060,
+  "endMs": 22520
+ },
+ {
+  "text": " em",
+  "startMs": 22540,
+  "endMs": 22640
+ },
+ {
+  "text": " dia",
+  "startMs": 22680,
+  "endMs": 22840
+ },
+ {
+  "text": " de",
+  "startMs": 22900,
+  "endMs": 22980
+ },
+ {
+  "text": " descanso,",
+  "startMs": 23040,
+  "endMs": 23560
+ },
+ {
+  "text": " e",
+  "startMs": 23720,
+  "endMs": 23920
+ },
+ {
+  "text": " na",
+  "startMs": 23980,
+  "endMs": 24040
+ },
+ {
+  "text": " qualidade",
+  "startMs": 24200,
+  "endMs": 24780
+ },
+ {
+  "text": " da",
+  "startMs": 24840,
+  "endMs": 24900
+ },
+ {
+  "text": " creatina",
+  "startMs": 24980,
+  "endMs": 25480
  },
  {
   "text": " A",
