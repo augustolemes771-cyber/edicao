@@ -84,6 +84,10 @@ fim = [float(x) for x in re.findall(r'silence_end: ([\d.]+)', sd)]
 sil = [(a + 0.08, b - 0.08) for a, b in zip(ini, fim) if b - a > 0.3]
 # Áudio com ruído de fundo: as pausas por energia (scripts/pausas-energia.mjs) valem mais.
 sp = f'src/projetos/{proj}/silencios.json'
+# Respiração (pedido do usuário, 16/11): o silencedetect a -34 dB não pega a puxada de ar; sem silencios.json, gera pelo
+# scripts/pausas-fala.py (fala - 13 dB, >= 0,25 s) e corta essas pausas.
+if not os.path.exists(sp):
+    subprocess.run([sys.executable, 'scripts/pausas-fala.py', proj])
 if os.path.exists(sp):
     # Folga de 0,07 s de cada lado: sem ela o corte encostava na palavra e comia o começo/fim dela ("estressada").
     # Pausas de scripts/pausas-fala.py (faixa larga, inclui o "s") ou pausas-energia.mjs.
@@ -156,8 +160,15 @@ for i in range(len(_ys)):
 _y_atual = [Y_BAIXO]
 _cx = [(editado(max(0, it['de'])), editado(min(dur, it['ate'])), it['box'][1]) for k_ in ('fotos', 'produto')
        for it in plano.get(k_, []) if it.get('modo') == 'caixa' and it.get('box')]
+# Fundo (criadora recortada no canto): "dur" = duração do vídeo de fundo, que roda até acabar (pedido do usuário, 17/11).
+def _fundo_ab(f_):
+    a = editado(max(0, f_['de']))
+    return a, (min(total, a + f_['dur']) if f_.get('dur') else editado(min(dur, f_['ate'])))
+_fd = [_fundo_ab(f_) for f_ in plano.get('fundo', [])]
+Y_FUNDO = 760  # com o fundo, a criadora fica pequena no canto de baixo: a legenda sobe para não ficar em cima dela
 def POS(a, b):
     m = (a + b) / 2
+    if any(x <= m <= y for x, y in _fd): return '{\\pos(540,%d)}' % Y_FUNDO
     cx = next((t for x, y, t in _cx if x <= m <= y), None)
     if cx is not None:  # foto em caixa na parte de baixo: abaixo do rosto se couber acima da foto; senão, na borda de cima dela
         y = _y_atual[0] if _y_atual[0] + MEIA + 10 <= cx else cx + MEIA + 10
@@ -236,7 +247,11 @@ mudos = [(editado(w['a']) - 0.03, editado(w['b']) + 0.03) for w in V if any(norm
 # 14/11 Mariana "aquela pochete"). Quando existe, vale no lugar das janelas do Whisper.
 if plano.get('mudosBruto'):
     mudos = [(editado(a), editado(b)) for a, b in plano['mudosBruto']]
-sel = '+'.join(f'between(t,{a:.3f},{b:.3f})' for a, b in seg)
+# Com a respiração cortada passa de 100 trechos e o select do ffmpeg estourava ("Cannot allocate memory"): agrupa de 20 em 20.
+_bt = [f'between(t,{a:.3f},{b:.3f})' for a, b in seg]
+sel = '+'.join('(' + '+'.join(_bt[i:i + 20]) + ')' for i in range(0, len(_bt), 20))
+# Velocidade do final (regra do usuário, 16/11): 1,1x por padrão; "velocidade" no plano ou --vel trocam.
+vel = float(opc('--vel', plano.get('velocidade', 1.1)))
 vol = ''.join(f",volume=enable='between(t,{a:.3f},{b:.3f})':volume=0" for a, b in mudos)
 # Camadas do plano. Cada item vira uma entrada do ffmpeg (foto: quadro extraído da referência; vídeo: trecho da referência)
 # sobreposta só no seu intervalo (tempo editado). "topo": metade de cima, com a criadora recortada na metade de baixo.
@@ -285,9 +300,11 @@ for p_ in plano.get('produto', []):
 auds = []
 for tipo, arq, de, ate, modo, ini, loop, crop, ln, box in itens:
     a, b = editado(max(0, de)), editado(min(dur, ate))
+    for x_, y_ in _fd:  # B-roll/tela dividida só depois que o vídeo de fundo acaba
+        if a < y_ and b > x_: a = max(a, y_)
     if b - a < 0.1: continue
     n = len(camadas) + 1
-    if box == 'audio': auds.append((n, a, b)); box = None
+    if box == 'audio': auds.append((n, a, b, 'troca', 1.0)); box = None
     W_, H_ = (1080, 960) if modo == 'topo' else (box[2], box[3]) if modo == 'caixa' else (1080, 1920)
     if tipo == 'img':
         entradas += ['-loop', '1', '-t', f'{b - a + 0.1:.2f}', '-i', quadro(arq, crop, (W_, H_))]
@@ -299,34 +316,60 @@ for tipo, arq, de, ate, modo, ini, loop, crop, ln, box in itens:
     if tipo == 'video' and ln: cr = f'fps=30,loop=loop=-1:size={int(ln * 30)}:start=0,' + cr
     camadas.append((n, a, b, W_, H_, cr, (box[0], box[1]) if modo == 'caixa' else (0, 0)))
     if modo == 'topo': topo.append((a, b))
+# "fundo" (roteiro: "nossa criadora na frente e esse vídeo aqui de fundo", 17/11): o vídeo de referência ocupa a tela toda e a
+# criadora, recortada pela máscara (scripts/mascara.py -> public/projetos/<p>/mascara.mp4, mesmos cortes do bruto), fica na
+# frente, reduzida ("escala", padrão 0,8) e apoiada embaixo no centro. Tempos de/ate no bruto; "inicio" = segundo da referência.
+fx = []
+if plano.get('fundo'):
+    nm = len(camadas) + 1
+    entradas += ['-i', f'public/projetos/{proj}/mascara.mp4']
+    for f_ in plano['fundo']:
+        a, b = _fundo_ab(f_)
+        entradas += ['-ss', str(f_.get('inicio', 0)), '-t', f'{b - a + 0.1:.2f}', '-i', f_['video']]
+        fx.append((nm + 1 + len(fx), a, b, f_.get('escala', 0.5)))
+        # Áudio do fundo (pedido do usuário, 17/11): "troca" = no lugar do da criadora; "mistura" = por baixo da voz (fundo só com música).
+        if f_.get('audio'): auds.append((nm + 1 + len(fx) - 1, a, b, f_['audio'], f_.get('volume', 1.0 if f_['audio'] == 'troca' else 0.3)))
 graf = [f"[0:v]select='{sel}',setpts=N/FRAME_RATE/TB,scale=1080:1920,format=yuv420p[base0]"]
 ult = 'base0'
+if fx:
+    graf.append(f"[{nm}:v]select='{sel}',setpts=N/FRAME_RATE/TB,scale=1080:1920,format=gray[mk]")
+    graf.append("[base0]split[fa][fb];[fb][mk]alphamerge[pes0]")
+    ult = 'fa'
+    for k, (n, a, b, e) in enumerate(fx):
+        graf.append(f"[{n}:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,setsar=1,fps=30,format=yuv420p,setpts=PTS-STARTPTS+{a:.3f}/TB[fg{k}]")
+        graf.append(f"[{ult}][fg{k}]overlay=0:0:eof_action=pass:enable='between(t,{a:.3f},{b:.3f})'[fo{k}]")
+        ult = f'fo{k}'
+    e = fx[0][3]
+    en = '+'.join(f'between(t,{a:.3f},{b:.3f})' for _, a, b, _e in fx)
+    graf.append(f"[pes0]scale={int(1080 * e) // 2 * 2}:{int(1920 * e) // 2 * 2}[pes];[{ult}][pes]overlay=W-w-20:H-h:enable='{en}'[basef]")
+    ult = 'basef'
 if topo:
     en = '+'.join(f'between(t,{a:.3f},{b:.3f})' for a, b in topo)
     # Criadora na metade de baixo: recorte 1080x960 centrado no rosto (terço de cima do quadro).
     # Recorte da metade de baixo centralizado no rosto (rostoY do plano, medido por scripts/rosto-topo.py); sem ele, 260.
     cy = min(960, max(0, int(plano['rostoY']) - 480)) if plano.get('rostoY') else 260
-    graf.append(f"[{ult}]split[bA][bB];[bB]crop=1080:960:0:{cy}[bC];[bA][bC]overlay=0:960:enable='{en}'[base1]")
+    graf.append(f"[{ult}]split[bA][bB];[bB]crop=1080:960:0:{cy}[bC];[bA][bC]overlay=0:960:enable='{en}'[base1]")  # (depois do fundo)
     ult = 'base1'
 for k, (n, a, b, W_, H_, cr, (x, y)) in enumerate(camadas):
     graf.append(f"[{n}:v]{cr}scale={W_}:{H_}:force_original_aspect_ratio=increase,crop={W_}:{H_},setsar=1,format=yuv420p,fps=30,setpts=PTS-STARTPTS+{a:.3f}/TB[c{k}]")
     graf.append(f"[{ult}][c{k}]overlay={x}:{y}:eof_action=pass:enable='between(t,{a:.3f},{b:.3f})'[o{k}]")
     ult = f'o{k}'
-graf.append(f"[{ult}]ass='out/ass/{proj}.ass':fontsdir='out/ass/fontes'[v]")
+graf.append(f"[{ult}]ass='out/ass/{proj}.ass':fontsdir='out/ass/fontes'" + (f",setpts=PTS/{vel}[v]" if vel != 1 else "[v]"))
+_at = f',atempo={vel}' if vel != 1 else ''
 # Vídeo da referência com o próprio áudio (audio: true): o áudio dele entra no lugar do da criadora naquele intervalo.
 if auds:
-    cala = ''.join(f",volume=enable='between(t,{a:.3f},{b:.3f})':volume=0" for _, a, b in auds)
+    cala = ''.join(f",volume=enable='between(t,{a:.3f},{b:.3f})':volume=0" for _, a, b, mo, _v in auds if mo == 'troca')
     graf.append(f"[0:a]aselect='{sel}',asetpts=N/SR/TB{vol}{cala},aresample=48000[a0]")
-    for k, (n, a, b) in enumerate(auds):
-        graf.append(f"[{n}:a]atrim=0:{b - a:.3f},asetpts=PTS-STARTPTS,aresample=48000,adelay={int(a * 1000)}:all=1[r{k}]")
-    graf.append(''.join(['[a0]'] + [f'[r{k}]' for k in range(len(auds))]) + f"amix=inputs={len(auds) + 1}:normalize=0:duration=first,loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000[a]")
+    for k, (n, a, b, mo, vv) in enumerate(auds):
+        graf.append(f"[{n}:a]atrim=0:{b - a:.3f},asetpts=PTS-STARTPTS,aresample=48000,aformat=channel_layouts=stereo,volume={vv},adelay={int(a * 1000)}:all=1[r{k}]")
+    graf.append(''.join(['[a0]'] + [f'[r{k}]' for k in range(len(auds))]) + f"amix=inputs={len(auds) + 1}:normalize=0:duration=first{_at},loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000[a]")
 else:
-    graf.append(f"[0:a]aselect='{sel}',asetpts=N/SR/TB{vol},loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000[a]")
+    graf.append(f"[0:a]aselect='{sel}',asetpts=N/SR/TB{vol}{_at},loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000[a]")
 open(f'out/ass/{proj}-filtro.txt', 'w').write(';'.join(graf))
 os.makedirs(os.path.dirname(saida), exist_ok=True)
 r = subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-y', '-i', fonte, *entradas, '-/filter_complex', f'out/ass/{proj}-filtro.txt',
                     '-map', '[v]', '-map', '[a]', '-r', '30', '-c:v', 'h264_nvenc', '-preset', 'p5', '-cq', '20', '-b:v', '0',
-                    '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', *(['-t', '2', '-f', 'null'] if '--checar' in args else []), 'NUL' if '--checar' in args else saida])
-print(f'{proj}: {"ok" if r.returncode == 0 else "ERRO"} {total:.1f}s (de {dur:.1f}s), {len(seg)} trechos, {len(apagar)} palavras de regravação cortadas, '
+                    '-c:a', 'aac', '-b:a', '192k', '-shortest', '-movflags', '+faststart', *(['-t', '2', '-f', 'null'] if '--checar' in args else []), 'NUL' if '--checar' in args else saida])
+print(f'{proj}: {"ok" if r.returncode == 0 else "ERRO"} {total / vel:.1f}s a {vel}x (de {dur:.1f}s), {len(seg)} trechos, {len(apagar)} palavras de regravação cortadas, '
       f'CTA/seta em {cta:.1f}s, {len(mudos)} mudo(s) -> {saida}')
 sys.exit(r.returncode)
