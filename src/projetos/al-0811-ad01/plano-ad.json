@@ -5,6 +5,12 @@
  "produto": [
   {
    "de": 62.25,
+   "ate": 74.4,
+   "img": ".painel/mcf/ref/rejuvex-ultra-drive.jpg",
+   "modo": "topo"
+  },
+  {
+   "de": 150.66,
    "ate": 168.36,
    "img": ".painel/mcf/ref/rejuvex-ultra-drive.jpg",
    "modo": "topo"
@@ -27,5 +33,6 @@
    104.38,
    113.93
   ]
- ]
+ ],
+ "rostoY": 835
 }
