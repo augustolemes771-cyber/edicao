@@ -8,6 +8,7 @@
 import {textoCapacidade} from '../scripts/capacidade.mjs';
 import {createServer} from 'node:http';
 import {spawn, execFile, execFileSync} from 'node:child_process';
+import {criarTerminal} from './terminal.mjs';
 import {randomBytes, timingSafeEqual} from 'node:crypto';
 import {createReadStream, createWriteStream, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync} from 'node:fs';
 import {pipeline} from 'node:stream/promises';
@@ -707,6 +708,11 @@ const tokenOk = (t) => {
 	return a.length === b.length && timingSafeEqual(a, b);
 };
 
+// Terminal embutido (Claude Code dentro do painel) e downloads de links do Drive em andamento, por vídeo.
+const terminal = criarTerminal({raiz, nomeValido, hostsOk, tokenOk, cookieOk});
+const driveLinks = new Map();
+const VENDOR = {'xterm.js': '@xterm/xterm/lib/xterm.js', 'xterm.css': '@xterm/xterm/css/xterm.css', 'addon-fit.js': '@xterm/addon-fit/lib/addon-fit.js'};
+
 createServer(async (req, res) => {
 	// Bloqueia DNS rebinding e páginas de outros sites.
 	if (!hostsOk.has(req.headers.host ?? '')) { res.writeHead(403); return res.end(); }
@@ -736,6 +742,11 @@ createServer(async (req, res) => {
 			}
 			if (!f) { res.writeHead(403); return res.end(); }
 			return arquivo(req, res, f);
+		}
+		if (p.startsWith('/vendor/')) {
+			const m = VENDOR[p.slice(8)];
+			if (!m) { res.writeHead(404); return res.end(); }
+			return arquivo(req, res, path.join(raiz, 'node_modules', m));
 		}
 		if (!['/api/', '/out/', '/previas/', '/sfx/', '/fontes/', '/midia/', '/pack/', '/tema-modelo/'].some((x) => p.startsWith(x))) {
 			const rel = p === '/' ? 'index.html' : p.slice(1);
@@ -825,6 +836,63 @@ createServer(async (req, res) => {
 			return json(res, limpos);
 		}
 		if (p === '/api/prompts') return json(res, lerJson(arqPrompts, []));
+		// Terminal embutido: estado e reinício da sessão do Claude Code de um vídeo (a conexão em si é o WebSocket /api/terminal).
+		if (p === '/api/terminal/estado') return json(res, {ativo: terminal.ativo(url.searchParams.get('projeto') ?? '')});
+		if (p === '/api/terminal/reiniciar' && req.method === 'POST') {
+			const {projeto} = await corpo(req);
+			if (!projetoOk(projeto)) return json(res, {erro: 'Projeto inválido'}, 400);
+			return json(res, {ok: terminal.encerrar(projeto)});
+		}
+		// Link do Google Drive (pasta ou arquivo público). Dois passos: "listar" lê a pasta sem baixar nada; "baixar" traz só os
+		// arquivos escolhidos (ids da lista). A lista fica salva em .painel/drive/<vídeo>.json para o Claude baixar outros depois.
+		if (p === '/api/drive-link' && req.method === 'POST') {
+			const {projeto, url: link, modo, ids, ia} = await corpo(req);
+			if (!projetoOk(projeto)) return json(res, {erro: 'Projeto inválido'}, 400);
+			if (typeof link !== 'string' || link.length > 500 || !/^https:\/\/(drive|docs)\.google\.com\/[^\s]+$/.test(link)) return json(res, {erro: 'Cole um link do Google Drive (começa com https://drive.google.com/).'}, 400);
+			const listar = modo === 'listar';
+			if (!listar && !(Array.isArray(ids) && ids.length && ids.length <= 1000 && ids.every((i) => typeof i === 'string' && /^[\w-]{10,}$/.test(i)))) return json(res, {erro: 'Escolha ao menos um arquivo para baixar.'}, 400);
+			const anterior = driveLinks.get(projeto);
+			if (['rodando', 'listando'].includes(anterior?.estado)) return json(res, {erro: 'Ainda estou trabalhando neste link. Espere terminar.'}, 409);
+			const st = {estado: listar ? 'listando' : 'rodando', fase: listar ? 'lendo a pasta' : 'começando', pct: 0, arquivo: '', erro: null, total: 0, falhas: [], url: link, ia: listar ? !!ia : !!anterior?.ia, lista: listar ? [] : anterior?.lista ?? []};
+			driveLinks.set(projeto, st);
+			const args = [path.join(raiz, 'scripts/baixar-drive.mjs'), link, pastaMidia(projeto, 'midias'), ...(listar ? ['--listar'] : ['--ids', ids.join(',')])];
+			const proc = spawn(process.execPath, args, {cwd: raiz, stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true});
+			let resto = '';
+			proc.stdout.on('data', (d) => {
+				resto += d;
+				const linhas = resto.split('\n');
+				resto = linhas.pop();
+				for (const l of linhas) {
+					try {
+						const o = JSON.parse(l);
+						if (o.erro) { st.estado = 'erro'; st.erro = o.erro; }
+						else if (o.lista) st.lista = o.lista;
+						else if (o.fim && o.listado) {
+							st.estado = 'listado';
+							st.total = o.total;
+							mkdirSync(path.join(estado, 'drive'), {recursive: true});
+							writeFileSync(path.join(estado, 'drive', `${projeto}.json`), JSON.stringify({url: link, modo: st.ia ? 'ia' : 'escolha', lista: st.lista}, null, 1));
+						} else if (o.fim) { st.estado = 'ok'; st.pct = 100; st.total = o.total; st.falhas = o.falhas ?? []; }
+						else { st.fase = o.fase; st.pct = o.pct; st.arquivo = o.arquivo; }
+					} catch {}
+				}
+			});
+			proc.on('error', (e) => { st.estado = 'erro'; st.erro = e.message; });
+			proc.on('close', () => {
+				if (['rodando', 'listando'].includes(st.estado)) { st.estado = 'erro'; st.erro = 'O Drive terminou sem responder. Tente de novo.'; }
+				// Vídeos novos: cópia leve em segundo plano, como no envio de arquivos.
+				else if (st.estado === 'ok') spawn(process.execPath, [path.join(raiz, 'scripts/proxy.mjs'), projeto], {cwd: raiz, stdio: 'ignore', windowsHide: true}).on('error', () => {});
+			});
+			return json(res, {ok: true});
+		}
+		if (p === '/api/drive-link/estado') {
+			const proj = url.searchParams.get('projeto') ?? '';
+			const vivo = driveLinks.get(proj);
+			if (vivo) return json(res, vivo);
+			// Depois de reiniciar o painel o estado em memória some, mas o link anexado continua salvo em .painel/drive/<vídeo>.json.
+			const salvo = nomeValido(proj) && proj ? ler(path.join(estado, 'drive', `${proj}.json`), null) : null;
+			return json(res, salvo?.url ? {estado: 'listado', url: salvo.url, ia: salvo.modo === 'ia', lista: salvo.lista ?? [], total: salvo.lista?.length ?? 0, fase: '', pct: 100, falhas: []} : {estado: 'nenhum'});
+		}
 		// Abre o Claude Code numa janela de terminal, na pasta do painel, já com o contexto do vídeo escolhido.
 		if (p === '/api/abrir-code' && req.method === 'POST') {
 			const {projeto, pedido} = await corpo(req);
@@ -1147,6 +1215,7 @@ createServer(async (req, res) => {
 		else res.end();
 	}
 })
+	.on('upgrade', terminal.aoUpgrade)
 	.on('error', async (e) => {
 		if (e.code !== 'EADDRINUSE') throw e;
 		// Porta ocupada: se for este painel já aberto, só abre o navegador nele.

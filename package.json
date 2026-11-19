@@ -29,6 +29,7 @@
     "still": "node scripts/render-job.mjs --tipo still"
   },
   "dependencies": {
+    "@lydell/node-pty": "1.2.0-beta.18",
     "@react-three/fiber": "9.2.0",
     "@remotion/bundler": "4.0.538",
     "@remotion/captions": "4.0.538",
@@ -39,11 +40,14 @@
     "@remotion/media": "4.0.538",
     "@remotion/renderer": "4.0.538",
     "@remotion/three": "4.0.538",
+    "@xterm/addon-fit": "0.11.0",
+    "@xterm/xterm": "6.0.0",
     "mediabunny": "1.62.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "remotion": "4.0.538",
-    "three": "0.178.0"
+    "three": "0.178.0",
+    "ws": "8.23.0"
   },
   "devDependencies": {
     "@types/react": "19.2.7",

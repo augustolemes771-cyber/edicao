@@ -4,179 +4,122 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
-<title>Painel de Edição · Mateus Dias</title>
+<title>Painel de Edição</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23030405'/%3E%3Cpath d='M12 9l11 7-11 7z' fill='%2312d4cd'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="app.css">
+<link rel="stylesheet" href="/vendor/xterm.css">
+<link rel="stylesheet" href="comecar.css">
 </head>
-<body class="so-ver ver-conversa">
+<body>
 
-<header id="topo">
+<header class="topo">
 	<div class="marca">
 		<span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg></span>
-		<div><b>Painel de Edição</b><small>Mateus Dias</small></div>
+		<b>Painel de Edição</b>
 	</div>
-
-	<div class="seletores">
-		<label class="campo-topo" title="Tema: tudo que for feito nele vira aprendizado para os próximos vídeos do mesmo tema">
-			<span>Tema</span>
-			<select id="tema"></select>
-		</label>
-		<button class="btn icone" id="novoTema" title="Criar um tema novo" aria-label="Criar um tema novo" data-ic="plus"></button>
-		<label class="campo-topo largo" title="Vídeo (projeto) que você está editando">
-			<span>Vídeo</span>
-			<select id="projeto"></select>
-		</label>
-		<button class="btn primario" id="novoProj" data-ic="plus">Novo vídeo</button>
-	</div>
-
-	<div class="status" id="status">
-		<span class="atualizado" id="atualizado" hidden></span>
-		<button class="pilula" id="stClaude" title="Claude Code neste computador"><i class="ponto"></i><span>Claude</span></button>
-		<button class="pilula" id="stNuvem" title="Sincronização com a nuvem (clique para sincronizar agora)"><i class="ponto"></i><span>Nuvem</span></button>
-		<button class="pilula" id="stPod" title="Pod (computador na nuvem para renderizar)"><i class="ponto"></i><span>Pod</span></button>
-		<button class="pilula" id="stBloco" hidden title="Quanto falta para o próximo bloco ficar pronto para você aprovar"><i class="ponto ativo"></i><span>Próximo bloco</span><em class="mini-barra"><i></i></em></button>
-		<button class="pilula" id="stTarefas" title="Tarefas rodando"><i class="ponto"></i><span>Sem tarefas</span><em class="mini-barra" hidden><i></i></em></button>
-	</div>
-
-	<div class="acoes-topo">
-		<button class="btn primario" id="abrirCode" data-ic="claude" title="Abrir o Claude Code para fazer os pedidos de edição deste vídeo">Pedir ao Claude</button>
-		<button class="btn" id="studio" data-ic="monitor" title="Abrir o Remotion Studio (editor visual) com a placa de vídeo">Studio</button>
-		<button class="btn" id="salvar" data-ic="cloud-up" title="Envia para o GitHub templates, peças e edições novas">Salvar na nuvem</button>
-		<button class="btn icone" id="atualizar" data-ic="refresh" title="Atualizar e reabrir: baixa a versão mais recente do GitHub e reabre o painel" aria-label="Atualizar e reabrir"></button>
-		<button class="btn icone" id="abrirPrefs" data-ic="gear" title="Preferências" aria-label="Preferências"></button>
-	</div>
+	<ol class="passos" id="passos" aria-label="Etapas">
+		<li data-passo="1"><i>1</i><span>Tema</span></li>
+		<li data-passo="2"><i>2</i><span>Mídias</span></li>
+		<li data-passo="3"><i>3</i><span>Pedir a edição</span></li>
+	</ol>
+	<a class="avancado" href="/avancado.html" id="avancado" title="Tela completa, com biblioteca, linha do tempo e sincronização">Modo avançado</a>
 </header>
 
-<main id="app">
-	<!-- Esquerda (como o CapCut): mídias, biblioteca, imagens da edição e a conversa salva -->
-	<aside id="bib" class="coluna">
-		<nav class="abas" role="tablist">
-			<button role="tab" data-aba="midias" class="on" data-ic="film">Mídias</button>
-			<button role="tab" data-aba="biblioteca" data-ic="book">Biblioteca</button>
-			<button role="tab" data-aba="previas" data-ic="eye">Prévias</button>
-		</nav>
-		<div class="rolavel painel-aba" id="aba-midias"></div>
-		<div class="painel-aba coluna-aba" id="aba-biblioteca" hidden>
-			<div class="coluna-topo">
-				<div class="busca">
-					<span data-ic="search"></span>
-					<input id="busca" type="search" placeholder="Buscar peças, sons, fontes, pack..." autocomplete="off">
-				</div>
+<!-- 1 · Tema -->
+<main class="pagina" id="p1">
+	<div class="cabeca">
+		<h1>Qual tema você quer?</h1>
+		<p>O tema define o estilo da edição. Tudo o que você aprova nele vira regra para os próximos vídeos.</p>
+	</div>
+	<div id="continuar" class="continuar" hidden></div>
+	<div class="temas" id="temas" role="radiogroup" aria-label="Temas"><div class="carregando">Carregando os temas…</div></div>
+	<div class="linha-form">
+		<label class="campo"><span>Nome do vídeo <small>(opcional)</small></span><input id="nome" type="text" maxlength="40" placeholder="ex.: lancamento-curso" autocomplete="off"></label>
+		<div class="campo"><span>Formato</span>
+			<div class="seg" id="formato" role="radiogroup" aria-label="Formato">
+				<button type="button" role="radio" data-v="vertical" aria-checked="true">Vertical 9:16</button>
+				<button type="button" role="radio" data-v="horizontal" aria-checked="false">Horizontal 16:9</button>
 			</div>
-			<div id="bibLista" class="rolavel"><div class="carregando">Carregando a biblioteca...</div></div>
 		</div>
-		<div class="rolavel painel-aba" id="aba-previas" hidden></div>
-		<!-- Conversa desativada: a IA roda só pelo Claude Code (botão "Pedir ao Claude"). Fica escondida porque o código antigo ainda a referencia. -->
-		<div id="aba-conversa" hidden style="display:none">
-			<div class="conversa-topo">
-				<div>
-					<h2 id="convTitulo">Conversa</h2>
-					<small id="convSub">Escolha um vídeo e diga o que editar.</small>
-				</div>
-				<button class="btn fantasma" id="zerar" data-ic="chat-plus" title="Começar conversa nova neste vídeo">Conversa nova</button>
+	</div>
+	<div class="rodape-passo">
+		<span class="erro" id="erro1" role="alert"></span>
+		<button class="btn primario grande" id="seguir1" disabled>Continuar</button>
+	</div>
+</main>
+
+<!-- 2 · Mídias -->
+<main class="pagina" id="p2" hidden>
+	<div class="cabeca">
+		<h1>Mande seus vídeos</h1>
+		<p>Solte os arquivos aqui ou cole o link de uma pasta do Google Drive. <b id="rotuloVideo"></b></p>
+	</div>
+
+	<div class="duas">
+		<div>
+			<div class="soltar" id="soltar" tabindex="0" role="button" aria-label="Escolher arquivos">
+				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V5m0 0l-4 4m4-4l4 4M5 19h14"/></svg>
+				<b>Solte aqui os vídeos, áudios e imagens</b>
+				<span>ou clique para escolher no computador</span>
+				<input type="file" id="arquivos" multiple hidden accept="video/*,audio/*,image/*,.pdf,.txt,.md,.srt">
 			</div>
-			<div id="msgs" class="rolavel" aria-live="polite"></div>
-			<div class="compositor">
-				<div class="atalhos">
-					<div id="chips" class="chips"></div>
-					<button class="btn fantasma mini" id="gerAtalhos" data-ic="edit" title="Adicionar ou remover atalhos de pedido">Atalhos</button>
-				</div>
-				<div class="aviso-so-ver">Os pedidos são feitos no <b>Claude Code</b>: botão “Pedir ao Claude”, no topo. Aqui você assiste e deixa observações; elas vão para o Claude Code como pendências.</div>
-				<form id="f">
-					<textarea id="pedido" rows="3"></textarea>
-					<div class="form-acoes">
-						<small class="dica"></small>
-						<button type="button" class="btn perigo" id="parar" data-ic="stop" hidden>Intervir</button>
-						<button type="button" class="btn fantasma" id="destino" data-ic="users" hidden>Para: assistente</button>
-						<button type="button" class="btn fantasma" id="soPerguntar" data-ic="chat">Só perguntar</button>
-						<button class="btn primario" id="enviar" data-ic="send">Enviar</button>
-					</div>
-				</form>
-			</div>
+		</div>
+		<div class="drive">
+			<label class="campo"><span>Link do Google Drive</span>
+				<input id="linkDrive" type="url" placeholder="https://drive.google.com/drive/folders/…" autocomplete="off">
+			</label>
+			<button class="btn" id="anexar">Anexar link</button>
+			<p class="dica"><b>Nada é baixado ao anexar.</b> A IA lê a lista e puxa só o que precisar quando você pedir.</p>
+			<p class="dica">A pasta ou o arquivo precisa estar com “Qualquer pessoa com o link” como Leitor.</p>
+			<div class="barra-drive" id="statusDrive" hidden><div class="barra"><i></i></div><small></small></div>
+		</div>
+	</div>
+
+	<details class="escolha" id="escolha" hidden>
+		<summary><b id="escolhaTitulo"></b><span class="opc">Baixar agora é opcional</span></summary>
+		<div class="escolha-topo">
+			<span>Marque só se quiser trazer algo agora.</span>
+			<span><button class="btn mini fantasma" id="selTodos">Marcar todos</button><button class="btn mini fantasma" id="selNenhum">Desmarcar</button></span>
+		</div>
+		<ul id="escolhaLista"></ul>
+		<div class="escolha-acoes">
+			<button class="btn primario" id="baixarSel" disabled>Baixar selecionados</button>
+			<button class="btn" id="baixarTodos">Baixar todos</button>
+		</div>
+	</details>
+
+	<ul class="arquivos" id="listaArquivos" aria-live="polite"></ul>
+
+	<div class="rodape-passo">
+		<button class="btn fantasma" id="voltar2">Voltar</button>
+		<span class="aviso" id="avisoSem" hidden>Nenhuma mídia ainda. Você pode adicionar depois.</span>
+		<button class="btn primario grande" id="seguir2">Abrir o Claude Code</button>
+	</div>
+</main>
+
+<!-- 3 · Pedir a edição -->
+<main class="pedir" id="p3" hidden>
+	<aside class="lado-video">
+		<div class="barra-video">
+			<div><b id="tituloVideo"></b><small id="subVideo"></small><small id="subDrive"></small></div>
+		</div>
+		<div class="palco" id="palco"><iframe id="player" title="Prévia do vídeo" allow="autoplay; fullscreen"></iframe></div>
+		<div class="acoes-video">
+			<button class="btn" id="maisMidias">Adicionar mídias</button>
+			<button class="btn" id="reiniciar" title="Encerra esta conversa e abre uma nova do zero">Reiniciar Claude</button>
+			<button class="btn fantasma" id="janela" title="Abre o Claude Code numa janela do Windows, fora do painel">Abrir em janela separada</button>
+			<button class="btn fantasma" id="trocar">Trocar de vídeo</button>
 		</div>
 	</aside>
-
-	<!-- Centro: o player (mesma composição do Studio, atualiza sozinho quando a edição muda) -->
-	<section id="centro" class="coluna">
-		<div id="claude" class="faixa" hidden></div>
-		<div class="player-topo">
-			<b id="plTitulo">Player</b><small id="plSub"></small>
-			<span class="esp"></span>
-			<button class="btn mini fantasma" id="plStudio" data-ic="monitor" title="Abrir este vídeo no Remotion Studio (editor completo)">Studio</button>
-		</div>
-		<div id="palco">
-			<iframe id="player" title="Player do vídeo" allow="autoplay; fullscreen" hidden></iframe>
-			<div id="palcoVazio" class="vazio"></div>
-			<div id="palcoErro" hidden></div>
-		</div>
-		<div class="player-controles">
-			<span id="plTempo" class="tempo"><b>00:00:00</b> / 00:00:00</span>
-			<div class="pl-meio">
-				<button class="btn icone fantasma" id="plVoltar" title="Voltar 1 quadro (←; Shift+← volta 1 s)" aria-label="Voltar 1 quadro"><svg class="i" viewBox="0 0 24 24"><path d="M11 7l-5 5 5 5M18 7l-5 5 5 5"/></svg></button>
-				<button class="btn icone" id="plTocar" title="Tocar / pausar (espaço)" aria-label="Tocar"><svg class="i" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></button>
-				<button class="btn icone fantasma" id="plAvancar" title="Avançar 1 quadro (→; Shift+→ avança 1 s)" aria-label="Avançar 1 quadro"><svg class="i" viewBox="0 0 24 24"><path d="M13 7l5 5-5 5M6 7l5 5-5 5"/></svg></button>
-			</div>
-			<div class="pl-dir">
-				<button class="btn mini" id="plNota" data-ic="edit" title="Deixar uma observação neste momento do vídeo (vira pendência para o Claude Code)">Observação aqui</button>
-				<button class="btn icone fantasma" id="plMudo" title="Som" aria-label="Som"><svg class="i" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg></button>
-				<button class="btn icone fantasma" id="plTela" title="Tela cheia" aria-label="Tela cheia"><svg class="i" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
-			</div>
-		</div>
-	</section>
-
-	<!-- Direita: propriedades do que está selecionado na linha do tempo, exportar, passos e estilo -->
-	<aside id="lado" class="coluna">
-		<nav class="abas" role="tablist">
-			<button role="tab" data-aba="props" class="on" data-ic="sliders">Detalhes</button>
-			<button role="tab" data-aba="render" data-ic="download">Exportar</button>
-			<button role="tab" data-aba="fluxo" data-ic="list">Passos</button>
-			<button role="tab" data-aba="refs" data-ic="star">Estilo</button>
-		</nav>
-		<div class="rolavel painel-aba" id="aba-props"></div>
-		<div class="rolavel painel-aba" id="aba-render" hidden></div>
-		<div class="rolavel painel-aba" id="aba-fluxo" hidden><div id="fluxoPassos"></div><div id="fluxoExtra"></div></div>
-		<div class="rolavel painel-aba" id="aba-refs" hidden></div>
-	</aside>
-
-	<!-- Embaixo: linha do tempo -->
-	<section id="linha">
-		<div class="tl-alca" id="tlAlca" title="Arraste para mudar a altura"></div>
-		<div class="tl-barra">
-			<span class="tl-titulo">Linha do tempo</span>
-			<div id="pend" class="pend" hidden></div>
-			<span class="esp"></span>
-			<button class="btn icone mini fantasma" id="tlMenos" title="Diminuir o zoom (Ctrl + roda)" aria-label="Diminuir o zoom"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M8 11h6M20 20l-4.5-4.5"/></svg></button>
-			<input type="range" id="tlZoom" min="0" max="100" value="30" aria-label="Zoom da linha do tempo">
-			<button class="btn icone mini fantasma" id="tlMais" title="Aumentar o zoom (Ctrl + roda)" aria-label="Aumentar o zoom"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M8 11h6M11 8v6M20 20l-4.5-4.5"/></svg></button>
-			<button class="btn mini fantasma" id="tlAjustar" title="Mostrar o vídeo inteiro">Ajustar</button>
-		</div>
-		<div class="tl-corpo">
-			<div class="tl-nomes" id="tlNomes"></div>
-			<div class="tl-rolo" id="tlRolo"><div class="tl-conteudo" id="tl"></div></div>
-		</div>
+	<section class="lado-claude">
+		<div class="faixa-estado" id="estadoTerm"><i class="ponto"></i><span>Conectando ao Claude Code…</span><button class="btn mini" id="reconectar" hidden>Reconectar</button></div>
+		<div id="term" class="term"></div>
 	</section>
 </main>
 
-<nav id="navCel" aria-label="Seções">
-	<button data-ver="biblioteca" data-ic="film">Mídias</button>
-	<button data-ver="conversa" class="on" data-ic="play">Vídeo</button>
-	<button data-ver="lado" data-ic="sliders">Detalhes</button>
-</nav>
+<div id="toast" role="status" aria-live="polite"></div>
 
-<!-- Tela do tema -->
-<div id="tv" class="sobreposicao" hidden><div class="tela" id="tvc"></div></div>
-
-<!-- Janela genérica (ver conteúdo, formulários, confirmações) -->
-<div id="modal" class="sobreposicao" hidden>
-	<div class="janela" role="dialog" aria-modal="true" aria-labelledby="mtitulo">
-		<div class="janela-topo"><h3 id="mtitulo"></h3><button class="btn icone fantasma" id="mfechar" data-ic="x" aria-label="Fechar"></button></div>
-		<div class="janela-corpo" id="mcorpo"></div>
-		<div class="janela-rodape" id="mrodape" hidden></div>
-	</div>
-</div>
-
-<div id="toasts" aria-live="polite"></div>
-
-<script src="app.js"></script>
+<script src="/vendor/xterm.js"></script>
+<script src="/vendor/addon-fit.js"></script>
+<script src="comecar.js"></script>
 </body>
 </html>

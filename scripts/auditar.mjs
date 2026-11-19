@@ -109,7 +109,7 @@ for (const [n, f] of grandes) linha('  maior arquivo', `${(n / 1024).toFixed(0)}
 
 // 4. Painel (servidor.mjs) ---------------------------------------------------------------------------------------------------
 titulo('4. Painel: servidor e página');
-const web = ler('painel/web/app.js'), html = ler('painel/web/index.html'), css = ler('painel/web/app.css');
+const web = ler('painel/web/app.js'), html = ler('painel/web/avancado.html'), css = ler('painel/web/app.css');
 R.web = {appJs: web.length, appJsGzip: gzipSync(web).length, css: css.length, cssGzip: gzipSync(css).length, html: html.length};
 linha('app.js', `${(web.length / 1024).toFixed(0)} KB`, `gzip ${(R.web.appJsGzip / 1024).toFixed(0)} KB`);
 linha('app.css', `${(css.length / 1024).toFixed(0)} KB`, `gzip ${(R.web.cssGzip / 1024).toFixed(0)} KB`);

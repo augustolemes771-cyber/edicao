@@ -124,10 +124,12 @@ textarea{resize:vertical}
 .acoes-topo{display:flex;gap:6px;flex:none}
 
 /* ---------- Layout ---------- */
-#app{height:calc(100vh - var(--topo));display:grid;grid-template-columns:320px minmax(0,1fr) 340px;grid-template-rows:minmax(0,1fr) var(--alt-linha,clamp(200px,32vh,300px));grid-template-areas:'bib centro lado' 'linha linha linha'}
+#app{height:calc(100vh - var(--topo));display:grid;grid-template-columns:320px minmax(0,1fr);grid-template-rows:minmax(0,1fr) var(--alt-linha,clamp(200px,32vh,300px));grid-template-areas:'bib centro' 'linha linha'}
 .coluna{min-height:0;display:flex;flex-direction:column}
 #bib{grid-area:bib;border-right:1px solid var(--linha);background:var(--bg-2)}
 #lado{grid-area:lado;border-left:1px solid var(--linha);background:var(--bg-2)}
+/* Coluna da direita (Detalhes, Exportar, Passos, Estilo) fora da tela: o código dela segue no DOM, escondido, para não quebrar o resto. */
+#lado,#navCel [data-ver=lado]{display:none!important}
 #centro{grid-area:centro;background:var(--bg)}
 .coluna-topo{padding:var(--e-4) var(--e-4) var(--e-3);border-bottom:1px solid var(--linha)}
 .coluna-topo h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--mudo);margin-bottom:10px}
@@ -382,7 +384,7 @@ details[open]>summary .seta{transform:rotate(90deg)}
 	.campo-topo select{width:130px}.campo-topo.largo select{width:170px}
 }
 @media(max-width:1280px){
-	#app{grid-template-columns:270px minmax(0,1fr) 300px}
+	#app{grid-template-columns:270px minmax(0,1fr)}
 	.campo-topo select{width:120px}.campo-topo.largo select{width:150px}
 	#salvar span.rot,#studio span.rot{display:none}
 	.status .pilula span{display:none}
