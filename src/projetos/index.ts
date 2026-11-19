@@ -213,6 +213,8 @@ import {mc1711Ad03} from './mc-1711-ad03/edit';
 import {mc1811Ad01} from './mc-1811-ad01/edit';
 import {mc1811Ad02} from './mc-1811-ad02/edit';
 import {mc1811Ad03} from './mc-1811-ad03/edit';
+import {al1111Ad01} from './al-1111-ad01/edit';
+import {al1111Ad03} from './al-1111-ad03/edit';
 
 // Cada projeto novo entra aqui. O nome vira o id da composição no Studio e no render.
 export const projetos: Record<string, Edit> = {
@@ -430,4 +432,6 @@ export const projetos: Record<string, Edit> = {
 	'mc-1811-ad01': mc1811Ad01,
 	'mc-1811-ad02': mc1811Ad02,
 	'mc-1811-ad03': mc1811Ad03,
+	'al-1111-ad01': al1111Ad01,
+	'al-1111-ad03': al1111Ad03,
 };
