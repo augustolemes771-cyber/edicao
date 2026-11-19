@@ -193,6 +193,17 @@ import {metadados17111650} from './metadados-1711-1650/edit';
 import {metadados19111358} from './metadados-1911-1358/edit';
 import {metadados19111509} from './metadados-1911-1509/edit';
 import {edicaoSimples19111528} from './edicao-simples-1911-1528/edit';
+import {fe1611Ad01} from './fe-1611-ad01/edit';
+import {fe1611Ad02} from './fe-1611-ad02/edit';
+import {fe1611Ad03} from './fe-1611-ad03/edit';
+import {fe1611Ad04} from './fe-1611-ad04/edit';
+import {lo19111} from './lo-1911-1/edit';
+import {lo19113} from './lo-1911-3/edit';
+import {lo1911Rec} from './lo-1911-rec/edit';
+import {lo20113} from './lo-2011-3/edit';
+import {lo20114} from './lo-2011-4/edit';
+import {lo20115} from './lo-2011-5/edit';
+import {lo20116} from './lo-2011-6/edit';
 
 // Cada projeto novo entra aqui. O nome vira o id da composição no Studio e no render.
 export const projetos: Record<string, Edit> = {
@@ -390,4 +401,15 @@ export const projetos: Record<string, Edit> = {
 	'metadados-1911-1358': metadados19111358,
 	'metadados-1911-1509': metadados19111509,
 	'edicao-simples-1911-1528': edicaoSimples19111528,
+	'fe-1611-ad01': fe1611Ad01,
+	'fe-1611-ad02': fe1611Ad02,
+	'fe-1611-ad03': fe1611Ad03,
+	'fe-1611-ad04': fe1611Ad04,
+	'lo-1911-1': lo19111,
+	'lo-1911-3': lo19113,
+	'lo-1911-rec': lo1911Rec,
+	'lo-2011-3': lo20113,
+	'lo-2011-4': lo20114,
+	'lo-2011-5': lo20115,
+	'lo-2011-6': lo20116,
 };
