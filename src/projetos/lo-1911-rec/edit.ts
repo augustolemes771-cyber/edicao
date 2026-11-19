@@ -3,7 +3,7 @@ import transcricao from './transcricao.json';
 
 export const lo1911Rec: Edit = {
 	pasta: 'projetos/lo-1911-rec',
-	video: 'bruto.mov',
+	video: 'video.mp4',
 	formato: 'vertical',
 	verificarCurva: false,
 	regraCamera: false,

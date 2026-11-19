@@ -204,6 +204,15 @@ import {lo20113} from './lo-2011-3/edit';
 import {lo20114} from './lo-2011-4/edit';
 import {lo20115} from './lo-2011-5/edit';
 import {lo20116} from './lo-2011-6/edit';
+import {mc1911Ad01} from './mc-1911-ad01/edit';
+import {mc1911Ad02} from './mc-1911-ad02/edit';
+import {mc1911Ad03} from './mc-1911-ad03/edit';
+import {mc1711Ad01} from './mc-1711-ad01/edit';
+import {mc1711Ad02} from './mc-1711-ad02/edit';
+import {mc1711Ad03} from './mc-1711-ad03/edit';
+import {mc1811Ad01} from './mc-1811-ad01/edit';
+import {mc1811Ad02} from './mc-1811-ad02/edit';
+import {mc1811Ad03} from './mc-1811-ad03/edit';
 
 // Cada projeto novo entra aqui. O nome vira o id da composição no Studio e no render.
 export const projetos: Record<string, Edit> = {
@@ -412,4 +421,13 @@ export const projetos: Record<string, Edit> = {
 	'lo-2011-4': lo20114,
 	'lo-2011-5': lo20115,
 	'lo-2011-6': lo20116,
+	'mc-1911-ad01': mc1911Ad01,
+	'mc-1911-ad02': mc1911Ad02,
+	'mc-1911-ad03': mc1911Ad03,
+	'mc-1711-ad01': mc1711Ad01,
+	'mc-1711-ad02': mc1711Ad02,
+	'mc-1711-ad03': mc1711Ad03,
+	'mc-1811-ad01': mc1811Ad01,
+	'mc-1811-ad02': mc1811Ad02,
+	'mc-1811-ad03': mc1811Ad03,
 };

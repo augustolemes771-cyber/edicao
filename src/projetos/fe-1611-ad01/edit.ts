@@ -3,7 +3,7 @@ import transcricao from './transcricao.json';
 
 export const fe1611Ad01: Edit = {
 	pasta: 'projetos/fe-1611-ad01',
-	video: 'bruto.mov',
+	video: 'video.mp4',
 	formato: 'vertical',
 	verificarCurva: false,
 	regraCamera: false,
