@@ -1,0 +1,29 @@
+{
+ "_roteiro": "Lorena - roteiros: 19.11 1 = AD 01 - Melatonina Neo Química; 1 regravação cortada (o REC_ da pasta é cópia idêntica deste arquivo)",
+ "split": [],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 35.01,
+   "ate": 39.38,
+   "img": ".painel/mcf/ref/melatonina.webp",
+   "modo": "topo"
+  },
+  {
+   "de": 91.23,
+   "ate": 108.54,
+   "img": ".painel/mcf/ref/melatonina.webp",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "semRegravacao": true,
+ "cortar": [
+  [
+   58.19,
+   61.13
+  ]
+ ]
+}

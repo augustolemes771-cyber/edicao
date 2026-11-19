@@ -1,0 +1,34 @@
+{
+ "_roteiro": "Maria Clara - Roteiros: 17/11 AD 02 - Fit Hair; criadora recortada no canto na frente do vídeo de fundo ssstik 1794837485678 de \"Porque muita mulher\" (roda até acabar, música por baixo)",
+ "split": [],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 28.25,
+   "ate": 38.08,
+   "img": ".painel/mcf/ref/fit-hair.jpg",
+   "modo": "topo"
+  },
+  {
+   "de": 84.73,
+   "ate": 96.98,
+   "img": ".painel/mcf/ref/fit-hair.jpg",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "semRegravacao": true,
+ "fundo": [
+  {
+   "de": 6.41,
+   "ate": 27.54,
+   "video": ".painel/lote1711/ref/fundo-fithair-1794837485678.mp4",
+   "inicio": 0,
+   "dur": 29.18,
+   "audio": "mistura",
+   "volume": 0.3
+  }
+ ]
+}

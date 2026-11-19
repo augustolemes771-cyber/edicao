@@ -1,0 +1,33 @@
+{
+ "_roteiro": "Lorena - roteiros: 20.11 6 = AD 06 - Mounjarin Psyllium; abertura regravada e \"E olha só\" repetido cortados",
+ "split": [],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 54.33,
+   "ate": 63.54,
+   "img": ".painel/mcf/ref/mounjarin-psyllium.webp",
+   "modo": "topo"
+  },
+  {
+   "de": 111.42,
+   "ate": 123.4,
+   "img": ".painel/mcf/ref/mounjarin-psyllium.webp",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "semRegravacao": true,
+ "cortar": [
+  [
+   0,
+   10.85
+  ],
+  [
+   86.71,
+   87.61
+  ]
+ ]
+}
