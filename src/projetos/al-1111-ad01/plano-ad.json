@@ -1,0 +1,45 @@
+{
+ "_roteiro": "Aline - Roteiro: AD 01 - Tetra Magnésio Quantum 11/11; 5 regravações cortadas (fica a última tomada)",
+ "split": [],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 65.93,
+   "ate": 74.16,
+   "img": ".painel/mcf/ref/tetramagnesio-quantum.webp",
+   "modo": "topo"
+  },
+  {
+   "de": 127.17,
+   "ate": 151.2,
+   "img": ".painel/mcf/ref/tetramagnesio-quantum.webp",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "semRegravacao": true,
+ "cortar": [
+  [
+   12.07,
+   14.6
+  ],
+  [
+   26.95,
+   29.92
+  ],
+  [
+   44.91,
+   46.85
+  ],
+  [
+   48.61,
+   62.0
+  ],
+  [
+   106.31,
+   112.2
+  ]
+ ]
+}
