@@ -192,6 +192,7 @@ import {metadados17111648} from './metadados-1711-1648/edit';
 import {metadados17111650} from './metadados-1711-1650/edit';
 import {metadados19111358} from './metadados-1911-1358/edit';
 import {metadados19111509} from './metadados-1911-1509/edit';
+import {edicaoSimples19111528} from './edicao-simples-1911-1528/edit';
 
 // Cada projeto novo entra aqui. O nome vira o id da composição no Studio e no render.
 export const projetos: Record<string, Edit> = {
@@ -388,4 +389,5 @@ export const projetos: Record<string, Edit> = {
 	'metadados-1711-1650': metadados17111650,
 	'metadados-1911-1358': metadados19111358,
 	'metadados-1911-1509': metadados19111509,
+	'edicao-simples-1911-1528': edicaoSimples19111528,
 };
