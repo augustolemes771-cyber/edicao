@@ -34,22 +34,63 @@ for w in W:
 W = P
 dur = float(subprocess.run(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', fonte], capture_output=True, text=True).stdout)
 
-# Regravação: a mesma sequência de 5 palavras volta logo adiante -> fica só a última tomada.
-N = 9
+# Regravação (CORREÇÃO DO USUÁRIO 20/11: "a pessoa erra a frase e fala de novo e você não tira a parte que ela errou"):
+# 1) tomada repetida: 3 palavras voltam até 45 palavras / 30 s adiante -> sai do INÍCIO DA FRASE da tomada errada até o início
+#    da frase do recomeço (fica a última tomada; o corte cai sempre entre frases);
+# 2) começo falso: frase de até 6 palavras que termina em "..." ou pausa > 0,6 s e o recomeço repete a 1ª (e a 2ª) palavra
+#    ("Senão vai ficar... Senão vai funcionar", "Esse... Esse eu tomo").
+# Com a copy no plano ("_copy", entrada/<lote>/copia.py): repetição que a copy também tem (anáfora) não sai, e o corte não
+# pode tirar mais de 3 trincas da copy que não voltem a ser faladas (proteção contra 3 palavras repetidas por acaso).
+# "semRegravacao": desliga.
 k = [norm(w['t']) for w in W]
+copy = [norm(x) for x in re.split(r'\s+', plano.get('_copy', '')) if norm(x)]
+TRI_COPY = {tuple(copy[x:x + 3]) for x in range(len(copy) - 2)}
+def conta(seq, lst): return sum(lst[i:i + len(seq)] == seq for i in range(len(lst) - len(seq) + 1))
+def fecha(n):  # a palavra n fecha uma frase (pontuação, reticências ou pausa depois dela)
+    return bool(re.search(r'[.?!…]$', W[n]['t'])) or (n + 1 < len(W) and W[n + 1]['a'] - W[n]['b'] > 0.6)
+inicio = [n == 0 or fecha(n - 1) for n in range(len(W))]
+def frase_de(n, minimo):
+    while n > minimo and not inicio[n]: n -= 1
+    return n
+def cobre(fora):
+    ks = [k[x] for x in range(len(W)) if x not in fora]
+    return {tuple(ks[x:x + 3]) for x in range(len(ks) - 2)} & TRI_COPY
 apagar = set()
-i = 0
-# "semRegravacao": a copy repete frases de propósito (anáfora: "quando essa região aqui perde colágeno..."), não é regravação.
-while i < len(W) - N and not plano.get('semRegravacao'):
-    alvo = k[i:i + N]
-    achou = None
-    for j in range(i + 3, min(len(W) - N, i + 30)):
-        if k[j:j + N] == alvo:
-            achou = j
-    if achou:
-        apagar.update(range(i, achou)); i = achou
-    else:
-        i += 1
+regravacoes = []
+def ok_copia(ii, jj, j, seq):
+    if not copy: return True
+    n_fala = sum(k[x:x + len(seq)] == seq for x in range(ii, j + 1) if x not in apagar)
+    if conta(seq, copy) >= n_fala: return False
+    return len(cobre(apagar) - cobre(apagar | set(range(ii, jj)))) <= 3
+i = 0; piso = 0
+while i < len(W) - 3 and not plano.get('semRegravacao'):
+    alvo = k[i:i + 3]; feito = False
+    cand = [j for j in range(i + 2, min(len(W) - 2, i + 45)) if k[j:j + 3] == alvo and W[j]['a'] - W[i]['a'] < 30]
+    for j in reversed(cand):
+        ii, jj = frase_de(i, piso), frase_de(j, i + 1)
+        if not copy and k[i:i + 4] != k[j:j + 4]: continue  # sem copy, exige 4 palavras iguais
+        if ok_copia(ii, jj, j, alvo):
+            apagar.update(range(ii, jj)); regravacoes.append((ii, jj)); i = piso = jj; feito = True; break
+    if not feito: i += 1
+# começos falsos, olhando só o que ficou
+if not plano.get('semRegravacao'):
+    R = [n for n in range(len(W)) if n not in apagar]
+    p = 0
+    while p < len(R) - 1:
+        feito = False
+        if inicio[R[p]]:
+            for q in range(p + 1, min(len(R), p + 7)):
+                ult = R[q - 1]
+                quebra = bool(re.search(r'(\.\.\.|…|-)$', W[ult]['t'])) or W[R[q]]['a'] - W[ult]['b'] > 0.6
+                m = min(2, q - p)
+                if quebra and [k[x] for x in R[p:p + m]] == [k[x] for x in R[q:q + m]]:
+                    fora = set(R[p:q])
+                    if not copy or len(cobre(apagar) - cobre(apagar | fora)) <= 1:
+                        apagar |= fora; regravacoes.append((R[p], R[q])); p = q; feito = True
+                    break
+        if not feito: p += 1
+for ii, jj in sorted(regravacoes):
+    print(f"  regravação {W[ii]['a']:6.2f}-{W[jj]['a']:6.2f}: {' '.join(W[x]['t'] for x in range(ii, jj) )[:170]}")
 # "cortar" no plano: trechos do bruto que saem inteiros (notas faladas, bastidor: "grava aí").
 for a_, b_ in plano.get('cortar', []):
     apagar.update(n for n, w in enumerate(W) if a_ <= (w['a'] + w['b']) / 2 <= b_)
@@ -63,7 +104,10 @@ fica = [n for n in range(len(W)) if n not in apagar]
 seg = []
 for k, n in enumerate(fica):
     w = W[n]
-    a, b = max(0, w['a'] - 0.06), min(dur, w['b'] + 0.10)
+    # emenda de regravação/corte: 0,15 s depois da última palavra (o Whisper marca o fim cedo), sem entrar na palavra seguinte
+    a = max(0, w['a'] - 0.06, W[n - 1]['b'] + 0.02 if n else 0)
+    b = min(dur, w['b'] + 0.15, W[n + 1]['a'] - 0.02 if n + 1 < len(W) else dur)
+    b = max(b, min(dur, w['b'] + 0.05))
     if seg and fica[k - 1] == n - 1:
         seg[-1][1] = max(seg[-1][1], b)
     else:
@@ -81,7 +125,10 @@ def editado(t):
 sd = subprocess.run(['ffmpeg', '-hide_banner', '-nostats', '-vn', '-i', fonte, '-af', 'silencedetect=noise=-34dB:d=0.3', '-f', 'null', '-'], capture_output=True, text=True).stderr
 ini = [float(x) for x in re.findall(r'silence_start: ([\d.]+)', sd)]
 fim = [float(x) for x in re.findall(r'silence_end: ([\d.]+)', sd)]
-sil = [(a + 0.08, b - 0.08) for a, b in zip(ini, fim) if b - a > 0.3]
+# CORREÇÃO DO USUÁRIO (20/11): "está cortando o final de algumas palavras": o fim da palavra cai devagar abaixo do limiar,
+# então a folga DEPOIS da fala passou de 0,07-0,08 para 0,14 s; antes da palavra seguinte continua 0,07 s.
+FOLGA_FIM, FOLGA_INI = 0.14, 0.07
+sil = [(a + FOLGA_FIM, b - FOLGA_INI) for a, b in zip(ini, fim) if b - a > 0.3]
 # Áudio com ruído de fundo: as pausas por energia (scripts/pausas-energia.mjs) valem mais.
 sp = f'src/projetos/{proj}/silencios.json'
 # Respiração (pedido do usuário, 16/11): o silencedetect a -34 dB não pega a puxada de ar; sem silencios.json, gera pelo
@@ -91,13 +138,14 @@ if not os.path.exists(sp):
 if os.path.exists(sp):
     # Folga de 0,07 s de cada lado: sem ela o corte encostava na palavra e comia o começo/fim dela ("estressada").
     # Pausas de scripts/pausas-fala.py (faixa larga, inclui o "s") ou pausas-energia.mjs.
-    sil += [(a + 0.07, b - 0.07) for a, b in json.load(open(sp)) if b - a >= 0.25]
+    sil += [(a + FOLGA_FIM, b - FOLGA_INI) for a, b in json.load(open(sp)) if b - a >= 0.25]
     sil.sort()
 novo = []
 for a, b in seg:
     cur = a
     for sa, sb in sil:
         if sb <= cur or sa >= b: continue
+        if sb - sa < 0.06: continue  # pausa curta demais depois das folgas: fica
         if sa > cur + 0.05: novo.append([cur, sa])
         cur = max(cur, sb)
     if b - cur > 0.05: novo.append([cur, b])
@@ -113,6 +161,8 @@ if plano.get('manter'):
 total = sum(b - a for a, b in seg)
 os.makedirs('out/ass', exist_ok=True)
 json.dump(seg, open(f'out/ass/{proj}-trechos.json', 'w'))  # trechos mantidos (para conferir os cortes)
+if '--so-cortes' in args:
+    print(f'{proj}: {total:.1f}s de {dur:.1f}s, {len(seg)} trechos, {len(apagar)} palavras cortadas (só cortes, sem montar)'); sys.exit(0)
 
 # Legenda: 3 palavras por tela, quebra em pontuação; a palavra falada fica amarela.
 def ts(x):
@@ -347,7 +397,11 @@ if topo:
     en = '+'.join(f'between(t,{a:.3f},{b:.3f})' for a, b in topo)
     # Criadora na metade de baixo: recorte 1080x960 centrado no rosto (terço de cima do quadro).
     # Recorte da metade de baixo centralizado no rosto (rostoY do plano, medido por scripts/rosto-topo.py); sem ele, 260.
-    cy = min(960, max(0, int(plano['rostoY']) - 480)) if plano.get('rostoY') else 260
+    # CORREÇÃO DO USUÁRIO (20/11): com o rosto no meio da metade de baixo ficava "muito pra baixo" e cortava o queixo.
+    # Olhos (olhosY) a 300 px da emenda (~1/3 da metade de baixo); sem olhosY, rostoY a 380 px da emenda.
+    if plano.get('olhosY'): cy = min(960, max(0, int(plano['olhosY']) - 300))
+    elif plano.get('rostoY'): cy = min(960, max(0, int(plano['rostoY']) - 380))
+    else: cy = 200
     graf.append(f"[{ult}]split[bA][bB];[bB]crop=1080:960:0:{cy}[bC];[bA][bC]overlay=0:960:enable='{en}'[base1]")  # (depois do fundo)
     ult = 'base1'
 for k, (n, a, b, W_, H_, cr, (x, y)) in enumerate(camadas):

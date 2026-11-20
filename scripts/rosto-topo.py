@@ -29,7 +29,7 @@ for proj in sys.argv[1:]:
               if k == 'split' or it.get('modo', 'topo') == 'topo']
     if not faixas:
         print(f'{proj}: sem tela dividida'); continue
-    ys = []
+    ys, olhos = [], []
     for a, b in faixas:
         n = max(2, int((b - a) / 0.7))
         for i in range(n):
@@ -37,10 +37,13 @@ for proj in sys.argv[1:]:
             if g is None: continue
             _, f = det.detect(g)
             if f is not None and len(f):
-                x, y, w, h = max(f, key=lambda r: r[2] * r[3])[:4]
+                r = max(f, key=lambda r: r[2] * r[3])
+                x, y, w, h = r[:4]
                 ys.append((y + h / 2) * 2)  # 960 -> 1920
+                olhos.append((r[5] + r[7]) / 2 * 2)  # altura dos olhos (marcos 2 e 3 do YuNet)
     if not ys:
         print(f'{proj}: nenhum rosto achado, mantém o recorte padrão'); continue
     plano['rostoY'] = round(statistics.median(ys))
+    plano['olhosY'] = round(statistics.median(olhos))
     json.dump(plano, open(arq, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
-    print(f'{proj}: rostoY {plano["rostoY"]} ({len(ys)} quadros com rosto)')
+    print(f'{proj}: rostoY {plano["rostoY"]}, olhosY {plano["olhosY"]} ({len(ys)} quadros com rosto)')
