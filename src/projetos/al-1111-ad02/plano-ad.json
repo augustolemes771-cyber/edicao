@@ -1,0 +1,27 @@
+{
+ "_roteiro": "Aline - Roteiro: AD 02 - NAC Nação Verde 11/11; retenção e pochete mudas",
+ "split": [],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 68.39,
+   "ate": 73.83,
+   "img": ".painel/mcf/ref/nac-nacaoverde.png",
+   "modo": "topo"
+  },
+  {
+   "de": 152.07,
+   "ate": 178.6,
+   "img": ".painel/mcf/ref/nac-nacaoverde.png",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "mutar": [
+  "retencao",
+  "redencao",
+  "pochete"
+ ]
+}
