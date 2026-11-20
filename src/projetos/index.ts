@@ -216,6 +216,31 @@ import {mc1811Ad03} from './mc-1811-ad03/edit';
 import {al1111Ad01} from './al-1111-ad01/edit';
 import {al1111Ad03} from './al-1111-ad03/edit';
 import {edicaoSimples20111544} from './edicao-simples-2011-1544/edit';
+import {al1111Ad02} from './al-1111-ad02/edit';
+import {fe1711Ad01} from './fe-1711-ad01/edit';
+import {fe1711Ad02} from './fe-1711-ad02/edit';
+import {fe1711Ad03} from './fe-1711-ad03/edit';
+import {fe1811Ad01} from './fe-1811-ad01/edit';
+import {fe1811Ad02} from './fe-1811-ad02/edit';
+import {fe1811Ad03} from './fe-1811-ad03/edit';
+import {ka1611Ad01} from './ka-1611-ad01/edit';
+import {ka1611Ad02} from './ka-1611-ad02/edit';
+import {ka1611Ad03} from './ka-1611-ad03/edit';
+import {ka1611Ad04} from './ka-1611-ad04/edit';
+import {ka1711Ad01} from './ka-1711-ad01/edit';
+import {ka1711Ad02} from './ka-1711-ad02/edit';
+import {ka1711Ad03} from './ka-1711-ad03/edit';
+import {ka1811Ad01} from './ka-1811-ad01/edit';
+import {ka1811Ad02} from './ka-1811-ad02/edit';
+import {ka1811Ad03} from './ka-1811-ad03/edit';
+import {ka1911Ad01} from './ka-1911-ad01/edit';
+import {ka1911Ad02} from './ka-1911-ad02/edit';
+import {ka1911Ad03} from './ka-1911-ad03/edit';
+import {lo20111} from './lo-2011-1/edit';
+import {lo20112} from './lo-2011-2/edit';
+import {lo20117} from './lo-2011-7/edit';
+import {lo21111} from './lo-2111-1/edit';
+import {lo21112} from './lo-2111-2/edit';
 
 // Cada projeto novo entra aqui. O nome vira o id da composição no Studio e no render.
 export const projetos: Record<string, Edit> = {
@@ -436,4 +461,29 @@ export const projetos: Record<string, Edit> = {
 	'al-1111-ad01': al1111Ad01,
 	'al-1111-ad03': al1111Ad03,
 	'edicao-simples-2011-1544': edicaoSimples20111544,
+	'al-1111-ad02': al1111Ad02,
+	'fe-1711-ad01': fe1711Ad01,
+	'fe-1711-ad02': fe1711Ad02,
+	'fe-1711-ad03': fe1711Ad03,
+	'fe-1811-ad01': fe1811Ad01,
+	'fe-1811-ad02': fe1811Ad02,
+	'fe-1811-ad03': fe1811Ad03,
+	'ka-1611-ad01': ka1611Ad01,
+	'ka-1611-ad02': ka1611Ad02,
+	'ka-1611-ad03': ka1611Ad03,
+	'ka-1611-ad04': ka1611Ad04,
+	'ka-1711-ad01': ka1711Ad01,
+	'ka-1711-ad02': ka1711Ad02,
+	'ka-1711-ad03': ka1711Ad03,
+	'ka-1811-ad01': ka1811Ad01,
+	'ka-1811-ad02': ka1811Ad02,
+	'ka-1811-ad03': ka1811Ad03,
+	'ka-1911-ad01': ka1911Ad01,
+	'ka-1911-ad02': ka1911Ad02,
+	'ka-1911-ad03': ka1911Ad03,
+	'lo-2011-1': lo20111,
+	'lo-2011-2': lo20112,
+	'lo-2011-7': lo20117,
+	'lo-2111-1': lo21111,
+	'lo-2111-2': lo21112,
 };
