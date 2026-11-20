@@ -2,7 +2,7 @@
 import json, re, sys, os, difflib, unicodedata
 sys.path.insert(0, '.')
 from secoes import secoes
-ROT = {'al': 'aline', 'la': 'lari', 'le': 'leticia', 'li': 'livia', 'lo': 'lorena', 'ma': 'mariana', 'mc': 'mariaclara', 'fe': 'fernanda', 'al': 'aline', 'v': 'vanessa'}
+ROT = {'al': 'aline', 'la': 'lari', 'le': 'leticia', 'li': 'livia', 'lo': 'lorena', 'ma': 'mariana', 'mc': 'mariaclara', 'fe': 'fernanda', 'ka': 'karol', 'v': 'vanessa'}
 def norm(s):
     s = unicodedata.normalize('NFD', s.lower()); s = ''.join(c for c in s if unicodedata.category(c) != 'Mn')
     return re.sub(r'[^a-z0-9]', '', s)

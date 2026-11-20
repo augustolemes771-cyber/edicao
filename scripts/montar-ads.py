@@ -57,6 +57,8 @@ def cobre(fora):
     return {tuple(ks[x:x + 3]) for x in range(len(ks) - 2)} & TRI_COPY
 apagar = set()
 regravacoes = []
+# Trechos do "cortar" manual: a detecção não corta por cima deles (senão tirava também a tomada boa, lo-2011-2, 20/11).
+MANUAL = {x for x, w in enumerate(W) if any(a_ <= (w['a'] + w['b']) / 2 <= b_ for a_, b_ in plano.get('cortar', []))}
 def ok_copia(ii, jj, j, seq):
     if not copy: return True
     n_fala = sum(k[x:x + len(seq)] == seq for x in range(ii, j + 1) if x not in apagar)
@@ -68,6 +70,14 @@ while i < len(W) - 3 and not plano.get('semRegravacao'):
     cand = [j for j in range(i + 2, min(len(W) - 2, i + 45)) if k[j:j + 3] == alvo and W[j]['a'] - W[i]['a'] < 30]
     for j in reversed(cand):
         ii, jj = frase_de(i, piso), frase_de(j, i + 1)
+        # Recomeço sem pausa/pontuação antes dele: alinha pela tomada errada (mesma distância do início da frase). Sem isso o
+        # corte tirava uma palavra por vez e deixava sobra ("Aproveita pra pegar | o seu, aproveita pra pegar o seu", 20/11).
+        if not inicio[jj]: jj = j - (i - ii)
+        if jj <= i: continue
+        # A tomada errada e o recomeço começam com a mesma palavra. 3 palavras repetidas por acaso no meio de frases diferentes
+        # não são regravação (20/11: "com a aparência" em "E o meu cabelo tá com a aparência..." x "Então, se você quer...").
+        if k[ii] != k[jj]: continue
+        if MANUAL & set(range(ii, j + 1)): continue
         if not copy and k[i:i + 4] != k[j:j + 4]: continue  # sem copy, exige 4 palavras iguais
         if ok_copia(ii, jj, j, alvo):
             apagar.update(range(ii, jj)); regravacoes.append((ii, jj)); i = piso = jj; feito = True; break
@@ -82,7 +92,8 @@ if not plano.get('semRegravacao'):
             for q in range(p + 1, min(len(R), p + 7)):
                 ult = R[q - 1]
                 quebra = bool(re.search(r'(\.\.\.|…|-)$', W[ult]['t'])) or W[R[q]]['a'] - W[ult]['b'] > 0.6
-                m = min(2, q - p)
+                # Com reticências basta a 1ª palavra ("E fabricar... É fabricado no Brasil", 20/11).
+                m = 1 if re.search(r'(\.\.\.|…)$', W[ult]['t']) else min(2, q - p)
                 if quebra and [k[x] for x in R[p:p + m]] == [k[x] for x in R[q:q + m]]:
                     fora = set(R[p:q])
                     if not copy or len(cobre(apagar) - cobre(apagar | fora)) <= 1:

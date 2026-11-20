@@ -2,7 +2,7 @@
 # Uso: python entrada/lote2011/corrigir-nomes.py <projeto> ...
 import json, re, sys, os
 os.chdir(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-TROCA = [(r'\bAOSFIT\b', 'Always Fit'), (r'\b[ÓO]lis ?[Ff]it\b', 'Always Fit'), (r'\b[Mm]onjar[ií][mn]\b', 'Mounjarin'), (r'\bMounjarim\b', 'Mounjarin'), (r'\b[Mm]onjar\b', 'Mounjar'), (r'\b[Pp]isc[ií]li(o|on|um)\b', 'psyllium'), (r'\bNeoqu[ií]mica', 'Neo Química'), (r'\bE-tron\b', 'Etron'), (r'\bSolfit\b', 'Soufit'), (r'\bSoulfit\b', 'Soufit'), (r'\bCovita\b', 'Covitta'), (r'\bCoviita\b', 'Covitta'),
+TROCA = [(r'\bAOSFIT\b', 'Always Fit'), (r'\b[ÓO]lis ?[Ff]it\b', 'Always Fit'), (r'\b[Mm]onjar[ií][mn]\b', 'Mounjarin'), (r'\bMounjarim\b', 'Mounjarin'), (r'\b[Mm]onjar\b', 'Mounjar'), (r'\b[Pp]isc[ií]li(o|on|um)\b', 'psyllium'), (r'\bNeoqu[ií]mica', 'Neo Química'), (r'\bE-tron\b', 'Etron'), (r'\bSolfit\b', 'Soufit'), (r'\bSoulfit\b', 'Soufit'), (r'\bSofit\b', 'Soufit'), (r'\bCovita\b', 'Covitta'), (r'\bCoviita\b', 'Covitta'),
          (r'\bQuanto\b(?= Nutrition)', 'Quantum'), (r'\bal[uú]r[oô]nico', 'hialurônico'), (r'\bflancidez', 'flacidez'),
          (r'\bmonoidratada', 'monohidratada'), (r'\bprímola', 'prímula')]
 for p in sys.argv[1:]:

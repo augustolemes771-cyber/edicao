@@ -1,6 +1,6 @@
-# Planos (src/projetos/<p>/plano-ad.json) do lote de 19/11 (pasta CONTAS(FELIPE EDITAR)): Fernanda 16/11, Lorena 19.11/20.11 e
-# Maria Clara 17/11, 18/11 e 19/11. Mesmo padrão aprovado dos lotes 12-17/11 (legenda "vermelho", B-roll do produto em tela dividida
-# quando a criadora não mostra o produto, seta automática, sem headline, regravações cortadas à mão, 1,1x no montar-ads).
+# Planos (src/projetos/<p>/plano-ad.json) do lote de 20/11 (pasta CONTAS(FELIPE EDITAR)): Aline 11/11, Fernanda 17-18/11,
+# Karol 16-19/11 e Lorena 20.11/21.11. Mesmo padrão aprovado dos lotes 12-17/11 (legenda "vermelho", B-roll do produto em tela dividida
+# quando a criadora não mostra o produto, seta automática, sem headline, regravações cortadas pelo montar-ads (com a copy do plano), 1,1x no montar-ads).
 # Uso: python entrada/lote2011/gerar-planos.py [projeto ...]
 import json, re, unicodedata, os, sys
 os.chdir(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -60,47 +60,52 @@ KW = {REJ: 'rejuvex', ALW: 'always', SOU: 'soufit', MENO: '^meno$', REV: 'revita
 REF = '.painel/lote1711/ref/'
 FH = REF + 'fundo-fithair-1794837485678.mp4'
 P = {}
-def ad(p, rot, img, cortar=(), estilo='vermelho', **extra):
+def ad(p, rot, img, cortar=(), estilo='vermelho', kw=None, **extra):
     cortar = [list(c) for c in cortar]
-    prod = [{'de': a, 'ate': b, 'img': img, 'modo': 'topo'} for a, b in auto(p, KW[img], cortar)] if img else []
+    prod = [{'de': a, 'ate': b, 'img': img, 'modo': 'topo'} for a, b in auto(p, kw or KW[img], cortar)] if img else []
     P[p] = {'_roteiro': rot, 'split': extra.pop('split', []), 'fotos': extra.pop('fotos', []), 'produto': prod, 'headline': None,
             'legenda': 'meio', 'estiloLegenda': estilo, **({'cortar': cortar} if cortar else {}), **extra}
 MOSTRA = ' (ela mostra o produto: sem B-roll)'
 fimde = lambda p, frase: [round(ini(p, frase, qual=-1) - 0.05, 2), 9999]
-# ---------------- Fernanda ("Fernanda - Roteiros", 16/11)
-F = 'Fernanda - Roteiros: '
-ad('fe-1611-ad01', F + '16/11 AD 01 - Mounjar Natural', MJN)
-ad('fe-1611-ad02', F + '16/11 AD 02 - Mounjarin Psyllium', MNJ)
-ad('fe-1611-ad03', F + '16/11 AD 03 - Magnésio 3 em 1 Covitta; headline não aplicada (padrão aprovado)', COV)
-ad('fe-1611-ad04', F + '16/11 AD 04 - Creatina (título do roteiro diz Soldiers; a fala diz Soufit: foto da Soufit)', SOU)
-# ---------------- Lorena ("Lorena - roteiros")
-O = 'Lorena - roteiros: '
-ad('lo-1911-1', O + '19.11 1 = AD 01 - Melatonina Neo Química; 1 regravação cortada (o REC_ da pasta é cópia idêntica deste arquivo)', MEL, [(58.19, 61.13)])
-ad('lo-1911-3', O + '19.11 3 = AD 03 - Melatonina Neo Química', MEL)
-ad('lo-2011-3', O + '20.11 3 = AD 03 - Composto Meno; 1 regravação cortada', MENO, [(135.73, 142.89)])
-ad('lo-2011-4', O + '20.11 4 = AD 04 - Fit Hair' + MOSTRA, None)
-ad('lo-2011-5', O + '20.11 5 = AD 05 - NAC Always Fit' + MOSTRA, None)
-ad('lo-2011-6', O + '20.11 6 = AD 06 - Mounjarin Psyllium; abertura regravada e "E olha só" repetido cortados', MNJ, [(0, 10.85), (86.71, 87.61)])
-# ---------------- Maria Clara ("Maria Clara - Roteiros")
-M = 'Maria Clara - Roteiros: '
-ad('mc-1711-ad01', M + '17/11 AD 01 - Fit Hair; headline não aplicada (padrão aprovado)', FIT)
-ad('mc-1711-ad02', M + '17/11 AD 02 - Fit Hair; criadora recortada no canto na frente do vídeo de fundo ssstik 1794837485678 de "Porque muita mulher" (roda até acabar, música por baixo)', FIT,
-   fundo=[{'de': round(ini('mc-1711-ad02', 'porque muita mulher') - 0.05, 2), 'ate': round(ini('mc-1711-ad02', 'depende exatamente do que falta') + 2.2, 2), 'video': FH, 'inicio': 0, 'dur': 29.18, 'audio': 'mistura', 'volume': 0.3}])
-ad('mc-1711-ad03', M + '17/11 AD 03 - Fit Hair', FIT)
-ad('mc-1811-ad01', M + '18/11 AD 01 - Melatonina Neo Química', MEL)
-ad('mc-1811-ad02', M + '18/11 AD 02 - Creatina Soufit (foto da loja oficial); ela não gravou a abertura apontando: 25,35 s com a imagem dela congelada no canto enquanto roda o vídeo de fundo ssstik 1794857012751 inteiro com o áudio dele (bruto-sem-abertura.mov guardado)', SOU,
-   manter=[[0.0, 25.4]], fundo=[{'de': 0.0, 'ate': 25.35, 'dur': 25.24, 'video': REF + 'fundo-creatina-1794857012751.mp4', 'inicio': 0, 'audio': 'troca'}])
-ad('mc-1811-ad03', M + '18/11 AD 03 - Creatina Soufit (foto da loja oficial)', SOU)
-ad('mc-1911-ad01', M + '19/11 AD 01 - Melatonina Neo Química', MEL)
-ad('mc-1911-ad02', M + '19/11 AD 02 - Melatonina Neo Química', MEL)
-ad('mc-1911-ad03', M + '19/11 AD 03 - Melatonina Neo Química', MEL)
-# ---------------- Aline ("Aline - Roteiro", 11/11; chegaram durante o lote de 19/11)
 TET = R + 'tetramagnesio-quantum.webp'; KW[TET] = 'tetramagnesio|quantum'
+MUDO_NAC = ['retencao', 'redencao', 'pochete']
+# ---------------- Aline ("Aline - Roteiro")
 A = 'Aline - Roteiro: '
-ad('al-1111-ad01', A + 'AD 01 - Tetra Magnésio Quantum 11/11; 5 regravações cortadas (fica a última tomada)', TET,
-   [(12.07, 14.6), (26.95, 29.92), (44.91, 46.85), (48.61, 62.0), (106.31, 112.2)])
-ad('al-1111-ad03', A + 'AD 03 - Rejuvex 11/11 ("sem headline e praticamente sem edição"); 6 regravações cortadas (fica a última tomada)', REJ,
-   [(6.65, 20.4), (38.05, 48.4), (71.19, 81.8), (100.41, 115.2), (136.09, 141.85), (147.95, 166.9)])
+ad('al-1111-ad02', A + 'AD 02 - NAC Nação Verde 11/11; retenção e pochete mudas', NAC, mutar=MUDO_NAC)
+# ---------------- Fernanda ("Fernanda - Roteiros", 17/11 e 18/11)
+F = 'Fernanda - Roteiros: '
+ad('fe-1711-ad01', F + '17/11 AD 01 - Fit Hair' + MOSTRA, None)
+ad('fe-1711-ad02', F + '17/11 AD 02 - Fit Hair; criadora recortada no canto na frente do vídeo de fundo ssstik 1794837485678 desde o começo (roda até acabar, música por baixo)', FIT,
+   fundo=[{'de': 0.0, 'ate': 29.2, 'video': FH, 'inicio': 0, 'dur': 29.18, 'audio': 'mistura', 'volume': 0.3}])
+ad('fe-1711-ad03', F + '17/11 AD 03 - Fit Hair' + MOSTRA, None)
+ad('fe-1811-ad01', F + '18/11 AD 01 - Melatonina Neo Química', MEL)
+ad('fe-1811-ad02', F + '18/11 AD 02 - Creatina Soufit (foto da loja oficial); abertura apontando/caras e bocas (13 s) enchida com trecho repetido dela até 25,35 s (bruto-sem-enchimento.mov guardado) enquanto roda o vídeo de fundo ssstik 1794857012751 inteiro com o áudio dele', SOU,
+   manter=[[0.0, 25.4]], fundo=[{'de': 0.0, 'ate': 25.35, 'dur': 25.24, 'video': REF + 'fundo-creatina-1794857012751.mp4', 'inicio': 0, 'audio': 'troca'}], kw='^mono')  # não fala "Soufit": B-roll em "Ela vem com creatina mono-hidratada"
+ad('fe-1811-ad03', F + '18/11 AD 03 - Creatina Soufit (foto da loja oficial)', SOU)
+# ---------------- Karol ("Karol - Roteiros", pastas "FEITO" também se editam)
+K = 'Karol - Roteiros: '
+ad('ka-1611-ad01', K + '16/11 AD 01 - Mounjar Natural', MJN)
+ad('ka-1611-ad02', K + '16/11 AD 02 - Mounjarin Psyllium', MNJ)
+ad('ka-1611-ad03', K + '16/11 AD 03 - Magnésio 3 em 1 Covitta; headline não aplicada (padrão aprovado)', COV)
+ad('ka-1611-ad04', K + '16/11 AD 04 - Creatina (título do roteiro diz Soldiers; a fala diz Sofit/Soufit: foto da Soufit)', SOU)
+ad('ka-1711-ad01', K + '17/11 AD 01 - Fit Hair' + MOSTRA, None)
+ad('ka-1711-ad02', K + '17/11 AD 02 - Fit Hair' + MOSTRA + '; criadora recortada no canto na frente do vídeo de fundo ssstik 1794837485678 desde o começo (roda até acabar, música por baixo)', None,
+   fundo=[{'de': 0.0, 'ate': 29.2, 'video': FH, 'inicio': 0, 'dur': 29.18, 'audio': 'mistura', 'volume': 0.3}])
+ad('ka-1711-ad03', K + '17/11 AD 03 - Fit Hair' + MOSTRA, None)
+ad('ka-1811-ad01', K + '18/11 AD 01 - Melatonina Neo Química', MEL)
+ad('ka-1811-ad02', K + '18/11 AD 02 - Creatina Soufit (foto da loja oficial); abertura apontando/caras e bocas de 34 s encurtada para 25,4 s (tirados os 8,55 s iniciais; bruto-original.mov guardado) enquanto roda o vídeo de fundo ssstik 1794857012751 inteiro com o áudio dele', SOU,
+   manter=[[0.0, 25.4]], fundo=[{'de': 0.0, 'ate': 25.35, 'dur': 25.24, 'video': REF + 'fundo-creatina-1794857012751.mp4', 'inicio': 0, 'audio': 'troca'}])
+ad('ka-1811-ad03', K + '18/11 AD 03 - Creatina Soufit (foto da loja oficial)', SOU)
+ad('ka-1911-ad01', K + '19/11 AD 01 - Melatonina Neo Química', MEL)
+ad('ka-1911-ad02', K + '19/11 AD 02 - Melatonina Neo Química', MEL)
+ad('ka-1911-ad03', K + '19/11 AD 03 - Melatonina Neo Química', MEL)
+# ---------------- Lorena ("Lorena - roteiros", 20.11 e 21.11)
+O = 'Lorena - roteiros: '
+ad('lo-2011-1', O + '20.11 1 = AD 01 - Mounjarin Psyllium' + MOSTRA, None)
+ad('lo-2011-2', O + '20.11 2 = AD 02 - Mounjar Natural' + MOSTRA + '; regravação com "Não, vou fazer de novo, pera aí" cortada', None, [(133.75, 143.08)])
+ad('lo-2011-7', O + '20.11 7 = AD 07 - Mounjar Natural', MJN)
+ad('lo-2111-1', O + '21.11 1 = AD 01 - Creatina Soldiers', SOLD)
+ad('lo-2111-2', O + '21.11 2 = AD 02 - Rejuvex', REJ)
 so = [a for a in sys.argv[1:] if not a.startswith('--')]
 for p, pl in P.items():
     if so and p not in so: continue
