@@ -53,3 +53,4 @@ Regras aprendidas nos vídeos deste tema. O Claude lê isto antes de editar e ac
 ") (senão o nome da pasta ganha um caractere invisível ).
 : ler com rstrip("
 ") (senão o nome da pasta ganha F00d).
+- 2026-11-21 (lote 21/11, entrada/lote2111: Letícia 17/11 ad 03 Melatonina e ad 04 Covitta): só 2 vídeos novos (conferido pela varredura pública E pela busca do conector por vídeos modificados desde 18/11). Para achar gaguejada/regravação que o Whisper "limpa", retranscrever literal com whisper-cli (-ml 1 -sow -mc 0 e --prompt com hesitações "é... eu, eu tava") e comparar; nestes dois não havia. Whisper: "Covida" = Covitta, "ouro dispersível" = orodispersível (corrigir-nomes do lote2111). Vídeo solto da criadora (Letícia) = o arquivo original vai junto do final em augusto/<lote>/Letícia/<nome>/ (não há pasta de origem para EDITADOS). A visão pública demora a refletir a movimentação: confirmar o parentId pelo conector.
