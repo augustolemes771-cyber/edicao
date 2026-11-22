@@ -390,6 +390,13 @@ if plano.get('fundo'):
         fx.append((nm + 1 + len(fx), a, b, f_.get('escala', 0.5)))
         # Áudio do fundo (pedido do usuário, 17/11): "troca" = no lugar do da criadora; "mistura" = por baixo da voz (fundo só com música).
         if f_.get('audio'): auds.append((nm + 1 + len(fx) - 1, a, b, f_['audio'], f_.get('volume', 1.0 if f_['audio'] == 'troca' else 0.3)))
+# "sons" (roteiro: "coloca o som do começo desse vídeo aqui", 22/11): trecho de áudio de outro arquivo por cima da voz.
+# Itens: {de: segundo no bruto, arquivo, inicio: segundo no arquivo, dur, volume (1.0), modo: "mistura" | "troca"}.
+for s_ in plano.get('sons', []):
+    a = editado(s_['de']); b = a + s_['dur']
+    nsom = entradas.count('-i') + 1
+    entradas += ['-ss', str(s_.get('inicio', 0)), '-t', f"{s_['dur'] + 0.1:.2f}", '-i', s_['arquivo']]
+    auds.append((nsom, a, b, 'som', s_.get('volume', 1.0)))
 graf = [f"[0:v]select='{sel}',setpts=N/FRAME_RATE/TB,scale=1080:1920,format=yuv420p[base0]"]
 ult = 'base0'
 if fx:
