@@ -1,8 +1,8 @@
 import type {Edit} from '../../motor/plano';
 import transcricao from './transcricao.json';
 
-export const v2011X: Edit = {
-	pasta: 'projetos/v2011-x',
+export const v2011Ad02: Edit = {
+	pasta: 'projetos/v2011-ad02',
 	video: 'video.mp4',
 	formato: 'vertical',
 	verificarCurva: false,
