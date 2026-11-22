@@ -99,6 +99,7 @@ ad('v1911-ad01', 'Vanessa - Roteiros: 19/11 AD 01 - Melatonina Neo Química (ela
 ad('v1911-ad02', 'Vanessa - Roteiros: 19/11 AD 02 - Melatonina Neo Química (ela não mostra o produto: B-roll em tela dividida)', MEL)
 ad('v1911-ad03', 'Vanessa - Roteiros: 19/11 AD 03 - Melatonina Neo Química (ela não mostra o produto: B-roll em tela dividida)', MEL)
 ad('v2011-ad01', 'Vanessa - Roteiros: 20/11 AD 01 - Mounjarin Psyllium' + MOSTRA, None)
+ad('v2011-ad02', 'Vanessa - Roteiros: 20/11 AD 02 - Mounjar Natural (ela não mostra o produto: B-roll em tela dividida; arquivo chegou como "20 11 AD 03.mov" e ela renomeou)', MJN)
 so = [a for a in sys.argv[1:] if not a.startswith('--')]
 for p, pl in P.items():
     if so and p not in so: continue
