@@ -94,6 +94,7 @@ ad('li-2111-07', E + '21/11 AD 07 - Creatina Soldiers: tela dividida com o víde
 # ---------------- Vanessa ("Vanessa - Roteiros"; pasta "18/11 AD 02", subiu durante o lote)
 ad('v1811-ad02', 'Vanessa - Roteiros: 18/11 AD 02 - Creatina Soufit (foto da loja oficial; ela não mostra o produto); abertura de caras e bocas (21,7 s) enchida com 3,7 s dela apontando (1,0-4,7 colado em 21,6; bruto-sem-enchimento.mov guardado) enquanto roda o vídeo de fundo ssstik 1794857012751 inteiro com o áudio dele', SOU,
    fundo=[{'de': 0.0, 'ate': 25.35, 'dur': 25.24, 'video': '.painel/lote1711/ref/fundo-creatina-1794857012751.mp4', 'inicio': 0, 'audio': 'troca'}], manter=[[0.0, 25.45]])
+ad('v1811-ad03', 'Vanessa - Roteiros: 18/11 AD 03 - Creatina Soufit (foto da loja oficial; ela não mostra o produto)', SOU)
 so = [a for a in sys.argv[1:] if not a.startswith('--')]
 for p, pl in P.items():
     if so and p not in so: continue

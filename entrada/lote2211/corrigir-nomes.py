@@ -5,7 +5,7 @@ os.chdir(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file_
 TROCA = [(r'\bAOSFIT\b', 'Always Fit'), (r'\b[ÓO]lis ?[Ff]it\b', 'Always Fit'), (r'\b[Mm]onjar[ií][mn]\b', 'Mounjarin'), (r'\bMounjarim\b', 'Mounjarin'), (r'\b[Mm]onjar\b', 'Mounjar'), (r'\b[Pp]isc[ií]li(o|on|um)\b', 'psyllium'), (r'\bNeoqu[ií]mica', 'Neo Química'), (r'\bE-tron\b', 'Etron'), (r'\bSolfit\b', 'Soufit'), (r'\bSoulfit\b', 'Soufit'), (r'\bSofit\b', 'Soufit'), (r'\bCovita\b', 'Covitta'), (r'\bCoviita\b', 'Covitta'),
          (r'\bCovid[ae]?\b', 'Covitta'), (r'\bouro\b(?= ?dispers)', 'oro'), (r'\bOuro\b(?= ?dispers)', 'Oro'),
          (r'\bQuanto\b(?= Nutrition)', 'Quantum'), (r'\bal[uú]r[oô]nico', 'hialurônico'), (r'\bflancidez', 'flacidez'),
-         (r'\bmonoidratada', 'monohidratada'), (r'\bprímola', 'prímula'), (r'\bpr[ií]mala', 'prímula'), (r'\bSoudier\b', 'Soldiers'), (r'\bniacidamida', 'niacinamida'), (r'\bniaciamida', 'niacinamida'), (r'\bcontispada', 'constipada')]
+         (r'\bmonoidratada', 'monohidratada'), (r'\bprímola', 'prímula'), (r'\bpr[ií]mala', 'prímula'), (r'\bSoudier\b', 'Soldiers'), (r'\bniacidamida', 'niacinamida'), (r'\bniaciamida', 'niacinamida'), (r'\bcontispada', 'constipada'), (r'\bSulfite\b', 'Soufit')]
 for p in sys.argv[1:]:
     arq = f'src/projetos/{p}/transcricao.json'
     W = json.load(open(arq, encoding='utf-8'))
