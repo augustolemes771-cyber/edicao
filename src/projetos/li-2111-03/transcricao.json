@@ -36,29 +36,29 @@
  },
  {
   "text": " E",
-  "startMs": 1900,
-  "endMs": 2160,
+  "startMs": 4850,
+  "endMs": 5000,
   "timestampMs": null,
   "confidence": 0.99962
  },
  {
   "text": " as",
-  "startMs": 2160,
-  "endMs": 2690,
+  "startMs": 5000,
+  "endMs": 5150,
   "timestampMs": null,
   "confidence": 0.999752
  },
  {
   "text": " suas",
-  "startMs": 2690,
-  "endMs": 3760,
+  "startMs": 5150,
+  "endMs": 5450,
   "timestampMs": null,
   "confidence": 0.999825
  },
  {
   "text": " camisetas",
-  "startMs": 3760,
-  "endMs": 6180,
+  "startMs": 5450,
+  "endMs": 6100,
   "timestampMs": null,
   "confidence": 0.99358
  },
