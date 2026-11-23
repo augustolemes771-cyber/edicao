@@ -267,6 +267,25 @@ import {v2011Ad01} from './v2011-ad01/edit';
 import {v2011X} from './v2011-x/edit';
 import {v2011Ad02} from './v2011-ad02/edit';
 import {edicaoSimples23110542} from './edicao-simples-2311-0542/edit';
+import {la1811Ad01r} from './la-1811-ad01r/edit';
+import {la1811Ad02r} from './la-1811-ad02r/edit';
+import {la1911Ad01} from './la-1911-ad01/edit';
+import {la1911Ad02} from './la-1911-ad02/edit';
+import {la1911Ad03} from './la-1911-ad03/edit';
+import {la2011Ad01} from './la-2011-ad01/edit';
+import {la2011Ad02} from './la-2011-ad02/edit';
+import {la2011Ad03} from './la-2011-ad03/edit';
+import {la2011Ad04} from './la-2011-ad04/edit';
+import {la2111Ad01} from './la-2111-ad01/edit';
+import {la2111Ad02} from './la-2111-ad02/edit';
+import {la2111Ad03} from './la-2111-ad03/edit';
+import {lo22111} from './lo-2211-1/edit';
+import {lo22111b} from './lo-2211-1b/edit';
+import {lo22112} from './lo-2211-2/edit';
+import {lo22113} from './lo-2211-3/edit';
+import {lo22114} from './lo-2211-4/edit';
+import {lo22115} from './lo-2211-5/edit';
+import {lo22116} from './lo-2211-6/edit';
 
 // Cada projeto novo entra aqui. O nome vira o id da composição no Studio e no render.
 export const projetos: Record<string, Edit> = {
@@ -538,4 +557,23 @@ export const projetos: Record<string, Edit> = {
 	'v2011-x': v2011X,
 	'v2011-ad02': v2011Ad02,
 	'edicao-simples-2311-0542': edicaoSimples23110542,
+	'la-1811-ad01r': la1811Ad01r,
+	'la-1811-ad02r': la1811Ad02r,
+	'la-1911-ad01': la1911Ad01,
+	'la-1911-ad02': la1911Ad02,
+	'la-1911-ad03': la1911Ad03,
+	'la-2011-ad01': la2011Ad01,
+	'la-2011-ad02': la2011Ad02,
+	'la-2011-ad03': la2011Ad03,
+	'la-2011-ad04': la2011Ad04,
+	'la-2111-ad01': la2111Ad01,
+	'la-2111-ad02': la2111Ad02,
+	'la-2111-ad03': la2111Ad03,
+	'lo-2211-1': lo22111,
+	'lo-2211-1b': lo22111b,
+	'lo-2211-2': lo22112,
+	'lo-2211-3': lo22113,
+	'lo-2211-4': lo22114,
+	'lo-2211-5': lo22115,
+	'lo-2211-6': lo22116,
 };
