@@ -1443,156 +1443,79 @@
  },
  {
   "text": " Clica",
-  "startMs": 78100,
-  "endMs": 78560,
-  "timestampMs": null,
+  "startMs": 79600,
+  "endMs": 79914,
+  "timestampMs": 79600,
   "confidence": 0.691331
  },
  {
   "text": " no",
-  "startMs": 78560,
-  "endMs": 78800,
-  "timestampMs": null,
+  "startMs": 79914,
+  "endMs": 80078,
+  "timestampMs": 79914,
   "confidence": 0.999394
  },
  {
   "text": " link",
-  "startMs": 78800,
-  "endMs": 79110,
-  "timestampMs": null,
+  "startMs": 80078,
+  "endMs": 80290,
+  "timestampMs": 80078,
   "confidence": 0.999983
  },
  {
   "text": " aqui",
-  "startMs": 79110,
-  "endMs": 79480,
-  "timestampMs": null,
+  "startMs": 80290,
+  "endMs": 80543,
+  "timestampMs": 80290,
   "confidence": 0.999954
  },
  {
   "text": " embaixo,",
-  "startMs": 79480,
-  "endMs": 80310,
-  "timestampMs": null,
+  "startMs": 80543,
+  "endMs": 81110,
+  "timestampMs": 80543,
   "confidence": 0.999805
  },
  {
   "text": " ó,",
-  "startMs": 80310,
-  "endMs": 80670,
-  "timestampMs": null,
+  "startMs": 81110,
+  "endMs": 81357,
+  "timestampMs": 81110,
   "confidence": 0.997512
  },
  {
   "text": " antes",
-  "startMs": 80670,
-  "endMs": 81140,
-  "timestampMs": null,
+  "startMs": 81357,
+  "endMs": 81678,
+  "timestampMs": 81357,
   "confidence": 0.999926
  },
  {
   "text": " que",
-  "startMs": 81140,
-  "endMs": 81440,
-  "timestampMs": null,
+  "startMs": 81678,
+  "endMs": 81883,
+  "timestampMs": 81678,
   "confidence": 0.999985
  },
  {
   "text": " acabe",
-  "startMs": 81440,
-  "endMs": 81880,
-  "timestampMs": null,
+  "startMs": 81883,
+  "endMs": 82184,
+  "timestampMs": 81883,
   "confidence": 0.999213
  },
  {
   "text": " o",
-  "startMs": 81880,
-  "endMs": 81970,
-  "timestampMs": null,
+  "startMs": 82184,
+  "endMs": 82245,
+  "timestampMs": 82184,
   "confidence": 0.99999
  },
  {
   "text": " estoque.",
-  "startMs": 81970,
-  "endMs": 83000,
-  "timestampMs": null,
+  "startMs": 82245,
+  "endMs": 82950,
+  "timestampMs": 82245,
   "confidence": 0.999361
- },
- {
-  "text": " Clica",
-  "startMs": 83000,
-  "endMs": 83000,
-  "timestampMs": null,
-  "confidence": 0.197961
- },
- {
-  "text": " no",
-  "startMs": 83000,
-  "endMs": 83000,
-  "timestampMs": null,
-  "confidence": 0.856711
- },
- {
-  "text": " link",
-  "startMs": 83000,
-  "endMs": 83000,
-  "timestampMs": null,
-  "confidence": 0.994033
- },
- {
-  "text": " aqui",
-  "startMs": 83000,
-  "endMs": 83000,
-  "timestampMs": null,
-  "confidence": 0.946766
- },
- {
-  "text": " embaixo,",
-  "startMs": 83000,
-  "endMs": 83000,
-  "timestampMs": null,
-  "confidence": 0.99717
- },
- {
-  "text": " ó,",
-  "startMs": 83000,
-  "endMs": 83000,
-  "timestampMs": null,
-  "confidence": 0.996008
- },
- {
-  "text": " antes",
-  "startMs": 83000,
-  "endMs": 83000,
-  "timestampMs": null,
-  "confidence": 0.998483
- },
- {
-  "text": " que",
-  "startMs": 83000,
-  "endMs": 83000,
-  "timestampMs": null,
-  "confidence": 0.990048
- },
- {
-  "text": " acabe",
-  "startMs": 83000,
-  "endMs": 83000,
-  "timestampMs": null,
-  "confidence": 0.998327
- },
- {
-  "text": " o",
-  "startMs": 83000,
-  "endMs": 83000,
-  "timestampMs": null,
-  "confidence": 0.999838
- },
- {
-  "text": " estoque.",
-  "startMs": 83000,
-  "endMs": 83020,
-  "timestampMs": null,
-  "confidence": 0.998064
  }
 ]
