@@ -1,17 +1,17 @@
 {
- "_roteiro": "Lorena - roteiros: AD 06 - Complexo B Revita (ela não mostra o produto: B-roll em tela dividida)",
+ "_roteiro": "Lorena - roteiros: AD 06 - Complexo B Revita (ela não mostra o produto: B-roll em tela dividida); ela gravou as 4 queixas seguidas e depois os 4 \"Vitamina B12/B3/B7/B6\" com o comprimido no copo: bruto reordenado intercalando como na copy (bruto-ordem-original.mov guardado); 1ª tomada de \"Minha imunidade tá lá embaixo\" (regravada) fora; anáfora da copy (sem detecção de regravação)",
  "split": [],
  "fotos": [],
  "produto": [
   {
-   "de": 114.33,
-   "ate": 118.54,
+   "de": 87.03,
+   "ate": 91.24,
    "img": ".painel/mcf/ref/revita-complexo-b.webp",
    "modo": "topo"
   },
   {
-   "de": 154.19,
-   "ate": 165.88,
+   "de": 126.89,
+   "ate": 138.58,
    "img": ".painel/mcf/ref/revita-complexo-b.webp",
    "modo": "topo"
   }
@@ -19,7 +19,26 @@
  "headline": null,
  "legenda": "meio",
  "estiloLegenda": "vermelho",
- "_copy": "Copy: Eu acordo cansada mesmo dormindo 8 horas. Vitamina B12. Eu tô sem energia, sem ânimo pra nada. Vitamina B3. Meu cabelo e minha unha são tão fracos, quebrando por qualquer coisinha. Vitamina B7. Minha imunidade tá lá embaixo, qualquer ventinho eu já fico mal. Vitamina B6. O problema é que, pra conseguir todas essas vitaminas, eu ia ter que comprar cada uma separada. Sai caríssimo, e eu ia virar um porta-comprimidos ambulante, tomando cápsula o dia inteiro. E foi justamente por isso que eu pesquisei e descobri que existe um suplemento com o Complexo B completo, tudo numa cápsula só. Mas antes de comprar o seu, você precisa verificar se a fórmula traz a B12 e a B9 na forma ativa, que é a forma que o corpo consegue reconhecer e absorver. Elas aparecem como metilcobalamina e metilfolato. E vê se não tem glúten. Isso é importante porque quanto mais simples a fórmula, mais fácil fica a sua rotina. E tudo isso eu encontrei nesse suplemento aqui. O Complexo B Revita Beauty. Olha só, ele traz todas as vitaminas da B1 a B12 juntas. É em cápsula, e você toma só 1 por dia depois da refeição principal, o que deixa tudo bem mais prático do que ficar com um monte de pote na bancada. Só não cometa o erro que eu cometi. Eu comprei e paguei o preço cheio, e ele acabou de entrar em promoção. Dá pra levar 1, 2 ou 3 potes, e quem leva mais de um já deixa a rotina garantida por meses. Mas é uma oferta relâmpago e pode acabar a qualquer momento. Então, se o link ainda estiver aparecendo aqui embaixo pra você, significa que ainda restam algumas unidades em estoque. Mas elas não duram muito. Então corre.",
+ "manter": [
+  [
+   5.2,
+   9.0
+  ],
+  [
+   15.4,
+   19.0
+  ],
+  [
+   25.0,
+   28.6
+  ],
+  [
+   32.9,
+   36.7
+  ]
+ ],
+ "semRegravacao": true,
  "rostoY": 808,
- "olhosY": 743
+ "_copy": "Copy: Eu acordo cansada mesmo dormindo 8 horas. Vitamina B12. Eu tô sem energia, sem ânimo pra nada. Vitamina B3. Meu cabelo e minha unha são tão fracos, quebrando por qualquer coisinha. Vitamina B7. Minha imunidade tá lá embaixo, qualquer ventinho eu já fico mal. Vitamina B6. O problema é que, pra conseguir todas essas vitaminas, eu ia ter que comprar cada uma separada. Sai caríssimo, e eu ia virar um porta-comprimidos ambulante, tomando cápsula o dia inteiro. E foi justamente por isso que eu pesquisei e descobri que existe um suplemento com o Complexo B completo, tudo numa cápsula só. Mas antes de comprar o seu, você precisa verificar se a fórmula traz a B12 e a B9 na forma ativa, que é a forma que o corpo consegue reconhecer e absorver. Elas aparecem como metilcobalamina e metilfolato. E vê se não tem glúten. Isso é importante porque quanto mais simples a fórmula, mais fácil fica a sua rotina. E tudo isso eu encontrei nesse suplemento aqui. O Complexo B Revita Beauty. Olha só, ele traz todas as vitaminas da B1 a B12 juntas. É em cápsula, e você toma só 1 por dia depois da refeição principal, o que deixa tudo bem mais prático do que ficar com um monte de pote na bancada. Só não cometa o erro que eu cometi. Eu comprei e paguei o preço cheio, e ele acabou de entrar em promoção. Dá pra levar 1, 2 ou 3 potes, e quem leva mais de um já deixa a rotina garantida por meses. Mas é uma oferta relâmpago e pode acabar a qualquer momento. Então, se o link ainda estiver aparecendo aqui embaixo pra você, significa que ainda restam algumas unidades em estoque. Mas elas não duram muito. Então corre.",
+ "olhosY": 744
 }
