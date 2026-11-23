@@ -288,6 +288,17 @@ import {lo22116} from './lo-2211-6/edit';
 import {le1711Ad01} from './le-1711-ad01/edit';
 import {le1711Ad02} from './le-1711-ad02/edit';
 import {edicaoSimples23111233} from './edicao-simples-2311-1233/edit';
+import {la2111Ad04} from './la-2111-ad04/edit';
+import {la2111Ad05} from './la-2111-ad05/edit';
+import {la2111Ad06} from './la-2111-ad06/edit';
+import {la2111Ad07} from './la-2111-ad07/edit';
+import {mc2011Ad01} from './mc-2011-ad01/edit';
+import {mc2011Ad02} from './mc-2011-ad02/edit';
+import {mc2011Ad03} from './mc-2011-ad03/edit';
+import {mc2011Ad04} from './mc-2011-ad04/edit';
+import {mc2011Ad05} from './mc-2011-ad05/edit';
+import {le1811Ad01} from './le-1811-ad01/edit';
+import {le1811Ad02} from './le-1811-ad02/edit';
 
 // Cada projeto novo entra aqui. O nome vira o id da composição no Studio e no render.
 export const projetos: Record<string, Edit> = {
@@ -580,4 +591,15 @@ export const projetos: Record<string, Edit> = {
 	'le-1711-ad01': le1711Ad01,
 	'le-1711-ad02': le1711Ad02,
 	'edicao-simples-2311-1233': edicaoSimples23111233,
+	'la-2111-ad04': la2111Ad04,
+	'la-2111-ad05': la2111Ad05,
+	'la-2111-ad06': la2111Ad06,
+	'la-2111-ad07': la2111Ad07,
+	'mc-2011-ad01': mc2011Ad01,
+	'mc-2011-ad02': mc2011Ad02,
+	'mc-2011-ad03': mc2011Ad03,
+	'mc-2011-ad04': mc2011Ad04,
+	'mc-2011-ad05': mc2011Ad05,
+	'le-1811-ad01': le1811Ad01,
+	'le-1811-ad02': le1811Ad02,
 };
