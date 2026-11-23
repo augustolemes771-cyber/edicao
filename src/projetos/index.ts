@@ -280,7 +280,6 @@ import {la2111Ad01} from './la-2111-ad01/edit';
 import {la2111Ad02} from './la-2111-ad02/edit';
 import {la2111Ad03} from './la-2111-ad03/edit';
 import {lo22111} from './lo-2211-1/edit';
-import {lo22111b} from './lo-2211-1b/edit';
 import {lo22112} from './lo-2211-2/edit';
 import {lo22113} from './lo-2211-3/edit';
 import {lo22114} from './lo-2211-4/edit';
@@ -570,7 +569,6 @@ export const projetos: Record<string, Edit> = {
 	'la-2111-ad02': la2111Ad02,
 	'la-2111-ad03': la2111Ad03,
 	'lo-2211-1': lo22111,
-	'lo-2211-1b': lo22111b,
 	'lo-2211-2': lo22112,
 	'lo-2211-3': lo22113,
 	'lo-2211-4': lo22114,
