@@ -1002,143 +1002,163 @@
  },
  {
   "text": " é",
-  "startMs": 65380,
-  "endMs": 65520,
-  "timestampMs": null,
-  "confidence": 0.999981
+  "startMs": 65785,
+  "endMs": 65851
  },
  {
   "text": " medicamento.",
-  "startMs": 65520,
-  "endMs": 66600,
-  "timestampMs": null,
-  "confidence": 0.998951
+  "startMs": 65895,
+  "endMs": 66555
  },
  {
-  "text": " Então,",
-  "startMs": 67100,
-  "endMs": 68200,
-  "timestampMs": null,
-  "confidence": 0.945354
+  "text": " Então",
+  "startMs": 67143,
+  "endMs": 67429
  },
  {
   "text": " você",
-  "startMs": 68200,
-  "endMs": 68880,
-  "timestampMs": null,
-  "confidence": 0.999626
+  "startMs": 67451,
+  "endMs": 67715
  },
  {
   "text": " só",
-  "startMs": 68880,
-  "endMs": 69420,
-  "timestampMs": null,
-  "confidence": 0.999941
+  "startMs": 67781,
+  "endMs": 67913
  },
  {
   "text": " precisa",
-  "startMs": 69420,
-  "endMs": 70260,
-  "timestampMs": null,
-  "confidence": 0.999893
+  "startMs": 67979,
+  "endMs": 68243
  },
  {
   "text": " tomar",
-  "startMs": 70260,
-  "endMs": 70950,
-  "timestampMs": null,
-  "confidence": 0.99976
+  "startMs": 68309,
+  "endMs": 68595
  },
  {
   "text": " duas",
-  "startMs": 70950,
-  "endMs": 71500,
-  "timestampMs": null,
-  "confidence": 0.980135
+  "startMs": 68771,
+  "endMs": 69123
  },
  {
   "text": " cápsulas",
-  "startMs": 71500,
-  "endMs": 72720,
-  "timestampMs": null,
-  "confidence": 0.998251
+  "startMs": 69211,
+  "endMs": 69739
+ },
+ {
+  "text": " pós--",
+  "startMs": 70192,
+  "endMs": 70478
+ },
+ {
+  "text": " então",
+  "startMs": 72777,
+  "endMs": 72997
+ },
+ {
+  "text": " você",
+  "startMs": 73019,
+  "endMs": 73195
+ },
+ {
+  "text": " só",
+  "startMs": 73305,
+  "endMs": 73415
+ },
+ {
+  "text": " precisa",
+  "startMs": 73481,
+  "endMs": 73679
+ },
+ {
+  "text": " tomar",
+  "startMs": 73745,
+  "endMs": 74009
+ },
+ {
+  "text": " duas",
+  "startMs": 74097,
+  "endMs": 74383
+ },
+ {
+  "text": " cápsulas",
+  "startMs": 74471,
+  "endMs": 74933
  },
  {
   "text": " depois",
-  "startMs": 72720,
-  "endMs": 73560,
-  "timestampMs": null,
-  "confidence": 0.493172
+  "startMs": 74977,
+  "endMs": 75307
  },
  {
   "text": " do",
-  "startMs": 73560,
-  "endMs": 73830,
-  "timestampMs": null,
-  "confidence": 0.998152
+  "startMs": 75329,
+  "endMs": 75395
  },
  {
   "text": " café",
-  "startMs": 73830,
-  "endMs": 74520,
-  "timestampMs": null,
-  "confidence": 0.999468
+  "startMs": 75417,
+  "endMs": 75659
  },
  {
   "text": " da",
-  "startMs": 74520,
-  "endMs": 74790,
-  "timestampMs": null,
-  "confidence": 0.999569
+  "startMs": 75681,
+  "endMs": 75747
  },
  {
   "text": " manhã.",
-  "startMs": 74790,
-  "endMs": 76100,
-  "timestampMs": null,
-  "confidence": 0.999807
+  "startMs": 75791,
+  "endMs": 76121
  },
  {
   "text": " Ele",
-  "startMs": 76100,
-  "endMs": 76410,
-  "timestampMs": null,
-  "confidence": 0.896473
+  "startMs": 76716,
+  "endMs": 76782
  },
  {
   "text": " é",
-  "startMs": 76410,
-  "endMs": 76620,
-  "timestampMs": null,
-  "confidence": 0.998055
+  "startMs": 76826,
+  "endMs": 76870
  },
  {
   "text": " da",
-  "startMs": 76620,
-  "endMs": 76830,
-  "timestampMs": null,
-  "confidence": 0.999727
+  "startMs": 76914,
+  "endMs": 77002
+ },
+ {
+  "text": " marca,",
+  "startMs": 77090,
+  "endMs": 77398
+ },
+ {
+  "text": " ele",
+  "startMs": 78420,
+  "endMs": 78420
+ },
+ {
+  "text": " é",
+  "startMs": 78420,
+  "endMs": 78420
+ },
+ {
+  "text": " da",
+  "startMs": 78420,
+  "endMs": 78420
  },
  {
   "text": " marca",
-  "startMs": 76830,
-  "endMs": 77380,
-  "timestampMs": null,
-  "confidence": 0.999272
+  "startMs": 78420,
+  "endMs": 78420
  },
  {
   "text": " Life",
-  "startMs": 77380,
-  "endMs": 77870,
-  "timestampMs": null,
-  "confidence": 0.431843
+  "startMs": 78420,
+  "endMs": 78420
  },
  {
-  "text": " In,",
-  "startMs": 77870,
-  "endMs": 78420,
-  "timestampMs": null,
-  "confidence": 0.621833
+  "text": " in,",
+  "startMs": 78420,
+  "endMs": 78420
  },
  {
   "text": " que",

@@ -1325,72 +1325,52 @@
  {
   "text": " que",
   "startMs": 70250,
-  "endMs": 70510,
-  "timestampMs": null,
-  "confidence": 0.999996
+  "endMs": 70250
  },
  {
   "text": " fazer",
-  "startMs": 70510,
-  "endMs": 70950,
-  "timestampMs": null,
-  "confidence": 0.999001
+  "startMs": 70250,
+  "endMs": 70386
  },
  {
   "text": " é",
-  "startMs": 70950,
-  "endMs": 71120,
-  "timestampMs": null,
-  "confidence": 0.999945
+  "startMs": 70430,
+  "endMs": 70474
  },
  {
   "text": " tomar",
-  "startMs": 71120,
-  "endMs": 71580,
-  "timestampMs": null,
-  "confidence": 0.99955
+  "startMs": 70518,
+  "endMs": 70826
  },
  {
-  "text": " dor,",
-  "startMs": 71580,
-  "endMs": 71990,
-  "timestampMs": null,
-  "confidence": 0.795435
+  "text": " do--",
+  "startMs": 71068,
+  "endMs": 71442
  },
  {
   "text": " é",
-  "startMs": 71990,
-  "endMs": 72240,
-  "timestampMs": null,
-  "confidence": 0.999733
+  "startMs": 72411,
+  "endMs": 72455
  },
  {
   "text": " tomar",
-  "startMs": 72240,
-  "endMs": 72600,
-  "timestampMs": null,
-  "confidence": 0.999926
+  "startMs": 72521,
+  "endMs": 72785
  },
  {
   "text": " duas",
-  "startMs": 72600,
-  "endMs": 72950,
-  "timestampMs": null,
-  "confidence": 0.999817
+  "startMs": 73027,
+  "endMs": 73445
  },
  {
   "text": " por",
-  "startMs": 72950,
-  "endMs": 73210,
-  "timestampMs": null,
-  "confidence": 0.999981
+  "startMs": 73577,
+  "endMs": 73640
  },
  {
   "text": " dia,",
-  "startMs": 73210,
-  "endMs": 73640,
-  "timestampMs": null,
-  "confidence": 0.999969
+  "startMs": 73640,
+  "endMs": 73640
  },
  {
   "text": " entendeu?",
@@ -1771,130 +1751,94 @@
   "confidence": 0.68982
  },
  {
-  "text": " eu,",
-  "startMs": 93240,
-  "endMs": 93500,
-  "timestampMs": null,
-  "confidence": 0.99357
+  "text": " Eu:",
+  "startMs": 93319,
+  "endMs": 93451
  },
  {
-  "text": " uai,",
-  "startMs": 93500,
-  "endMs": 94030,
-  "timestampMs": null,
-  "confidence": 0.860771
+  "text": " \"Uai,",
+  "startMs": 93715,
+  "endMs": 93935
  },
  {
   "text": " não",
-  "startMs": 94030,
-  "endMs": 94080,
-  "timestampMs": null,
-  "confidence": 0.999434
+  "startMs": 94023,
+  "endMs": 94155
  },
  {
   "text": " tá",
-  "startMs": 94080,
-  "endMs": 94270,
-  "timestampMs": null,
-  "confidence": 0.998412
+  "startMs": 94221,
+  "endMs": 94353
  },
  {
   "text": " mais",
-  "startMs": 94270,
-  "endMs": 94530,
-  "timestampMs": null,
-  "confidence": 0.999479
+  "startMs": 94397,
+  "endMs": 94573
  },
  {
-  "text": " travando,",
-  "startMs": 94530,
-  "endMs": 95180,
-  "timestampMs": null,
-  "confidence": 0.999174
+  "text": " travando.",
+  "startMs": 94595,
+  "endMs": 95057
  },
  {
-  "text": " não",
-  "startMs": 95180,
-  "endMs": 95440,
-  "timestampMs": null,
-  "confidence": 0.999882
+  "text": " Não",
+  "startMs": 95211,
+  "endMs": 95804
  },
  {
   "text": " tá",
-  "startMs": 95440,
-  "endMs": 95700,
-  "timestampMs": null,
-  "confidence": 0.999914
+  "startMs": 95848,
+  "endMs": 95958
  },
  {
   "text": " mais",
-  "startMs": 95700,
-  "endMs": 95890,
-  "timestampMs": null,
-  "confidence": 0.999939
+  "startMs": 96002,
+  "endMs": 96178
  },
  {
   "text": " travando",
-  "startMs": 95890,
-  "endMs": 96400,
-  "timestampMs": null,
-  "confidence": 0.999455
+  "startMs": 96222,
+  "endMs": 96530
  },
  {
   "text": " pra",
-  "startMs": 96400,
-  "endMs": 96600,
-  "timestampMs": null,
-  "confidence": 0.993134
+  "startMs": 96574,
+  "endMs": 96662
  },
  {
-  "text": " agachar.",
-  "startMs": 96600,
-  "endMs": 97320,
-  "timestampMs": null,
-  "confidence": 0.999975
+  "text": " agachar.\"",
+  "startMs": 96728,
+  "endMs": 97168
  },
  {
   "text": " E",
-  "startMs": 98320,
-  "endMs": 98370,
-  "timestampMs": null,
-  "confidence": 0.961405
+  "startMs": 97300,
+  "endMs": 97366
  },
  {
   "text": " você",
-  "startMs": 98370,
-  "endMs": 98650,
-  "timestampMs": null,
-  "confidence": 0.999531
+  "startMs": 98429,
+  "endMs": 98671
  },
  {
   "text": " tá",
-  "startMs": 98650,
-  "endMs": 99170,
-  "timestampMs": null,
-  "confidence": 0.999577
+  "startMs": 98737,
+  "endMs": 98825
  },
  {
   "text": " falando",
-  "startMs": 99170,
-  "endMs": 99210,
-  "timestampMs": null,
-  "confidence": 0.999784
+  "startMs": 98891,
+  "endMs": 99045
  },
  {
   "text": " de",
-  "startMs": 99210,
-  "endMs": 99310,
-  "timestampMs": null,
-  "confidence": 0.999971
+  "startMs": 99089,
+  "endMs": 99155
  },
  {
-  "text": " agachamento?",
-  "startMs": 99310,
-  "endMs": 100120,
-  "timestampMs": null,
-  "confidence": 0.999935
+  "text": " agachamento,",
+  "startMs": 99221,
+  "endMs": 100057
  },
  {
   "text": " Então,",
