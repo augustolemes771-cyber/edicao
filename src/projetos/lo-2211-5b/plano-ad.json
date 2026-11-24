@@ -1,0 +1,35 @@
+{
+ "_roteiro": "Lorena - roteiros: AD 05 - Mounjarin Psyllium (ela não mostra o produto: B-roll em tela dividida); gancho em tela dividida (4 queixas em pé x 4 \"Mounjarin Psyllium\" sentada com o comprimido); 2ª tomada do corpo (a 1ª e o \"vou fazer essa parte de novo\" fora); anáfora da copy (sem detecção de regravação)",
+ "split": [],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 76.34,
+   "ate": 85.39,
+   "img": ".painel/mcf/ref/mounjarin-psyllium.webp",
+   "modo": "topo"
+  },
+  {
+   "de": 125.69,
+   "ate": 139.08,
+   "img": ".painel/mcf/ref/mounjarin-psyllium.webp",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "cortar": [
+  [
+   23.14,
+   35.75
+  ]
+ ],
+ "manter": [
+  [
+   0,
+   23.14
+  ]
+ ],
+ "semRegravacao": true
+}
