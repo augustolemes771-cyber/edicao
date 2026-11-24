@@ -1,0 +1,48 @@
+{
+ "_obs": "Lorena 22.11 6 (AD 06 Revita): queixas em pé de perfil (sem espelhar); respostas sentada de blazer = Vitamina B12/B3/B7/B6 (41,2 / 48,7 / 60,4 / 72,0). Corpo: 78,25 s em diante.",
+ "pares": [
+  [
+   0.45,
+   4.8,
+   41.05,
+   43.4,
+   15.5,
+   18.3,
+   43.6,
+   47.95
+  ],
+  [
+   8.1,
+   11.4,
+   48.5,
+   51.1,
+   7.3,
+   8.15
+  ],
+  [
+   18.3,
+   23.8,
+   60.25,
+   62.6,
+   23.75,
+   24.4
+  ],
+  [
+   28.25,
+   33.75,
+   71.85,
+   74.4,
+   15.5,
+   18.3
+  ]
+ ],
+ "xEsq": 270,
+ "xDir": 590,
+ "resto": 78.25,
+ "dirDesde": 38.0,
+ "espelhar": false,
+ "escalaRecorte": 1.1,
+ "xRecorte": -30,
+ "yRecorte": -97,
+ "_recorte": "CORREÇÃO DO USUÁRIO 24/11: recorte do tamanho real da outra (rosto medido), não 0,8; 5b um pouco fora da tela à esquerda"
+}

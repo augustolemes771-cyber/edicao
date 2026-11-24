@@ -1,0 +1,43 @@
+{
+ "_obs": "Lorena 22.11 7 (AD 07 Composto Meno): queixas em pé de perfil (sem espelhar); 2ª queixa = tomada boa (25,9 s; a do 'Vixe, meu cabelo' fica fora); 3ª = tomada completa (39,3 s). Respostas sentada de vermelho = 4 primeiros 'Composto Meno' com o pingo (74,8 / 79,2 / 84,6 / 89,7). Corpo: 114,2 s em diante.",
+ "pares": [
+  [
+   0.72,
+   5.05,
+   74.67,
+   76.8,
+   16.45,
+   17.2
+  ],
+  [
+   25.85,
+   31.25,
+   79.03,
+   81.2,
+   16.45,
+   17.2
+  ],
+  [
+   39.2,
+   43.35,
+   84.47,
+   86.6,
+   16.45,
+   17.2
+  ],
+  [
+   49.05,
+   54.0,
+   89.57,
+   91.7,
+   16.45,
+   17.2
+  ]
+ ],
+ "xEsq": 270,
+ "xDir": 540,
+ "resto": 114.2,
+ "dirDesde": 72.2,
+ "espelhar": false,
+ "ouvirVaiVem": true
+}
