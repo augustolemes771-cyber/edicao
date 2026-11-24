@@ -1,0 +1,29 @@
+{
+ "_roteiro": "Lorena - roteiros: AD 07 - Composto Meno (ela não mostra o produto: B-roll em tela dividida); gancho em tela dividida (4 queixas em pé x 4 respostas sentada com o comprimido/pingo no copo); anáfora da copy (sem detecção de regravação)",
+ "split": [],
+ "fotos": [],
+ "produto": [
+  {
+   "de": 86.55,
+   "ate": 89.7,
+   "img": ".painel/mcf/ref/composto-meno.jpg",
+   "modo": "topo"
+  },
+  {
+   "de": 139.15,
+   "ate": 153.34,
+   "img": ".painel/mcf/ref/composto-meno.jpg",
+   "modo": "topo"
+  }
+ ],
+ "headline": null,
+ "legenda": "meio",
+ "estiloLegenda": "vermelho",
+ "manter": [
+  [
+   0,
+   27.39
+  ]
+ ],
+ "semRegravacao": true
+}
