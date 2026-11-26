@@ -1640,128 +1640,92 @@
  {
   "text": " muda,",
   "startMs": 81390,
-  "endMs": 82160,
-  "timestampMs": null,
-  "confidence": 0.999594
+  "endMs": 82160
  },
  {
   "text": " gente.",
   "startMs": 82160,
-  "endMs": 82500,
-  "timestampMs": null,
-  "confidence": 0.984275
+  "endMs": 82468
  },
  {
   "text": " O",
-  "startMs": 82500,
-  "endMs": 82590,
-  "timestampMs": null,
-  "confidence": 0.999548
+  "startMs": 82468,
+  "endMs": 82899
  },
  {
   "text": " que",
-  "startMs": 82590,
-  "endMs": 82880,
-  "timestampMs": null,
-  "confidence": 0.99999
+  "startMs": 82899,
+  "endMs": 83119
  },
  {
   "text": " a",
-  "startMs": 82880,
-  "endMs": 83190,
-  "timestampMs": null,
-  "confidence": 0.999853
+  "startMs": 83119,
+  "endMs": 83207
  },
  {
   "text": " nutrição",
-  "startMs": 83190,
-  "endMs": 83930,
-  "timestampMs": null,
-  "confidence": 0.999436
+  "startMs": 83207,
+  "endMs": 83911
  },
  {
   "text": " faz",
-  "startMs": 83930,
-  "endMs": 84220,
-  "timestampMs": null,
-  "confidence": 0.999958
+  "startMs": 83911,
+  "endMs": 84131
  },
  {
   "text": " muita",
-  "startMs": 84220,
-  "endMs": 84700,
-  "timestampMs": null,
-  "confidence": 0.997849
- },
- {
-  "text": " diferença.",
-  "startMs": 84700,
-  "endMs": 85720,
-  "timestampMs": null,
-  "confidence": 0.99988
- },
- {
-  "text": " E",
-  "startMs": 85720,
-  "endMs": 85810,
-  "timestampMs": null,
-  "confidence": 0.824107
- },
- {
-  "text": " que",
-  "startMs": 85810,
-  "endMs": 86090,
-  "timestampMs": null,
-  "confidence": 0.997415
- },
- {
-  "text": " a",
-  "startMs": 86090,
-  "endMs": 86410,
-  "timestampMs": null,
-  "confidence": 0.999987
- },
- {
-  "text": " nutrição",
-  "startMs": 86410,
-  "endMs": 87140,
-  "timestampMs": null,
-  "confidence": 0.999815
- },
- {
-  "text": " faz",
-  "startMs": 87140,
-  "endMs": 87420,
-  "timestampMs": null,
-  "confidence": 0.999962
- },
- {
-  "text": " muita",
-  "startMs": 87420,
-  "endMs": 87900,
-  "timestampMs": null,
-  "confidence": 0.99992
+  "startMs": 84131,
+  "endMs": 84734
  },
  {
   "text": " diferença",
-  "startMs": 87900,
-  "endMs": 88860,
-  "timestampMs": null,
-  "confidence": 0.999937
+  "startMs": 84734,
+  "endMs": 85460
+ },
+ {
+  "text": " e",
+  "startMs": 85460,
+  "endMs": 85526
+ },
+ {
+  "text": " que",
+  "startMs": 85526,
+  "endMs": 85735
+ },
+ {
+  "text": " a",
+  "startMs": 85735,
+  "endMs": 85812
+ },
+ {
+  "text": " nutrição",
+  "startMs": 85812,
+  "endMs": 87803
+ },
+ {
+  "text": " faz",
+  "startMs": 87803,
+  "endMs": 88034
+ },
+ {
+  "text": " muita",
+  "startMs": 88034,
+  "endMs": 88386
+ },
+ {
+  "text": " diferença",
+  "startMs": 88386,
+  "endMs": 89112
  },
  {
   "text": " nessa",
-  "startMs": 88860,
-  "endMs": 89340,
-  "timestampMs": null,
-  "confidence": 0.999865
+  "startMs": 89112,
+  "endMs": 89475
  },
  {
   "text": " hora.",
-  "startMs": 89340,
-  "endMs": 90060,
-  "timestampMs": null,
-  "confidence": 0.999895
+  "startMs": 89475,
+  "endMs": 90058
  },
  {
   "text": " E",
