@@ -341,6 +341,14 @@ import {v2111Ad05} from './v2111-ad05/edit';
 import {v2111Ad06} from './v2111-ad06/edit';
 import {v2111Ad07} from './v2111-ad07/edit';
 import {v2211Ad01} from './v2211-ad01/edit';
+import {li191101} from './li-1911-01/edit';
+import {li191102} from './li-1911-02/edit';
+import {li191103} from './li-1911-03/edit';
+import {li221101} from './li-2211-01/edit';
+import {li221102} from './li-2211-02/edit';
+import {li221103} from './li-2211-03/edit';
+import {v2211Ad02} from './v2211-ad02/edit';
+import {v2211Ad03} from './v2211-ad03/edit';
 
 // Cada projeto novo entra aqui. O nome vira o id da composição no Studio e no render.
 export const projetos: Record<string, Edit> = {
@@ -686,4 +694,12 @@ export const projetos: Record<string, Edit> = {
 	'v2111-ad06': v2111Ad06,
 	'v2111-ad07': v2111Ad07,
 	'v2211-ad01': v2211Ad01,
+	'li-1911-01': li191101,
+	'li-1911-02': li191102,
+	'li-1911-03': li191103,
+	'li-2211-01': li221101,
+	'li-2211-02': li221102,
+	'li-2211-03': li221103,
+	'v2211-ad02': v2211Ad02,
+	'v2211-ad03': v2211Ad03,
 };
