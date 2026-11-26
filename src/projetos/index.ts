@@ -306,6 +306,41 @@ import {lo22116b} from './lo-2211-6b/edit';
 import {lo22117b} from './lo-2211-7b/edit';
 import {edicaoSimples26110828} from './edicao-simples-2611-0828/edit';
 import {edicaoSimples26110831} from './edicao-simples-2611-0831/edit';
+import {fe2111Ad01} from './fe-2111-ad01/edit';
+import {fe2111Ad02} from './fe-2111-ad02/edit';
+import {fe2111Ad03} from './fe-2111-ad03/edit';
+import {le2311Ad02} from './le-2311-ad02/edit';
+import {le2311Ad03} from './le-2311-ad03/edit';
+import {le2311Ad04} from './le-2311-ad04/edit';
+import {le2311Ad05} from './le-2311-ad05/edit';
+import {lo23111} from './lo-2311-1/edit';
+import {lo23112} from './lo-2311-2/edit';
+import {lo23113} from './lo-2311-3/edit';
+import {ma2011Ad01} from './ma-2011-ad01/edit';
+import {ma2011Ad02} from './ma-2011-ad02/edit';
+import {ma2011Ad03} from './ma-2011-ad03/edit';
+import {ma2011Ad04} from './ma-2011-ad04/edit';
+import {ma2011Ad05} from './ma-2011-ad05/edit';
+import {ma2011Ad06} from './ma-2011-ad06/edit';
+import {ma2011Ad07} from './ma-2011-ad07/edit';
+import {mc2111Ad01} from './mc-2111-ad01/edit';
+import {mc2111Ad02} from './mc-2111-ad02/edit';
+import {mc2111Ad03} from './mc-2111-ad03/edit';
+import {mc2111Ad04} from './mc-2111-ad04/edit';
+import {mc2111Ad05} from './mc-2111-ad05/edit';
+import {mc2111Ad06} from './mc-2111-ad06/edit';
+import {mc2111Ad07} from './mc-2111-ad07/edit';
+import {v2011Ad03} from './v2011-ad03/edit';
+import {v2011Ad04} from './v2011-ad04/edit';
+import {v2011Ad05} from './v2011-ad05/edit';
+import {v2111Ad01} from './v2111-ad01/edit';
+import {v2111Ad02} from './v2111-ad02/edit';
+import {v2111Ad03} from './v2111-ad03/edit';
+import {v2111Ad04} from './v2111-ad04/edit';
+import {v2111Ad05} from './v2111-ad05/edit';
+import {v2111Ad06} from './v2111-ad06/edit';
+import {v2111Ad07} from './v2111-ad07/edit';
+import {v2211Ad01} from './v2211-ad01/edit';
 
 // Cada projeto novo entra aqui. O nome vira o id da composição no Studio e no render.
 export const projetos: Record<string, Edit> = {
@@ -616,4 +651,39 @@ export const projetos: Record<string, Edit> = {
 	'lo-2211-7b': lo22117b,
 	'edicao-simples-2611-0828': edicaoSimples26110828,
 	'edicao-simples-2611-0831': edicaoSimples26110831,
+	'fe-2111-ad01': fe2111Ad01,
+	'fe-2111-ad02': fe2111Ad02,
+	'fe-2111-ad03': fe2111Ad03,
+	'le-2311-ad02': le2311Ad02,
+	'le-2311-ad03': le2311Ad03,
+	'le-2311-ad04': le2311Ad04,
+	'le-2311-ad05': le2311Ad05,
+	'lo-2311-1': lo23111,
+	'lo-2311-2': lo23112,
+	'lo-2311-3': lo23113,
+	'ma-2011-ad01': ma2011Ad01,
+	'ma-2011-ad02': ma2011Ad02,
+	'ma-2011-ad03': ma2011Ad03,
+	'ma-2011-ad04': ma2011Ad04,
+	'ma-2011-ad05': ma2011Ad05,
+	'ma-2011-ad06': ma2011Ad06,
+	'ma-2011-ad07': ma2011Ad07,
+	'mc-2111-ad01': mc2111Ad01,
+	'mc-2111-ad02': mc2111Ad02,
+	'mc-2111-ad03': mc2111Ad03,
+	'mc-2111-ad04': mc2111Ad04,
+	'mc-2111-ad05': mc2111Ad05,
+	'mc-2111-ad06': mc2111Ad06,
+	'mc-2111-ad07': mc2111Ad07,
+	'v2011-ad03': v2011Ad03,
+	'v2011-ad04': v2011Ad04,
+	'v2011-ad05': v2011Ad05,
+	'v2111-ad01': v2111Ad01,
+	'v2111-ad02': v2111Ad02,
+	'v2111-ad03': v2111Ad03,
+	'v2111-ad04': v2111Ad04,
+	'v2111-ad05': v2111Ad05,
+	'v2111-ad06': v2111Ad06,
+	'v2111-ad07': v2111Ad07,
+	'v2211-ad01': v2211Ad01,
 };
