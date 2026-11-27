@@ -350,6 +350,8 @@ import {li221103} from './li-2211-03/edit';
 import {v2211Ad02} from './v2211-ad02/edit';
 import {v2211Ad03} from './v2211-ad03/edit';
 import {edicaoSimples27110559} from './edicao-simples-2711-0559/edit';
+import {fe2111Ad04} from './fe-2111-ad04/edit';
+import {fe2111Ad05} from './fe-2111-ad05/edit';
 
 // Cada projeto novo entra aqui. O nome vira o id da composição no Studio e no render.
 export const projetos: Record<string, Edit> = {
@@ -704,4 +706,6 @@ export const projetos: Record<string, Edit> = {
 	'v2211-ad02': v2211Ad02,
 	'v2211-ad03': v2211Ad03,
 	'edicao-simples-2711-0559': edicaoSimples27110559,
+	'fe-2111-ad04': fe2111Ad04,
+	'fe-2111-ad05': fe2111Ad05,
 };
