@@ -1197,88 +1197,64 @@
   "confidence": 0.896298
  },
  {
-  "text": " é",
+  "text": " É",
   "startMs": 57300,
-  "endMs": 57490,
-  "timestampMs": null,
-  "confidence": 0.970467
+  "endMs": 57300
  },
  {
   "text": " porque",
-  "startMs": 57490,
-  "endMs": 57780,
-  "timestampMs": null,
-  "confidence": 0.940143
+  "startMs": 57300,
+  "endMs": 57315
+ },
+ {
+  "text": " ela,",
+  "startMs": 57315,
+  "endMs": 57590
  },
  {
   "text": " ela",
-  "startMs": 57780,
-  "endMs": 57950,
-  "timestampMs": null,
-  "confidence": 0.915403
- },
- {
-  "text": " ela",
-  "startMs": 57950,
-  "endMs": 58140,
-  "timestampMs": null,
-  "confidence": 0.907817
+  "startMs": 57590,
+  "endMs": 57777
  },
  {
   "text": " é",
-  "startMs": 58140,
-  "endMs": 58260,
-  "timestampMs": null,
-  "confidence": 0.994674
+  "startMs": 57777,
+  "endMs": 57865
  },
  {
   "text": " mais",
-  "startMs": 58260,
-  "endMs": 58500,
-  "timestampMs": null,
-  "confidence": 0.993917
+  "startMs": 57865,
+  "endMs": 58085
  },
  {
   "text": " fácil",
-  "startMs": 58500,
-  "endMs": 58860,
-  "timestampMs": null,
-  "confidence": 0.994611
+  "startMs": 58085,
+  "endMs": 58426
  },
  {
   "text": " de",
-  "startMs": 58860,
-  "endMs": 58980,
-  "timestampMs": null,
-  "confidence": 0.90394
+  "startMs": 58426,
+  "endMs": 58536
  },
  {
   "text": " ser",
-  "startMs": 58980,
-  "endMs": 59150,
-  "timestampMs": null,
-  "confidence": 0.960855
+  "startMs": 58536,
+  "endMs": 58701
  },
  {
   "text": " dosada",
-  "startMs": 59150,
-  "endMs": 59520,
-  "timestampMs": null,
-  "confidence": 0.887933
+  "startMs": 58701,
+  "endMs": 59053
  },
  {
   "text": " no",
-  "startMs": 59520,
-  "endMs": 59640,
-  "timestampMs": null,
-  "confidence": 0.98613
+  "startMs": 59053,
+  "endMs": 59141
  },
  {
-  "text": " sangue",
-  "startMs": 59640,
-  "endMs": 60060,
-  "timestampMs": null,
-  "confidence": 0.996755
+  "text": " sangue.",
+  "startMs": 59141,
+  "endMs": 59724
  },
  {
   "text": " e",
