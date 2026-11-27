@@ -372,6 +372,9 @@ import {v2211Ad06a} from './v2211-ad06a/edit';
 import {v2211Ad06b} from './v2211-ad06b/edit';
 import {v2211Ad07a} from './v2211-ad07a/edit';
 import {v2211Ad07b} from './v2211-ad07b/edit';
+import {v2211Ad05} from './v2211-ad05/edit';
+import {v2211Ad06} from './v2211-ad06/edit';
+import {v2211Ad07} from './v2211-ad07/edit';
 
 // Cada projeto novo entra aqui. O nome vira o id da composição no Studio e no render.
 export const projetos: Record<string, Edit> = {
@@ -748,4 +751,7 @@ export const projetos: Record<string, Edit> = {
 	'v2211-ad06b': v2211Ad06b,
 	'v2211-ad07a': v2211Ad07a,
 	'v2211-ad07b': v2211Ad07b,
+	'v2211-ad05': v2211Ad05,
+	'v2211-ad06': v2211Ad06,
+	'v2211-ad07': v2211Ad07,
 };
