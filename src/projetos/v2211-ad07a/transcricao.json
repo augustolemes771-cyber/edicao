@@ -1,1 +1,415 @@
-[]
+[
+ {
+  "text": "Eu",
+  "startMs": 20,
+  "endMs": 930,
+  "timestampMs": null,
+  "confidence": 0.944325
+ },
+ {
+  "text": " acordo",
+  "startMs": 930,
+  "endMs": 980,
+  "timestampMs": null,
+  "confidence": 0.996291
+ },
+ {
+  "text": " toda",
+  "startMs": 980,
+  "endMs": 1390,
+  "timestampMs": null,
+  "confidence": 0.998643
+ },
+ {
+  "text": " madrugada",
+  "startMs": 1390,
+  "endMs": 2430,
+  "timestampMs": null,
+  "confidence": 0.83559
+ },
+ {
+  "text": " suando",
+  "startMs": 2430,
+  "endMs": 3160,
+  "timestampMs": null,
+  "confidence": 0.991609
+ },
+ {
+  "text": " e",
+  "startMs": 3160,
+  "endMs": 3220,
+  "timestampMs": null,
+  "confidence": 0.983629
+ },
+ {
+  "text": " não",
+  "startMs": 3220,
+  "endMs": 3490,
+  "timestampMs": null,
+  "confidence": 0.999674
+ },
+ {
+  "text": " consigo",
+  "startMs": 3490,
+  "endMs": 4060,
+  "timestampMs": null,
+  "confidence": 0.999809
+ },
+ {
+  "text": " mais",
+  "startMs": 4060,
+  "endMs": 4240,
+  "timestampMs": null,
+  "confidence": 0.999743
+ },
+ {
+  "text": " dormir.",
+  "startMs": 4240,
+  "endMs": 4880,
+  "timestampMs": null,
+  "confidence": 0.999744
+ },
+ {
+  "text": " Sinto",
+  "startMs": 4880,
+  "endMs": 5860,
+  "timestampMs": null,
+  "confidence": 0.999863
+ },
+ {
+  "text": " um",
+  "startMs": 5860,
+  "endMs": 6170,
+  "timestampMs": null,
+  "confidence": 0.999952
+ },
+ {
+  "text": " calor",
+  "startMs": 6170,
+  "endMs": 7100,
+  "timestampMs": null,
+  "confidence": 0.99996
+ },
+ {
+  "text": " no",
+  "startMs": 7100,
+  "endMs": 7450,
+  "timestampMs": null,
+  "confidence": 0.999905
+ },
+ {
+  "text": " rosto",
+  "startMs": 7450,
+  "endMs": 8390,
+  "timestampMs": null,
+  "confidence": 0.999899
+ },
+ {
+  "text": " que",
+  "startMs": 8390,
+  "endMs": 8950,
+  "timestampMs": null,
+  "confidence": 0.994888
+ },
+ {
+  "text": " vem",
+  "startMs": 8950,
+  "endMs": 9510,
+  "timestampMs": null,
+  "confidence": 0.999926
+ },
+ {
+  "text": " do",
+  "startMs": 9510,
+  "endMs": 9850,
+  "timestampMs": null,
+  "confidence": 0.999979
+ },
+ {
+  "text": " nada",
+  "startMs": 9850,
+  "endMs": 10660,
+  "timestampMs": null,
+  "confidence": 0.999949
+ },
+ {
+  "text": " e",
+  "startMs": 10660,
+  "endMs": 10770,
+  "timestampMs": null,
+  "confidence": 0.934752
+ },
+ {
+  "text": " destrói",
+  "startMs": 10770,
+  "endMs": 11350,
+  "timestampMs": null,
+  "confidence": 0.997689
+ },
+ {
+  "text": " a",
+  "startMs": 11350,
+  "endMs": 11420,
+  "timestampMs": null,
+  "confidence": 0.99959
+ },
+ {
+  "text": " minha",
+  "startMs": 11420,
+  "endMs": 11780,
+  "timestampMs": null,
+  "confidence": 0.999905
+ },
+ {
+  "text": " maquiagem",
+  "startMs": 11780,
+  "endMs": 12460,
+  "timestampMs": null,
+  "confidence": 0.999613
+ },
+ {
+  "text": " e",
+  "startMs": 12460,
+  "endMs": 12500,
+  "timestampMs": null,
+  "confidence": 0.999415
+ },
+ {
+  "text": " o",
+  "startMs": 12500,
+  "endMs": 12570,
+  "timestampMs": null,
+  "confidence": 0.999003
+ },
+ {
+  "text": " meu",
+  "startMs": 12570,
+  "endMs": 13010,
+  "timestampMs": null,
+  "confidence": 0.999641
+ },
+ {
+  "text": " cabelo.",
+  "startMs": 13010,
+  "endMs": 13500,
+  "timestampMs": null,
+  "confidence": 0.998936
+ },
+ {
+  "text": " O",
+  "startMs": 13500,
+  "endMs": 13700,
+  "timestampMs": null,
+  "confidence": 0.999832
+ },
+ {
+  "text": " meu",
+  "startMs": 13700,
+  "endMs": 14480,
+  "timestampMs": null,
+  "confidence": 0.99996
+ },
+ {
+  "text": " corpo",
+  "startMs": 14480,
+  "endMs": 15280,
+  "timestampMs": null,
+  "confidence": 0.999969
+ },
+ {
+  "text": " vive",
+  "startMs": 15280,
+  "endMs": 16060,
+  "timestampMs": null,
+  "confidence": 0.999741
+ },
+ {
+  "text": " cansado",
+  "startMs": 16060,
+  "endMs": 17560,
+  "timestampMs": null,
+  "confidence": 0.999514
+ },
+ {
+  "text": " e",
+  "startMs": 17560,
+  "endMs": 17650,
+  "timestampMs": null,
+  "confidence": 0.999819
+ },
+ {
+  "text": " dolorido.",
+  "startMs": 17650,
+  "endMs": 19880,
+  "timestampMs": null,
+  "confidence": 0.999622
+ },
+ {
+  "text": " Eu",
+  "startMs": 19880,
+  "endMs": 20010,
+  "timestampMs": null,
+  "confidence": 0.705625
+ },
+ {
+  "text": " nem",
+  "startMs": 20010,
+  "endMs": 20210,
+  "timestampMs": null,
+  "confidence": 0.999783
+ },
+ {
+  "text": " tenho",
+  "startMs": 20210,
+  "endMs": 20550,
+  "timestampMs": null,
+  "confidence": 0.999834
+ },
+ {
+  "text": " vontade",
+  "startMs": 20550,
+  "endMs": 21080,
+  "timestampMs": null,
+  "confidence": 0.999319
+ },
+ {
+  "text": " de",
+  "startMs": 21080,
+  "endMs": 21160,
+  "timestampMs": null,
+  "confidence": 0.999807
+ },
+ {
+  "text": " namorar.",
+  "startMs": 21160,
+  "endMs": 21900,
+  "timestampMs": null,
+  "confidence": 0.997539
+ },
+ {
+  "text": " Minha",
+  "startMs": 25700,
+  "endMs": 26050,
+  "timestampMs": null,
+  "confidence": 0.98355
+ },
+ {
+  "text": " pele",
+  "startMs": 26050,
+  "endMs": 26350,
+  "timestampMs": null,
+  "confidence": 0.999682
+ },
+ {
+  "text": " e",
+  "startMs": 26350,
+  "endMs": 26420,
+  "timestampMs": null,
+  "confidence": 0.999949
+ },
+ {
+  "text": " o",
+  "startMs": 26420,
+  "endMs": 26660,
+  "timestampMs": null,
+  "confidence": 0.962571
+ },
+ {
+  "text": " meu",
+  "startMs": 26660,
+  "endMs": 26710,
+  "timestampMs": null,
+  "confidence": 0.999886
+ },
+ {
+  "text": " corpo",
+  "startMs": 26710,
+  "endMs": 27090,
+  "timestampMs": null,
+  "confidence": 0.999929
+ },
+ {
+  "text": " estão",
+  "startMs": 27090,
+  "endMs": 27540,
+  "timestampMs": null,
+  "confidence": 0.999428
+ },
+ {
+  "text": " ressecados",
+  "startMs": 27540,
+  "endMs": 28250,
+  "timestampMs": null,
+  "confidence": 0.999512
+ },
+ {
+  "text": " e",
+  "startMs": 28250,
+  "endMs": 28350,
+  "timestampMs": null,
+  "confidence": 0.994433
+ },
+ {
+  "text": " o",
+  "startMs": 28350,
+  "endMs": 28450,
+  "timestampMs": null,
+  "confidence": 0.972351
+ },
+ {
+  "text": " meu",
+  "startMs": 28450,
+  "endMs": 28640,
+  "timestampMs": null,
+  "confidence": 0.999857
+ },
+ {
+  "text": " cabelo",
+  "startMs": 28640,
+  "endMs": 29080,
+  "timestampMs": null,
+  "confidence": 0.999964
+ },
+ {
+  "text": " parece",
+  "startMs": 29080,
+  "endMs": 29530,
+  "timestampMs": null,
+  "confidence": 0.999857
+ },
+ {
+  "text": " que",
+  "startMs": 29530,
+  "endMs": 29750,
+  "timestampMs": null,
+  "confidence": 0.99975
+ },
+ {
+  "text": " está",
+  "startMs": 29750,
+  "endMs": 30130,
+  "timestampMs": null,
+  "confidence": 0.895683
+ },
+ {
+  "text": " perdendo",
+  "startMs": 30130,
+  "endMs": 30800,
+  "timestampMs": null,
+  "confidence": 0.999809
+ },
+ {
+  "text": " a",
+  "startMs": 30800,
+  "endMs": 30800,
+  "timestampMs": null,
+  "confidence": 0.994431
+ },
+ {
+  "text": " saúde.",
+  "startMs": 30800,
+  "endMs": 31640,
+  "timestampMs": null,
+  "confidence": 0.997373
+ }
+]
