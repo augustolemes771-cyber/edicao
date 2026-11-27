@@ -1,1 +1,1990 @@
-[]
+[
+ {
+  "text": "O",
+  "startMs": 400,
+  "endMs": 400,
+  "timestampMs": null,
+  "confidence": 0.991157
+ },
+ {
+  "text": " seu",
+  "startMs": 400,
+  "endMs": 420,
+  "timestampMs": null,
+  "confidence": 0.999895
+ },
+ {
+  "text": " intestino",
+  "startMs": 420,
+  "endMs": 1170,
+  "timestampMs": null,
+  "confidence": 0.97767
+ },
+ {
+  "text": " ronca",
+  "startMs": 1170,
+  "endMs": 1510,
+  "timestampMs": null,
+  "confidence": 0.998133
+ },
+ {
+  "text": " assim?",
+  "startMs": 1510,
+  "endMs": 2220,
+  "timestampMs": null,
+  "confidence": 0.866184
+ },
+ {
+  "text": " E",
+  "startMs": 2220,
+  "endMs": 2450,
+  "timestampMs": null,
+  "confidence": 0.999805
+ },
+ {
+  "text": " as",
+  "startMs": 2450,
+  "endMs": 3020,
+  "timestampMs": null,
+  "confidence": 0.999569
+ },
+ {
+  "text": " suas",
+  "startMs": 3020,
+  "endMs": 3850,
+  "timestampMs": null,
+  "confidence": 0.999939
+ },
+ {
+  "text": " camisetas?",
+  "startMs": 3850,
+  "endMs": 6640,
+  "timestampMs": null,
+  "confidence": 0.999184
+ },
+ {
+  "text": " Marcam?",
+  "startMs": 6640,
+  "endMs": 7420,
+  "timestampMs": null,
+  "confidence": 0.803724
+ },
+ {
+  "text": " Você",
+  "startMs": 7420,
+  "endMs": 7820,
+  "timestampMs": null,
+  "confidence": 0.999655
+ },
+ {
+  "text": " tem",
+  "startMs": 7820,
+  "endMs": 8220,
+  "timestampMs": null,
+  "confidence": 0.999933
+ },
+ {
+  "text": " mal",
+  "startMs": 8220,
+  "endMs": 8300,
+  "timestampMs": null,
+  "confidence": 0.483621
+ },
+ {
+  "text": " o",
+  "startMs": 8300,
+  "endMs": 8390,
+  "timestampMs": null,
+  "confidence": 0.702437
+ },
+ {
+  "text": " hálito",
+  "startMs": 8390,
+  "endMs": 8940,
+  "timestampMs": null,
+  "confidence": 0.948183
+ },
+ {
+  "text": " e",
+  "startMs": 8940,
+  "endMs": 9050,
+  "timestampMs": null,
+  "confidence": 0.899338
+ },
+ {
+  "text": " os",
+  "startMs": 9050,
+  "endMs": 9180,
+  "timestampMs": null,
+  "confidence": 0.959472
+ },
+ {
+  "text": " seus",
+  "startMs": 9180,
+  "endMs": 9500,
+  "timestampMs": null,
+  "confidence": 0.999519
+ },
+ {
+  "text": " gases",
+  "startMs": 9500,
+  "endMs": 9890,
+  "timestampMs": null,
+  "confidence": 0.972958
+ },
+ {
+  "text": " cheiram",
+  "startMs": 9890,
+  "endMs": 10250,
+  "timestampMs": null,
+  "confidence": 0.558326
+ },
+ {
+  "text": " um",
+  "startMs": 10250,
+  "endMs": 10340,
+  "timestampMs": null,
+  "confidence": 0.623546
+ },
+ {
+  "text": " ovo",
+  "startMs": 10340,
+  "endMs": 10470,
+  "timestampMs": null,
+  "confidence": 0.99467
+ },
+ {
+  "text": " podre?",
+  "startMs": 10470,
+  "endMs": 10860,
+  "timestampMs": null,
+  "confidence": 0.99775
+ },
+ {
+  "text": " Olha,",
+  "startMs": 10860,
+  "endMs": 11100,
+  "timestampMs": null,
+  "confidence": 0.997493
+ },
+ {
+  "text": " eu",
+  "startMs": 11100,
+  "endMs": 11180,
+  "timestampMs": null,
+  "confidence": 0.866568
+ },
+ {
+  "text": " nem",
+  "startMs": 11180,
+  "endMs": 11300,
+  "timestampMs": null,
+  "confidence": 0.999887
+ },
+ {
+  "text": " posso",
+  "startMs": 11300,
+  "endMs": 11570,
+  "timestampMs": null,
+  "confidence": 0.999647
+ },
+ {
+  "text": " te",
+  "startMs": 11570,
+  "endMs": 11660,
+  "timestampMs": null,
+  "confidence": 0.999129
+ },
+ {
+  "text": " culpar",
+  "startMs": 11660,
+  "endMs": 11830,
+  "timestampMs": null,
+  "confidence": 0.995042
+ },
+ {
+  "text": " por",
+  "startMs": 11830,
+  "endMs": 11950,
+  "timestampMs": null,
+  "confidence": 0.999661
+ },
+ {
+  "text": " isso,",
+  "startMs": 11950,
+  "endMs": 12190,
+  "timestampMs": null,
+  "confidence": 0.999712
+ },
+ {
+  "text": " tá?",
+  "startMs": 12190,
+  "endMs": 12500,
+  "timestampMs": null,
+  "confidence": 0.998209
+ },
+ {
+  "text": " Porque",
+  "startMs": 12500,
+  "endMs": 12820,
+  "timestampMs": null,
+  "confidence": 0.999729
+ },
+ {
+  "text": " eu",
+  "startMs": 12820,
+  "endMs": 12930,
+  "timestampMs": null,
+  "confidence": 0.999989
+ },
+ {
+  "text": " também",
+  "startMs": 12930,
+  "endMs": 13310,
+  "timestampMs": null,
+  "confidence": 0.999281
+ },
+ {
+  "text": " já",
+  "startMs": 13310,
+  "endMs": 13470,
+  "timestampMs": null,
+  "confidence": 0.999809
+ },
+ {
+  "text": " fui",
+  "startMs": 13470,
+  "endMs": 13630,
+  "timestampMs": null,
+  "confidence": 0.759627
+ },
+ {
+  "text": " exatamente",
+  "startMs": 13630,
+  "endMs": 14170,
+  "timestampMs": null,
+  "confidence": 0.999804
+ },
+ {
+  "text": " assim.",
+  "startMs": 14170,
+  "endMs": 14480,
+  "timestampMs": null,
+  "confidence": 0.998711
+ },
+ {
+  "text": " Vivi",
+  "startMs": 14480,
+  "endMs": 14760,
+  "timestampMs": null,
+  "confidence": 0.726721
+ },
+ {
+  "text": " estofada,",
+  "startMs": 14760,
+  "endMs": 15460,
+  "timestampMs": null,
+  "confidence": 0.995486
+ },
+ {
+  "text": " cheia",
+  "startMs": 15460,
+  "endMs": 15810,
+  "timestampMs": null,
+  "confidence": 0.998864
+ },
+ {
+  "text": " de",
+  "startMs": 15810,
+  "endMs": 15940,
+  "timestampMs": null,
+  "confidence": 0.999989
+ },
+ {
+  "text": " gases",
+  "startMs": 15940,
+  "endMs": 16350,
+  "timestampMs": null,
+  "confidence": 0.999651
+ },
+ {
+  "text": " e",
+  "startMs": 16350,
+  "endMs": 16380,
+  "timestampMs": null,
+  "confidence": 0.988369
+ },
+ {
+  "text": " conchipada.",
+  "startMs": 16380,
+  "endMs": 17020,
+  "timestampMs": null,
+  "confidence": 0.485858
+ },
+ {
+  "text": " Não",
+  "startMs": 17020,
+  "endMs": 17260,
+  "timestampMs": null,
+  "confidence": 0.999949
+ },
+ {
+  "text": " é",
+  "startMs": 17260,
+  "endMs": 17380,
+  "timestampMs": null,
+  "confidence": 0.998879
+ },
+ {
+  "text": " só",
+  "startMs": 17380,
+  "endMs": 17560,
+  "timestampMs": null,
+  "confidence": 0.999466
+ },
+ {
+  "text": " o",
+  "startMs": 17560,
+  "endMs": 17820,
+  "timestampMs": null,
+  "confidence": 0.942766
+ },
+ {
+  "text": " desconforto",
+  "startMs": 17820,
+  "endMs": 18280,
+  "timestampMs": null,
+  "confidence": 0.999859
+ },
+ {
+  "text": " também.",
+  "startMs": 18280,
+  "endMs": 18900,
+  "timestampMs": null,
+  "confidence": 0.994253
+ },
+ {
+  "text": " Porque",
+  "startMs": 18900,
+  "endMs": 19200,
+  "timestampMs": null,
+  "confidence": 0.799772
+ },
+ {
+  "text": " vem",
+  "startMs": 19200,
+  "endMs": 19350,
+  "timestampMs": null,
+  "confidence": 0.999333
+ },
+ {
+  "text": " junto,",
+  "startMs": 19350,
+  "endMs": 19700,
+  "timestampMs": null,
+  "confidence": 0.999945
+ },
+ {
+  "text": " memória",
+  "startMs": 19700,
+  "endMs": 20110,
+  "timestampMs": null,
+  "confidence": 0.989234
+ },
+ {
+  "text": " fraca,",
+  "startMs": 20110,
+  "endMs": 20460,
+  "timestampMs": null,
+  "confidence": 0.977691
+ },
+ {
+  "text": " dificuldade",
+  "startMs": 20460,
+  "endMs": 20960,
+  "timestampMs": null,
+  "confidence": 0.854202
+ },
+ {
+  "text": " de",
+  "startMs": 20960,
+  "endMs": 21000,
+  "timestampMs": null,
+  "confidence": 0.998942
+ },
+ {
+  "text": " concentração,",
+  "startMs": 21000,
+  "endMs": 21680,
+  "timestampMs": null,
+  "confidence": 0.999958
+ },
+ {
+  "text": " falta",
+  "startMs": 21680,
+  "endMs": 22110,
+  "timestampMs": null,
+  "confidence": 0.999914
+ },
+ {
+  "text": " de",
+  "startMs": 22110,
+  "endMs": 22480,
+  "timestampMs": null,
+  "confidence": 1
+ },
+ {
+  "text": " energia.",
+  "startMs": 22480,
+  "endMs": 23160,
+  "timestampMs": null,
+  "confidence": 0.999914
+ },
+ {
+  "text": " Isso",
+  "startMs": 23160,
+  "endMs": 23450,
+  "timestampMs": null,
+  "confidence": 0.996202
+ },
+ {
+  "text": " sem",
+  "startMs": 23450,
+  "endMs": 23960,
+  "timestampMs": null,
+  "confidence": 0.998911
+ },
+ {
+  "text": " contar",
+  "startMs": 23960,
+  "endMs": 24130,
+  "timestampMs": null,
+  "confidence": 0.999857
+ },
+ {
+  "text": " que",
+  "startMs": 24130,
+  "endMs": 24370,
+  "timestampMs": null,
+  "confidence": 0.981759
+ },
+ {
+  "text": " ficar",
+  "startMs": 24370,
+  "endMs": 24700,
+  "timestampMs": null,
+  "confidence": 0.995963
+ },
+ {
+  "text": " com",
+  "startMs": 24700,
+  "endMs": 24920,
+  "timestampMs": null,
+  "confidence": 0.999674
+ },
+ {
+  "text": " todo",
+  "startMs": 24920,
+  "endMs": 25220,
+  "timestampMs": null,
+  "confidence": 0.996331
+ },
+ {
+  "text": " esse",
+  "startMs": 25220,
+  "endMs": 25490,
+  "timestampMs": null,
+  "confidence": 0.999502
+ },
+ {
+  "text": " cocô",
+  "startMs": 25490,
+  "endMs": 25860,
+  "timestampMs": null,
+  "confidence": 0.977763
+ },
+ {
+  "text": " preso",
+  "startMs": 25860,
+  "endMs": 26300,
+  "timestampMs": null,
+  "confidence": 0.996175
+ },
+ {
+  "text": " aí",
+  "startMs": 26300,
+  "endMs": 26480,
+  "timestampMs": null,
+  "confidence": 0.976837
+ },
+ {
+  "text": " pode",
+  "startMs": 26480,
+  "endMs": 26730,
+  "timestampMs": null,
+  "confidence": 0.991505
+ },
+ {
+  "text": " ainda,",
+  "startMs": 26730,
+  "endMs": 27280,
+  "timestampMs": null,
+  "confidence": 0.998353
+ },
+ {
+  "text": " dizem",
+  "startMs": 27280,
+  "endMs": 27480,
+  "timestampMs": null,
+  "confidence": 0.998788
+ },
+ {
+  "text": " que,",
+  "startMs": 27480,
+  "endMs": 27840,
+  "timestampMs": null,
+  "confidence": 0.964681
+ },
+ {
+  "text": " adiar",
+  "startMs": 27840,
+  "endMs": 28160,
+  "timestampMs": null,
+  "confidence": 0.985899
+ },
+ {
+  "text": " problemas",
+  "startMs": 28160,
+  "endMs": 28640,
+  "timestampMs": null,
+  "confidence": 0.982599
+ },
+ {
+  "text": " bem",
+  "startMs": 28640,
+  "endMs": 28790,
+  "timestampMs": null,
+  "confidence": 0.997876
+ },
+ {
+  "text": " mais",
+  "startMs": 28790,
+  "endMs": 29010,
+  "timestampMs": null,
+  "confidence": 0.999931
+ },
+ {
+  "text": " sérios.",
+  "startMs": 29010,
+  "endMs": 29560,
+  "timestampMs": null,
+  "confidence": 0.996713
+ },
+ {
+  "text": " E",
+  "startMs": 29580,
+  "endMs": 29620,
+  "timestampMs": null,
+  "confidence": 0.997244
+ },
+ {
+  "text": " foi",
+  "startMs": 29620,
+  "endMs": 29800,
+  "timestampMs": null,
+  "confidence": 0.999474
+ },
+ {
+  "text": " aí",
+  "startMs": 29800,
+  "endMs": 29980,
+  "timestampMs": null,
+  "confidence": 0.999926
+ },
+ {
+  "text": " que",
+  "startMs": 29980,
+  "endMs": 30230,
+  "timestampMs": null,
+  "confidence": 0.999994
+ },
+ {
+  "text": " eu",
+  "startMs": 30230,
+  "endMs": 30360,
+  "timestampMs": null,
+  "confidence": 0.999939
+ },
+ {
+  "text": " vi",
+  "startMs": 30360,
+  "endMs": 30400,
+  "timestampMs": null,
+  "confidence": 0.999314
+ },
+ {
+  "text": " um",
+  "startMs": 30400,
+  "endMs": 30530,
+  "timestampMs": null,
+  "confidence": 0.999901
+ },
+ {
+  "text": " vídeo",
+  "startMs": 30530,
+  "endMs": 30890,
+  "timestampMs": null,
+  "confidence": 0.999796
+ },
+ {
+  "text": " de",
+  "startMs": 30890,
+  "endMs": 31010,
+  "timestampMs": null,
+  "confidence": 0.999947
+ },
+ {
+  "text": " um",
+  "startMs": 31010,
+  "endMs": 31130,
+  "timestampMs": null,
+  "confidence": 0.999952
+ },
+ {
+  "text": " médico",
+  "startMs": 31130,
+  "endMs": 31640,
+  "timestampMs": null,
+  "confidence": 0.999737
+ },
+ {
+  "text": " explicando",
+  "startMs": 31640,
+  "endMs": 32220,
+  "timestampMs": null,
+  "confidence": 0.999914
+ },
+ {
+  "text": " a",
+  "startMs": 32220,
+  "endMs": 32440,
+  "timestampMs": null,
+  "confidence": 0.999784
+ },
+ {
+  "text": " importância",
+  "startMs": 32440,
+  "endMs": 32970,
+  "timestampMs": null,
+  "confidence": 0.999809
+ },
+ {
+  "text": " que",
+  "startMs": 32970,
+  "endMs": 33140,
+  "timestampMs": null,
+  "confidence": 0.999802
+ },
+ {
+  "text": " as",
+  "startMs": 33140,
+  "endMs": 33270,
+  "timestampMs": null,
+  "confidence": 0.999956
+ },
+ {
+  "text": " fibras",
+  "startMs": 33270,
+  "endMs": 33580,
+  "timestampMs": null,
+  "confidence": 0.999798
+ },
+ {
+  "text": " têm",
+  "startMs": 33580,
+  "endMs": 33900,
+  "timestampMs": null,
+  "confidence": 0.919384
+ },
+ {
+  "text": " e",
+  "startMs": 33900,
+  "endMs": 33960,
+  "timestampMs": null,
+  "confidence": 0.999992
+ },
+ {
+  "text": " o",
+  "startMs": 33960,
+  "endMs": 34020,
+  "timestampMs": null,
+  "confidence": 1
+ },
+ {
+  "text": " poder",
+  "startMs": 34020,
+  "endMs": 34360,
+  "timestampMs": null,
+  "confidence": 0.999992
+ },
+ {
+  "text": " de",
+  "startMs": 34360,
+  "endMs": 34700,
+  "timestampMs": null,
+  "confidence": 1
+ },
+ {
+  "text": " melhorar",
+  "startMs": 34700,
+  "endMs": 35030,
+  "timestampMs": null,
+  "confidence": 0.999928
+ },
+ {
+  "text": " o",
+  "startMs": 35030,
+  "endMs": 35110,
+  "timestampMs": null,
+  "confidence": 0.999989
+ },
+ {
+  "text": " intestino.",
+  "startMs": 35110,
+  "endMs": 35980,
+  "timestampMs": null,
+  "confidence": 0.99991
+ },
+ {
+  "text": " Esses",
+  "startMs": 35980,
+  "endMs": 36320,
+  "timestampMs": null,
+  "confidence": 0.998988
+ },
+ {
+  "text": " estudos,",
+  "startMs": 36320,
+  "endMs": 36950,
+  "timestampMs": null,
+  "confidence": 0.998986
+ },
+ {
+  "text": " eles",
+  "startMs": 36950,
+  "endMs": 37210,
+  "timestampMs": null,
+  "confidence": 0.999895
+ },
+ {
+  "text": " mostram",
+  "startMs": 37210,
+  "endMs": 37690,
+  "timestampMs": null,
+  "confidence": 0.99898
+ },
+ {
+  "text": " que",
+  "startMs": 37690,
+  "endMs": 37940,
+  "timestampMs": null,
+  "confidence": 0.996799
+ },
+ {
+  "text": " 7",
+  "startMs": 37940,
+  "endMs": 38150,
+  "timestampMs": null,
+  "confidence": 0.872124
+ },
+ {
+  "text": " em",
+  "startMs": 38150,
+  "endMs": 38290,
+  "timestampMs": null,
+  "confidence": 0.99922
+ },
+ {
+  "text": " cada",
+  "startMs": 38290,
+  "endMs": 38570,
+  "timestampMs": null,
+  "confidence": 0.999886
+ },
+ {
+  "text": " 10",
+  "startMs": 38570,
+  "endMs": 38980,
+  "timestampMs": null,
+  "confidence": 0.99983
+ },
+ {
+  "text": " brasileiros",
+  "startMs": 38980,
+  "endMs": 39760,
+  "timestampMs": null,
+  "confidence": 0.999781
+ },
+ {
+  "text": " não",
+  "startMs": 39760,
+  "endMs": 39970,
+  "timestampMs": null,
+  "confidence": 0.99999
+ },
+ {
+  "text": " consomem",
+  "startMs": 39970,
+  "endMs": 40390,
+  "timestampMs": null,
+  "confidence": 0.999605
+ },
+ {
+  "text": " a",
+  "startMs": 40390,
+  "endMs": 40560,
+  "timestampMs": null,
+  "confidence": 0.999977
+ },
+ {
+  "text": " quantidade",
+  "startMs": 40560,
+  "endMs": 40980,
+  "timestampMs": null,
+  "confidence": 0.999838
+ },
+ {
+  "text": " ideal",
+  "startMs": 40980,
+  "endMs": 41250,
+  "timestampMs": null,
+  "confidence": 0.999926
+ },
+ {
+  "text": " de",
+  "startMs": 41250,
+  "endMs": 41390,
+  "timestampMs": null,
+  "confidence": 0.999676
+ },
+ {
+  "text": " fibras",
+  "startMs": 41390,
+  "endMs": 41670,
+  "timestampMs": null,
+  "confidence": 0.999966
+ },
+ {
+  "text": " diariamente.",
+  "startMs": 41670,
+  "endMs": 42500,
+  "timestampMs": null,
+  "confidence": 0.999777
+ },
+ {
+  "text": " E",
+  "startMs": 42500,
+  "endMs": 42560,
+  "timestampMs": null,
+  "confidence": 0.999992
+ },
+ {
+  "text": " os",
+  "startMs": 42560,
+  "endMs": 42710,
+  "timestampMs": null,
+  "confidence": 0.99999
+ },
+ {
+  "text": " alimentos",
+  "startMs": 42710,
+  "endMs": 43300,
+  "timestampMs": null,
+  "confidence": 0.99976
+ },
+ {
+  "text": " ultraprocessados,",
+  "startMs": 43300,
+  "endMs": 44560,
+  "timestampMs": null,
+  "confidence": 0.811793
+ },
+ {
+  "text": " altos",
+  "startMs": 44560,
+  "endMs": 45010,
+  "timestampMs": null,
+  "confidence": 0.999262
+ },
+ {
+  "text": " níveis",
+  "startMs": 45010,
+  "endMs": 45650,
+  "timestampMs": null,
+  "confidence": 0.99972
+ },
+ {
+  "text": " de",
+  "startMs": 45650,
+  "endMs": 45830,
+  "timestampMs": null,
+  "confidence": 0.99992
+ },
+ {
+  "text": " estresse",
+  "startMs": 45830,
+  "endMs": 46620,
+  "timestampMs": null,
+  "confidence": 0.997541
+ },
+ {
+  "text": " e",
+  "startMs": 46620,
+  "endMs": 46650,
+  "timestampMs": null,
+  "confidence": 0.999014
+ },
+ {
+  "text": " de",
+  "startMs": 46650,
+  "endMs": 46830,
+  "timestampMs": null,
+  "confidence": 0.999973
+ },
+ {
+  "text": " maus",
+  "startMs": 46830,
+  "endMs": 47190,
+  "timestampMs": null,
+  "confidence": 0.997849
+ },
+ {
+  "text": " hábitos",
+  "startMs": 47190,
+  "endMs": 47980,
+  "timestampMs": null,
+  "confidence": 0.961399
+ },
+ {
+  "text": " ainda",
+  "startMs": 47980,
+  "endMs": 48190,
+  "timestampMs": null,
+  "confidence": 0.999977
+ },
+ {
+  "text": " podem",
+  "startMs": 48190,
+  "endMs": 48400,
+  "timestampMs": null,
+  "confidence": 0.99992
+ },
+ {
+  "text": " piorar",
+  "startMs": 48400,
+  "endMs": 48780,
+  "timestampMs": null,
+  "confidence": 0.999912
+ },
+ {
+  "text": " muito",
+  "startMs": 48780,
+  "endMs": 48860,
+  "timestampMs": null,
+  "confidence": 0.999975
+ },
+ {
+  "text": " mais",
+  "startMs": 48860,
+  "endMs": 49030,
+  "timestampMs": null,
+  "confidence": 0.999935
+ },
+ {
+  "text": " essa",
+  "startMs": 49030,
+  "endMs": 49200,
+  "timestampMs": null,
+  "confidence": 0.972231
+ },
+ {
+  "text": " situação.",
+  "startMs": 49200,
+  "endMs": 49820,
+  "timestampMs": null,
+  "confidence": 0.999937
+ },
+ {
+  "text": " E",
+  "startMs": 49820,
+  "endMs": 49890,
+  "timestampMs": null,
+  "confidence": 0.999926
+ },
+ {
+  "text": " ó,",
+  "startMs": 49890,
+  "endMs": 50190,
+  "timestampMs": null,
+  "confidence": 0.452003
+ },
+ {
+  "text": " o",
+  "startMs": 50190,
+  "endMs": 50260,
+  "timestampMs": null,
+  "confidence": 0.999748
+ },
+ {
+  "text": " que",
+  "startMs": 50260,
+  "endMs": 50620,
+  "timestampMs": null,
+  "confidence": 0.999996
+ },
+ {
+  "text": " finalmente",
+  "startMs": 50620,
+  "endMs": 51270,
+  "timestampMs": null,
+  "confidence": 0.999861
+ },
+ {
+  "text": " me",
+  "startMs": 51270,
+  "endMs": 51450,
+  "timestampMs": null,
+  "confidence": 0.99999
+ },
+ {
+  "text": " ajudou",
+  "startMs": 51450,
+  "endMs": 51880,
+  "timestampMs": null,
+  "confidence": 0.999939
+ },
+ {
+  "text": " de",
+  "startMs": 51880,
+  "endMs": 52030,
+  "timestampMs": null,
+  "confidence": 0.909861
+ },
+ {
+  "text": " verdade",
+  "startMs": 52030,
+  "endMs": 52660,
+  "timestampMs": null,
+  "confidence": 0.999964
+ },
+ {
+  "text": " foi",
+  "startMs": 52660,
+  "endMs": 52860,
+  "timestampMs": null,
+  "confidence": 0.999964
+ },
+ {
+  "text": " uma",
+  "startMs": 52860,
+  "endMs": 53060,
+  "timestampMs": null,
+  "confidence": 0.999983
+ },
+ {
+  "text": " cápsula",
+  "startMs": 53060,
+  "endMs": 53630,
+  "timestampMs": null,
+  "confidence": 0.998969
+ },
+ {
+  "text": " que",
+  "startMs": 53630,
+  "endMs": 53780,
+  "timestampMs": null,
+  "confidence": 0.999361
+ },
+ {
+  "text": " eu",
+  "startMs": 53780,
+  "endMs": 53910,
+  "timestampMs": null,
+  "confidence": 0.999926
+ },
+ {
+  "text": " vou",
+  "startMs": 53910,
+  "endMs": 54110,
+  "timestampMs": null,
+  "confidence": 0.999958
+ },
+ {
+  "text": " te",
+  "startMs": 54110,
+  "endMs": 54230,
+  "timestampMs": null,
+  "confidence": 0.999977
+ },
+ {
+  "text": " falar",
+  "startMs": 54230,
+  "endMs": 54570,
+  "timestampMs": null,
+  "confidence": 0.999857
+ },
+ {
+  "text": " aqui.",
+  "startMs": 54570,
+  "endMs": 55060,
+  "timestampMs": null,
+  "confidence": 0.999969
+ },
+ {
+  "text": " O",
+  "startMs": 55060,
+  "endMs": 55120,
+  "timestampMs": null,
+  "confidence": 0.645751
+ },
+ {
+  "text": " Monjar",
+  "startMs": 55120,
+  "endMs": 55860,
+  "timestampMs": null,
+  "confidence": 0.525948
+ },
+ {
+  "text": " Natural.",
+  "startMs": 55860,
+  "endMs": 56220,
+  "timestampMs": null,
+  "confidence": 0.901171
+ },
+ {
+  "text": " Ela",
+  "startMs": 56220,
+  "endMs": 56460,
+  "timestampMs": null,
+  "confidence": 0.988389
+ },
+ {
+  "text": " me",
+  "startMs": 56460,
+  "endMs": 56620,
+  "timestampMs": null,
+  "confidence": 0.999994
+ },
+ {
+  "text": " ajudou",
+  "startMs": 56620,
+  "endMs": 57110,
+  "timestampMs": null,
+  "confidence": 0.999929
+ },
+ {
+  "text": " a",
+  "startMs": 57110,
+  "endMs": 57190,
+  "timestampMs": null,
+  "confidence": 0.999964
+ },
+ {
+  "text": " tirar",
+  "startMs": 57190,
+  "endMs": 57600,
+  "timestampMs": null,
+  "confidence": 0.99915
+ },
+ {
+  "text": " tudo",
+  "startMs": 57600,
+  "endMs": 57930,
+  "timestampMs": null,
+  "confidence": 0.999762
+ },
+ {
+  "text": " que",
+  "startMs": 57930,
+  "endMs": 58160,
+  "timestampMs": null,
+  "confidence": 0.932129
+ },
+ {
+  "text": " estava",
+  "startMs": 58160,
+  "endMs": 58640,
+  "timestampMs": null,
+  "confidence": 0.66519
+ },
+ {
+  "text": " preso,",
+  "startMs": 58640,
+  "endMs": 59340,
+  "timestampMs": null,
+  "confidence": 0.99659
+ },
+ {
+  "text": " aqui",
+  "startMs": 59360,
+  "endMs": 59540,
+  "timestampMs": null,
+  "confidence": 0.457835
+ },
+ {
+  "text": " dentro",
+  "startMs": 59540,
+  "endMs": 59840,
+  "timestampMs": null,
+  "confidence": 0.995642
+ },
+ {
+  "text": " de",
+  "startMs": 59840,
+  "endMs": 60050,
+  "timestampMs": null,
+  "confidence": 0.998464
+ },
+ {
+  "text": " mim.",
+  "startMs": 60050,
+  "endMs": 60260,
+  "timestampMs": null,
+  "confidence": 0.999889
+ },
+ {
+  "text": " Esse",
+  "startMs": 60260,
+  "endMs": 60510,
+  "timestampMs": null,
+  "confidence": 0.996966
+ },
+ {
+  "text": " suplemento,",
+  "startMs": 60510,
+  "endMs": 61250,
+  "timestampMs": null,
+  "confidence": 0.999916
+ },
+ {
+  "text": " ele",
+  "startMs": 61250,
+  "endMs": 61470,
+  "timestampMs": null,
+  "confidence": 0.997049
+ },
+ {
+  "text": " é",
+  "startMs": 61470,
+  "endMs": 61550,
+  "timestampMs": null,
+  "confidence": 0.999567
+ },
+ {
+  "text": " feito",
+  "startMs": 61550,
+  "endMs": 61890,
+  "timestampMs": null,
+  "confidence": 0.999685
+ },
+ {
+  "text": " com",
+  "startMs": 61890,
+  "endMs": 62040,
+  "timestampMs": null,
+  "confidence": 0.997227
+ },
+ {
+  "text": " psyllium,",
+  "startMs": 62040,
+  "endMs": 62720,
+  "timestampMs": null,
+  "confidence": 0.685648
+ },
+ {
+  "text": " uma",
+  "startMs": 62720,
+  "endMs": 62920,
+  "timestampMs": null,
+  "confidence": 0.999548
+ },
+ {
+  "text": " fibra",
+  "startMs": 62920,
+  "endMs": 63250,
+  "timestampMs": null,
+  "confidence": 0.999823
+ },
+ {
+  "text": " de",
+  "startMs": 63250,
+  "endMs": 63520,
+  "timestampMs": null,
+  "confidence": 0.999958
+ },
+ {
+  "text": " origem",
+  "startMs": 63520,
+  "endMs": 63770,
+  "timestampMs": null,
+  "confidence": 0.999821
+ },
+ {
+  "text": " vegetal",
+  "startMs": 63770,
+  "endMs": 64260,
+  "timestampMs": null,
+  "confidence": 0.999668
+ },
+ {
+  "text": " que",
+  "startMs": 64260,
+  "endMs": 64460,
+  "timestampMs": null,
+  "confidence": 0.567686
+ },
+ {
+  "text": " absorve",
+  "startMs": 64460,
+  "endMs": 64920,
+  "timestampMs": null,
+  "confidence": 0.99979
+ },
+ {
+  "text": " água",
+  "startMs": 64920,
+  "endMs": 65260,
+  "timestampMs": null,
+  "confidence": 0.990969
+ },
+ {
+  "text": " e",
+  "startMs": 65260,
+  "endMs": 65310,
+  "timestampMs": null,
+  "confidence": 0.99899
+ },
+ {
+  "text": " forma",
+  "startMs": 65310,
+  "endMs": 65580,
+  "timestampMs": null,
+  "confidence": 0.988904
+ },
+ {
+  "text": " um",
+  "startMs": 65580,
+  "endMs": 65680,
+  "timestampMs": null,
+  "confidence": 0.99988
+ },
+ {
+  "text": " gel",
+  "startMs": 65680,
+  "endMs": 65840,
+  "timestampMs": null,
+  "confidence": 0.998275
+ },
+ {
+  "text": " no",
+  "startMs": 65840,
+  "endMs": 66060,
+  "timestampMs": null,
+  "confidence": 0.998814
+ },
+ {
+  "text": " intestino.",
+  "startMs": 66060,
+  "endMs": 66620,
+  "timestampMs": null,
+  "confidence": 0.999914
+ },
+ {
+  "text": " Então,",
+  "startMs": 66620,
+  "endMs": 67150,
+  "timestampMs": null,
+  "confidence": 0.999859
+ },
+ {
+  "text": " ele",
+  "startMs": 67150,
+  "endMs": 67420,
+  "timestampMs": null,
+  "confidence": 0.999739
+ },
+ {
+  "text": " ajuda",
+  "startMs": 67420,
+  "endMs": 67680,
+  "timestampMs": null,
+  "confidence": 0.999521
+ },
+ {
+  "text": " o",
+  "startMs": 67680,
+  "endMs": 67740,
+  "timestampMs": null,
+  "confidence": 0.999664
+ },
+ {
+  "text": " ácido",
+  "startMs": 67740,
+  "endMs": 68130,
+  "timestampMs": null,
+  "confidence": 0.998677
+ },
+ {
+  "text": " gástrico",
+  "startMs": 68130,
+  "endMs": 68760,
+  "timestampMs": null,
+  "confidence": 0.999123
+ },
+ {
+  "text": " e",
+  "startMs": 68760,
+  "endMs": 68810,
+  "timestampMs": null,
+  "confidence": 0.966717
+ },
+ {
+  "text": " a",
+  "startMs": 68810,
+  "endMs": 68860,
+  "timestampMs": null,
+  "confidence": 0.999451
+ },
+ {
+  "text": " melhorar",
+  "startMs": 68860,
+  "endMs": 69320,
+  "timestampMs": null,
+  "confidence": 0.999632
+ },
+ {
+  "text": " o",
+  "startMs": 69320,
+  "endMs": 69430,
+  "timestampMs": null,
+  "confidence": 0.99996
+ },
+ {
+  "text": " trânsito",
+  "startMs": 69430,
+  "endMs": 69870,
+  "timestampMs": null,
+  "confidence": 0.978131
+ },
+ {
+  "text": " intestinal.",
+  "startMs": 69870,
+  "endMs": 70720,
+  "timestampMs": null,
+  "confidence": 0.999813
+ },
+ {
+  "text": " E",
+  "startMs": 70720,
+  "endMs": 70790,
+  "timestampMs": null,
+  "confidence": 0.999022
+ },
+ {
+  "text": " ele",
+  "startMs": 70790,
+  "endMs": 71000,
+  "timestampMs": null,
+  "confidence": 0.999716
+ },
+ {
+  "text": " ainda",
+  "startMs": 71000,
+  "endMs": 71520,
+  "timestampMs": null,
+  "confidence": 0.999798
+ },
+ {
+  "text": " leva",
+  "startMs": 71520,
+  "endMs": 71690,
+  "timestampMs": null,
+  "confidence": 0.999152
+ },
+ {
+  "text": " berberina,",
+  "startMs": 71690,
+  "endMs": 72460,
+  "timestampMs": null,
+  "confidence": 0.876719
+ },
+ {
+  "text": " garcinifeno",
+  "startMs": 72460,
+  "endMs": 73260,
+  "timestampMs": null,
+  "confidence": 0.937626
+ },
+ {
+  "text": " grego,",
+  "startMs": 73260,
+  "endMs": 73740,
+  "timestampMs": null,
+  "confidence": 0.474299
+ },
+ {
+  "text": " uma",
+  "startMs": 73740,
+  "endMs": 73900,
+  "timestampMs": null,
+  "confidence": 0.99587
+ },
+ {
+  "text": " mistura",
+  "startMs": 73900,
+  "endMs": 74280,
+  "timestampMs": null,
+  "confidence": 0.999935
+ },
+ {
+  "text": " de",
+  "startMs": 74280,
+  "endMs": 74540,
+  "timestampMs": null,
+  "confidence": 0.999901
+ },
+ {
+  "text": " ingredientes",
+  "startMs": 74540,
+  "endMs": 75030,
+  "timestampMs": null,
+  "confidence": 0.999247
+ },
+ {
+  "text": " naturais",
+  "startMs": 75030,
+  "endMs": 75500,
+  "timestampMs": null,
+  "confidence": 0.998317
+ },
+ {
+  "text": " em",
+  "startMs": 75500,
+  "endMs": 75620,
+  "timestampMs": null,
+  "confidence": 0.758699
+ },
+ {
+  "text": " um",
+  "startMs": 75620,
+  "endMs": 75740,
+  "timestampMs": null,
+  "confidence": 0.999422
+ },
+ {
+  "text": " pote",
+  "startMs": 75740,
+  "endMs": 75980,
+  "timestampMs": null,
+  "confidence": 0.99163
+ },
+ {
+  "text": " com",
+  "startMs": 75980,
+  "endMs": 76300,
+  "timestampMs": null,
+  "confidence": 0.999443
+ },
+ {
+  "text": " 120",
+  "startMs": 76300,
+  "endMs": 76710,
+  "timestampMs": null,
+  "confidence": 0.998953
+ },
+ {
+  "text": " cápsulas.",
+  "startMs": 76710,
+  "endMs": 77440,
+  "timestampMs": null,
+  "confidence": 0.991637
+ },
+ {
+  "text": " O",
+  "startMs": 77440,
+  "endMs": 77520,
+  "timestampMs": null,
+  "confidence": 0.990677
+ },
+ {
+  "text": " único",
+  "startMs": 77520,
+  "endMs": 78240,
+  "timestampMs": null,
+  "confidence": 0.999912
+ },
+ {
+  "text": " problema",
+  "startMs": 78240,
+  "endMs": 78740,
+  "timestampMs": null,
+  "confidence": 0.999926
+ },
+ {
+  "text": " é",
+  "startMs": 78740,
+  "endMs": 78980,
+  "timestampMs": null,
+  "confidence": 0.841009
+ },
+ {
+  "text": " que",
+  "startMs": 78980,
+  "endMs": 79360,
+  "timestampMs": null,
+  "confidence": 0.999786
+ },
+ {
+  "text": " um",
+  "startMs": 79360,
+  "endMs": 79500,
+  "timestampMs": null,
+  "confidence": 0.946517
+ },
+ {
+  "text": " suplemento",
+  "startMs": 79500,
+  "endMs": 79910,
+  "timestampMs": null,
+  "confidence": 0.999762
+ },
+ {
+  "text": " de",
+  "startMs": 79910,
+  "endMs": 80040,
+  "timestampMs": null,
+  "confidence": 0.950552
+ },
+ {
+  "text": " fibras",
+  "startMs": 80040,
+  "endMs": 80420,
+  "timestampMs": null,
+  "confidence": 0.99215
+ },
+ {
+  "text": " desse",
+  "startMs": 80420,
+  "endMs": 80710,
+  "timestampMs": null,
+  "confidence": 0.990888
+ },
+ {
+  "text": " nível",
+  "startMs": 80710,
+  "endMs": 81220,
+  "timestampMs": null,
+  "confidence": 0.999836
+ },
+ {
+  "text": " aqui,",
+  "startMs": 81220,
+  "endMs": 81420,
+  "timestampMs": null,
+  "confidence": 0.998304
+ },
+ {
+  "text": " geralmente",
+  "startMs": 81420,
+  "endMs": 82090,
+  "timestampMs": null,
+  "confidence": 0.999699
+ },
+ {
+  "text": " ele",
+  "startMs": 82090,
+  "endMs": 82220,
+  "timestampMs": null,
+  "confidence": 0.824117
+ },
+ {
+  "text": " sai",
+  "startMs": 82220,
+  "endMs": 82320,
+  "timestampMs": null,
+  "confidence": 0.999163
+ },
+ {
+  "text": " muito",
+  "startMs": 82320,
+  "endMs": 82630,
+  "timestampMs": null,
+  "confidence": 0.999905
+ },
+ {
+  "text": " caro.",
+  "startMs": 82630,
+  "endMs": 83040,
+  "timestampMs": null,
+  "confidence": 0.999624
+ },
+ {
+  "text": " Mas",
+  "startMs": 83280,
+  "endMs": 83450,
+  "timestampMs": null,
+  "confidence": 0.615339
+ },
+ {
+  "text": " a",
+  "startMs": 83450,
+  "endMs": 83510,
+  "timestampMs": null,
+  "confidence": 0.8157
+ },
+ {
+  "text": " Monjar",
+  "startMs": 83510,
+  "endMs": 84060,
+  "timestampMs": null,
+  "confidence": 0.996022
+ },
+ {
+  "text": " está",
+  "startMs": 84060,
+  "endMs": 84230,
+  "timestampMs": null,
+  "confidence": 0.756301
+ },
+ {
+  "text": " fazendo",
+  "startMs": 84230,
+  "endMs": 84720,
+  "timestampMs": null,
+  "confidence": 0.99734
+ },
+ {
+  "text": " uma",
+  "startMs": 84720,
+  "endMs": 84920,
+  "timestampMs": null,
+  "confidence": 0.98091
+ },
+ {
+  "text": " oferta",
+  "startMs": 84920,
+  "endMs": 85340,
+  "timestampMs": null,
+  "confidence": 0.999335
+ },
+ {
+  "text": " somente",
+  "startMs": 85340,
+  "endMs": 85840,
+  "timestampMs": null,
+  "confidence": 0.99903
+ },
+ {
+  "text": " hoje.",
+  "startMs": 85840,
+  "endMs": 86320,
+  "timestampMs": null,
+  "confidence": 0.999846
+ },
+ {
+  "text": " Então,",
+  "startMs": 86320,
+  "endMs": 87120,
+  "timestampMs": null,
+  "confidence": 0.997518
+ },
+ {
+  "text": " ó,",
+  "startMs": 87120,
+  "endMs": 87300,
+  "timestampMs": null,
+  "confidence": 0.931839
+ },
+ {
+  "text": " se",
+  "startMs": 87300,
+  "endMs": 87410,
+  "timestampMs": null,
+  "confidence": 0.999823
+ },
+ {
+  "text": " o",
+  "startMs": 87410,
+  "endMs": 87460,
+  "timestampMs": null,
+  "confidence": 0.999983
+ },
+ {
+  "text": " link",
+  "startMs": 87460,
+  "endMs": 87690,
+  "timestampMs": null,
+  "confidence": 0.99991
+ },
+ {
+  "text": " estiver",
+  "startMs": 87690,
+  "endMs": 88100,
+  "timestampMs": null,
+  "confidence": 0.975941
+ },
+ {
+  "text": " aparecendo",
+  "startMs": 88100,
+  "endMs": 88720,
+  "timestampMs": null,
+  "confidence": 0.999298
+ },
+ {
+  "text": " aqui",
+  "startMs": 88720,
+  "endMs": 88940,
+  "timestampMs": null,
+  "confidence": 0.933173
+ },
+ {
+  "text": " embaixo",
+  "startMs": 88940,
+  "endMs": 89360,
+  "timestampMs": null,
+  "confidence": 0.996774
+ },
+ {
+  "text": " em",
+  "startMs": 89360,
+  "endMs": 89460,
+  "timestampMs": null,
+  "confidence": 0.997546
+ },
+ {
+  "text": " algum",
+  "startMs": 89460,
+  "endMs": 89710,
+  "timestampMs": null,
+  "confidence": 0.999943
+ },
+ {
+  "text": " lugar",
+  "startMs": 89710,
+  "endMs": 90160,
+  "timestampMs": null,
+  "confidence": 0.999966
+ },
+ {
+  "text": " desse",
+  "startMs": 90160,
+  "endMs": 90210,
+  "timestampMs": null,
+  "confidence": 0.996035
+ },
+ {
+  "text": " vídeo,",
+  "startMs": 90210,
+  "endMs": 90520,
+  "timestampMs": null,
+  "confidence": 0.999603
+ },
+ {
+  "text": " significa",
+  "startMs": 90520,
+  "endMs": 91320,
+  "timestampMs": null,
+  "confidence": 0.999846
+ },
+ {
+  "text": " que",
+  "startMs": 91320,
+  "endMs": 91330,
+  "timestampMs": null,
+  "confidence": 0.999975
+ },
+ {
+  "text": " ainda",
+  "startMs": 91330,
+  "endMs": 91670,
+  "timestampMs": null,
+  "confidence": 0.999989
+ },
+ {
+  "text": " restam",
+  "startMs": 91670,
+  "endMs": 92100,
+  "timestampMs": null,
+  "confidence": 0.998811
+ },
+ {
+  "text": " algumas",
+  "startMs": 92100,
+  "endMs": 92400,
+  "timestampMs": null,
+  "confidence": 0.654826
+ },
+ {
+  "text": " unidades",
+  "startMs": 92400,
+  "endMs": 92800,
+  "timestampMs": null,
+  "confidence": 0.967862
+ },
+ {
+  "text": " de",
+  "startMs": 92800,
+  "endMs": 92880,
+  "timestampMs": null,
+  "confidence": 0.93828
+ },
+ {
+  "text": " estoque.",
+  "startMs": 92880,
+  "endMs": 93300,
+  "timestampMs": null,
+  "confidence": 0.987995
+ },
+ {
+  "text": " Então,",
+  "startMs": 93300,
+  "endMs": 93670,
+  "timestampMs": null,
+  "confidence": 0.997837
+ },
+ {
+  "text": " corre",
+  "startMs": 93670,
+  "endMs": 93900,
+  "timestampMs": null,
+  "confidence": 0.993593
+ },
+ {
+  "text": " e",
+  "startMs": 93900,
+  "endMs": 94100,
+  "timestampMs": null,
+  "confidence": 0.998247
+ },
+ {
+  "text": " aproveita",
+  "startMs": 94100,
+  "endMs": 94360,
+  "timestampMs": null,
+  "confidence": 0.999447
+ },
+ {
+  "text": " a",
+  "startMs": 94360,
+  "endMs": 94400,
+  "timestampMs": null,
+  "confidence": 0.987357
+ },
+ {
+  "text": " sua.",
+  "startMs": 94400,
+  "endMs": 94720,
+  "timestampMs": null,
+  "confidence": 0.999653
+ }
+]
