@@ -352,6 +352,26 @@ import {v2211Ad03} from './v2211-ad03/edit';
 import {edicaoSimples27110559} from './edicao-simples-2711-0559/edit';
 import {fe2111Ad04} from './fe-2111-ad04/edit';
 import {fe2111Ad05} from './fe-2111-ad05/edit';
+import {fe2111Ad06} from './fe-2111-ad06/edit';
+import {fe2111Ad07} from './fe-2111-ad07/edit';
+import {fe2211Ad01} from './fe-2211-ad01/edit';
+import {fe2211Ad02} from './fe-2211-ad02/edit';
+import {fe2211Ad03} from './fe-2211-ad03/edit';
+import {fe2211Ad04} from './fe-2211-ad04/edit';
+import {fe2211Ad05} from './fe-2211-ad05/edit';
+import {fe2211Ad06} from './fe-2211-ad06/edit';
+import {fe2211Ad07} from './fe-2211-ad07/edit';
+import {lo24111} from './lo-2411-1/edit';
+import {lo24112} from './lo-2411-2/edit';
+import {lo24113} from './lo-2411-3/edit';
+import {lo24114} from './lo-2411-4/edit';
+import {v2211Ad04} from './v2211-ad04/edit';
+import {v2211Ad05a} from './v2211-ad05a/edit';
+import {v2211Ad05b} from './v2211-ad05b/edit';
+import {v2211Ad06a} from './v2211-ad06a/edit';
+import {v2211Ad06b} from './v2211-ad06b/edit';
+import {v2211Ad07a} from './v2211-ad07a/edit';
+import {v2211Ad07b} from './v2211-ad07b/edit';
 
 // Cada projeto novo entra aqui. O nome vira o id da composição no Studio e no render.
 export const projetos: Record<string, Edit> = {
@@ -708,4 +728,24 @@ export const projetos: Record<string, Edit> = {
 	'edicao-simples-2711-0559': edicaoSimples27110559,
 	'fe-2111-ad04': fe2111Ad04,
 	'fe-2111-ad05': fe2111Ad05,
+	'fe-2111-ad06': fe2111Ad06,
+	'fe-2111-ad07': fe2111Ad07,
+	'fe-2211-ad01': fe2211Ad01,
+	'fe-2211-ad02': fe2211Ad02,
+	'fe-2211-ad03': fe2211Ad03,
+	'fe-2211-ad04': fe2211Ad04,
+	'fe-2211-ad05': fe2211Ad05,
+	'fe-2211-ad06': fe2211Ad06,
+	'fe-2211-ad07': fe2211Ad07,
+	'lo-2411-1': lo24111,
+	'lo-2411-2': lo24112,
+	'lo-2411-3': lo24113,
+	'lo-2411-4': lo24114,
+	'v2211-ad04': v2211Ad04,
+	'v2211-ad05a': v2211Ad05a,
+	'v2211-ad05b': v2211Ad05b,
+	'v2211-ad06a': v2211Ad06a,
+	'v2211-ad06b': v2211Ad06b,
+	'v2211-ad07a': v2211Ad07a,
+	'v2211-ad07b': v2211Ad07b,
 };
